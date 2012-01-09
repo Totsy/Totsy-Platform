@@ -1,7 +1,7 @@
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('table');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('table');?>
 
 <div id="status_history">
     <div class="box">
@@ -19,10 +19,10 @@
                     foreach($history as $entry):
                 ?>
                 <tr>
-                    <td><?=$entry['date_created']?></td>
-                    <td><?=$entry['reason']?></td>
-                    <td><?=$entry['comment']?></td>
-                     <td><?=$entry['created_by']?></td>
+                    <td><?php echo $entry['date_created']?></td>
+                    <td><?php echo $entry['reason']?></td>
+                    <td><?php echo $entry['comment']?></td>
+                     <td><?php echo $entry['created_by']?></td>
                 </tr>
                 <?php
                     endforeach;

@@ -3,7 +3,7 @@
 namespace admin\controllers;
 
 use admin\models\User;
-use admin\models\Menu;
+use totsy_common\models\Menu;
 use lithium\storage\Session;
 
 class PagesController extends \lithium\action\Controller {

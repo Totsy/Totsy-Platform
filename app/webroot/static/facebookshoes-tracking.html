@@ -1,14 +1,19 @@
 <!-- for /a/facebookshoes tracking only, fires off when the user hits the submit button and they are on the /a/facebookshoes page -->
 <!-- begin Marin Software Tracking Script -->
 <script type='text/javascript'>
-var _mTrack = _mTrack || [];
-_mTrack.push(['addTrans', {
+    var _mTrack = _mTrack || [];
+    _mTrack.push(['addTrans', {
+        currency: 'USD'
+    }]);
+    _mTrack.push(['processOrders']);
 
-}]);
-_mTrack.push('processOrders');
-
-(function() { var mClientId = 'kyoobah3q0'; var mProto = ('https:' == document.location.protocol ? 'https://' : 'http://'); var mHost = 'pro.marinsm.com'; var mt = document.createElement('script'); mt.type = 'text/javascript'; mt.async = true; mt.src = mProto + mHost + '/tracker/async/' + mClientId + '.js'; var fscr = document.getElementsByTagName('script')[0]; fscr.parentNode.insertBefore(mt, fscr); })();
-
+    (function() {
+        var mClientId = '1146r8p12266';
+        var mProto = ('https:' == document.location.protocol ? 'https://' : 'http://');
+        var mHost = 'pro.marinsm.com';
+        var mt = document.createElement('script'); mt.type = 'text/javascript'; mt.async = true;
+        mt.src = mProto + mHost + '/tracker/async/' + mClientId + '.js';
+        var fscr = document.getElementsByTagName('script')[0]; fscr.parentNode.insertBefore(mt, fscr);
+    })();
 </script>
 <!-- end Copyright Marin Software -->
-fbshoes

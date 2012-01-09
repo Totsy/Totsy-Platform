@@ -5,13 +5,12 @@ namespace admin\models;
 use MongoId;
 use MongoDate;
 use MongoRegex;
-use li3_payments\extensions\Payments;
-use li3_payments\extensions\payments\exceptions\TransactionException;
 use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
-use admin\extensions\AvaTax;
 use admin\models\Credit;
+use li3_payments\extensions\adapter\payment\CyberSource;
+use Exception;
 
 /**
 * The Orders Model is related to the Orders Collection in MongoDB.
@@ -54,7 +53,14 @@ class Order extends Base {
 	const TAX_RATE = 0.08875;
 
 	const TAX_RATE_NYS = 0.04375;
+
+	protected static $_classes = array(
+		'tax' => 'admin\extensions\AvaTax',
+		'payments' => 'li3_payments\payments\Processor'
+	);
+
 	protected $_meta = array('source' => 'orders');
+
 	protected $_nyczips = array(
 		'100',
 		'104',
@@ -77,6 +83,12 @@ class Order extends Base {
 		return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
 
+	/**
+	 * Case insensitive lookup of an order by its ID.
+	 *
+	 * @param string $orderId
+	 * @return object
+	 */
 	public static function lookup($orderId) {
 		$orderId = new MongoRegex("/$orderId/i");
 		$result = static::find('first', array('conditions' => array(
@@ -88,79 +100,154 @@ class Order extends Base {
 	/**
 	 * Voids an Order
 	 *
+	 * @see li3_payments\payments\Processor::void()
 	 * @param array $order - Array of order information
 	 * @return boolean
 	 */
 	public static function void($order) {
-		$collection = static::collection();
+		$payments = static::$_classes['payments'];
+
 		$orderId = new MongoId($order['_id']);
-		try {
-		    $error = null;
-		    if ($order['total'] != 0 && is_numeric($order['authKey'])){
-                $auth = Payments::void('default', $order['authKey']);
+		$error = null;
+		$data = array(
+			'void_date' => new MongoDate()
+		);
+
+		if ($order['total'] == 0 || !is_numeric($order['authKey'])) {
+			$data['void_confirm'] = -1;
+			$error = "Can't capture because total is zero.";
+		} else if ($order['card_type'] == 'amex') {
+			$data['void_confirm'] = -1;
+			$error = "Can't void because the card type is Amex.";
+		} else if ($order['authTotal'] == 0) {
+			$data['void_confirm'] = -1;
+			$error = "Can't void because authorization amount is 0";
+		} else {
+			if(!empty($order['auth'])) {
+				$transaction = $order['auth'];
 			} else {
-			    $auth = -1;
-			    $error = "Can't capture because total is zero.";
+				$transaction = $order['authKey'];
 			}
-			return $collection->update(
-                    array('_id' => $orderId),
-                    array('$set' => array(
-                        'void_date' => new MongoDate(),
-                        'void_confirm' => $auth),
-                        'auth_error' => $error),
-                    array('upsert' => false)
-                );
-		} catch (TransactionException $e) {
-			$error = $e->getMessage();
-			Logger::error("order-void: Void Failed. Error $error thrown for $order[_id]");
-			$collection->update(
-				array('_id' => $orderId),
-				array('$set' => array(
-					'error_date' => new MongoDate(),
-					'auth_error' => $error)),
-				array('upsert' => false)
-			);
+			$auth = $payments::void('default', $transaction, array(
+				'processor' => isset($order['processor']) ? $order['processor'] : null
+			));
+
+			if ($auth->success()) {
+				$data['void_confirm'] = $auth->key;
+			} elseif ($auth->errors) {
+				$data['void_confirm'] = -1;
+
+				$message  = "Void failed for order id `{$order['_id']}`:";
+				$message .= $error = implode('; ', $auth->errors);
+				Logger::error($message);
+			} else {
+				$data['void_confirm'] = -1;
+
+				$message  = "Void failed for order id `{$order['_id']}`.";
+				$error = 'Unknown error.';
+				Logger::error($message);
+			}
 		}
+		$update = static::update(
+			array(
+				'$set' => $data + array(
+					'auth_error' => $error
+				)
+			),
+			array('_id' => $orderId),
+			array('upsert' => false)
+		);
+		return $update && !$error;
 	}
+
+	/**
+	 * Processes an order.
+	 *
+	 * @fixme This could be refactored as a concrete record method. It
+	 *        currently is static for backwards compat. with documents
+	 *        retrieved via native methods.
+	 * @see li3_payments\payments\Processor::capture()
+	 * @see OrdersController::update()
+	 * @param array The order to process. Required fields are 'authKey', 'total' and '_id'.
+	 * @return boolean
+	 */
 	public static function process($order) {
-		$collection = static::collection();
-		$orderId = new MongoId($order['_id']);
+		$payments = static::$_classes['payments'];
 
-		try {
-		    $error = null;
-		    if ($order['total'] != 0 && is_numeric($order['authKey'])) {
-                $auth = Payments::capture('default', $order['authKey'], floor($order['total']*100)/100);
-            } else {
-                $auth = -1;
-                $error = "Can't capture because total is zero.";
-            }
-                Logger::info("process-payment: Processed payment for order_id $order[_id]");
-                return $collection->update(
-                    array('_id' => $orderId),
-                    array('$set' => array(
-                        'payment_date' => new MongoDate(),
-                        'auth_confirmation' => $auth,
-                        'auth_error' => $error)),
-                    array('upsert' => false)
-                );
-		} catch (TransactionException $e) {
-			$error = $e->getMessage();
-			Logger::info("process-payment: Failed to process payment for order_id $order[_id]");
-			Logger::error("process-payment: Error $error thrown for $order[_id]");
-			$collection->update(
-				array('_id' => $orderId),
-				array('$set' => array(
-					'error_date' => new MongoDate(),
-					'auth_confirmation' => -1,
-					'auth_error' => $error)),
-				array('upsert' => false)
-			);
+		$order = is_object($order) ? $order->data() : $order;
+		$orderId = new MongoId($order['_id']);
+		$error = null;
+		$data = array(
+			'payment_date' => new MongoDate()
+		);
+
+		Logger::info("Processing payment for order id `{$order['_id']}`.");
+
+		if ($order['total'] == 0 || !is_numeric($order['authKey'])) {
+			$data['auth_confirmation'] = -1;
+			$error = "Can't capture because total is zero.";
+		} else {
+			if(empty($order['auth'])) {
+				$auth = $payments::capture(
+					'default',
+					$order['authKey'],
+					floor($order['total'] * 100) / 100,
+					array(
+						'processor' => isset($order['processor']) ? $order['processor'] : null
+					)
+				);
+			} else {
+				if(empty($order['cyberSourceProfileId'])) {
+					$auth = $payments::capture(
+						'default',
+						$order['auth'],
+						floor($order['total'] * 100) / 100,
+						array(
+							'processor' => isset($order['processor']) ? $order['processor'] : null
+						)
+					);
+				} else {
+					$cybersource = new CyberSource($payments::config('default'));
+					$profile = $cybersource->profile($order['cyberSourceProfileId']);
+					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile);
+				}
+			}
+			if ($auth->success()) {
+				$data['auth_confirmation'] = $auth->key;
+				$data['payment_date'] = new MongoDate();
+			} elseif ($auth->errors) {
+				$data['auth_confirmation'] = -1;
+				$data['error_date'] = new MongoDate();
+
+				$message  = "Processing of payment for order id `{$order['_id']}` failed:";
+				$message .= $error = implode('; ', $auth->errors);
+				Logger::error($message);
+			} else {
+				$data['auth_confirmation'] = -1;
+				$data['error_date'] = new MongoDate();
+				$error = 'Unknown error.';
+
+				$message = "Processing of payment for order id `{$order['_id']}` failed.";
+				Logger::error($message);
+			}
 		}
+		$update = static::update(
+			array(
+				'$set' => $data + array(
+					'auth_error' => $error
+				)
+			),
+			array('_id' => $orderId),
+			array('upsert' => false)
+		);
+		return $update && !$error;
 	}
 
-	public static function setTrackingNumber($order_id, $number) {
-		$set = array('$addToSet' => array('tracking_numbers' => $number));
-		return static::collection()->update(array('order_id' => $order_id), $set);
+	public static function setTrackingNumber($id, $number) {
+		return static::update(
+			array('$addToSet' => array('tracking_numbers' => $number)),
+			array('order_id' => $id)
+		);
 	}
 
 	/**
@@ -177,10 +264,12 @@ class Order extends Base {
 				'shipping.firstname',
 				'shipping.lastname',
 				'billing.firstname',
-				'billing.lastname'),
+				'billing.lastname'
+			),
 			'address' => array(
 				'shipping.address',
-				'billing.address')
+				'billing.address'
+			)
 		);
 		foreach ($keys[$type] as $key) {
 			$conditions[] = array($key => new MongoRegex("/$data/i"));
@@ -204,10 +293,12 @@ class Order extends Base {
 	 * clicking cancel order
 	 */
 	public static function cancel($order_id, $author, $comment, $credits_recorded = false, $test = false) {
+		$tax = static::$_classes['tax'];
+
 		$userCollection = User::collection();
 		//Get the actual datas of the order
 		$result = static::find('first', array('conditions' => array(
-			'_id' => new MongoId($order_id)
+			'_id' => $order_id instanceof MongoId ? $order_id : new MongoId($order_id)
 		)));
 		$order = $result->data();
 		if(strlen($order["user_id"]) > 10){
@@ -229,7 +320,8 @@ class Order extends Base {
 			    static::void($order);
 			}
 			//Push cancel status to Avalara
-			AvaTax::cancelTax($order['order_id']);
+			$tax::cancelTax($order['order_id']);
+
 			//Cancel all the items
 			$items = $order["items"];
 			$item_names = array();
@@ -269,10 +361,12 @@ class Order extends Base {
 				$userCollection->update(array("_id" => $order["user_id"]), array('$set' => array("total_credit" => (((float) abs($new_credit)) + ((float) $user["total_credit"])))));
 			}
 		}
-		//Pushing modification datas to db
-		$result = static::collection()->update(array("_id" => new MongoId($order_id)),
-		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
-		return $result;
+		// Pushing modification datas to db.
+		return static::collection()->update(
+			array("_id" => new MongoId($order_id)),
+			array('$push' => array('modifications' => $modification_datas)),
+			array('upsert' => true)
+		);
 	}
 
 	public static function shipping($items) {
@@ -352,7 +446,8 @@ class Order extends Base {
 	}
 
 	/**
-	* Save the data of the temporary order to the DB
+	* Save the data of the temporary order to the DB.
+	*
 	* @param object $selected_order
 	* @param array $items
 	* @param string $author
@@ -362,18 +457,37 @@ class Order extends Base {
 		$userCollection = User::collection();
 		$credits_recorded = false;
 		/************* PREPARING DATAS **************/
+		$selected_order += array(
+			'order_id' => null,
+			'total' => null,
+			'subTotal' => null,
+			'handling' => null,
+			'promo_discount' => null,
+			'promocode_disable' => null,
+			'comment' => null,
+			'initial_credit_used' => null
+		);
+				
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
 			'handling' => (float) $selected_order["handling"],
-			'overSizeHandling' => (float) $selected_order["overSizeHandling"],
-			'handlingDiscount' => (float) $selected_order["handlingDiscount"],
-			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],		
 			'promo_discount' => (float) $selected_order["promo_discount"],
-			'discount' => (float) $selected_order["discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'comment' => $selected_order["comment"]
 		);
+		if(!empty($selected_order["overSizeHandling"])) {
+			$datas_order_prices['overSizeHandling'] = (float) $selected_order["overSizeHandling"];
+		}
+		if(!empty($selected_order["discount"])) {
+			$datas_order_prices['discount'] = (float) $selected_order["discount"];
+		}
+		if(!empty($selected_order["handlingDiscount"])) {
+			$datas_order_prices['handlingDiscount'] = (float) $selected_order["handlingDiscount"];
+		}
+		if(!empty($selected_order["overSizeHandlingDiscount"])) {
+			$datas_order_prices['overSizeHandlingDiscount'] = (float) $selected_order["overSizeHandlingDiscount"];
+		}
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		   $datas_order_prices['original_credit_used'] = $selected_order["original_credit_used"];
 		}
@@ -384,7 +498,7 @@ class Order extends Base {
 			$datas_order_prices["credit_used"] = (float) $selected_order["credit_used"];
 		}
 		/**************UPDATE TAX****************************/
-		extract(static::recalculateTax($selected_order,$items,true));
+		extract(static::_recalculateTax($selected_order,$items,true));
 		/**************UPDATE DB****************************/
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		    $new_credit = $selected_order['original_credit_used'] - (float) number_format($selected_order['credit_used'],2);
@@ -441,12 +555,16 @@ class Order extends Base {
 	public static function cancelItem($order_id, $cart_id, $cancel = true) {
 		$orderCollection = static::collection();
 		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)), array('items' => 1));
+
 		foreach($order["items"] as $key => $item) {
 			if($item["_id"] == new MongoId($cart_id)) {
 				$order["items"][$key]["cancel"] = $cancel;
 			}
 		}
-		$orderCollection->update(array("_id" => new MongoId($order_id)), array('$set' => array( "items" => $order["items"])));
+		return $orderCollection->update(
+			array("_id" => new MongoId($order_id)),
+			array('$set' => array("items" => $order["items"]))
+		);
 	}
 
 	/**
@@ -472,7 +590,8 @@ class Order extends Base {
 
 	/**
 	* Refresh the prices details and credits of the temporary order
-	* and return it to the view
+	* and return it to the view.
+	*
 	* @param object $selected_order
 	* @param array $items
 	*/
@@ -485,8 +604,15 @@ class Order extends Base {
 		if(!empty($items)){
 			$datas_order["items"] = $items;
 		}
-		//Get Actual Taxes
-		extract(static::recalculateTax($selected_order,$items));
+		//Get Actual Taxes and Handling
+		$handling = static::shipping($items);
+		$overSizeHandling = static::overSizeShipping($items);
+		extract(static::_recalculateTax($selected_order,$items));
+
+		if ($tax instanceof Exception) {
+			/* Rethrow exceptions received while recalculating tax. */
+			throw $tax;
+		}
 		if (is_object($tax)) {
             //Avatax::totsyCalculateTax($selected_order);
             //$tax = static::tax($selected_order,$items);
@@ -595,7 +721,13 @@ class Order extends Base {
 		}
 		/***********END OF CREDITS TREATMENT*************/
 		/***********CHECK TAX, HANDLING, TOTAL***********/
-		$total = $afterDiscount + $tax + $selected_order["handling"] + $selected_order["overSizeHandling"];
+		$total = $afterDiscount + $tax;
+		if(!empty($selected_order["handling"])) {
+			$total += $selected_order["handling"];
+		}
+		if(!empty($selected_order["overSizeHandling"])) {
+			$total += $selected_order["overSizeHandling"];
+		}
 		$datas_order_prices = array(
 			'total' => $total,
 			'subTotal' => $subTotal,
@@ -623,9 +755,10 @@ class Order extends Base {
 	 *
 	 * @param object $current_order
 	 * @param array $itms
-	 *
 	 */
-	protected static function recalculateTax ($current_order,$itms,$update=false){
+	protected static function _recalculateTax($current_order, $itms, $update=false) {
+		$tax = static::$_classes['tax'];
+
 		$orderCollection = static::collection();
 		$order = $orderCollection->findOne(
 			array("_id" => new MongoId($current_order["id"])),
@@ -641,14 +774,13 @@ class Order extends Base {
 				$items[] = $itm;
 			}
 		}
-
 		if ($update === false){
-			$ordermodel = self;
-			return AvaTax::getTax(compact('order','items','ordermodel','current_order','itms'));
+			$ordermodel = __CLASS__;
+			return $tax::getTax(compact('order','items','ordermodel','current_order','itms'));
 		} else {
-			AvaTax::cancelTax($order['order_id']);
 			$admin = 1;
-			return AvaTax::commitTax(compact('order','items','admin'));
+			$tax::cancelTax($order['order_id']);
+			return (array) $tax::commitTax(compact('order','items','admin'));
 		}
 	}
 
@@ -684,14 +816,15 @@ class Order extends Base {
 
         if($requests) {
             if (array_key_exists('capture', $requests) && !empty($requests['capture'])) {
-
-				    $capture = static::collection()->find(array('order_id' => array(
-				        '$in' => $requests['capture'])),
+				    $capture = static::collection()->find(
+						array(
+							'order_id' => array('$in' => $requests['capture'])
+						),
 				        array(
-				        'authKey' => 1,
-				        'total' => 1,
-				        'order_id' => 1,
-				        '_id' => 1
+						'authKey' => 1,
+						'total' => 1,
+						'order_id' => 1,
+						'_id' => 1
 				    ));
 				    foreach($capture as $order) {
 				        static::process($order);
@@ -780,6 +913,36 @@ class Order extends Base {
 	     }
 
 	     return $failed;
+	}
+	
+	public static function getCCinfos($order = null) {
+		$creditCard = null;
+		if(!empty($order['cc_payment'])) {
+			$cc_encrypt = $order['cc_payment'];
+			$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+			$iv =  base64_decode($order['cc_payment']['vi']);
+			$key = $order['user_id'];
+			unset($cc_encrypt['vi']);
+			foreach	($cc_encrypt as $k => $cc_info) {
+				$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key . $k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+				$creditCard[$k] = $crypt_info;
+			}
+		}
+		return $creditCard; 
+	}
+
+	/**
+	 * Encrypt all credits card informations with MCRYPT and store it in the Session
+	 */
+	public static function creditCardEncrypt($cc_infos, $user_id) {
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+		$cc_encrypt['vi'] = base64_encode($iv);
+		foreach	($cc_infos as $k => $cc_info) {
+			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), $cc_info, MCRYPT_MODE_CFB, $iv);
+			$cc_encrypt[$k] = base64_encode($crypt_info);
+		}
+		return $cc_encrypt;
 	}
 }
 

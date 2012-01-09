@@ -40,102 +40,27 @@ if (!include LITHIUM_LIBRARY_PATH . '/lithium/core/Libraries.php') {
  */
 require __DIR__ . '/bootstrap/libraries.php';
 
-use lithium\core\Environment;
-
-Environment::is(function($request) {
-	switch ($request->env('HTTP_HOST')) {
-		case 'www.totsy.com':
-		case 'totsy.com':
-		case 'admin.totsy.com':
-		case 'web1-dc1.totsy.com':
-		case 'web2-dc1.totsy.com':
-		case 'web3-dc1.totsy.com':
-		case 'web4-dc1.totsy.com':
-		case 'web5-dc1.totsy.com':
-		case 'web6-dc1.totsy.com':
-		case 'web7-dc1.totsy.com':
-		case 'web8-dc1.totsy.com':
-			return 'production';
-		case 'testadmin.totsy.com':
-			return 'test';
-		case 'devadmin.totsy.com':
-			return 'development';
-		default:
-			return 'local';
-	}
-});
-
 /**
  * Include this file if your application uses a database connection.
  */
 require __DIR__ . '/connections.php';
 
 /**
- * This file defines bindings between classes which are triggered during the request cycle, and
- * allow the framework to automatically configure its environmental settings. You can add your own
- * behavior and modify the dispatch cycle to suit your needs.
+ * Error-handling.
  */
-require __DIR__ . '/bootstrap/action.php';
+require __DIR__ . '/bootstrap/error.php';
 
 /**
  * This file contains configurations for connecting to external caching resources, as well as
  * default caching rules for various systems within your application
+ * Auth and action protection filters.
  */
-require __DIR__ . '/bootstrap/cache.php';
+require __DIR__ . '/bootstrap/auth.php';
 
 /**
- * This file contains your application's globalization rules, including inflections,
- * transliterations, localized validation, and how localized text should be loaded. Uncomment this
- * line if you plan to globalize your site.
+ * This file contains configuration for session (and/or cookie) storage, and
+ * user or web service * authentication.
  */
-require __DIR__ . '/bootstrap/g11n.php';
-
-/**f
- * This file contains configurations for handling different content types within the framework,
- * including converting data to and from different formats, and handling static media assets.
- */
-// require __DIR__ . '/bootstrap/media.php';
-
-/**
- * This file configures console filters and settings, specifically output behavior and coloring.
- */
-// require __DIR__ . '/bootstrap/console.php';
-
-require __DIR__ . '/bootstrap/payments.php';
-
-require __DIR__ . '/bootstrap/mail.php';
-
-require __DIR__ . '/bootstrap/avatax.php';
-
-/**
- * This file configures the analysis behavior which includes Logging.
- */
-require __DIR__ . '/bootstrap/analysis.php';
-
-/**
- * This configures your session storage. The Cookie storage adapter must be connected first, since
- * it intercepts any writes where the `'expires'` key is set in the options array.
- */
-use lithium\storage\Session;
-
-Session::config(array(
- 	'default' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
-));
-
-Session::config(array(
-    'flash_message' => array('adapter' => 'admin\extensions\adapter\session\Model', 'model' => 'MongoSession')
-));
-
-use lithium\security\Auth;
-Auth::config(array('userLogin' => array(
-	'model' => 'User',
-	'adapter' => 'Form',
-	'fields' => array('email', 'password'),
-	'scope' => array('admin' => true)
-)));
-
-
-ini_set('memory_limit', '1024M');
-ini_set('max_execution_time', '20000');
+require __DIR__ . '/bootstrap/session.php';
 
 ?>

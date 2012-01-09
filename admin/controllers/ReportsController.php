@@ -17,6 +17,7 @@ use MongoDate;
 use MongoRegex;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
+use lithium\analysis\Logger;
 use admin\models\PurchaseOrder;
 use lithium\data\Model;
 use FusionCharts;
@@ -27,7 +28,7 @@ use admin\extensions\util\String;
  */
 class ReportsController extends BaseController {
 
-	/**
+  /**
 	 * The purchase order column headings.
 	 *
 	 * @var array
@@ -191,7 +192,6 @@ class ReportsController extends BaseController {
                 case 'Effective':
                     $results = Affiliate::effectiveCoReg($name, $date, $affiliate);
                     break;
-
 			}
 		}
 		return compact('search', 'results', 'searchType', 'criteria');
@@ -224,15 +224,16 @@ class ReportsController extends BaseController {
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$eventItems = Event::getItems($eventId);
-
 			$itemIds = array();
+			$temp = array();
 			foreach ($eventItems as $key => $eventItem) {
-				$eventItems[$eventItem['_id']] = $eventItem;
-				unset($eventItems[$key]);
-
-				$itemIds[] = $eventItem['_id'];
+			    $eventItem = get_object_vars($eventItem);
+			    $eventItem = $eventItem['_config']['data'];
+			    $id = (string)$eventItem['_id'];
+				$temp[$id] = $eventItem;
+				$itemIds[] = $id;
 			}
-
+			$eventItems = $temp;
 			$orders = Order::find('all', array(
 				'conditions' => array(
 					'items.item_id' => array('$in' => $itemIds),
@@ -579,12 +580,12 @@ class ReportsController extends BaseController {
 				$total = $total['retval'][0];
 				$collection->remove($conditions);
 				if (!empty($summary)) {
-					FlashMessage::set('Results Found', array('class' => 'pass'));
+					FlashMessage::write('Results Found', array('class' => 'pass'));
 				} else {
-					FlashMessage::set('No Results Found', array('class' => 'warning'));
+					FlashMessage::write('No Results Found', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+				FlashMessage::write('Please enter in a valid search date', array('class' => 'warning'));
 			}
 		}
 		return compact('details', 'summary', 'dates', 'total');
@@ -652,12 +653,12 @@ class ReportsController extends BaseController {
 				$total = $total['retval'][0];
 				$collection->remove($conditions);
 				if (!empty($results)) {
-					FlashMessage::set('Results Found', array('class' => 'pass'));
+					FlashMessage::write('Results Found', array('class' => 'pass'));
 				} else {
-					FlashMessage::set('No Results Found', array('class' => 'warning'));
+					FlashMessage::write('No Results Found', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+				FlashMessage::write('Please enter in a valid search date', array('class' => 'warning'));
 			}
 		}
 		return compact('results', 'dates', 'total');
@@ -755,12 +756,12 @@ class ReportsController extends BaseController {
 				$total = (!empty($total['retval'][0])) ? $total['retval'][0] : null;
 				$collection->remove($conditions);
 				if (!empty($summary)) {
-					FlashMessage::set('Results Found', array('class' => 'pass'));
+					FlashMessage::write('Results Found', array('class' => 'pass'));
 				} else {
-					FlashMessage::set('No Results Found', array('class' => 'warning'));
+					FlashMessage::write('No Results Found', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+				FlashMessage::write('Please enter in a valid search date', array('class' => 'warning'));
 			}
 		}
 		return compact('details', 'summary', 'dates', 'total', 'data');
@@ -1238,7 +1239,45 @@ class ReportsController extends BaseController {
 		return compact('ServiceCharts','Service2ndCharts');
 	}
 
-
+	private function generateConditions(array $data = array()){
+		extract($data);
+		$conditions = array();
+		$dateField = 'date_created';
+		switch ($name) {
+			case 'trendytogs':
+				$conditions = array(
+					'trendytogs_signup' => array('$exists' => true)
+				);
+				$dateField = 'date_created';
+			break;
+			case 'keyade':
+				$conditions = array(
+					'$or' => array(
+							array(
+								'keyade_referral_user_id' => array('$ne' => NULL )
+							),
+							array(
+								'keyade_user_id' => array('$ne' => NULL )
+							)
+					)
+				);
+				$dateField = 'created_date';
+				if (!empty($date)) {
+					$conditions = $conditions + $date;
+				}
+			break;
+			default:
+				$conditions = array(
+					'invited_by' => $affiliate,
+				);
+				$dateField = 'created_date';
+				if (!empty($date)) {
+					$conditions = $conditions + $date;
+				}
+			break;
+		}
+		return compact('conditions','dateField');
+	}
 }
 
 ?>

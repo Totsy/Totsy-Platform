@@ -6,6 +6,7 @@ use admin\models\User;
 use lithium\security\Auth;
 use lithium\storage\Session;
 use lithium\data\Connections;
+use lithium\util\String;
 use admin\models\Cart;
 use admin\models\Credit;
 use admin\models\Order;
@@ -101,10 +102,18 @@ class UsersController extends \admin\controllers\BaseController {
 				    $userData['register date'] = date("M d, Y", $userData['created_on']['sec']);
 				}
 				if (array_key_exists('deactivated_date', $userData)) {
-				    $userData['deactivated_date'] = date("M d, Y", $userData['deactivated_date']['sec']);
+				    if(is_array($userData['deactivated_date'])){
+				        $userData['register date'] = date("M d, Y",$userData['deactivated_date']['sec']);
+				    } else {
+				        $userData['register date'] = date("M d, Y",$userData['deactivated_date']);
+				    }
 				}
 				if (array_key_exists('reactivate_date', $userData)) {
-				    $userData['reactivate_date'] = date("M d, Y", $userData['reactivate_date']['sec']);
+				    if(is_array($userData['reactivate_date'])){
+				        $userData['reactivate_date'] = date("M d, Y",$userData['reactivate_date']['sec']);
+				    } else {
+				        $userData['reactivate_date'] = date("M d, Y",$userData['reactivate_date']);
+				    }
 				}
 				if (array_key_exists('deactivated', $userData)) {
 				    $deactivated = $userData['deactivated'];
@@ -127,12 +136,13 @@ class UsersController extends \admin\controllers\BaseController {
 	 */
 	public function login() {
 		$message = false;
-
 		if ($this->request->data) {
 		    $this->request->data['email'] = strtolower($this->request->data['email']);
+
 			if (Auth::check("userLogin", $this->request)) {
 				return $this->redirect('/');
 			}
+
 			$message = 'Login Failed - Please Try Again';
 		}
 		return compact('message');
@@ -265,7 +275,21 @@ class UsersController extends \admin\controllers\BaseController {
         return compact('history');
 	}
 
+	public function token() {
+		$session = Session::read('userLogin');
 
+		do { /* Ensure we don't have a dot in the token. */
+			$token = String::random(6, array('encode' => String::ENCODE_BASE_64));
+		} while (strpos($token, '.') !== false);
+
+		$user = User::first(array('conditions' => array('_id' => $session['_id'])));
+		$user->save(compact('token'));
+
+		$session['token'] = $token;
+		Session::write('userLogin', $session);
+
+		return $this->redirect($this->request->referer());
+	}
 }
 
 ?>

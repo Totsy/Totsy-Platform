@@ -5,7 +5,7 @@
 	<?php echo $this->html->charset();?>
 	<title>Totsy<?php echo $this->title(); ?></title>
 	<?php echo $this->html->style(array('base')); ?>
-	<?=$this->html->script(array(
+	<?php echo $this->html->script(array(
 		'jquery-1.4.2.min.js',
 		'jquery-ui-1.8.2.custom.min.js',
 		'jquery.backstretch.min.js'
@@ -20,7 +20,7 @@
 
 	<?php
 
-	use \DirectoryIterator;
+	use DirectoryIterator;
 	use lithium\net\http\Media;
 	$images = array();
 	$imgDirectory = $this->_request->env('base') . '/img/login/';
@@ -44,7 +44,7 @@
 
 	    jQuery(document).ready(function($){
 
-	    	$.backstretch("<?=$imgDirectory . $image;?>");
+	    	$.backstretch("<?php echo $imgDirectory . $image;?>");
 
 	    });
 

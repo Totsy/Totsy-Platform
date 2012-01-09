@@ -4,34 +4,38 @@ namespace app\controllers;
 
 use app\controllers\BaseController;
 use app\models\Address;
-use app\models\Menu;
+use totsy_common\models\Menu;
 use app\models\User;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 
 class AddressesController extends BaseController {
-	
+
 	/**
 	 * The maximum number of addresses a user can have stored
 	 * @var int
 	 */
-	private $_maxAddresses = 10; 
-	
+	private $_maxAddresses = 10;
+
 	/**
 	 * Sets up the Menu element for the page
 	 */
 	protected function _init() {
 		parent::_init();
 	}
-	
+
 	public function view() {
 		if ($user = Session::read('userLogin')) {
 			$addresses = Address::all(array(
 				'conditions' => array('user_id' => (string) $user['_id'])
 			));
 		}
+		if($this->request->is('mobile')){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_view';
+		}
 		return compact("addresses");
 	}
-	
+
 	/**
 	 * Adds an address
 	 */
@@ -41,6 +45,10 @@ class AddressesController extends BaseController {
 			$isAjax = true;
 		} else {
 			$isAjax = false;
+		}
+		if($this->request->is('mobile')){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_add';
 		}
 		$status = '';
 		$message = '';
@@ -58,7 +66,7 @@ class AddressesController extends BaseController {
 
 				// if (($this->request->data['default'] == '1') && (Address::changeDefault($user['_id']))) {
 				// 	$message = 'This address is now your default';
-				// } elseif 
+				// } elseif
 				if ($address->validates()) {
 					$message = 'Address Saved';
 				}
@@ -103,10 +111,13 @@ class AddressesController extends BaseController {
 		if (($this->request->data) && $address->save($this->request->data)) {
 				$message = 'Your address has been updated';
 		}
-
+		if($this->request->is('mobile')){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_add';
+		}
 		return compact('message', 'address', 'action', 'isAjax');
 	}
-	
+
 	public function remove() {
 
 		if ($this->request->query) {
@@ -115,7 +126,7 @@ class AddressesController extends BaseController {
 			}
 		}
 		$this->render(array('layout' => false));
-		
+
 		return true;
 	}
 }

@@ -2,12 +2,12 @@
 
 namespace app\models;
 
-use \lithium\data\Connections;
-use \lithium\storage\Session;
-use \lithium\storage\session\adapter\Cookie;
-use \MongoDate;
-use \MongoId;
-use \lithium\util\Validator;
+use lithium\data\Connections;
+use lithium\storage\Session;
+use lithium\storage\session\adapter\Cookie;
+use MongoDate;
+use MongoId;
+use lithium\util\Validator;
 use li3_facebook\extension\FacebookProxy;
 
 /**
@@ -321,6 +321,7 @@ class User extends Base {
 
 		return $success;
 	}
+
 	public static function cleanSession() {
 		if(Session::check('userSavings')) {
 			Session::delete('userSavings');
@@ -346,8 +347,27 @@ class User extends Base {
 		if(Session::check('billing')) {
 			Session::delete('billing');
 		}
+		if(Session::check('service_available')) {
+			Session::delete('service_available');
+		}
+	}
+	
+	/**
+	* Check if User has Already a CyberSource Profile link with his credit card
+	* If yes, return the cyberSourceProfileId
+	* If no, return null
+	**/
+	public static function hasCyberSourceProfile($userInfos, $creditCardNumber) {
+		$cyberSourceProfileId = null;
+		if(!empty($userInfos['cyberSourceProfiles'])) {
+			foreach($userInfos['cyberSourceProfiles'] as $profile) {
+				if(substr($profile, -4) == substr($creditCardNumber, -4)) {
+					$cyberSourceProfileId = $profile;
+				}
+			}
+		}
+		return $cyberSourceProfileId;
 	}
 }
-
 
 ?>

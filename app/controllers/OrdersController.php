@@ -7,12 +7,11 @@ use app\models\Cart;
 use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
-use app\models\Order;
 use app\models\Event;
+use app\models\Affiliate;
 use app\models\Promotion;
 use app\models\CreditCard;
 use app\models\Promocode;
-use app\models\Affiliate;
 use app\models\OrderShipped;
 use app\models\Service;
 use app\controllers\BaseController;
@@ -20,8 +19,8 @@ use lithium\storage\Session;
 use lithium\util\Validator;
 use MongoDate;
 use MongoId;
-use app\extensions\AvaTax;
 use app\extensions\Mailer;
+use app\extensions\AvaTax;
 
 /**
  * The Orders Controller
@@ -30,24 +29,37 @@ use app\extensions\Mailer;
  **/
 class OrdersController extends BaseController {
 
+	protected $_classes = array(
+		'tax'       => 'app\extensions\AvaTax',
+		'order'     => 'app\models\Order',
+		'affiliate' => 'app\models\Affiliate'
+	);
+
 	/**
 	 * Allows the view of all the orders a customer has in descending order.
 	 * The ship date is also populated next to each order if applicable.
 	 * @return compact
 	 */
 	public function index() {
+		$orderClass = $this->_classes['order'];
 		$user = Session::read('userLogin');
-		$orders = Order::find('all', array(
+
+		$orders = $orderClass::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user['_id']),
 			'order' => array('date_created' => 'DESC')
 		));
+		$shipDate = null;
+		$trackingNumbers = array();
 		$lifeTimeSavings = 0;
+
 		foreach ($orders as $key => $order) {
 			$list = $trackingNum = array();
 			$shipDate["$order->_id"] = Cart::shipDate($order);
 			$conditions = array('OrderId' => $order->_id);
+
 			$shipRecords = OrderShipped::find('all', compact('conditions'));
+			$trackingNum = array();
 			foreach ($shipRecords as $record) {
 				if (!in_array($record->{'Tracking #'}, $list)) {
 					$list[] = $record->{'Tracking #'};
@@ -68,7 +80,11 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
+		}if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_index';
 		}
+		
 		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 
@@ -82,14 +98,24 @@ class OrdersController extends BaseController {
 	 * @return mixed
 	 */
 	public function view($order_id) {
+		$orderClass     = $this->_classes['order'];
+		$affiliateClass = $this->_classes['affiliate'];
+
 		$user = Session::read('userLogin');
-		$order = Order::find('first', array(
+		$order = $orderClass::find('first', $a =array(
 			'conditions' => array(
 				'order_id' => $order_id,
 				'user_id' => (string) $user['_id']
 		)));
+
 		$new = ($order->date_created->sec > (time() - 120)) ? true : false;
-		$shipDate = Cart::shipDate($order);
+		if($order->date_created->sec < 1322006400){
+			$shipDate = Cart::shipDate($order, true);
+			$shipDate = date('M d, Y', $shipDate);
+		}
+		else{
+			$shipDate = Cart::shipDate($order);
+		}
 		if (!empty($shipDate)) {
 			$allEventsClosed = (Cart::getLastEvent($order)->end_date->sec > time()) ? false : true;
 		} else {
@@ -98,63 +124,71 @@ class OrdersController extends BaseController {
 		$shipped = (isset($order->tracking_numbers)) ? true : false;
 		$shipRecord = (isset($order->ship_records)) ? true : false;
 		$preShipment = ($shipped || $shipRecord) ? true : false;
-		$itemsByEvent = $this->itemGroupByEvent($order);
-		$orderEvents = $this->orderEvents($order);
+		$itemsByEvent = $this->_itemGroupByEvent($order);
+		$orderEvents = $this->_orderEvents($order);
 		//Check if all items from one event are closed
-		//AND Get Items Skus - Analytic
-		$itemsToSend = array();
-				
 		foreach($itemsByEvent as $key => $items_e) {
-			$url = Event::find('first', array(
-				'conditions' => array('_id'=> new MongoId($key)),
-				'fields' => array('url' => true)
-			));
+			$url = Event::find('first', array('conditions' => array('_id'=> $key)));
 			foreach($items_e as $key_b => $item) {
 				if(empty($item['cancel'])) {
 					$openEvent[$item['event_id']] = true;
 				}
+
 				$itemRecord = Item::find($item['item_id']);
 				if (!empty($itemRecord)) {
 
 					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
 					$itemsToSend[] =  array(
-						'id' => (string) $itemRecord['_id'],
-						'qty' => $item['quantity'],
-						'title' => $itemRecord['description'],
-						'price' => $itemRecord['sale_retail']*100,
-					 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
+										'id' => (string) $itemRecord['_id'],
+										'qty' => $item['quantity'],
+										'title' => $itemRecord['description'],
+										'price' => $itemRecord['sale_retail']*100,
+									 	'url' => 'http://'.$_SERVER['HTTP_HOST'].'/sale/'.$url->url.'/'.$itemRecord['url']
 					);
 					unset($itemRecord);
-				}				
-			}
-		}		
-		unset($url);
-		$pixel = Affiliate::getPixels('order', 'spinback');
-		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
-		//Calculatings Savings
-		$savings = 0;
-		foreach ($order->items as $item) {
-			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
-			if (empty($item->cancel)) {
-				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
+				}
 			}
 		}
-		
+
 		// IMPORTANT!
 		// Sailthru purchase api complete
 		if ($new===true){
 			if ( !Session::check('order_'.$order_id,array('name'=>'default')) ){
 				Mailer::purchase(
-					$user['email'],
-					$itemsToSend,
-					array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))			
+				$user['email'],
+				$itemsToSend,
+				array('message_id' => hash('sha256',Session::key('default').substr(strrev( (string) $user['_id']),0,8)))
 				);
 				Session::write('order_'.$order_id,time(),array('name'=>'default'));
 			}
-			
+
 		}
 		unset($itemsToSend);
-		
+
+		$pixel = Affiliate::getPixels('order', 'spinback');
+		$spinback_fb = Affiliate::generatePixel('spinback', $pixel, array('order' => $_SERVER['REQUEST_URI']));
+		//Get Items Skus - Analytics
+		foreach($itemsByEvent as $key => $event) {
+			foreach($event as $key_b => $item) {
+				$itemRecord = Item::find($item['item_id']);
+				if (!empty($itemRecord)) {
+					$itemsByEvent[$key][$key_b]['sku'] = $itemRecord->sku_details[$item['size']];
+				}
+			}
+		}
+		//Calculatings Savings
+		$savings = 0;
+		foreach ($order->items as $item) {
+
+			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
+			if (empty($item->cancel)) {
+				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
+			}
+		}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
+		}
 		return compact(
 			'order',
 			'orderEvents',
@@ -166,7 +200,6 @@ class OrdersController extends BaseController {
 			'preShipment',
 			'spinback_fb',
 			'shipRecord',
-			'preShipment',
 			'openEvent',
 			'savings'
 		);
@@ -195,12 +228,16 @@ class OrdersController extends BaseController {
 			'event_name',
 			'event'
 		);
-		#Check Expires 
+		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$address = null;
 		$selected = null;
 		$cartExpirationDate = 0;
+		$addresses_ddwn = array();
+		$shipDate = null;
+		$error = null;
+
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
@@ -226,16 +263,16 @@ class OrdersController extends BaseController {
 						$address->type = 'Shipping';
 						$address->save();
 					}
-					$this->redirect(array('Orders::payment'));
+					return $this->redirect(array('Orders::payment'));
 				} else {
 					$error = true;
 				}
 			}
-		} 
+		}
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Shipping')
-		));		
+		));
 		#Prepare addresses datas for the dropdown
 		if (!empty($addresses)) {
 			$idx = 0;
@@ -247,7 +284,7 @@ class OrdersController extends BaseController {
 				if((string)$value['_id'] == $address['_id']) {
 					$selected = (string) $value['_id'];
 				}
-				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
 		}
@@ -258,32 +295,52 @@ class OrdersController extends BaseController {
 		#Check Cart Validty
 		$cart = Cart::active(array(
 				'fields' => $fields,
-				'time' => '-0min'
+				'time' => 'now'
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
+
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
-		return compact('address','addresses_ddwn','shipDate','cartEmpty','error','selected','cartExpirationDate');
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_shipping';
+		}
+		return compact(
+			'address',
+			'addresses_ddwn',
+			'shipDate',
+			'cartEmpty',
+			'error',
+			'selected',
+			'cartExpirationDate'
+		);
 	}
-	
+
 	/**
 	 * Processes an order by capturing payment.
-	 * @return compact
+	 *
+	 * @fixme `$cartExpirationDate` is undefined where should this be coming
+	 +        from? Currently the comparison will always fail and expiration date
+	 *        will be set to `$cartValue['expires']->sec`.
 	 * @todo Improve documentation
+	 * @return compact
 	 */
 	public function review() {
+		$taxClass   = $this->_classes['tax'];
+		$orderClass = $this->_classes['order'];
+
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
-			$this->redirect(array('Orders::shipping'));
+			return $this->redirect(array('Orders::shipping'));
 		}
 		if (!Session::check('billing') || !Session::check('cc_infos')) {
-			$this->redirect(array('Orders::payment'));
+			return $this->redirect(array('Orders::payment'));
 		}
-		#Check Expires 
+		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Get Users Informations
 		$user = Session::read('userLogin');
@@ -306,24 +363,30 @@ class OrdersController extends BaseController {
 		#Get Current Cart
 		$cart = $taxCart = Cart::active(array('fields' => $fields, 'time' => 'now'));
 		$cartEmpty = ($cart->data()) ? false : true;
-		$cartByEvent = $this->itemGroupByEvent($cart);
+		$cartByEvent = $this->_itemGroupByEvent($cart);
 		#Calculate Shipped Date
 		$shipDate = Cart::shipDate($cart);
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		$cartExpirationDate = 0;
+
+		$i = 0;
 		foreach ($cart as $cartValue) {
-			#Get Last Expiration Date 
+
+
+			#Get Last Expiration Date
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
 			}
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $cartValue->event[0])
 			));
+			$cartItemEventEndDates[$i] = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 			$cartValue->event_name = $event->name;
 			$cartValue->event_url = $event->url;
 			$cartValue->event_id = $cartValue->event[0];
 			$subTotal += $cartValue->quantity * $cartValue->sale_retail;
+			$i++;
 			unset($cartValue->event);
 		}
 		#Get Shipping / Billing Infos + Costs
@@ -336,10 +399,9 @@ class OrdersController extends BaseController {
 			$overShippingCost = Cart::overSizeShipping($cart);
 		}
 		#Getting Tax by Avatax
-		$avatax = AvaTax::getTax(compact(
+		$avatax = $taxClass::getTax(compact(
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
-		
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
@@ -357,83 +419,49 @@ class OrdersController extends BaseController {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
 		#Calculate Order Total
-		$total = $vars['postDiscountTotal'];
+		$total = round(floatval($vars['postDiscountTotal']), 2);
 		#Read Credit Card Informations
-		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
-		#Disable Promocode Uses if Services
-		if (!empty($services['freeshipping']['enable']) || !empty($services['tenOffFitfy'])) {
-			$promocode_disable = true;
-		}
+		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
 		#Organize Datas
 		$vars = $vars + compact(
-			'user', 'cart', 'total', 'subTotal', 'creditCard',
-			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount'
+			'user', 'cart', 'total', 'subTotal',
+			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount','creditCard'
 		);
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
-			$order = Order::process($this->request->data, $cart, $vars, $avatax);
+
+			/* Process this order and run it through the payment processor. */
+			$order = $orderClass::process($this->request->data, $cart, $vars, $avatax);
+
 			if (empty($order->errors) && !(Session::check('cc_error'))) {
 				#Redirect To Confirmation Page
-				$this->redirect(array('Orders::view', 'args' => $order->order_id));
+				return $this->redirect(array('Orders::view', 'args' => $order->order_id));
 			}
 		}
 		#In car of credit card error redirect to the payment page
 		if (Session::check('cc_error')) {
-			$this->redirect(array('Orders::payment'));
+			return $this->redirect(array('Orders::payment'));
 		}
-		return $vars + compact('cartEmpty','order','shipDate','savings', 'credits', 'services', 'cartExpirationDate', 'promocode_disable');
-	}
-
-	/**
-	 * Group all the items in an order by their corresponding event.
-	 *
-	 * The $order object is assumed to have originated from one of model types; Order or Cart.
-	 * Irrespective of the type both will return an associative array of event items.
-	 *
-	 * @param object $order
-	 * @return array $eventItems
-	 */
-	protected function itemGroupByEvent($object) {
-		$eventItems = null;
-		if ($object) {
-			$model = $object->model();
-			if ($model == 'app\models\Order') {
-				$orderItems = $object->items->data();
-				foreach ($orderItems as $item) {
-					$eventItems[$item['event_id']][] = $item;
-				}
-			}
-			if ($model == 'app\models\Cart') {
-				$orderItems = $object->data();
-				foreach ($orderItems as $item) {
-					$event = $item['event'][0];
-					unset($item['event']);
-					$eventItems[$event][] = $item;
-				}
-			}
+		#Check if Services
+		$serviceAvailable = false;
+		if(Session::check('service_available')) {
+			$serviceAvailable = Session::read('service_available');
 		}
-		return $eventItems;
-	}
-
-	/**
-	 * Return all the events of an order.
-	 *
-	 * @param object $object
-	 * @return array $orderEvents
-	 */
-	public function orderEvents($object) {
-		$orderEvents = null;
-		$ids = Cart::getEventIds($object);
-		if (!empty($ids)) {
-			$events = Event::find('all', array(
-				'conditions' => array('_id' => $ids),
-				'fields' => array('name', 'ship_message', 'ship_date', 'url')
-			));
-			$events = $events->data();
-			foreach ($events as $event) {
-				$orderEvents[$event['_id']] = $event;
-			}
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_review';
 		}
-		return $orderEvents;
+		return $vars + compact(
+			'cartEmpty',
+			'order',
+			'shipDate',
+			'savings',
+			'credits',
+			'services',
+			'cartExpirationDate',
+			'promocode_disable',
+			'serviceAvailable',
+			'cartItemEventEndDates'
+		);
 	}
 
 	/**
@@ -443,9 +471,11 @@ class OrdersController extends BaseController {
 	 * @return compact
 	 */
 	public function payment() {
+		$orderClass = $this->_classes['order'];
+
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
-			$this->redirect(array('Orders::shipping'));
+			return $this->redirect(array('Orders::shipping'));
 		}
 		$user = Session::read('userLogin');
 		$fields = array(
@@ -467,10 +497,15 @@ class OrdersController extends BaseController {
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$cartExpirationDate = 0;
+
 		$address = null;
 		$payment = null;
 		$checked = false;
 		$card = array();
+		$selected = array();
+		$addresses_ddwn = array();
+
+
 		#Get billing address from shipping one in session
 		$shipping = json_encode(Session::read('shipping'));
 		#Get Billing Address from Session
@@ -504,7 +539,9 @@ class OrdersController extends BaseController {
 			#Check credits cards informations
 			if($cc_infos->validates()) {
 				#Encrypt CC Infos with mcrypt
-				Session::write('cc_infos', Order::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
+				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
+				
+				
 				$cc_passed = true;
 				#Remove Credit Card Errors
 				Session::delete('cc_error');
@@ -531,7 +568,7 @@ class OrdersController extends BaseController {
 			}
 			#If both billing and credit card correct
 			if(!empty($billing_passed) && !empty($cc_passed)) {
-				$this->redirect(array('Orders::review'));
+				return $this->redirect(array('Orders::review'));
 			}
 			$data_add = array();
 			if (!empty($address)) {
@@ -544,7 +581,7 @@ class OrdersController extends BaseController {
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Billing')
-		));		
+		));
 		#Prepare addresses datas for the dropdown
 		if (!empty($addresses)) {
 			$idx = 0;
@@ -556,7 +593,7 @@ class OrdersController extends BaseController {
 				if((string)$value['_id'] == $address['_id']) {
 					$selected = (string) $value['_id'];
 				}
-				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address']; 
+				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
 		}
@@ -566,6 +603,7 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
+
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
@@ -573,17 +611,91 @@ class OrdersController extends BaseController {
 		$cartEmpty = ($cart->data()) ? false : true;
 		if (Session::check('cc_error')){
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
-				$card = Order::creditCardDecrypt((string)$user['_id']);
+				$card = $orderClass::creditCardDecrypt((string)$user['_id']);
 				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
-			$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			
+			
+			//error handling is not properly done
+			//errors from cybersource are not description or consumer-friendly
+			//errors need to be captured and then re-worded for users
+			//for now we have hardcoded a generic error message for all cc_errors stored in Session
+			
+			
+			//$payment->errors( $payment->errors() + array( 'cc_error' => Session::read('cc_error')));
+			$ccErrorTextGeneric = "We are not able to charge this credit card.  Please verify that your credit card number, expiration date, and security code are valid, or try another card.";
+			$payment->errors(array( 'cc_error' => $ccErrorTextGeneric));
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		return compact('address','addresses_ddwn','selected','cartEmpty','payment','shipping','shipDate','cartExpirationDate');
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_payment';
+		}
+		return compact('address',
+			'addresses_ddwn',
+			'selected',
+			'cartEmpty',
+			'payment',
+			'shipping',
+			'shipDate',
+			'cartExpirationDate'
+		);
 	}
-	
+
+	/**
+	 * Group all the items in an order by their corresponding event.
+	 *
+	 * The $order object is assumed to have originated from one of model types; Order or Cart.
+	 * Irrespective of the type both will return an associative array of event items.
+	 *
+	 * @param object $order
+	 * @return array $eventItems
+	 */
+	protected function _itemGroupByEvent($object) {
+		$eventItems = array();
+
+		if ($object) {
+			$model = $object->model();
+
+			if (strpos($model, 'models\Order') !== false) {
+				foreach ($object->items->data() as $item) {
+					$eventItems[$item['event_id']][] = $item;
+				}
+			}
+			if ($model == 'app\models\Cart') {
+				foreach ($object->data() as $item) {
+					$event = $item['event'][0];
+					unset($item['event']);
+					$eventItems[$event][] = $item;
+				}
+			}
+		}
+		return $eventItems;
+	}
+
+	/**
+	 * Return all the events of an order.
+	 *
+	 * @param object $object
+	 * @return array $orderEvents
+	 */
+	protected function _orderEvents($object) {
+		$orderEvents = null;
+		$ids = Cart::getEventIds($object);
+		if (!empty($ids)) {
+			$events = Event::find('all', array(
+				'conditions' => array('_id' => $ids),
+				'fields' => array('name', 'ship_message', 'ship_date', 'url')
+			));
+			$events = $events->data();
+			foreach ($events as $event) {
+				$orderEvents[$event['_id']] = $event;
+			}
+		}
+		return $orderEvents;
+	}
 }
 
 ?>

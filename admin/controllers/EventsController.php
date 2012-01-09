@@ -5,9 +5,12 @@ namespace admin\controllers;
 use admin\controllers\BaseController;
 use admin\models\Event;
 use admin\models\User;
+use admin\models\Order;
 use admin\models\Item;
 use lithium\storage\Session;
+use MongoCode;
 use MongoDate;
+use MongoRegex;
 use MongoId;
 use Mongo;
 use PHPExcel_IOFactory;
@@ -35,6 +38,52 @@ class EventsController extends BaseController {
 		'end_date',
 		'enabled'
 	);
+
+	public function combineskus($id = null) {
+	    $this->_render['layout'] = false;
+
+		//books event id hardcoded
+		$_id = (string)"4ee6437f943e83b010000007";
+
+		//items and orders collection calls
+		$itemsCollection = Item::Collection();
+		$ordersCollection = Order::collection();
+
+		//blank array for items
+		$items = array();
+
+		//query events table for items
+		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+
+		foreach ($eventItems as $item) {
+			//add item ids to items array
+			$items[] = (string) $item['_id'];
+		}
+
+		//mongo query to get orders with these items
+		$orders = $ordersCollection->find(array('items' => array('$elemMatch' => array('item_id' => array('$in' => $items)))));
+
+		foreach ($orders as $order) {
+			//total items in order
+			$orderitemCount = count($order['items']);
+
+			//loop through items in order
+			for($i=0; $i<$orderitemCount; $i++){
+				//check it size is NULL
+				if($order['items'][$i]['size']=="NULL"){
+					//set size to 'no size'
+					$order['items'][$i]['size'] = "no size";
+
+					//save revised order
+					$ordersCollection->save($order);
+
+				}
+			}
+		}
+		exit();
+
+
+	}
 
 
 	public function view($id = null) {
@@ -65,14 +114,14 @@ class EventsController extends BaseController {
 
 		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
 		foreach($fullarray as $item_sku_quantity){
-			$current_sku = $item_sku_quantity[0];
+			$current_sku = trim($item_sku_quantity[0]);
 			$items_skus[] = $current_sku;
-			$items_quantities[$current_sku] = $item_sku_quantity[1];
-			$items_prices[$current_sku] = $item_sku_quantity[2];
+			$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
+			$items_prices[$current_sku] = trim($item_sku_quantity[2]);
 		}
 
 		//mongo query, find all items with skus
-		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( "\$in" => $items_skus))));
+		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( '$in' => $items_skus))));
 
 		//loop through returned item results
 		foreach($items_with_skus as $olditem){
@@ -81,15 +130,20 @@ class EventsController extends BaseController {
 			$addnewitem = true;
 
 			//set new total quantity at 0
-			$total_quantity_new=0;
+			$total_quantity_new = 0;
 
 			//item data
-			$oitem = $olditem->data();
+			$oitem = $olditem;
+			# 01/03/2011 - it was done this way because lithium had a bug with the data() function
+			# So until that bug is fix, we will do it this way
+			$oitem = get_object_vars($olditem);
+			$oitem = $oitem['_config']['data'];
 
 			//existing sku and sku_details
 			$sku_details_arr = $oitem['sku_details'];
 			$skus_arr = $oitem['skus'];
 			$details_arr = $oitem['details'];
+			$sale_details_arr = $oitem['sale_details'];
 
 			//set quantities to 0
 			foreach($details_arr as $details_key => $details){
@@ -117,7 +171,10 @@ class EventsController extends BaseController {
 						//echo "<br> * update quantity to " . $items_quantities[$sku_details];
 
 						//use index to update quantity
-						$oitem['details'][$sku_details_key] = $items_quantities[$sku_details];
+						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
+
+						//set sales to 0 for all sizes
+						//$oitem['sale_details'][$sku_details_key]['sale_count'] = 0;
 
 						//use index to get new price
 						$item_price_new = $items_prices[$sku_details];
@@ -137,8 +194,9 @@ class EventsController extends BaseController {
 				unset($oitem['event']);
 				unset($oitem['created_date']);
 				unset($oitem['total_quantity']);
-				unset($oitem['sale_retail']);
 				unset($oitem['enabled']);
+				unset($oitem['details_original']);
+				unset($oitem['sale_details']);
 
 				//update event _id
 				$oitem['event'] = array((string)$_id);
@@ -147,16 +205,31 @@ class EventsController extends BaseController {
 				$oitem['created_date'] = new MongoDate();
 
 				//update enabled
-				$oitem['enabled'] = $enabled;
-				
+				$oitem['enabled'] = (bool)$enabled;
+
 				//create a new item instance
 				$newItem = Item::create();
 
 				//set total quant
-				$oitem['total_quantity'] = $total_quantity_new;
-				
+				$oitem['total_quantity'] = (int)$total_quantity_new;
+
 				//set new price
-				$oitem['sale_retail'] = floatval($item_price_new);
+				if($item_price_new){
+					unset($oitem['sale_retail']);
+					$oitem['sale_retail'] = floatval($item_price_new);
+				}
+
+				//save original quants
+				$oitem['details_original'] = $oitem['details'];
+
+				//hack for xmas items
+				if($this->request->data['miss_christmas']){
+					$oitem['miss_christmas'] = true;
+				}
+
+
+				//save original quants
+				//$oitem['sale_details'] = $oitem['sale_details'];
 
 				//save item with revised info
 				$newItem->save($oitem);
@@ -172,6 +245,26 @@ class EventsController extends BaseController {
 	}
 
 
+	public function inventory($_id = null) {
+	    $this->_render['layout'] = false;
+
+		$event = Event::find($_id);
+
+		$eventItems = array();
+
+		$alleventids = array($_id);
+
+		foreach($alleventids as $thiseventid){
+			$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
+					'order' => array('created_date' => 'ASC')
+				));
+		}
+		return compact('eventItems','event');
+	}
+
+
+
+
 	public function add() {
 
 		$shortDescLimit = $this->shortDescLimit;
@@ -181,38 +274,38 @@ class EventsController extends BaseController {
 		}
 
 		if (!empty($this->request->data)) {
-			$images = $this->parseImages();
-			$seconds = ':'.rand(10,60);
-			$this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
-			$this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
-			if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
-				$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
-			} else if (empty($this->request->data['short_description'])) {
-				$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);
-			}
-			$url = $this->cleanUrl($this->request->data['name']);
-			$eventData = array_merge(
-				Event::castData($this->request->data),
-				compact('items'),
-				compact('images'),
-				array('created_date' => new MongoDate()),
-				array('url' => $url)
-			);
-			$changed = "<strong>Created " . $this->request->data['name'] . " Event</strong><br/>";
-			$modification_datas["author"] = User::createdby();
-			$modification_datas["date"] = new MongoDate(strtotime('now'));
-			$modification_datas["type"] = "modification";
-			$modification_datas["changed"] = $changed;
+		    $images = $this->parseImages();
+		    $seconds = ':'.rand(10,60);
+		    $this->request->data['start_date'] = new MongoDate(strtotime($this->request->data['start_date']));
+		    $this->request->data['end_date'] = new MongoDate(strtotime($this->request->data['end_date'].$seconds));
+		    if (isset($this->request->data['short_description']) && strlen($this->request->data['short_description'])>$shortDescLimit){
+		    	$this->request->data['short_description'] = substr($this->request->data['short_description'],0,$shortDescLimit);
+		    } else if (empty($this->request->data['short_description'])) {
+		    	$this->request->data['short_description'] = $this->description_cutter($this->request->data['short_description'],$shortDescLimit);
+		    }
+		    $url = $this->cleanUrl($this->request->data['name']);
+		    $eventData = array_merge(
+		    	Event::castData($this->request->data),
+		    	compact('items'),
+		    	compact('images'),
+		    	array('created_date' => new MongoDate()),
+		    	array('url' => $url)
+		    );
+		    $changed = "<strong>Created " . $this->request->data['name'] . " Event</strong><br/>";
+		    $modification_datas["author"] = User::createdby();
+		    $modification_datas["date"] = new MongoDate(strtotime('now'));
+		    $modification_datas["type"] = "modification";
+		    $modification_datas["changed"] = $changed;
 
-			//Pushing modification datas to db
-			$modifications = $event->modifications;
-			$modifications[] = $modification_datas;
-			$eventData[modifications] = $modifications;
-			//Remove this when $_schema is setup
-			unset($eventData['itemTable_length']);
-			if ($event->save($eventData)) {
-				$this->redirect(array('Events::edit', 'args' => array($event->_id)));
-			}
+		    //Pushing modification datas to db
+		    $modifications = $event->modifications;
+		    $modifications[] = $modification_datas;
+		    $eventData[modifications] = $modifications;
+		    //Remove this when $_schema is setup
+		    unset($eventData['itemTable_length']);
+		    if ($event->save($eventData)) {
+		    	$this->redirect(array('Events::edit', 'args' => array($event->_id)));
+		    }
 		}
 
 		return compact('event','shortDescLimit');
@@ -373,7 +466,6 @@ class EventsController extends BaseController {
 			$eventData[modifications] = $modifications;
 
 			// End of Comparison of OLD Event Attributes and NEW event attributes
-
 			if ($event->save($eventData)) {
 				$this->redirect(array(
 						'controller' => 'events', 'action' => 'edit',
@@ -431,7 +523,9 @@ class EventsController extends BaseController {
 			'vendor',
 			'vendor_style',
 			'age',
+			'ages',
 			'departments',
+			'categories',
 			'category',
 			'sub_category',
 			'description',
@@ -474,6 +568,18 @@ class EventsController extends BaseController {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
 							}
+						} else if(strstr($heading[$col], "age_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$eventItems[$row - 1]['age'] = trim($val);
+								$eventItems[$row - 1]['ages'][] = trim($val);
+								$eventItems[$row - 1]['ages'] = array_unique($eventItems[$row - 1]['ages']);
+							}
+						} else if(strstr($heading[$col], "category_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$eventItems[$row - 1]['category'] = trim($val);
+								$eventItems[$row - 1]['categories'][] = trim($val);
+								$eventItems[$row - 1]['categories'] = array_unique($eventItems[$row - 1]['categories']);
+							}
 						} else if (($heading[$col] === "related_1") || ($heading[$col] === "related_2") || ($heading[$col] === "related_3") || ($heading[$col] === "related_4") || ($heading[$col] === "related_5")) {
 							if (!empty($val)) {
 								$eventItems[$row - 1]['related_items'][] = trim($val);
@@ -495,6 +601,9 @@ class EventsController extends BaseController {
 
   			//check radio box for 'final sale' text append
   			$enableFinalsale = $this->request->data['enable_finalsale'];
+
+  			//check radio box for 'final sale' text append
+  			$miss_christmas = $this->request->data['miss_christmas'];
 
   			//check if final sale radio box was checked or not
   			if($enableFinalsale==1){
@@ -518,8 +627,10 @@ class EventsController extends BaseController {
 
 			$details = array(
 				'enabled' => (bool) $enabled,
+				'miss_christmas' => (bool) $miss_christmas,
 				'created_date' => $date,
 				'details' => $itemCleanAttributes,
+				'details_original' => $itemCleanAttributes,
 				'event' => array((string) $_id),
 				'url' => $url,
 				'blurb' => $blurb,
@@ -636,7 +747,7 @@ class EventsController extends BaseController {
 	}
 
 	public function inventoryCheck($events) {
-		$events = $events->data();
+
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;

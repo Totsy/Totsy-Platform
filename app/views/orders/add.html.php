@@ -16,7 +16,7 @@
 	<div id="page">
 
 <?php if (!empty($error)) { ?>
-                        <div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?=$error; ?></div>
+                        <div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /><?php echo $error; ?></div>
 
 <?php } ?>
 <div style="display:none;">
@@ -37,18 +37,18 @@
 
 
 	<ol id="checkout-process">
-		<?=$this->form->create($order, array('class' => 'checkout')); ?>
+		<?php echo $this->form->create($order, array('class' => 'checkout')); ?>
 
 		<!-- Start Billing Information -->
 		<div style="float:left; width:423px; margin:0px 10px 10px 0px;  display:block;"><li id="opc-billing">
 			<div id="checkout-process-billing">
 			<?php if (empty($billing)): ?>
-					<center><strong><?=$this->html->link('Please take a moment to add an Address', '#', array(
+					<center><strong><?php echo $this->html->link('Please take a moment to add an Address', '#', array(
 						'class' => 'add-address')); ?></strong></center>
 				<?php else: ?>
 					<h2 style="color:#707070;">Billing Address</h2><hr />
 					<p>Select a billing address from your address book.</p>
-						<?=$this->form->select('billing', $billing, array(
+						<?php echo $this->form->select('billing', $billing, array(
 							'id' => 'billing',
 							'target' => '#billing-new-address-form',
 							'value' => key($billing)
@@ -62,7 +62,7 @@
 								<label for="billing:use_for_shipping_no">Ship to different address</label>
 							</p>
 						</fieldset>
-						<?=$this->html->link('Add a new address', '#', array(
+						<?php echo $this->html->link('Add a new address', '#', array(
 							'class' => 'add-address')); ?>
 				<?php endif ?>
 			</div>
@@ -83,12 +83,12 @@
 						<h2 style="color:#707070;">Shipping Address</h2>
 					<hr />
 					<p>Select a shipping address from your address book.</p>
-						<?=$this->form->select('shipping', $shipping, array(
+						<?php echo $this->form->select('shipping', $shipping, array(
 							'id' => 'shipping',
 							'target' => '#shipping-new-address-form',
 							'value' => key($shipping)
 						)); ?><br>
-						<?=$this->html->link('Add a new address', '#', array(
+						<?php echo $this->html->link('Add a new address', '#', array(
 							'class' => 'add-address')); ?>
 				<?php endif ?>
 
@@ -111,7 +111,7 @@
 				<li>
 						<label>
 							<input type="radio" name="shipping_method" value="ups" checked="checked" />&nbsp;
-							<?=$this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
+							<?php echo $this->html->image('ups-icon.jpg', array('title' => "UPS Shipping", 'alt' => "UPS Shipping", 'width' => "26", 'height' => "32")); ?>&nbsp;
 							UPS Ground
 						</label>
 				</li>
@@ -125,10 +125,10 @@
 <hr />
 
 		<li class="step">
-			<?=$this->form->submit('Confirm & Continue', array('class' => 'button fr')); ?>
+			<?php echo $this->form->submit('Confirm & Continue', array('class' => 'button fr')); ?>
 		</li>
 
-		<?=$this->form->end(); ?>
+		<?php echo $this->form->end(); ?>
 
 			   <div style="clear:both; margin-top:90px;"></div>
 
@@ -144,8 +144,8 @@
 		<?php $x = 0; ?>
 		<?php foreach ($cartByEvent as $key => $event): ?>
 			<tr>
-				<td colspan="3" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?=$orderEvents[$key]['name']?> <td>
-				<td colspan="3"><div class='fr' style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?=date('m-d-Y', $shipDate)?></div></td>
+				<td colspan="3" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?php echo $orderEvents[$key]['name']?> <td>
+				<td colspan="3"><div class='fr' style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Delivery Date: <?php echo date('m-d-Y', $shipDate)?></div></td>
 			</tr>
 			<tr>
 				<th>Item</th>
@@ -159,7 +159,7 @@
 				<tbody>
 					<!-- Build Product Row -->
 								<?php $itemUrl = "sale/".$orderEvents[$key]['url'].'/'.$item['url'];?>
-								<tr id="<?=$item['_id']?>" class="alt<?=$x?>" style="margin-top:10px;">
+								<tr id="<?php echo $item['_id']?>" class="alt<?php echo $x?>" style="margin-top:10px;">
 								<td class="cart-th">
 									<?php
 										if (!empty($item['primary_image'])) {
@@ -169,7 +169,7 @@
 											$productImage = "/img/no-image-small.jpeg";
 										}
 									?>
-									<?=$this->html->link(
+									<?php echo $this->html->link(
 										$this->html->image("$productImage", array(
 											'width'=>'60',
 											'height'=>'60',
@@ -182,20 +182,20 @@
 									); ?>
 								</td>
 								<td class="cart-desc">
-									<?=$this->form->hidden("item$x", array('value' => $item['_id'])); ?>
-									<strong><?=$this->html->link($item['description'], $itemUrl);
+									<?php echo $this->form->hidden("item$x", array('value' => $item['_id'])); ?>
+									<strong><?php echo $this->html->link($item['description'], $itemUrl);
 									?></strong><br>
-									<strong>Color:</strong> <?=$item['color'];?><br>
-									<strong>Size:</strong> <?=$item['size'];?>
+									<strong>Color:</strong> <?php echo $item['color'];?><br>
+									<strong>Size:</strong> <?php echo $item['size'];?>
 								</td>
-								<td class="<?="price-item-$x";?>">
-									<strong style="color:#009900;">$<?=number_format($item['sale_retail'],2)?></strong>
+								<td class="<?php echo "price-item-$x";?>">
+									<strong style="color:#009900;">$<?php echo number_format($item['sale_retail'],2)?></strong>
 								</td>
-								<td class="<?="qty-$x";?>">
-									<?=$item['quantity'];?>
+								<td class="<?php echo "qty-$x";?>">
+									<?php echo $item['quantity'];?>
 								</td>
-								<td class="<?="total-item-$x";?>">
-									<strong style="color:#009900;">$<?=number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
+								<td class="<?php echo "total-item-$x";?>">
+									<strong style="color:#009900;">$<?php echo number_format($item['sale_retail'] * $item['quantity'] ,2)?></strong>
 								</td>
 								<td class="cart-time" style="border-right:1px solid #d7d7d7;"><img src="/img/clock_icon.gif" class="fl"/><div id='<?php echo "checkout-counter-$x"; ?>' class="fl" style="margin-left:5px;"></div></td>
 
@@ -222,7 +222,7 @@
 			<?php endforeach ?>
 
 					<tr class="cart-total">
-						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?=number_format($subTotal,2)?></strong><br/><hr/><?=$this->html->link('Edit Your Cart','/cart/view' ,array('id' => 'checkout-cart', 'class' => 'button fr')); ?></td>
+						<td colspan="7" id='subtotal'><strong>Subtotal: </strong><strong style="color:#009900;">$<?php echo number_format($subTotal,2)?></strong><br/><hr/><?php echo $this->html->link('Edit Your Cart','/cart/view' ,array('id' => 'checkout-cart', 'class' => 'button fr')); ?></td>
 					</tr>
 				</tbody>
 			</table>

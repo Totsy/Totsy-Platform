@@ -2,10 +2,10 @@
 
 namespace app\controllers;
 
-use \app\models\Credit;
-use \app\models\User;
-use \lithium\storage\Session;
-use \app\controllers\BaseController;
+use app\models\Credit;
+use app\models\User;
+use lithium\storage\Session;
+use app\controllers\BaseController;
 
 /**
  * All the users to see their credits.
@@ -29,7 +29,10 @@ class CreditsController extends BaseController
 						array('customer_id' => $userInfo['_id'])
 			))));
 		}
-
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
+		}
 		return compact('user', 'credits', 'userInfo');
 	}
 }

@@ -7,7 +7,7 @@ use app\models\Event;
 use app\models\Item;
 use app\models\Banner;
 use MongoDate;
-use \lithium\storage\Session;
+use lithium\storage\Session;
 use app\models\Affiliate;
 
 
@@ -55,12 +55,27 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
+		
+	if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_index';
+		} else {
+		
+		}
+	
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
 	}
 
 	public function view() {
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
+		} else {
+		
+		}
 		$shareurl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		$url = $this->request->event;
+
 		$departments = '';
 		if(!empty($this->request->query['filter'])) {
 			$departments = ucwords($this->request->query['filter']);
@@ -114,6 +129,8 @@ class EventsController extends BaseController {
 											));
 					foreach ($eventItems as $eventItem) {
 						$result = $eventItem->data();
+
+						
 						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
 							if(in_array($departments,$result['departments']) ) {
 								if ($eventItem->total_quantity <= 0) {
@@ -166,6 +183,7 @@ class EventsController extends BaseController {
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 			                                            array('event' => $_SERVER['REQUEST_URI'])
 			                                            );
+
 		return compact('event', 'items', 'shareurl', 'type', 'spinback_fb', 'departments', 'filters');
 	}
 

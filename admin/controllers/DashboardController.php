@@ -20,6 +20,9 @@ class DashboardController extends \lithium\action\Controller {
 		 * Build a MongoDB group call for the monthly revenue
 		 * numbers.
 		 */
+
+		ini_set("display_errors", 1 );
+
 		$collection = Dashboard::collection();
 		$keys = new MongoCode("
 			function(doc){
@@ -126,7 +129,7 @@ class DashboardController extends \lithium\action\Controller {
 			count($currentMonth['dates']),
 			true
 		);
-		$revenue = $lastMonth['revenue'] + $currentMonth['revenue'];
+		$revenue = (is_array($currentMonth['revenue'])) ? $lastMonth['revenue'] + $currentMonth['revenue']:$lastMonth['revenue'];
 		$revenue[0][0] = "$lastMonthDesc Revenue";
 		$revenue[0][1] = 'lineThickness=.5';
 		$revenue[1][0] = "$currentMonthDesc Revenue";
@@ -157,7 +160,7 @@ class DashboardController extends \lithium\action\Controller {
 			count($currentMonth['dates']),
 			true
 		);
-		$gross = $lastMonth['gross'] + $currentMonth['gross'] ;
+		$gross = (is_array($currentMonth['gross'])) ? $lastMonth['gross'] + $currentMonth['gross']:$lastMonth['gross'];
 		$gross[0][0] = "$lastMonthDesc Revenue";
 		$gross[0][1] = 'lineThickness=.5';
 		$gross[1][0] = "$currentMonthDesc Revenue";
@@ -165,7 +168,6 @@ class DashboardController extends \lithium\action\Controller {
 		ksort($gross[0]);
 		ksort($gross[1]);
 		$GrossRevChart->addChartDataFromArray($gross, $currentMonth['dates']);
-
 		/**
 		* Build chart for registration
 		**/
@@ -236,17 +238,17 @@ class DashboardController extends \lithium\action\Controller {
 		$currentReg = array();
 		foreach ($current as $data) {
 			if (!in_array($data['date'], $dateList)) {
-				$dateList[] = $data['date']['sec'];
-				$dates[$data['date']['sec']] = date('d', $data['date']['sec']);
+				$dateList[] = $data['date'];
+				$dates[$data['date']] = date('d', $data['date']);
 			}
 		}
 		foreach ($current as $record) {
 			if ($record['type'] == 'revenue') {
-				$currentRevenue[$record['date']['sec']] = $record['total'];
+				$currentRevenue[$record['date']] = $record['total'];
 			} else if ($record['type'] == 'gross'){
-			    $currentGrossRev[$record['date']['sec']] = $record['total'];
+			    $currentGrossRev[$record['date']] = $record['total'];
 			} else {
-				$currentReg[$record['date']['sec']] = $record['total'];
+				$currentReg[$record['date']] = $record['total'];
 			}
 		}
 		ksort($dates);

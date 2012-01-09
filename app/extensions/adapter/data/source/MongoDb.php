@@ -35,12 +35,12 @@ class MongoDb extends \lithium\data\source\MongoDb {
 	 */
 	public function __construct(array $config = array()) {
 		$defaults = array(
-			'persistent' => false,
+			'persistent' => true,
 			'login'      => null,
 			'password'   => null,
 			'host'       => Mongo::DEFAULT_HOST . ':' . Mongo::DEFAULT_PORT,
 			'database'   => null,
-			'timeout'    => 100,
+			'timeout'    => 5000,
 			'replicaSet' => false,
 			'schema'     => null,
 			'gridPrefix' => 'fs'
@@ -75,7 +75,7 @@ class MongoDb extends \lithium\data\source\MongoDb {
 
 			if ($this->connection = $this->server->{$cfg['database']}) {
 				$this->_isConnected = true;
-			//	$this->connection->setSlaveOkay(true);
+				$this->connection->setSlaveOkay(true);
 			}
 		} catch (Exception $e) {
 			throw new NetworkException("Could not connect to the database.", 503, $e);

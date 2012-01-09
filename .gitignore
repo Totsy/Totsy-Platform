@@ -20,11 +20,7 @@ nbproject
 .settings
 
 # lithium schtuff
-library
 app/resources/tmp
-admin/libraries/li3_payments
-admin/libraries/swiftmailer
-libraries
 
 # admin resource stuff
 admin/resources

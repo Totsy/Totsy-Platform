@@ -12,35 +12,64 @@ use MongoRegex;
 use li3_facebook\extension\FacebookProxy;
 use lithium\core\Environment;
 
-
-
 /**
 * The base controller will setup functionality used throughout the app.
 * @see app/models/Affiliate::getPixels()
 */
 class BaseController extends \lithium\action\Controller {
 
+	public function __construct(array $config = array()) {
+		/* Merge $_classes of parent. */
+		$vars = get_class_vars('\lithium\action\Controller');
+		$this->_classes += $vars['_classes'];
+
+		parent::__construct($config);
+		if ($user && $this->request->is('mobile')) {
+		 		$this->_render['layout'] = 'mobile_main';
+			} else {
+				$this->_render['layout'] = 'main';
+			}
+	}
+
 	/**
 	 * Get the userinfo for the rest of the site from the session.
 	 */
 	protected function _init() {
+
 		parent::_init();
 	     if(!Environment::is('production')){
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
+        if(Environment::is('production')){
+            $version = "<!-- Current version: " . $this->currentVersion() . " -->";
+            $this->set(compact('version'));
+        }
+
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
+	    
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		$this->fbsession = $fbsession = FacebookProxy::getSession();
-		$fbconfig = FacebookProxy::config();
-		$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
+		
+		/**
+		 * Setup all the necessary facebook stuff
+		 */
+
+		$this->fbsession = $fbsession = FacebookProxy::getUser();		
+		$fbconfig = FacebookProxy::config(); 
+
+		if ($this->fbsession) {
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
+		} else {
+			$fblogout = "/logout";
+		}
+
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
@@ -50,11 +79,11 @@ class BaseController extends \lithium\action\Controller {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/
-			    if ($user->deactivated == true) {
+			    **/			    
+			    if ($user->deactivated == true) {			    
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-		            FacebookProxy::setSession(null);
+					//FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
@@ -83,8 +112,14 @@ class BaseController extends \lithium\action\Controller {
 		/**
 		* If visitor lands on affliate url e.g www.totsy.com/a/afflilate123
 		**/
-		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  == "affiliates" &&
-			$this->request->params['action'] == "register" & empty($invited_by)) {
+		$affiliate = is_object($this->request);
+		$affiliate = $affiliate && isset($this->request->params['controller']);
+		$affiliate = $affiliate && isset($this->request->params['action']);
+		$affiliate = $affiliate && $this->request->params['controller']  == 'affiliates';
+		$affiliate = $affiliate && $this->request->params['action']  == 'register';
+		$affiliate = $affiliate && empty($invited_by);
+
+		if ($affiliate) {
 			$invited_by = $this->request->args[0];
 		}
 
@@ -103,14 +138,14 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		Session::delete('pixel');
 		#Clean Credit Card Infos if out of Orders/CartController
-		$this->CleanCC();
+		$this->cleanCC();
 		/**
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
 
-		$this->_render['layout'] = 'main';
 
+			
 	}
 
 	/**
@@ -126,10 +161,10 @@ class BaseController extends \lithium\action\Controller {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
 	        if ($user) {
                $created_date = (is_object($user->created_date)) ? $user->created_date->sec : strtotime($user->created_date);
-             $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
+             $dayThirty = mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
                     date('Y',$created_date)
-                ));
+                );
 	            /**
 	            *   check if the user is still eligible for free shipping
 	            *   criteria: User must have registered between the time the service
@@ -138,7 +173,7 @@ class BaseController extends \lithium\action\Controller {
 	            */
                 if ( ($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
-                    (date('m/d/Y H:i:s') < $dayThirty)) {
+                    (strtotime("now") < $dayThirty)) {
 
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1) {
@@ -164,22 +199,22 @@ class BaseController extends \lithium\action\Controller {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
             if ($user) {
                 $created_date = (is_object($user->created_date)) ? $user->created_date->sec : strtotime($user->created_date);
-                $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
+                $dayThirty = mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
                     date('Y',$created_date)
-                ));
+                );
                 if ( ($service->start_date->sec <= $created_date && $service->end_date->sec > $created_date) ) {
                     if ($user->purchase_count == 1) {
                         $firstOrder = Order::find('first' , array('conditions' => array('user_id' => $userInfo['_id'])));
                         $order_date = $firstOrder->date_created->sec;
-                        $expire_date = date('m/d/Y H:i:s',mktime(0,0,0, date('m',$created_date),
+                        $expire_date = mktime(0,0,0, date('m',$created_date),
                             date('d',$created_date) + 30,
                             date('Y',$created_date)
-                        ));
+                        );
                         /**
                         * Check if the offer is expired for this user
                         **/
-                        if ((date('m/d/Y H:i:s', $order_date) < $dayThirty) && (date('m/d/Y H:i:s') < $expire_date)) {
+                        if (($order_date < $dayThirty) && (strtotime("now") < $expire_date)) {
                             $serviceSession['10off50'] = 'eligible';
                             Session::write('services', $serviceSession,array('name' => 'default'));
                         } else {
@@ -206,22 +241,40 @@ class BaseController extends \lithium\action\Controller {
 	* Displays what git branch you are currently developing in
 	**/
 	public function currentBranch() {
-        $out = shell_exec("git branch --no-color");
-        preg_match('#(\*)\s[a-zA-Z0-9_-]*(.)*#', $out, $parse);
-        $pos = stripos($parse[0], " ");
-        return trim(substr($parse[0], $pos));
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/HEAD"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
 	}
+	/**
+	* Displays what git version is deployed
+	**/
+	public function currentVersion() {
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/refs/heads/master"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
+	}
+
 	/**
 	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
 	**/
 	public function cleanCC() {
-		if (is_object($this->request) && isset($this->request->params) && $this->request->params['controller']  != "orders"
-			&& $this->request->params['controller']  != "cart"
-			&& $this->request->params['controller']  != "search")
-		{
-			if(Session::check('cc_infos')) {
-				Session::delete('cc_infos');
-			}
+		$controllers = array('orders', 'cart', 'search');
+
+		$clean = Session::check('cc_infos');
+		$clean = $clean && is_object($this->request);
+		$clean = $clean && isset($this->request->params['controller']);
+		$clean = $clean && !in_array($this->request->params['controller'], $controllers);
+
+		if ($clean) {
+			Session::delete('cc_infos');
 		}
 	}
 }

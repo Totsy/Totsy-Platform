@@ -1,6 +1,6 @@
 <?php
 namespace admin\extensions\helper;
-use admin\models\Menu;
+use totsy_common\models\Menu;
 
 /**
  * The 'Menu' class creates a html menu list based on a backend document store.

@@ -110,7 +110,7 @@ class QueueController extends BaseController {
 	* @see admin/controllers/QueueController::index()
 	**/
 	public function currentQueue() {
-	    MongoCursor::$timeout = -1;
+	    MongoCursor::$timeout = 50000;
 	    $this->_render['layout'] = false;
 	    $conditions = array('processed' => array('$ne' => true));
 		$queue = Queue::all(compact('conditions'));
@@ -123,7 +123,7 @@ class QueueController extends BaseController {
 		$queue = $queue->data();
 
 		foreach($queue as $data) {
-		    $data['created_date'] = date('m-d-Y', $data['created_date']['sec']);
+		    $data['created_date'] = date('m-d-Y', $data['created_date']);
 		    $data['percent'] =  number_format($data['percent'], 1);
 		    /**
 		    * PO event count

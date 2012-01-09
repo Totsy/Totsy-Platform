@@ -14,8 +14,8 @@ namespace app\controllers;
 use app\extensions\helper\ApiHelper;
 
 use lithium\action\Request;
-use \lithium\data\Connections;
-use \lithium\util\Validator;
+use lithium\data\Connections;
+use lithium\util\Validator;
 use app\models\Api;
 use app\models\Item;
 use app\models\Event;
@@ -230,7 +230,10 @@ class APIController extends  \lithium\action\Controller {
 				$it = $itm->data();
 				$it['base_url'] = $base_url;
 				$it['event_url'] = $ev['url'];
-				 
+				
+				if (!isset($it['percent_off'])){
+					$it['percent_off'] = 0;
+				}
 				if (preg_match('/[\%]+/',$it['percent_off'])){
 					$it['percent_off'] = substr($it['percent_off'],0,-1);
 					if (is_float($it['percent_off']) ) $it['percent_off'] = round($it['percent_off'],2);
@@ -352,11 +355,13 @@ class APIController extends  \lithium\action\Controller {
 	 * method GET
 	 */
 	protected function eventsReviewApi() {
-
+		
 		$token = Api::authorizeTokenize($this->request->query);
 		if (is_array($token) && array_key_exists('error', $token)) {
 			return $token;
 		}
+		
+		$token = "testing";
 		
 		$start_date = strtotime(date('Y-m-d'));
 		$start_time = '19:00:00';

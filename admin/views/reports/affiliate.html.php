@@ -1,13 +1,13 @@
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
-<?=$this->html->script('jquery.dataTables.js');?>
-<?=$this->html->script('TableTools.min.js');?>
-<?=$this->html->script('ZeroClipboard.js');?>
-<?=$this->html->style('jquery_ui_blitzer.css')?>
-<?=$this->html->style('TableTools');?>
-<?=$this->html->style('timepicker'); ?>
-<?=$this->html->style('table');?>
-<?=$this->html->script('jquery-ui-1.8.2.custom.min.js');?>
-<?=$this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->script('jquery.dataTables.js');?>
+<?php echo $this->html->script('TableTools.min.js');?>
+<?php echo $this->html->script('ZeroClipboard.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('TableTools');?>
+<?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->style('table');?>
+<?php echo $this->html->script('jquery-ui-1.8.2.custom.min.js');?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -34,10 +34,10 @@
 	</h2>
 	<div class="block" id="forms">
 		<fieldset>
-			<?=$this->form->create($search); ?>
+			<?php echo $this->form->create($search); ?>
 				<p>
-					<?=$this->form->label('Affiliate'); ?>
-					<?=$this->form->text('affiliate'); ?>
+					<?php echo $this->form->label('Affiliate'); ?>
+					<?php echo $this->form->text('affiliate'); ?>
 				</p>
 				    <?php
 				        if(($criteria) && (bool)$criteria['subaffiliate']){
@@ -46,18 +46,18 @@
 				            $checked = '';
 				        }
 				    ?>
-				    <?=$this->form->label('Subaffiliates included'); ?>  <?=$this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?> <br/>
+				    <?php echo $this->form->label('Subaffiliates included'); ?>  <?php echo $this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?> <br/>
 				<p>
-					<?=$this->form->label('Minimum Seach Date'); ?>
-					<?=$this->form->text('min_date', array('id' => 'min_date'));?>
+					<?php echo $this->form->label('Minimum Seach Date'); ?>
+					<?php echo $this->form->text('min_date', array('id' => 'min_date'));?>
 				</p>
 				<p>
-				<?=$this->form->label('Maximum Seach Date'); ?>
-				<?=$this->form->text('max_date', array('id' => 'max_date'));?>
+				<?php echo $this->form->label('Maximum Seach Date'); ?>
+				<?php echo $this->form->text('max_date', array('id' => 'max_date'));?>
 				</p>
 				<p>
-					<?=$this->form->label('Search Type'); ?>
-					<?=$this->form->select('search_type', array(
+					<?php echo $this->form->label('Search Type'); ?>
+					<?php echo $this->form->select('search_type', array(
 						'Revenue' => 'Total Revenue',
 						'Registrations' => 'Total Registrations',
 						'Bounces' => 'Total Bounces',
@@ -65,8 +65,8 @@
 						));
 					?>
 				</p>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
+				<?php echo $this->form->submit('Search'); ?>
+			<?php echo $this->form->end(); ?>
 		</fieldset>
 	</div>
 	</div>

@@ -1,9 +1,9 @@
-<?=$this->html->script('swfupload.js');?>
-<?=$this->html->script('swfupload.queue.js');?>
-<?=$this->html->script('fileprogress.js');?>
-<?=$this->html->script('handlers.js');?>
-<?=$this->html->script('upload.js');?>
-<?=$this->html->style('swfupload')?>
+<?php echo $this->html->script('swfupload.js');?>
+<?php echo $this->html->script('swfupload.queue.js');?>
+<?php echo $this->html->script('fileprogress.js');?>
+<?php echo $this->html->script('handlers.js');?>
+<?php echo $this->html->script('upload.js');?>
+<?php echo $this->html->style('swfupload')?>
 
 <h1>Upload files for a particular item</h1>
 
