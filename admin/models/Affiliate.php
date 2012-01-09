@@ -53,7 +53,7 @@ class Affiliate extends Base {
 	    $name = "";
          extract( static::generateConditions(compact('name','date','affiliate')),EXTR_OVERWRITE);
         $condition = $conditions;
-        var_dump($condition);
+
         $initial = array("count" => 0, "purchase_count" => 0);
         $reduce = "function (rec, prev){
             if (rec.logincounter == prev.logincounter) {
@@ -270,6 +270,7 @@ class Affiliate extends Base {
         $bounces['total'] = count($bounces);
         return $bounces;
     }
+
 	public static function landingPages() {
 		$landing = array();
 	}

@@ -45,14 +45,11 @@ Auth::config(array(
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$allowed = false;
-
 	#skip auth checker for image uploads
 	if(preg_match('#(uploads/upload)#', $params['request']->url)) {
 		$allowed = true;
 	}
-
 	$url = $params['request']->url;
-
 	if (strpos($url, 'files/dav') === 0) { /* Do form auth only for non-dav requests. */
 		$granted = $allowed || Auth::check('token', $params['request'], array(
 		'writeSession' => false, 'checkSession' => false
