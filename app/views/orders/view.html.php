@@ -65,7 +65,7 @@
 												</td>
 											<?php endif ?>
 											<td colspan="3" style="padding:5px; text-align:right;">
-												Estimated Ship Date:
+												Estimated Delivery Date:
 												<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
 													<?php echo date('M d, Y', strtotime($orderEvents[$key]['ship_date'])); ?>
 													
