@@ -1,5 +1,3 @@
-<?php $this->title("Order Confirmation"); ?>
-
 <?php if ($order): ?>
 	<h2>My Orders</h2>
 	<hr />

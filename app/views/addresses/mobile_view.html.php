@@ -1,6 +1,4 @@
-<?php $this->title("Address Book"); ?>
-
-	<h2>Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?php echo $this->html->link('Add New Address','Addresses::add'); ?></span></h2>
+<h2>Address Book <span style="float:right; font-weight:normal; font-size:12px;"><?php echo $this->html->link('Add New Address','Addresses::add'); ?></span></h2>
 	<hr />
 		<?php if (!empty($addresses)): ?> 
 			

@@ -7,14 +7,14 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>
-		<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
-		<?php echo $this->title() ? '- Totsy' : ''; ?>
+		<?php echo $this->title() ?: 'Totsy'; ?>
 	</title>
 	<meta property="fb:app_id" content="181445585225391"/>
 	<meta property="og:site_name" content="Totsy"/>
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<meta id="view-lock" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta content="yes" name="apple-mobile-web-app-capable" />
 	
 	<link rel="stylesheet" href="/totsyMobile/themes/totsy.css">
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc2/jquery.mobile.structure-1.0rc2.min.css" /> 
