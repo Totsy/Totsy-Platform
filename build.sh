@@ -39,6 +39,8 @@ function print_usage {
 	echo " - optimize-imgs     Run all images through optimizers, reducing size."
 	echo " - optimize-js       Run all JS through optimizers, reducing size."
 	echo " - versions          Output versions."
+	echo " - bench-static      Run siege bench for static resources."
+	echo " - bench-dynamic     Run siege bench for dynamic resources."
 }
 
 if [ $# != 1 ]; then
@@ -235,6 +237,31 @@ case $COMMAND in
 		cd $PROJECT_DIR
 		echo "rev: $(git rev-parse --short HEAD)"
 		echo "tag: $(git tag | tail -n 1)"
+		;;
+
+	bench-static)
+		echo "
+http://totsy/css/base.css
+http://totsy/img/logo.png
+http://totsy/img/login/1567614_new.jpg
+http://totsy/js/jquery.backstretch.min.js
+" > /tmp/urls.txt
+		siege -r 100 -c 2 -b -f /tmp/urls.txt
+		;;
+
+	bench-dynamic)
+		# You must keep this cookie current.
+		COOKIE="appcookie[cookieCrumb][landing_url]=%2Fregister; appcookie[cookieCrumb][entryTime]=1326120662; __utma=21492158.107962085.1326120716.1326120716.1326214372.2; __utmz=21492158.1326120716.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); appcookie[cookieCrumb][user_id]=4ecbe40fed08e0760b000018; PHPSESSID=sce93eeh954oei66cei0t0lq55; __utmb=21492158.4.10.1326214372; __utmc=21492158"
+		echo "
+http://totsy/login
+http://totsy/register
+http://totsy/sales
+http://totsy/sale/dinkers-the-monkey
+http://totsy/cart/view
+http://totsy/account
+http://totsy/pages/terms
+" > /tmp/urls.txt
+		siege -r 100 -c 2 -b --header="Cookie: $COOKIE" -f /tmp/urls.txt
 		;;
 
 	*)
