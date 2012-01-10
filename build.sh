@@ -38,6 +38,7 @@ function print_usage {
 	echo " - analyze           Run static code analysis tools."
 	echo " - optimize-imgs     Run all images through optimizers, reducing size."
 	echo " - optimize-js       Run all JS through optimizers, reducing size."
+	echo " - versions          Output versions."
 }
 
 if [ $# != 1 ]; then
@@ -231,6 +232,11 @@ case $COMMAND in
 		du -s app/webroot/js
 		;;
 
+	versions)
+		cd $PROJECT_DIR
+		echo "rev: $(git rev-parse --short HEAD)"
+		echo "tag: $(git tag | tail -n 1)"
+		;;
 
 	*)
 		echo "Unknown command '${COMMAND}'."
