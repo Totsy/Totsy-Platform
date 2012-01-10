@@ -79,8 +79,8 @@ class UsersController extends BaseController {
 		*/
 
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
-			return $this->redirect($cookie['landing_url']);
+		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){		
+			return $this->redirect($cookie['landing_url']);			
 		}
 		$referer = parse_url($this->request->env('HTTP_REFERER')) + array('host' => null);
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
@@ -356,15 +356,14 @@ class UsersController extends BaseController {
 	}
 
 	protected function autoLogin() {
-
+		
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-
+		
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 
 		extract($result);
-
 		$fbCancelFlag = false;
 
 		if (array_key_exists('fbcancel', $this->request->query)) {
@@ -372,8 +371,7 @@ class UsersController extends BaseController {
 		}
 
 		if (!$success) {
-			if (!empty($userfb)) {
-				//$self = static::_object();
+			if (!empty($userfb)) {	
 				if(!$fbCancelFlag) {				
 					$this->redirect('/register/facebook');
 				}
@@ -691,13 +689,14 @@ class UsersController extends BaseController {
 	 * @return compact
 	 */
 	public function fbregister() {
-	
+		
 		$message = null;
 		$user = null;
 		$fbuser = FacebookProxy::api("/me");
 		$user = User::create();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
+		
 			$user->email = $fbuser['email'];
 			$user->email_hash = md5($user->email);
 			$user->confirmemail = $fbuser['email'];
@@ -714,6 +713,7 @@ class UsersController extends BaseController {
 			if (Session::check('landing')){
 				$landing = Session::read('landing');
 			}
+
 			if (!empty($landing)){
 				Session::delete('landing',array('name'=>'default'));
 				$this->redirect($landing);
@@ -722,7 +722,7 @@ class UsersController extends BaseController {
 				$this->redirect('/sales');
 			}
 		}
-
+		
 		return compact('message', 'user', 'fbuser');
 	}
 

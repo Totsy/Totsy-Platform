@@ -80,6 +80,7 @@ class ReCapture extends \lithium\console\Command {
 				Logger::debug('Processing Order Id : ' . $orderId);
 				$conditions = array('order_id' => $orderId,
 									'total' => array('$ne' => 0),
+									'cancel' => array('$ne' => true),
 									'payment_captured' => array('$exists' => false)
 									);
 				$order = $ordersCollection->findOne($conditions);
