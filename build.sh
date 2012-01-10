@@ -246,7 +246,7 @@ http://totsy/img/logo.png
 http://totsy/img/login/1567614_new.jpg
 http://totsy/js/jquery.backstretch.min.js
 " > /tmp/urls.txt
-		siege -r 100 -c 2 -b -f /tmp/urls.txt
+		siege -r 50000 -c 1 -b -f /tmp/urls.txt
 		;;
 
 	bench-dynamic)
