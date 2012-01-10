@@ -218,8 +218,7 @@ case $COMMAND in
 
 		YUICOMPRESSOR="java -jar $HOME/Scripts/yuicompressor.jar"
 
-		# SKIP='.*(analytics\.js|jquery\.js|jquery-ui\.js|markitup.*|plupload.*)'
-		SKIP='.*(plupload.*)'
+		SKIP='.*(analytics.*)'
 		for FILE in $(find -E app/webroot/js -regex $SKIP -prune -o -name "*.js" -print); do
 			BEFORE=$(ls -lah $FILE | awk '{ print $5 }')
 
