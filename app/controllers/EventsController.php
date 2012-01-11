@@ -16,9 +16,14 @@ class EventsController extends BaseController {
 	public function index() {
 		$datas = $this->request->data;
 		$departments = array();
+
 		$bannersCollection = Banner::collection();
-		$banner = $bannersCollection->findOne(array("enabled" => true, 'end_date' => array('$gte' => new MongoDate(strtotime('now')))));
-		if(empty($this->request->args)) {
+		$banner = $bannersCollection->findOne(array(
+			"enabled" => true,
+			'end_date' => array('$gte' => new MongoDate(strtotime('now')))
+		));
+
+		if (empty($this->request->args)) {
 			$openEvents = Event::open();
 			$pendingEvents = Event::pending();
 		} else {
@@ -27,11 +32,10 @@ class EventsController extends BaseController {
 			$pendingEvents = Event::pending(null,array(),$departments);
 		}
 
-		$itemCounts = array();
-		/*
 		// DON'T COUNT ITEMS !!!!
 		// IMPORTANT
 		// Slav
+		/*
 		$itemCounts = $this->inventoryCheck(Event::open(array(
 			'fields' => array('items')
 		)));
@@ -45,7 +49,7 @@ class EventsController extends BaseController {
 				}
 			}
 		}
-		*/
+
 		if (isset($events_closed) && !empty($events_closed)) {
 			if (!empty($openEvents)) {
 				foreach ($events_closed as $event) {
@@ -55,15 +59,17 @@ class EventsController extends BaseController {
 				$openEvents = $events_closed;
 			}
 		}
-		
-	if($this->request->is('mobile')){
+		*/
+		$itemCounts = array();
+
+		if ($this->request->is('mobile')) {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_index';
-		} else {
-		
 		}
-	
-		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
+		return compact(
+			'openEvents', 'pendingEvents',
+			'itemCounts', 'banner', 'departments'
+		);
 	}
 
 	public function view() {
