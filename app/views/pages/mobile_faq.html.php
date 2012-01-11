@@ -1,6 +1,4 @@
-<?php $this->title("FAQ's"); ?>
-
-	<h2>Frequently Asked Questions</h2>
+<h2>Frequently Asked Questions</h2>
 	<hr />
 	<ul>
       <li><a href="#1">What is Totsy?</a></li>

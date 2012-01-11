@@ -187,7 +187,7 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 	public function testReAuthorizeAmex1dollar() {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('test', 1, $this->_Amexcustomer);
+		$authorizeObject = Processor::authorize('default', 1, $this->_Amexcustomer);
 		$this->assertTrue($authorizeObject->success());		
 		#Temporary User Creation
 		$user = User::create(array('_id' => new MongoId()));
@@ -228,7 +228,7 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 	public function testReAuthorizeAmexfullAmount() {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('test', 1, $this->_Amexcustomer);
+		$authorizeObject = Processor::authorize('default', 1, $this->_Amexcustomer);
 		$this->assertTrue($authorizeObject->success());		
 		#Temporary User Creation
 		$user = User::create(array('_id' => new MongoId()));
