@@ -4480,14 +4480,15 @@ Text Align > left / right
 nav > ul > li {
 	position: relative; z-index: 100;
 	float:left;
-	margin-right:15px; padding:0 0 6px;
+	margin-left:15px; padding:0 0 6px;
 	background: #fff;
 	border:1px solid #ccc;
 	-webkit-border-radius:0 0 10px 10px;
 	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 }
-*:first-child+html nav > ul > li {margin-right:10px;} /* IE7 */
+*:first-child+html nav > ul > li {margin-left:10px;} /* IE7 */
+nav > ul > li:first-child {margin-left:0;}
 nav > ul > li,
 #totsy > header #userUtils {box-shadow: 4px 3px 6px rgba(0,0,0,0.10);}
 nav > ul > li:after,
@@ -4598,13 +4599,21 @@ nav .haschild li a:hover {
 }
 #userUtils #userinfo {
 	margin-bottom:5px;
-	text-align: right;
+	float: right;
 }
-#userUtils #userinfo em {
-	margin-left:10px; 
+#userUtils #userinfo strong {
+	display: inline-block;
+	float: left;
+	max-width:120px; overflow: hidden;
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-#userUtils #usercart {float: right;}
+#userUtils #userinfo em {
+	margin-left:8px; 
+	white-space: nowrap;
+}
+#userUtils #usercart {clear:right; float: right;}
+*:first-child+html #userUtils #usercart {width:220px;}
 #userUtils .icon { /* @TODO - abstract out all .icon styles… need design consistency / standards */
 	padding-left:23px;
 }
@@ -4628,7 +4637,7 @@ nav .haschild li a:hover {
 	-moz-box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
 	box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
 	font:bold 10px/0 Helvetica, Arial, sans-serif;
-	text-transform: uppercase;
+	text-transform: uppercase; 
 
 }
 #userUtils .cart:hover,

@@ -20,12 +20,13 @@
 					<?php
 						if (!empty($userInfo)) { ?>
 							<div id="userinfo">
-								<strong>Hi 
-								<?php
+								<strong>Hi <?php 
 									if (array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])) :
 										echo "{$userInfo['firstname']}";
 									else :
-										if (is_array($userInfo) && array_key_exists('email', $userInfo)) : echo $userInfo['email']; endif;
+										if (is_array($userInfo) && array_key_exists('email', $userInfo)) : 
+											echo $userInfo['email']; 
+											endif;
 									endif;
 								?></strong>
 								<em>
