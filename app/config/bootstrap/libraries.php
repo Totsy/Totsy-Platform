@@ -106,5 +106,4 @@ Libraries::add('li3_facebook', array(
 	'domain' => 'totsy.com'
 ));
 
-require LITHIUM_APP_PATH . '/libraries/swiftmailer/lib/swift_required.php';
 ?>
