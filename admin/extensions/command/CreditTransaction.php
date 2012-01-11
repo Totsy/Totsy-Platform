@@ -54,7 +54,7 @@ class CreditTransaction extends \lithium\console\Command {
 		$orderIds = $this->parseOrderIdsFromCSV();
 		#Reauth depending of the Type of Transaction
 		if(!empty($orderIds)) {
-			$this->manageCredit($orderIds);
+			$this->issueCreditForOrders($orderIds);
 		}
 	}
 	
@@ -70,7 +70,7 @@ class CreditTransaction extends \lithium\console\Command {
 		return $orderIds;
 	}
 	
-	public function manageCredit($orderIds = null) {
+	public function issueCreditForOrders($orderIds = null) {
 		$ordersCollection = Order::Collection();
 		$report = array();
 		$idx = 0;
@@ -82,7 +82,7 @@ class CreditTransaction extends \lithium\console\Command {
 			);
 			$order = $ordersCollection->findOne($conditions);
 			if(!empty($order)) {				
-				$report[$idx] = $this->credit($order, $report);
+				$report[$idx] = $this->creditOrder($order, $report);
 				$idx++;
 			} else {
 				Logger::debug('Order Not Found' . $orderId);
@@ -91,8 +91,8 @@ class CreditTransaction extends \lithium\console\Command {
 		$this->logReport($report);
 	}
 	
-	public function credit($order = null, $report) {
-		Logger::debug('Capture');
+	public function creditOrder($order = null, $report) {
+		Logger::debug('Credit');
 		$ordersCollection = Order::Collection();
 		$auth_credited = Processor::credit('default', $order['authKey'], $order['total']);
 		if ($auth_credited->success()) {
@@ -116,7 +116,8 @@ class CreditTransaction extends \lithium\console\Command {
 			$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
 						array('$set' => array('credit_auth_error_date' => new MongoDate(),
-											  'credit_auth_error' => $error
+											  'credit_auth_error' => $error,
+											  'credit_auth_error_key' => $auth_credited->key
 						)), array( 'upsert' => true)
 			);
 			#Include errors in Report
