@@ -1,4 +1,3 @@
-<?php $this->title("Contact Us"); ?>
 <script>
 $(document).bind('mobileinit',function(){
 		$.mobile.selectmenu.prototype.options.nativeMenu = false;

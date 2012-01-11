@@ -1,6 +1,4 @@
-<?php $this->title("Account Dashboard"); ?>
-
-	<h2 class="page-title gray">Account Dashboard</h2>
+<h2 class="page-title gray">Account Dashboard</h2>
 	<hr />
 <div data-role="collapsible-set" data-theme="c" data-content-theme="d">
 			<div data-role="collapsible">

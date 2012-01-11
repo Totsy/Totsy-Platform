@@ -1,5 +1,3 @@
-<?php $this->title("Contact Us"); ?>
-
 <h2>Contact Us</h2>
 <hr />
 <p>Thank you for your message, we will be contacting you shortly.</p>

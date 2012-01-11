@@ -1,5 +1,3 @@
-<?php $this->title("Return Policy"); ?>
-
 <h2>1. Final Sales</h2>
 <hr />
 <p>All sales made by TOTSY on its website to its Members are final.</p>

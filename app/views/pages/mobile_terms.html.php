@@ -1,6 +1,4 @@
-<?php $this->title("Terms Of Use"); ?>
-
-	<h2>Terms Of Use</h2>
+<h2>Terms Of Use</h2>
 	<hr />
 	<p>By clicking on the "I AGREE" button below, you (referred in this document as the "Member" or "you", or "You") agree to be irrevocably bound with TOTSY by the following terms and conditions of sale and service (the "Terms of Service"), which are incorporated in each and every sale transaction made on the website Totsy.com, a proprietary domain name of My Baby VIP LLC (hereinafter referred to as "TOTSY"), and govern all aspects of the relationship between TOTSY and its Members.</p>
 
@@ -84,8 +82,7 @@
  
  <p style="text-align:center;"><em>(valid as of September 1, 2009)</em></p>
 
-
-<p></p>]
+<p></p>
 <?php if (!empty($userInfo)){ ?>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 <?php } ?>
