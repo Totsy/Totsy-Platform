@@ -41,6 +41,7 @@ function print_usage {
 	echo " - versions          Output versions."
 	echo " - bench-static      Run siege bench for static resources."
 	echo " - bench-dynamic     Run siege bench for dynamic resources."
+	echo " - profile-dynamic   Hit page multiple times while enabling xhprof'ing."
 }
 
 if [ $# != 1 ]; then
@@ -50,6 +51,13 @@ fi
 
 # Configuration
 PROJECT_DIR=$(pwd)
+
+# This cookie is used for benchmarking and profiling. You may need
+# to modify it depending on what test users you have in your database.
+COOKIE="appcookie[cookieCrumb][landing_url]=%2Fregister; "
+COOKIE+="appcookie[cookieCrumb][entryTime]=1326120662; "
+COOKIE+="appcookie[cookieCrumb][user_id]=4ecbe40fed08e0760b000018; "
+COOKIE+="PHPSESSID=sce93eeh954oei66cei0t0lq55; "
 
 # Arguments
 COMMAND=$1
@@ -250,8 +258,6 @@ http://totsy/js/jquery.backstretch.min.js
 		;;
 
 	bench-dynamic)
-		# You must keep this cookie current.
-		COOKIE="appcookie[cookieCrumb][landing_url]=%2Fregister; appcookie[cookieCrumb][entryTime]=1326120662; __utma=21492158.107962085.1326120716.1326120716.1326214372.2; __utmz=21492158.1326120716.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); appcookie[cookieCrumb][user_id]=4ecbe40fed08e0760b000018; PHPSESSID=sce93eeh954oei66cei0t0lq55; __utmb=21492158.4.10.1326214372; __utmc=21492158"
 		echo "
 http://totsy/login
 http://totsy/register
@@ -262,6 +268,10 @@ http://totsy/account
 http://totsy/pages/terms
 " > /tmp/urls.txt
 		siege -r 100 -c 2 -b --header="Cookie: $COOKIE" -f /tmp/urls.txt
+		;;
+
+	profile-dynamic)
+		siege -r 40 -c 1 -b --header="Cookie: $COOKIE" http://totsy/sales/?_profile=1
 		;;
 
 	*)
