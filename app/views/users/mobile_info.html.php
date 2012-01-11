@@ -1,6 +1,4 @@
-<?php $this->title("Account Information"); ?>
-
-		<h2 class="gray mar-b">Personal Information</h2>
+<h2 class="gray mar-b">Personal Information</h2>
 		<hr />
 		<fieldset id="" class="">
 			<?php
