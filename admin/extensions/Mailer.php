@@ -7,7 +7,13 @@ use lithium\template\View;
 use lithium\core\Environment;
 use lithium\action\Request;
 
-class Mailer {
+class Mailer extends \lithium\core\StaticObject {
+
+	public static function __init() {
+		require_once LITHIUM_LIBRARY_PATH . '/sailthru/Sailthru.php';
+		Sailthru::__init(Environment::get('production'));
+	}
+
 	public static function send($template, $email, $vars = array(), $options = array(), $schedule_time = null) {
 		Sailthru::send($template, $email, $vars, $options, $schedule_time);
 	}
