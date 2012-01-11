@@ -12,6 +12,7 @@ if (is_array($events)){
 		$evnt['availableItems'] = $event['available_items']==true?'YES':'NO';
 		$evnt['brandName'] = $event['vendor'];
 		$evnt['image'] = $event['event_image'];
+		$evnt['image_small'] = $event['event_image_small'];
 		$evnt['discount'] = floor($event['maxDiscount']);
 		$evnt['url'] = $base_url.'sale/'.$event['url'];
 		$evnt['start_date'] = date('m-d-y g:i:s A',$event['start_date']['sec']);
