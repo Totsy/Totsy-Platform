@@ -172,9 +172,11 @@ class UsersController extends BaseController {
 			//$this->_render['layout'] = 'login';
 		}*/
 		
+		/*
 		if ($this->request->data && !$user->validates() ) {
 			$message = '<div class="error_flash">Error in registering your account</div>';
-		}
+		} */
+		
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
@@ -198,7 +200,9 @@ class UsersController extends BaseController {
 	 */
 		public static function registration($data = null) {
 			$saved = false;
+			
 			if ($data) {
+			
 				$data['email'] = strtolower($data['email']);
 				$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 				$data['email_hash'] = md5($data['email']);
@@ -227,14 +231,19 @@ class UsersController extends BaseController {
 							$mail_template = 'Welcome_auto_passgen';
 							$params['token'] = $user['clear_token'];
 						}
-						Mailer::send($mail_template, $user->email,$params);
-
+						
+						//don't send 'free shipping on 1st order email' to Mamasource users
+						if( $data['invited_by']!=="mamasource" ) { 
+							print $data['invited_by'];
+							Mailer::send($mail_template, $user->email,$params);
+						}
+						
 						$args = array();
 						if (!empty($user->firstname)) $args['name'] = $user->firstname;
 						if (!empty($user->lastname)) $args['name'] = $args['name'] . $user->lastname;
 						if (!empty($user->invited_by)) {
 							$affiliate_cusror = Affiliate::collection()->find(array('invitation_codes'=>$user->invited_by));
-							if ($affiliate_cusror->hasNext()){
+							if ($affiliate_cusror->hasNext()) {
 								$affiliate = $affiliate_cusror->getNext();
 								$args['source'] = $affiliate['name'];
 								unset($affiliate);
@@ -745,7 +754,6 @@ class UsersController extends BaseController {
 		//If the users already exists in the database
 		$success = false;
 		$userfb = array();
-
 
 		if ($self->fbsession) {
 

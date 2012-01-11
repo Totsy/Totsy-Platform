@@ -192,10 +192,11 @@ class BaseController extends \lithium\action\Controller {
                     (strtotime("now") < $dayThirty)) ) {
                     
                     //don't give mamasource users free shipping on the 1st order
+                    /*
                     if( $_SERVER['HTTP_HOST']=="evan.totsy.com" || (isset($userInfo) && $userInfo['invited_by']=="mamasource") ) {
                         $sessionServices['freeshipping'] = 'uneligible';
 						Session::write('services', $sessionServices,array('name' => 'default'));                    
-					}
+					} */
                     
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1 ) {

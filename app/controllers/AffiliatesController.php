@@ -65,6 +65,7 @@ class AffiliatesController extends BaseController {
                         $user['confirmemail'] = trim(strtolower($data['email']));
                         $user['password'] = $data['password'];
                         $user['terms'] = "1";
+                        
                         extract(UsersController::registration($user));
                         if ($saved) {
                             if ($code == 'bamboo') {
@@ -122,6 +123,16 @@ class AffiliatesController extends BaseController {
 		//for affiliate background images
 		$affBgroundImage = "";
 		
+		/*
+		switch($this->request->env("HTTP_HOST")) {
+		    case "mamasource.totsy.com":
+		    case "evan.totsy.com":
+		        $affiliate = "mamasource";
+		    	break;
+		    default:
+		        break;
+		}*/
+		
 		if (isset($this->request->query['a']) || preg_match('/^[a-z_]+$/', $this->request->query['a'])) {
 		
        		$categoryName = trim($this->request->params['args'][1]);
@@ -153,16 +164,6 @@ class AffiliatesController extends BaseController {
 		$cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		
-		//mamasource regsitation
-		switch($this->request->env("HTTP_HOST")) {
-		    case "mamasource.totsy.com":
-		    case "evan.totsy.com":
-		        $affiliate = "mamasource";
-		    	break;
-		    default:
-		        break;
-		}
-
 		if (($affiliate)) {
 			$pixel = Affiliate::getPixels('after_reg', $affiliate);
 			$gdata = $this->request->query;
@@ -235,13 +236,14 @@ class AffiliatesController extends BaseController {
 				}
 			}
 		}
+				
 		if($this->request->is('mobile')){
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_register';
 		} else {
 			$this->_render['layout'] = 'login';
 		}	
-		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliateName');
+		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliate');
 	}
 }
 ?>
