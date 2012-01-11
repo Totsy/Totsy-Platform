@@ -13,6 +13,7 @@
 			<availableItems><?php echo $event['available_items']==true?'YES':'NO';?></availableItems>
 			<brandName><?php echo htmlspecialchars($event['vendor'])?></brandName>
 			<image><?php echo $event['event_image']; ?></image>
+			<image_small><?php echo $event['event_image_small']; ?></image_small>
 			<discount><?php echo floor($event['maxDiscount']); ?></discount>
 			<url><?php echo $base_url.'sale/'.$event['url']; ?></url>
 			<startDate><?php echo date('m-d-y g:i:s A',$event['start_date']['sec']); ?></startDate>
