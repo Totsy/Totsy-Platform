@@ -212,6 +212,21 @@ class APIController extends  \lithium\action\Controller {
 		$items = array();
 		foreach ($openEvents as $event){
 			$ev = $event->data();
+			
+			if (is_object($ev['start_date'])){
+				$ev['start_date'] = array( 'sec' => $ev['start_date']->sec );
+			}
+			if (!is_array($ev['start_date'])){
+				$ev['start_date'] = array( 'sec' => $ev['start_date']);
+			}
+			
+			if (is_object($ev['end_date'])){
+				$ev['end_date'] = array( 'sec' => $ev['end_date']->sec );
+			}
+			if (!is_array($ev['end_date'])){
+				$ev['end_date'] = array( 'sec' => $ev['end_date'] );
+			}
+			
 			if ( !array_key_exists('items', $ev) || ( is_array($ev['items']) && count($ev['items'])==0)) continue;
 			
 			$mItems  = array();
@@ -285,6 +300,20 @@ class APIController extends  \lithium\action\Controller {
 			
 			$data =  $event->data();
 			
+			if (is_object($data['start_date'])){
+				$data['start_date'] = array( 'sec' => $data['start_date']->sec );
+			}
+			if (!is_array($data['start_date'])){
+				$data['start_date'] = array( 'sec' => $data['start_date']);
+			}
+
+			if (is_object($data['end_date'])){
+				$data['end_date'] = array( 'sec' => $data['end_date']->sec );
+			}
+			if (!is_array($data['end_date'])){
+				$data['end_date'] = array( 'sec' => $data['end_date'] );
+			}
+		
 			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day',$start_date))) && 
 				$data['end_date']['sec'] > strtotime(date('d-m-Y 23:59:59',$start_date)) ){
 				$closing[] = $data;
@@ -336,6 +365,7 @@ class APIController extends  \lithium\action\Controller {
 				}
 				
 			}
+			
 			$events[] = $data;
 		}
 		$pendingEvents = Event::pending();
