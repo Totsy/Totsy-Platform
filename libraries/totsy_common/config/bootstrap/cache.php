@@ -14,6 +14,7 @@ use lithium\storage\Cache;
 use lithium\core\Libraries;
 use lithium\action\Dispatcher;
 use lithium\storage\cache\adapter\XCache;
+use lithium\analysis\Logger;
 
 if (PHP_SAPI === 'cli') {
 	return;
@@ -22,7 +23,8 @@ if (PHP_SAPI === 'cli') {
 /**
  * If xcache is not available, bail out.
  */
-if (!$xcacheEnabled = xcache::enabled()) {
+if (!XCache::enabled()) {
+	Logger::notice('XCache is not enabled - `xcache` extension loaded?');
 	return;
 }
 

@@ -24,6 +24,11 @@ require __DIR__ . '/bootstrap/error.php';
 require __DIR__ . '/bootstrap/g11n.php';
 
 /**
+ * This file configures the analysis behavior which includes Logging.
+ */
+require __DIR__ . '/bootstrap/analysis.php';
+
+/**
  * This file contains configurations for connecting to external caching resources, as well as
  * default caching rules for various systems within your application
  */
@@ -35,11 +40,6 @@ require __DIR__ . '/bootstrap/cache.php';
  * behavior and modify the dispatch cycle to suit your needs.
  */
 require __DIR__ . '/bootstrap/action.php';
-
-/**
- * This file configures the analysis behavior which includes Logging.
- */
-require __DIR__ . '/bootstrap/analysis.php';
 
 /**
  * This file contains configurations for handling different content types within the framework,
