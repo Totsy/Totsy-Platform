@@ -14,23 +14,24 @@ use app\models\Affiliate;
 class EventsController extends BaseController {
 
 	public function index() {
-		$datas = $this->request->data;
-		$departments = array();
+		$departments = empty($this->request->args) ? array() : ucwords($this->request->args[0]);
+
+		$openEvents = Event::open(
+			array('fields' => array('images', 'url', 'name', 'end_date')),
+			array(),
+			$departments
+		);
+		$pendingEvents = Event::pending(
+			array('fields' => array('images', 'url', 'name', 'start_date')),
+			array(),
+			$departments
+		);
 
 		$bannersCollection = Banner::collection();
 		$banner = $bannersCollection->findOne(array(
 			"enabled" => true,
 			'end_date' => array('$gte' => new MongoDate(strtotime('now')))
 		));
-
-		if (empty($this->request->args)) {
-			$openEvents = Event::open();
-			$pendingEvents = Event::pending();
-		} else {
-			$departments = ucwords($this->request->args[0]);
-			$openEvents = Event::open(null,array(),$departments);
-			$pendingEvents = Event::pending(null,array(),$departments);
-		}
 
 		// DON'T COUNT ITEMS !!!!
 		// IMPORTANT
