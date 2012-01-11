@@ -328,7 +328,13 @@ class APIController extends  \lithium\action\Controller {
 			
 			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
 			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
-			 
+
+			if (!array_key_exists('splash_small_image',$data)) {
+				$data['event_image_small'] = $base_url.'img/no-image-small.jpeg';
+			}
+			else { $data['event_image_small'] = $base_url.'image/'.$data['splash_small_image'].'.jpg';
+			}
+			
 			if ( isset($data['items']) && count($data['items'])>0){
 
 				$mItems  = array();
@@ -436,7 +442,13 @@ class APIController extends  \lithium\action\Controller {
 			
 			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
 			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
-			 
+			
+			if (!array_key_exists('splash_small_image',$data)) {
+				$data['event_image_small'] = $base_url.'img/no-image-small.jpeg';
+			}
+			else { $data['event_image_small'] = $base_url.'image/'.$data['splash_small_image'].'.jpg';
+			}
+			
 			if ( isset($data['items']) && count($data['items'])>0){
 
 				$mItems  = array();
