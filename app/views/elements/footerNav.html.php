@@ -16,4 +16,4 @@
 	<li class="last" style="margin:-5px 3px 0px 5px;"><a href="http://www.facebook.com/totsyfan" target="_blank"><img src="/img/icons/facebook_16.png" align="middle" /></a></li>
 	<li class="last" style="margin:-5px 0px 0px 0px;"><a href="http://twitter.com/MyTotsy" target="_blank"><img src="/img/icons/twitter_16.png" align="middle" /></a></li>
 </ul>
-<span>&copy;2011 Totsy.com. All Rights Reserved.</span>
+<span>&copy;2012 Totsy.com. All Rights Reserved.</span>

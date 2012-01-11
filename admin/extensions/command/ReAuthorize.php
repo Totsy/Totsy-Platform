@@ -313,6 +313,12 @@ class ReAuthorize extends \lithium\console\Command {
 					} else {
 						$message  = "Authorize failed for order id `{$order['order_id']}`:";
 						$message .= $error = implode('; ', $auth->errors);
+						$update = $ordersCollection->update(
+													array('_id' => $order['_id']),
+													array('$set' => array('error_date' => new MongoDate(),
+																			'auth_error' => $error
+													)), array( 'upsert' => true)
+						);
 						$report['errors'][] = array(
 							'error_message' => $message,
 							'order_id' => $order['order_id'],
@@ -414,6 +420,19 @@ class ReAuthorize extends \lithium\console\Command {
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
 			Logger::debug($message);
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => array('error_date' => new MongoDate(),
+					'auth_error' => $error
+				)), array( 'upsert' => true)
+			);
+			if($this->fullAmount) {
+				$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('processed' => false
+					)), array( 'upsert' => true)
+				);
+			}
 			$report['errors'][] = array(
 			'error_message' => $message, 
 			'order_id' => $order['order_id'], 
