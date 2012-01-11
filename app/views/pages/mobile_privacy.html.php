@@ -1,6 +1,4 @@
-<?php $this->title("Privacy Policy"); ?>
-
-	<h2>Totsy's Privacy Policy:</h2>
+<h2>Totsy's Privacy Policy:</h2>
 	<p>Last modified August 24, 2011</p> 
   <hr />
   <div style="float:right;"><a href="//privacy-policy.truste.com/click-with-confidence/ctv/en/www.totsy.com/seal_m" title="Validate TRUSTe privacy certification" target="_blank"><img style="border: none" src="//privacy-policy.truste.com/certified-seal/ctv/en/www.totsy.com/seal_m.png" alt="Validate TRUSTe privacy certification"/></a></div>

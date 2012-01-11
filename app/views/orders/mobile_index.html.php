@@ -1,6 +1,4 @@
-<?php $this->title("My Orders"); ?>
-
-	<h2>My Orders</h2>
+<h2>My Orders</h2>
 	<hr />
 	<?php if (!empty($lifeTimeSavings)) : ?>
 	<div class="holiday_message"><p style="font-size:14px;">Your Total Lifetime Savings: <strong style="color:#009900;">$<?php echo number_format((float) $lifeTimeSavings, 2);?></strong></p></div>
