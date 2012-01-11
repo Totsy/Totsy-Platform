@@ -16,14 +16,19 @@ use Exception;
  *
  */
 
-class AvaTax {
-	
+class AvaTax extends \lithium\core\StaticObject {
+
 	/**
 	 * Switcher for avalara/totsy tax calculation system
 	 * 
 	 */
 	protected static $useAvatax = true;
-	
+
+	public static function __init() {
+		require_once LITHIUM_APP_PATH . '/libraries/AvaTax4PHP/AvaTaxWrap.php';
+		AvaTaxWrap::__init('development', Environment::get('development'));
+	}
+
 	public static function getTax($data,$tryNumber=0){
 			
 		$settings = Environment::get(Environment::get());

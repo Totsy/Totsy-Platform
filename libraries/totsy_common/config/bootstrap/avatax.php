@@ -44,8 +44,4 @@ Environment::set('local', array(
 	'avatax' => $dev + $base
 ));
 
-// must have Environment
-require_once LITHIUM_APP_PATH . '/libraries/AvaTax4PHP/AvaTaxWrap.php';
-AvaTaxWrap::__init('development', Environment::get('development'));
-
 ?>
