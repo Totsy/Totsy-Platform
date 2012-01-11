@@ -95,7 +95,7 @@ class UsersController extends \admin\controllers\BaseController {
 				    if(is_array($userData['created_date'])){
 				        $userData['register date'] = date("M d, Y",$userData["created_date"]['sec']);
 				    } else {
-				        $userData['register date'] = date("M d, Y",strtotime($userData["created_date"]));
+				        $userData['register date'] = date("M d, Y",$userData["created_date"]);
 				    }
 				}
 				if (array_key_exists('created_on', $userData)) {
