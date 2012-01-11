@@ -60,23 +60,31 @@ class Event extends Base {
 	 * @return Object
 	 */
 	public static function open($params = null, array $options = array(), $departments = null) {
-		$fields = $params['fields'];
-		$events = Event::all(compact('fields') + array(
+		$params = (array) $params + array(
+			'fields' => array()
+		);
+
+		$events = Event::all(array(
 			'conditions' => array(
 				'enabled' => true,
 				'start_date' => array('$lte' => new MongoDate()),
 				'end_date' => array('$gt' => new MongoDate())
 			),
-			'order' => array('start_date' => 'DESC')
+			'order' => array('start_date' => 'DESC'),
+			'fields' => $params['fields']
 		));
+
 		//Filter events results if settled
 		if(!empty($departments)){
 			$itemsCollection = Item::collection();
 			foreach($events as $key_event =>$event) {
 				$events_id[] = (string) $event["_id"];
 			}
-			
-			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
+			$items = $itemsCollection->find(array(
+				'event' => array('$in' => $events_id),
+				'departments' => array('$in' => array($departments))
+			), array('event' => 1));
+
 			$events_id_filtered = array();
 			if(!empty($items)) {
 				foreach($items as $item) {
@@ -87,14 +95,15 @@ class Event extends Base {
 			}
 			$events_id_filtered = array_unique($events_id_filtered);
 			if(!empty($events_id_filtered)) {
-				$events = Event::all(compact('fields') + array(
+				$events = Event::all(array(
 					'conditions' => array(
 						'_id' => array('$in' => $events_id_filtered),
 						'enabled' => true,
 						'start_date' => array('$lte' => new MongoDate()),
 						'end_date' => array('$gt' => new MongoDate())
 					),
-					'order' => array('start_date' => 'DESC')
+					'order' => array('start_date' => 'DESC'),
+					'fields' => $params['fields']
 				));
 			}
 		}
@@ -108,13 +117,19 @@ class Event extends Base {
 	 * @return Object
 	 */
 	public static function pending($params = null, array $options = array(), $departments = null) {
+		$params = (array) $params + array(
+			'fields' => array()
+		);
+
 		$events = Event::all(array(
 			'conditions' => array(
 				'enabled' => true,
 				'start_date' => array(
 					'$gt' => new MongoDate())),
-			'order' => array('start_date' => 'ASC')
+			'order' => array('start_date' => 'ASC'),
+			'fields' => $params['fields']
 		));
+
 		//Filter events results if settled
 		if(!empty($departments)){
 			$itemsCollection = Item::collection();
@@ -123,7 +138,11 @@ class Event extends Base {
 			}
 			$events_id_filtered = array();
 			if(!empty($events_id)) {
-				$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));	
+				$items = $itemsCollection->find(array(
+					'event' => array('$in' => $events_id),
+					'departments' => array('$in' => array($departments))
+				), array('event' => 1));
+
 				foreach($items as $item) {
 					foreach($item["event"] as $event_id) {
 						$events_id_filtered[] = $event_id;
@@ -137,7 +156,8 @@ class Event extends Base {
 					'enabled' => true,
 					'start_date' => array(
 						'$gt' => new MongoDate())),
-				'order' => array('start_date' => 'ASC')
+				'order' => array('start_date' => 'ASC'),
+				'fields' => $params['fields']
 			));
 		}
 		return $events;
