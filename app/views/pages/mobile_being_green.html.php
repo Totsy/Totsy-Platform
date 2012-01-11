@@ -1,5 +1,3 @@
-<?php $this->title("Being Green"); ?>
-
 <h2>Being Green</h2>
 <hr />
 	<h3 class="page-title gray">TOTSY IS THE FIRST PRIVATE SALES COMPANY TO GO GREEN</h3>
