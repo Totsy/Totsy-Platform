@@ -19,9 +19,10 @@ Connections::add('default', array(
 		'setSlaveOkay' => false,
 		'replicaSet' => 'totsy',
 		'host' => array(
-			//'db1-dc1.totsy.com',
+			'db1-dc1.totsy.com',
 			'db2-dc1.totsy.com',
-			'db3-dc1.totsy.com'
+			'db3-dc1.totsy.com',
+			'db4-dc1.totsy.com'
 		),
 		'adapter' => 'app\extensions\adapter\data\source\MongoDb'
 	),
