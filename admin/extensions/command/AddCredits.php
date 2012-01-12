@@ -5,6 +5,7 @@ use lithium\core\Environment;
 use lithium\analysis\Logger;
 use admin\models\Credit;
 use admin\models\Order;
+use admin\models\OrderShipped;
 use admin\models\User;
 use admin\models\Invitation;
 
@@ -67,7 +68,19 @@ class AddCredits extends \lithium\console\Command {
 			return ;
 		}
 		$total = 0;
+		$current = 0;
+		
+		$timer = time() + 15;
+		
+		$found = $invitedCursor->count();
 		while($invitedCursor->hasNext()){
+			
+			if (time()>$timer){
+				$timer = time() + 15;
+				echo 'Processing '.$current.'/'.$found."\n";
+			}
+			$current++;
+			
 			$row = $invitedCursor->getNext();
 			// check invitation code and get invitation sender
 			if( $this->_checkInvitationCodes($row) == false ){
@@ -114,7 +127,7 @@ class AddCredits extends \lithium\console\Command {
 	private function _checkUserOrder(&$row){
 		$orderCursor = Order::collection()->find(array(
 			'user_id' => $row['user_id']
-		))->fileds(array('_id' => true));
+		))->fields(array('_id' => true));
 		
 		if (!$orderCursor->hasNext()){
 			unset($orderCursor);
