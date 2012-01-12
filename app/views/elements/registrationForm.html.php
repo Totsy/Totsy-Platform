@@ -43,6 +43,7 @@
 	</div>
 
 	<div style="float:right">
+
 	<?php echo $this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px','value'=>$email)); ?>
 	</div>
 	<?php echo $this->form->error('email'); ?>
@@ -71,7 +72,6 @@
 	</div>
 
 	<div style="float:right">
-
 
 	<?php echo $this->form->password('password', array(
 		'class'=>"inputbox",

@@ -247,9 +247,9 @@ var discountErrors = new Object();
 				<div class="subtotal">
     			    <span style="float:left;">Free Shipping
     			    	<?php
-    			    	if(!empty($promocode)) {
-    			    		if($promocode['type'] === 'free_shipping')
-    			    			echo '[' . $promocode['code'] . ']';
+    			    	if(!empty($cartPromo)) {
+    			    		if($cartPromo['type'] === 'free_shipping')
+    			    			echo '[' . $cartPromo['code'] . ']';
     			    	}?>
     			    	:</span>
     			    	<span style="color:#707070; float:right">- $<?php echo number_format($shipping_discount,2)?></span>

@@ -99,12 +99,13 @@ class BaseController extends \lithium\action\Controller {
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
 
+
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
 
-		$this->fbsession = $fbsession = FacebookProxy::getUser();		
-		$fbconfig = FacebookProxy::config(); 
+		$this->fbsession = $fbsession = FacebookProxy::getUser();
+		$fbconfig = FacebookProxy::config();
 
 		if ($this->fbsession) {
 			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));
@@ -122,8 +123,8 @@ class BaseController extends \lithium\action\Controller {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/			    
-			    if ($user->deactivated == true) {			    
+			    **/
+			    if ($user->deactivated == true) {
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
 			    }
@@ -185,7 +186,7 @@ class BaseController extends \lithium\action\Controller {
 		* Send pixel to layout
 		**/
 		$this->set(compact('pixel'));
-		
+
 	}
 
 	/**

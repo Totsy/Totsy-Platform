@@ -35,10 +35,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
     );
 
 	public function index() {
-<<<<<<< HEAD
 
-=======
->>>>>>> 5f1788e478d06df6575975d87052bb169bd712e7
 	  $affiliates = Affiliate::collection()->find(array('affiliate'=>true), array(
 	    'date_created' => true,
 	    'created_by' => true,
@@ -47,12 +44,10 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	    'active_pixel' => true,
 	    'level' =>true
 	    ));
-<<<<<<< HEAD
 
-=======
->>>>>>> 5f1788e478d06df6575975d87052bb169bd712e7
 	   $userCollection = User::collection();
 	   $afs = array();
+
 
        foreach($affiliates as $affiliate){
             $obj_data = $affiliate;
@@ -124,10 +119,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
         $info = array();
         $landing = array();
        	$data = $this->request->data;
-<<<<<<< HEAD
 
-=======
->>>>>>> f44c1ec1b9fdef2f85ecf218ce2e81c0b642d231
 		if ($data) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
@@ -152,8 +144,6 @@ class AffiliatesController extends \admin\controllers\BaseController {
 			                                                );
 			    }
 
-			    //$info['active_landing'] = (boolean) $data['active_landing'];
-			    //if ($data['active_landing']) {
                 $info['landing'] = array();
                 $landing['name'] = $data['name'];
 
@@ -199,11 +189,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
         }
         $data = $this->request->data;
 
-<<<<<<< HEAD
-        if( ($data) ) {
-=======
-        if($data) {        	
->>>>>>> f44c1ec1b9fdef2f85ecf218ce2e81c0b642d231
+        if($data) {
         	$i = 0;
 
 			foreach($data as $record=>$val) {
@@ -267,96 +253,6 @@ class AffiliatesController extends \admin\controllers\BaseController {
 		$affiliate['landing'] = $landing;
         return compact('sitePages', 'packages','affiliate', 'affiliateCategories');
 	}
-	/**
-	* Ajax call to dynamically retrieve all images taged as background
-	* @see \admin\models\Affiliate::retrieveBackgrounds()
-	*/
-
-	/*
-	public function background() {
-        $data = Affiliate::retrieveBackgrounds();
-        $this->render(array('layout' => false));
-
-        foreach($data as $value){
-            $backgrounds[] = $value['_id'];
-        }
-        if(empty($data)){
-            $backgrounds = array("success"=>"false");
-        }
-        echo json_encode($backgrounds);
-	}
-	*/
-
-    /**
-	* Ajax call to dynamicall retrieve landing page information
-	* Expected post data: affiliate id and the name of the landing page
-	**/
-
-	/*
-	public function retrieveLanding(){
-	    $this->render(array('layout' => false));
-	    if($this->request->data){
-	        $affiliate_id = $this->request->data['affiliate'];
-	        $landing_page = $this->request->data['name'];
-            $affiliate = Affiliate::find($affiliate_id);
-            $data = $affiliate->data();
-            $landing = $data['landing'];
-            $page = array();
-            foreach ($landing as $key => $value) {
-                if ($value['name'] == $landing_page) {
-                    $value['key'] = $key;
-                    $page = $value;
-                    break;
-                }
-            }
-            echo json_encode($page);
-	    }
-	}*/
-
-	/**
-	* Ajax call to dynamically save a new or edited landing page
-	*/
-
-	/*
-	public function saveLanding(){
-	    $this->render(array('layout' => false));
-	    if ($this->request->data) {
-            $affiliate = Affiliate::find($this->request->data['aid']);
-            $data = $this->request->data;
-            if ($data['active_landing']) {
-                $landing['name'] = $data['name'];
-                $landing['template'] = $data['template_type'];
-                $landing['enabled'] = (bool) $data['landing_enable'];
-                $landing['background_img'] = $data['background_img'];
-                $landing['url'] = $data['url'];
-                $landing['headline'] = array(
-                    $data['headline_1'],
-                    $data['headline_2']
-                    );
-                $landing['bullet'] = array(
-                    $data['bullet_1'],
-                    $data['bullet_2'],
-                    $data['bullet_3'],
-                    $data['bullet_4']
-                    );
-                // If the landing page is edited or new
-                if ($this->request->data['index'] != "new") {
-                    $key = $data['index'];
-                    $pages = $affiliate->landing->data();
-                    $pages[$key] = $landing;
-                    $affiliate->landing = $pages;
-                } else {
-                    //
-                    $affiliate->landing[] = $landing;
-                }
-                if ($affiliate->save()){
-                    echo json_encode(true);
-                } else {
-                    echo json_encode(false);
-                }
-            }
-	    }
-	}*/
 }
 
 ?>
