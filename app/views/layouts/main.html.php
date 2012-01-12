@@ -7,40 +7,39 @@ use lithium\storage\Session;
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
- 	<title>
-		<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
-		<?php echo $this->title() ? '- Totsy' : ''; ?>
+	<title>
+	<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
+	<?php echo $this->title() ? '- Totsy' : ''; ?>
 	</title>
-
+	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
-
 	<?php 
 		$baseCSSPath = "";
 		$jQueryAllPath = "";
-		$logoPath = "";
 		
 		//pick CSS for Mamasource vs Totsy based on session variable
 		if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
-			$baseCSSPath = "/css/mamapedia/base.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
+			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
-			$logoPath = "mamapedia/logo.png";	
+			//$logoPath = "mamapedia/logo.png";	
 		} else {
 			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
-			$logoPath = "logo.png";	
+			//$logoPath = "logo.png";	
 		}
 
 	 echo $this->html->style(Array( $baseCSSPath , "/css/960.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/960.css"), $jQueryAllPath));
 	 
 	 ?>
-  
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
-
+	
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
-   <?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
+	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
+	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements support -->
+	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<?php echo $this->scripts(); ?>
 	<meta http-equiv="Expires" content="<?php echo date('D, d M Y h:i T', strtotime('tomorrow')); ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
@@ -79,59 +78,36 @@ use lithium\storage\Session;
 
 </head>
 <body class="app">
-<?php if(isset($branch)) { echo $branch; } ?>
-<div class="container_16 roundy glow">
-	<div class="grid_4 alpha" style="margin:5px 0px 0px 5px;">
-		<?php echo $this->html->link($this->html->image($logoPath , array('style'=>'width:auto')),'/sales', array('escape'=> false)); ?>
-	</div>
-	
-	<div class="grid_12">
-	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
 
-		<div class="menu_main_global">
-		<?php if (!(empty($userInfo))): ?>
-			<ul class="nav main" id="navlist">
-				<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
-				echo 'class="active"';
-				} ?>>All Sales</a></li>
-				<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
-				echo 'class="active"';
-				} ?>>Girls</a></li>
-				<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
-				echo 'class="active"';
-				} ?>>Boys</a></li>
-				<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
-				echo 'class="active"';
-				} ?>>Moms &amp; Dads</a></li>
-			</ul>
-		<?php endif ?>
+	<?php if(isset($branch)) { echo $branch; } ?>
+	<div id="totsy" class="container_16 roundy glow">
+		
+		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
+				
+		<div id="contentMain" class="container_16 group">
+			<?php echo $this->content(); ?>
 		</div>
-	</div>
-	<!-- end header nav -->
+		<!-- /#contentMain -->
 
-	<div class="container_16">
-		<?php echo $this->content(); ?>
-	</div>
-	<!-- main content -->
-</div>
 
-<!-- end container_16 -->
-
-	<div id="footer" class="container_16">
-		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
-	</div>
-	<!-- end footer nav -->
-
-	<div class="container_16 clear" style="margin-top:50px;">
-		<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
-	</div>
-	<!-- end footer icons -->
-
-	<div id='toTop'>^ Top</div>
+		<div id="footer" class="container_16">
+			<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
+		</div>
+		<!-- end footer nav -->
+	
+		<div class="container_16 clear" style="margin-top:50px;">
+			<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
+		</div>
+		<!-- end footer icons -->
+	
+		<div id="toTop">^ Top</div>
+		
+	</div><!-- /#totsy -->
 
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
 
+<!-- @TODO - @DG: all these scripts should be externalized -->
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
@@ -180,35 +156,32 @@ use lithium\storage\Session;
 		}	
 </script>
 
-	<script language="javascript"> 
+<script language="javascript"> 
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
-	</script>
-	
-	<script type="text/javascript">
-		// end uniform inputs
-		$(document).ready(function() {
-			$("input:file, select").uniform();
-			$("#tabs").tabs();
-		});
+</script>
 
-			$(function () {
-				$(window).scroll(function () {
-					if ($(this).scrollTop() != 0) {
-						$('#toTop').fadeIn();
-					} else {
-						$('#toTop').fadeOut();
-					}
-				});
-				$('#toTop').click(function () {
-					$('body,html').animate({
-						scrollTop: 0
-					},
-					800);
-				});
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("input:file, select").uniform();
+		$("#tabs").tabs();
+		
+		// back to top
+		$(function () {
+			$(window).scroll(function () {
+				if ($(this).scrollTop() != 0) {
+					$('#toTop').fadeIn();
+				} else {
+					$('#toTop').fadeOut();
+				}
 			});
-		// end back to top
-
-	// end tabs
+			$('#toTop').click(function () {
+				$('body,html').animate({
+					scrollTop: 0
+				},
+				800);
+			});
+		});
+	});
 </script>
 
 <!-- Sailthru Horizon -->

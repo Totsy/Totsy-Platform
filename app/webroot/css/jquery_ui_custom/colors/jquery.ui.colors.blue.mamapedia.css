@@ -76,8 +76,8 @@
 	{
 		color: #ffffff;
 		border-color: #dddddd;  
-		background: -webkit-gradient(linear, left top, left bottom, from(#A6B049), to(#A6B049));
-		background: -moz-linear-gradient(top, #A6B049,  #A6B049);
+		background: -webkit-gradient(linear, left top, left bottom, from(#de6076), to(#de6076));
+		background: -moz-linear-gradient(top, #de6076,  #de6076);
 	}
 
 .ui-autocomplete-input:hover, .ui-autocomplete-input:focus, .ui-progressbar,
@@ -102,20 +102,20 @@ input.text, input.email, input.password, textarea.uniform
 .ui-slider-vertical .ui-widget-header,
 .ui-slider-horizontal .ui-widget-header
 { 
-	background: #A6B049;
+	background: #de6076;
 	color: #ffffff;
 }
 
 .ui-slider-horizontal .ui-widget-header
 { 
-	background: -webkit-gradient(linear, left top, left bottom, from(#A6B049), to(#A6B049));
-	background: -moz-linear-gradient(top, #A6B049,  #A6B049);
+	background: -webkit-gradient(linear, left top, left bottom, from(#de6076), to(#de6076));
+	background: -moz-linear-gradient(top, #de6076,  #de6076);
 }
 
 .ui-slider-vertical .ui-widget-header
 { 
-	background: -webkit-gradient(linear, left top, right top, from(#A6B049), to(#A6B049));
-	background: -moz-linear-gradient(left, #A6B049,  #A6B049);
+	background: -webkit-gradient(linear, left top, right top, from(#de6076), to(#de6076));
+	background: -moz-linear-gradient(left, #de6076,  #de6076);
 }
 
 
@@ -140,9 +140,9 @@ input.text, input.email, input.password, textarea.uniform
 .ui-progressbar .ui-widget-header
 {
 	border-color: #ddd;
-	background: #A6B049;
-	background: -webkit-gradient(linear, left top, left bottom, from(#A6B049), to(#A6B049));
-	background: -moz-linear-gradient(top, #A6B049,  #A6B049);
+	background: #de6076;
+	background: -webkit-gradient(linear, left top, left bottom, from(#de6076), to(#de6076));
+	background: -moz-linear-gradient(top, #de6076,  #de6076);
 	color: #ffffff;
 }
 

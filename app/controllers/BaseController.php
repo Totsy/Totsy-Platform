@@ -40,6 +40,7 @@ class BaseController extends \lithium\action\Controller {
 		    	default:
 		    	    Session::write('layout', 'main', array('name' => 'default'));
 		    	    $img_path_prefix = "/img/";
+		    	    $this->tenOffFiftyEligible($userInfo);
 		    	    $this->freeShippingEligible($userInfo);
 		    	break;
 			}
@@ -47,6 +48,28 @@ class BaseController extends \lithium\action\Controller {
 		}
 		$this->set(compact('img_path_prefix'));		
 	}
+
+
+	/** 
+		get cart subtotal for price
+	*/
+	public function getCartSubTotal () {
+
+	     $subTotal = 0;
+	
+		foreach(Cart::active() as $cartItem) {
+			$currentSec = is_object($cartItem->expires) ? $cartItem->expires->sec : $cartItem->expires;
+			if ($cartData['cartExpirationDate'] < $currentSec) {
+				$cartData['cartExpirationDate'] = $currentSec;
+			}
+	
+			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
+			$i++;
+		}
+
+		return $subTotal;
+	}
+
 
 	/**
 	 * Get the userinfo for the rest of the site from the session.
@@ -69,6 +92,9 @@ class BaseController extends \lithium\action\Controller {
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
+		
+		$cartSubTotal = $this->getCartSubTotal();
+		
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
@@ -108,7 +134,6 @@ class BaseController extends \lithium\action\Controller {
 		
 		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
 				
-		$this->tenOffFiftyEligible($userInfo);
 		/**
 		* Get the pixels for a particular url.
 		**/

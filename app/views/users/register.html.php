@@ -84,13 +84,21 @@ if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
 
 ?>
 
-<?php echo $this->html->link($this->html->image( $brandLogo, array('width'=>'280')), '', array('escape'=> false)); ?>
+<?php echo $this->html->link($this->html->image( $brandLogo, array('style'=>'width:auto; height:auto')), '', array('escape'=> false)); ?>
 
 </div>
 <!-- right side -->
 <div class="grid_6" style="margin-left:28px;">	
 <div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
-		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+
+<?php if (Session::read('layout', array('name' => 'default'))!=='mamapedia') { ?>
+	<div class="free_shipping_banner_reg_new rollover_img" >
+	    <a href="javascript:;" title="Free Shipping">
+	    <span></span>
+	    </a>
+	</div>
+<?php } ?>
+
 </div>
 <div class="clear"></div>
 

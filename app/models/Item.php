@@ -13,6 +13,31 @@ class Item extends Base {
 
 	protected $_meta = array('source' => 'items');
 
+
+
+
+
+
+
+	public static function filter($events_id, $departments = null, $categories = null, $ages = null) {
+		$itemsCollection = Item::collection();
+		if(!empty($departments)){
+			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
+		}
+		elseif(!empty($categories)){
+			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'categories' => array('$in' => array($categories))), array('event' => 1));
+		}
+		elseif(!empty($ages)){
+			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'ages' => array('$in' => array($ages))), array('event' => 1));
+		}
+
+		return $items;
+	}
+
+
+
+
+
 	public static function related($item) {
 
 		$color_and_copy_matches = "";

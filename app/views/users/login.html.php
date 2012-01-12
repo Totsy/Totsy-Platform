@@ -96,10 +96,10 @@ if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
 
 ?>
 
-
 <!-- left side -->
 <div class="grid_6" style="float:left;width:315px;">
-<?php echo $this->html->link($this->html->image($brandLogo, array('width'=>'280')), '', array('escape'=> false)); ?>
+<?php echo $this->html->link( $this->html->image($brandLogo, array('style'=>'width:auto; height:auto')), '', array('escape'=> false) ); ?>
+
 <div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:310px; margin-top:8px;">
 
 <h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
@@ -119,11 +119,10 @@ if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
 <img src="/img/logos_home_right.jpg">
 </div>
 
+<?php if (Session::read('layout', array('name' => 'default'))!=='mamapedia') { ?>
 <div class="free_shipping_banner_reg_new rollover_img" style="margin-top:0px;"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
-
-
-
+<?php } ?>
 
 </div>
 <div class="clear"></div>

@@ -23,16 +23,13 @@
 })(jQuery);
 </script>
 
-	<h2 class="page-title gray">
-		<span class="_red">Today's Sales</span>
-	</h2>
-	<hr />
-		<!--Disney -->
-<!--	<div class="disney disney_splash">
-		<p><strong>SPECIAL BONUS!</strong> Included with your purchase of $45 or more is a one-year subscription to <img src="/img/parents.png" align="absmiddle" width="95px" /> ( a $10 value ) <span id="disney">Offer &amp; Refund Details</span></p>
-	</div>
--->
 <div class="fullwidth">
+	
+<section id="openEvents">
+	<header class="grid_16">
+		<h2 class="page-title gray"><span class="_red">Today's Sales</span></h2>
+	</header>
+
 	<?php $x = 0; ?>
 	<?php $y = 0; ?>
 	<?php foreach ($openEvents as $event): ?>
@@ -45,10 +42,10 @@
 		<?php endif ?>
 
 		<?php if (($y == 2) || ($y == 3)): ?>
-			<div class="grid_4">
+			<div class="event grid_4">
 		<?php endif ?>
 		<?php if ($y == 4): ?>
-			<div class="grid_4">
+			<div class="event grid_4">
 		<?php endif ?>
 		<?php if ($y == 3): ?>
 			<?php $y = 1; ?>
@@ -148,106 +145,104 @@
 		<?php $y++; ?>
 	<?php endforeach ?>
 
-	<div style="margin-bottom:35px;" class="clear"></div>
+</section><!-- /#openEvents -->	
 
-	<div class="container_16">
-	<div class="grid_16">
+	<div style="margin-bottom:35px;" class="clear"></div><!-- @TODO: @DG-2012.01.06 - in progress - rebuilding template, remove clear divs -->
+
+<section id="upcoming" class="container_16 group">
+	<header class="grid_16">
 		<h2 class="page-title gray">Upcoming Sales</h2>
-		<hr />
-	</div>
-		<?php $x = 0; ?>
-		<?php $y = 0; ?>
-		<?php foreach ($pendingEvents as $event): ?>
-			<?php if (($y == 0) || ($y == 2)): ?>
-				<div class="grid_4">
-			<?php endif ?>
-			<?php if ($y == 1): ?>
-				<div class="grid_4">
-			<?php endif ?>
-			<?php if ($y == 2): ?>
-				<?php $y = -1; ?>
-			<?php endif ?>
-					<div class="p-container roundy_product_home">
-						<?php
-							if (!empty($event->images->splash_small_image)) {
-								$productImage = "/image/{$event->images->splash_small_image}.jpg";
-							} else {
-								$productImage = "/img/no-image-small.jpeg";
-							}
-						?>
-						<?php echo $this->html->link(
-						$this->html->image("$productImage", array(
-							'title' => $event->name,
-							'alt' => $event->name,
-							'width' => '228',
-							'height' => '263'
-						)), 'sale/'.$event->url, array('escape'=> false));
-						 ?>
-				<div class="splash-details">
+	</header>
+	<?php $x = 0; ?>
+	<?php $y = 0; ?>
+	<?php foreach ($pendingEvents as $event): ?>
+		<?php if (($y == 0) || ($y == 2)): ?>
+			<div class="event grid_4">
+		<?php endif ?>
+		<?php if ($y == 1): ?>
+			<div class="event grid_4">
+		<?php endif ?>
+		<?php if ($y == 2): ?>
+			<?php $y = -1; ?>
+		<?php endif ?>
+				<div class="p-container roundy_product_home">
+					<?php
+						if (!empty($event->images->splash_small_image)) {
+							$productImage = "/image/{$event->images->splash_small_image}.jpg";
+						} else {
+							$productImage = "/img/no-image-small.jpeg";
+						}
+					?>
+					<?php echo $this->html->link(
+					$this->html->image("$productImage", array(
+						'title' => $event->name,
+						'alt' => $event->name,
+						'width' => '228',
+						'height' => '263'
+					)), 'sale/'.$event->url, array('escape'=> false));
+					 ?>
+					<div class="splash-details">
 						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
-						 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
-						 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
-						 <span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
+						 	<p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
+						 	<p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;">
+						 		<span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span>
+						 	</p>
 						</div>
-
 						<div class="table-cell right">
 							<?php echo $this->html->link('View', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<?php $x++; ?>
-			<?php $y++; ?>
+			</div><!-- /.event -->
+		<?php $x++; ?>
+		<?php $y++; ?>
 	<?php endforeach ?>
-	</div>
+</section><!-- /#upcoming -->
 </div>
 </div>
 </div>
 <div id="modal" style="background:#fff!important;"></div>
-<!--Javascript Output for Today's Events -->
-<?php if (!empty($todayJs)): ?>
-	<?php foreach ($todayJs as $value): ?>
-		<?php //echo $value ?>
-	<?php endforeach ?>
-<?php endif ?>
-
-<!--Javascript Output for Future Events-->
-<?php if (!empty($futureJs)): ?>
-	<?php foreach ($futureJs as $value): ?>
-		<?php //echo $value ?>
-	<?php endforeach ?>
-<?php endif ?>
+<!-- @DG 2011.15.2011 - removed, not using:
+	- Javascript Output for Today's Events
+	- Javascript Output for Future Events
+-->
 
 <script type="text/javascript">
 //<!--
 	$(document).ready(function() {
 		$("#banner_container").rotate();
 	});
-
-	$(".counter").each( function () {
-
-		var fecha  = parseInt(this.title);
-		var saleTime = new Date(fecha);
-		var now = new Date();
-		var diff = saleTime - (now.getTime());
-
-		//check if its and end date or start date
-		if($("#" + this.id).hasClass("start"))
-		{
-		    if((diff / 1000) < (24 * 60 * 60) ) {
-		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
-		    } else {
-		        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-		    }
-		} else {
-		    if((diff / 1000) < (24 * 60 * 60) ) {
-		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
-		    } else {
-		    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
-		    }
-		}
-	 });
+	
+	// countdown ticker
+	/* this is breaking things in FF8.0.*
+		- causes flickering and scrolling buggy behavior
+		- not resolved
+	*/
+	$(document).ready(function() {
+		$(".counter").each( function () {
+		
+			var fecha  = parseInt(this.title);
+			var saleTime = new Date(fecha);
+			var now = new Date();
+			var diff = saleTime - (now.getTime());
+		
+			//check if its and end date or start date
+			if($("#" + this.id).hasClass("start"))
+			{
+			    if((diff / 1000) < (24 * 60 * 60) ) {
+			        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {hnn}{sep}{mnn}{sep}{snn}'});
+			    } else {
+			        $("#" + this.id).countdown({until: saleTime, layout: 'Opens in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+			    }
+			} else {
+			    if((diff / 1000) < (24 * 60 * 60) ) {
+			    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {hnn}{sep}{mnn}{sep}{snn}'});
+			    } else {
+			    	$("#" + this.id).countdown({until: saleTime, layout: 'Ends in {dn} {dl}, {hnn}{sep}{mnn}{sep}{snn}'});
+			    }
+			}
+		 });
+	});
 
 //-->
 </script>
