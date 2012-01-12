@@ -10,6 +10,7 @@ use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
 use admin\models\Service;
+use admin\models\Affiliate;
 use Mongo;
 use MongoCode;
 use MongoDate;
@@ -152,11 +153,47 @@ class ReportsController extends BaseController {
 			$criteria = $this->request->data;
 			$name = $this->request->data['affiliate'];
 			$subaff = $this->request->data['subaffiliate'];
+			$min_date = $this->request->data['min_date'];
+			$max_date = $this->request->data['max_date'];
+			$result = array();
+			if (empty($name)) {
+			    FlashMessage::set("Affiliate Code Required" ,	array('class' => 'fail'));
+			    return compact('search', 'results', 'searchType', 'criteria');
+			}
 			if((bool)$subaff){
 				$affiliate = new MongoRegex('/^' . $name . '/i');
 			}else{
 				$affiliate = $name;
 			}
+<<<<<<< HEAD
+			if (empty($min_date) || empty($max_date)) {
+			    FlashMessage::set("Missing Min and/or max date" ,	array('class' => 'fail'));
+			    return compact('search', 'results', 'searchType', 'criteria');
+			}
+            //Conditions with date converted to the right timezone
+            $min = new MongoDate(strtotime($this->request->data['min_date']));
+            $max = new MongoDate(strtotime($this->request->data['max_date']));
+            $date = array(
+                'created_date' => array(
+                    '$gte' => $min,
+                    '$lte' => $max)
+            );
+            $searchType = $this->request->data['search_type'];
+            $total = 0;
+            switch ($searchType) {
+                case 'Revenue':
+                    $results = Affiliate::revenueCount($name,$affiliate,$min,$max);
+                break;
+                case 'Registrations':
+                    $results = Affiliate::registrationCount($name, $date, $affiliate);
+                    break;
+                case 'Bounces':
+                    $results = Affiliate::bounceReport($name, $date, $affiliate);
+                    break;
+                case 'Effective':
+                    $results = Affiliate::effectiveCoReg($name, $date, $affiliate);
+                    break;
+=======
 			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
 				//Conditions with date converted to the right timezone
 				$min = new MongoDate(strtotime($this->request->data['min_date']));
@@ -285,6 +322,7 @@ class ReportsController extends BaseController {
 						return compact('search', 'searchType', 'criteria', 'cursor', 'total');
 					break;
 				}
+>>>>>>> 23ea667ec587dc89e6803a6e6374abb7bebfd2b4
 			}
 		}
 		return compact('search', 'results', 'searchType', 'criteria');
@@ -324,7 +362,6 @@ class ReportsController extends BaseController {
 			    $eventItem = $eventItem['_config']['data'];
 			    $id = (string)$eventItem['_id'];
 				$temp[$id] = $eventItem;
-
 				$itemIds[] = $id;
 			}
 			$eventItems = $temp;
