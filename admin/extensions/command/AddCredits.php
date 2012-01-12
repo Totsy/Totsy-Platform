@@ -6,10 +6,6 @@ use admin\models\Credit;
 use admin\models\Order;
 use admin\models\User;
 use admin\models\Invitation;
-use MongoDate;
-use MongoRegex;
-use MongoId;
-
 
 /**
 * Run this command to provide invitation credits for all users
@@ -142,7 +138,7 @@ class AddCredits extends \lithium\console\Command {
 		
 	}
 	
-	private function _checkOrderShipped( (array) $orders = array() ){
+	private function _checkOrderShipped( $orders = array() ){
 		
 		$shippedOrders = OrderShipped::collection()->find(array(
 					'OrderId' => array( '$in' => $orders ),
