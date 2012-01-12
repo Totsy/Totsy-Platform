@@ -1,6 +1,4 @@
-<?php $this->title("Change Your Password"); ?>
-
-	<h2>Change Your Password</h2>
+<h2>Change Your Password</h2>
 	<hr />
 	<fieldset>
 			<div>

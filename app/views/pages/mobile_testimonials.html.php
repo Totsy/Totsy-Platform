@@ -1,4 +1,4 @@
-<div style="clear:both"></div><?php $this->title("Video Testimonials"); ?>
+<div style="clear:both"></div>
 <style>
 #content iframe, img {text-align: center!important;}
 </style>
