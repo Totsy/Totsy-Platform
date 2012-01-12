@@ -79,6 +79,7 @@
 							<li><a href="/age/toddler" title="View items for Toddlers">Toddler 1-3Y</a></li>
 							<li><a href="/age/preschool" title="View items for Preschoolers">Preschool 3-4Y</a></li>
 							<li><a href="/age/school" title="View items for School Age">School Age 5+</a></li>
+							<li><a href="/age/adult" title="View items for Adults">Adult</a></li>
 						</ul>
 					</li>
 				</ul>
