@@ -420,8 +420,10 @@ class OrdersController extends BaseController {
 		}
 		#Calculate Order Total
 		$total = round(floatval($vars['postDiscountTotal']), 2);
+		
 		#Read Credit Card Informations
-		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
+		$creditCard = Order::creditCardDecrypt((string)$user['_id']);
+		
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal',
@@ -450,6 +452,7 @@ class OrdersController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_review';
 		}
+		
 		return $vars + compact(
 			'cartEmpty',
 			'order',
