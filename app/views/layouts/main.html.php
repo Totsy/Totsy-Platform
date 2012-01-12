@@ -21,11 +21,9 @@ use lithium\storage\Session;
 		if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
 			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
-			//$logoPath = "mamapedia/logo.png";	
 		} else {
 			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
-			//$logoPath = "logo.png";	
 		}
 
 	 echo $this->html->style(Array( $baseCSSPath , "/css/960.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/960.css"), $jQueryAllPath));
@@ -48,7 +46,7 @@ use lithium\storage\Session;
 	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
-			$title = "Totsy index. Evenets.";
+			$title = "Totsy index. Events.";
 			$tags = 'Sales';
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
 				$tags =  $request->params['args'][0];

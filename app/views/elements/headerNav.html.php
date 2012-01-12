@@ -19,10 +19,13 @@
 							<div id="userinfo">
 								<strong>Hi, 
 								<?php
+
 									if (array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])) :
 										echo "{$userInfo['firstname']}";
 									else :
-										if (is_array($userInfo) && array_key_exists('email', $userInfo)) : echo $userInfo['email']; endif;
+										if (is_array($userInfo) && array_key_exists('email', $userInfo)) : 
+											echo $userInfo['email']; 
+											endif;
 									endif;
 								?></strong>
 								<em>
@@ -75,6 +78,7 @@
 							<li><a href="/age/toddler" title="View items for Toddlers">Toddler 1-3Y</a></li>
 							<li><a href="/age/preschool" title="View items for Preschoolers">Preschool 3-4Y</a></li>
 							<li><a href="/age/school" title="View items for School Age">School Age 5+</a></li>
+							<li><a href="/age/adult" title="View items for Adults">Adult</a></li>
 						</ul>
 					</li>
 				</ul>

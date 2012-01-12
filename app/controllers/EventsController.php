@@ -29,7 +29,8 @@ class EventsController extends BaseController {
 			'infant' => 'Infant 0 -12M',
 			'toddler' => 'Toddler 1-3Y',
 			'preschool' => 'Preschool 4-5Y',
-			'school' => 'School Age 5+'
+			'school' => 'School Age 5+',
+			'adult' => 'Adult'
 		)
 	);
 
@@ -76,7 +77,7 @@ class EventsController extends BaseController {
 			$openEvents = Event::open()->data();
 		} else {
 			$map = $this->_mapCategories[ $this->request->params['action'] ];
-			$categories =  $map[ $this->request->args[0] ];
+			$ages =  $map[ $this->request->args[0] ];
 			$openEvents = Event::open(null,array(),null,null, $ages)->data();
 			unset($map);
 		}

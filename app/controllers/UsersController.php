@@ -233,7 +233,6 @@ class UsersController extends BaseController {
 						
 						//don't send 'free shipping on 1st order email' to Mamasource users
 						if( $data['invited_by']!=="mamasource" ) { 
-							print $data['invited_by'];
 							Mailer::send($mail_template, $user->email,$params);
 						}
 						

@@ -63,6 +63,7 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	}
 	
 	//for mamasource registered users logging into www.totsy.com
+	/*
 	if( Session::read('userLogin', array('name' => 'default')) ) {
 	    $userLogin =  Session::read('userLogin', array('name' => 'default'));
 	    
@@ -71,7 +72,7 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	    if($affiliateName=="mamasource" && $params['request']->env('SERVER_NAME')!=="mamasource.totsy.com") {
 	    	//return new Response(array('location' => 'http://eric.totsy.com/login'));
 	   }
-	}		
+	} */		
 	
 	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
 	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)) {

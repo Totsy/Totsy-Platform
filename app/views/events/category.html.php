@@ -29,9 +29,10 @@
 		<article class="event grid-x">
 			<header class="eventDetails group">
 				<h3><?php echo $event['name']; ?> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event['end_date'] *1000 ; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
+				<!--
 				<div>
-					<?php
-					
+					<?php // @DG-2012.01.12 - commented out the event image but retained in case we want it back…
+					/*
 					// store event image
 						if(!empty($event['images']['event_image'])) {
 							$eventImage = "/image/{$event['images']['event_image']}.jpg";
@@ -39,7 +40,7 @@
 						else {
 							$eventImage = "img/no-image-small.jpeg";
 						}
-	
+				
 					// build link and image
 						$url = $event['url'];
 						echo $this->html->link(
@@ -50,8 +51,10 @@
 								'height' => '145'
 							)), "sale/$url", array('escape'=> false)
 						);
+					*/
 					?>
 				</div>
+				-->
 				<p><?php echo strip_tags($event['blurb']); ?></p>
 			</header><!-- /.eventDetails -->
 			

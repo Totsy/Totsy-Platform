@@ -327,6 +327,7 @@ class BaseController extends \lithium\action\Controller {
 			Session::delete('cc_infos');
 		}
 	}
+		
 }
 
 ?>
