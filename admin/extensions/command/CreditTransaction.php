@@ -13,7 +13,7 @@ use MongoId;
 use MongoDate;
 
 /**
- * This Script Reauthorize all orders that has not been shipped and that got 7 days old AuthKey
+ * This Script credits all orders that has been accidently captured
  * 
  */
 class CreditTransaction extends \lithium\console\Command {
@@ -77,8 +77,7 @@ class CreditTransaction extends \lithium\console\Command {
 		foreach($orderIds as $orderId) {
 			Logger::debug('Processing Order Id : ' . $orderId);
 			$conditions = array('order_id' => $orderId,
-								'total' => array('$gt' => 1),
-								'authTotal' => array('$gt' => 1),
+								'total' => array('$gt' => 1)
 			);
 			$order = $ordersCollection->findOne($conditions);
 			if(!empty($order)) {				
