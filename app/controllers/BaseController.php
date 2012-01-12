@@ -24,6 +24,11 @@ class BaseController extends \lithium\action\Controller {
 		$this->_classes += $vars['_classes'];
 
 		parent::__construct($config);
+		if ($user && $this->request->is('mobile')) {
+		 		$this->_render['layout'] = 'mobile_main';
+			} else {
+				$this->_render['layout'] = 'main';
+			}
 	}
 
 	/**
@@ -36,25 +41,34 @@ class BaseController extends \lithium\action\Controller {
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
+        if(Environment::is('production')){
+            $version = "<!-- Current version: " . $this->currentVersion() . " -->";
+            $this->set(compact('version'));
+        }
+
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
+	    
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
-		$this->fbsession = $fbsession = FacebookProxy::getSession();
-		$fbconfig = FacebookProxy::config();
+		
+		/**
+		 * Setup all the necessary facebook stuff
+		 */
 
-		if($this->fbsession){
-			$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
-		}
-		else{
+		$this->fbsession = $fbsession = FacebookProxy::getUser();		
+		$fbconfig = FacebookProxy::config(); 
+
+		if ($this->fbsession) {
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
+		} else {
 			$fblogout = "/logout";
 		}
-
 
 		if ($userInfo) {
 			$user = User::find('first', array(
@@ -65,11 +79,11 @@ class BaseController extends \lithium\action\Controller {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/
-			    if ($user->deactivated == true) {
+			    **/			    
+			    if ($user->deactivated == true) {			    
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-		            FacebookProxy::setSession(null);
+					//FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
@@ -130,8 +144,8 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$this->set(compact('pixel'));
 
-		$this->_render['layout'] = 'main';
 
+			
 	}
 
 	/**
@@ -185,22 +199,22 @@ class BaseController extends \lithium\action\Controller {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
             if ($user) {
                 $created_date = (is_object($user->created_date)) ? $user->created_date->sec : strtotime($user->created_date);
-                $dayThirty = date('m/d/Y',mktime(0,0,0,date('m',$created_date),
+                $dayThirty = mktime(0,0,0,date('m',$created_date),
                     date('d',$created_date)+30,
                     date('Y',$created_date)
-                ));
+                );
                 if ( ($service->start_date->sec <= $created_date && $service->end_date->sec > $created_date) ) {
                     if ($user->purchase_count == 1) {
                         $firstOrder = Order::find('first' , array('conditions' => array('user_id' => $userInfo['_id'])));
                         $order_date = $firstOrder->date_created->sec;
-                        $expire_date = date('m/d/Y H:i:s',mktime(0,0,0, date('m',$created_date),
+                        $expire_date = mktime(0,0,0, date('m',$created_date),
                             date('d',$created_date) + 30,
                             date('Y',$created_date)
-                        ));
+                        );
                         /**
                         * Check if the offer is expired for this user
                         **/
-                        if ((date('m/d/Y H:i:s', $order_date) < $dayThirty) && (date('m/d/Y H:i:s') < $expire_date)) {
+                        if (($order_date < $dayThirty) && (strtotime("now") < $expire_date)) {
                             $serviceSession['10off50'] = 'eligible';
                             Session::write('services', $serviceSession,array('name' => 'default'));
                         } else {
@@ -231,6 +245,18 @@ class BaseController extends \lithium\action\Controller {
 			return;
 		}
 		$head = trim(file_get_contents("{$git}/HEAD"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
+	}
+	/**
+	* Displays what git version is deployed
+	**/
+	public function currentVersion() {
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/refs/heads/master"));
 		$head = explode('/', $head);
 
 		return array_pop($head);

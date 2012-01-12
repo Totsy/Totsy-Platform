@@ -95,17 +95,25 @@ class UsersController extends \admin\controllers\BaseController {
 				    if(is_array($userData['created_date'])){
 				        $userData['register date'] = date("M d, Y",$userData["created_date"]['sec']);
 				    } else {
-				        $userData['register date'] = date("M d, Y",strtotime($userData["created_date"]));
+				        $userData['register date'] = date("M d, Y",$userData["created_date"]);
 				    }
 				}
 				if (array_key_exists('created_on', $userData)) {
 				    $userData['register date'] = date("M d, Y", $userData['created_on']['sec']);
 				}
 				if (array_key_exists('deactivated_date', $userData)) {
-				    $userData['deactivated_date'] = date("M d, Y", $userData['deactivated_date']['sec']);
+				    if(is_array($userData['deactivated_date'])){
+				        $userData['register date'] = date("M d, Y",$userData['deactivated_date']['sec']);
+				    } else {
+				        $userData['register date'] = date("M d, Y",$userData['deactivated_date']);
+				    }
 				}
 				if (array_key_exists('reactivate_date', $userData)) {
-				    $userData['reactivate_date'] = date("M d, Y", $userData['reactivate_date']['sec']);
+				    if(is_array($userData['reactivate_date'])){
+				        $userData['reactivate_date'] = date("M d, Y",$userData['reactivate_date']['sec']);
+				    } else {
+				        $userData['reactivate_date'] = date("M d, Y",$userData['reactivate_date']);
+				    }
 				}
 				if (array_key_exists('deactivated', $userData)) {
 				    $deactivated = $userData['deactivated'];
@@ -128,7 +136,6 @@ class UsersController extends \admin\controllers\BaseController {
 	 */
 	public function login() {
 		$message = false;
-
 		if ($this->request->data) {
 		    $this->request->data['email'] = strtolower($this->request->data['email']);
 			if (Auth::check("userLogin", $this->request)) {

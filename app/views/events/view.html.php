@@ -1,26 +1,26 @@
 <?php $this->title($event->name); ?>
-<?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
+<?php echo $this->html->script('jquery.countdown.min');?>
+<?php echo $this->html->style('jquery.countdown');?>
 <div class="grid_16">
 		<h2 class="page-title gray"><span class="red">
 		<div id="listingCountdown" class="listingCountdown" style="float:right;"></div>
-		<a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?> 
+		<a href="/sales" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?> 
 		</h2>
 		<div style="clear:both;"></div>
-		<hr />
+		<hr/>
 <div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
-				<div class="grid_5 alpha omega" style="line-height:0px!important;">
+				<div class="grid_3 alpha omega" style="line-height:0px!important;">
 					<!-- Display Event Image -->
 					<?php
 						if (!empty($event->images->event_image)) {
 							echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
 								'title' => $event->name,
-								'width' => "280",
+							'width' => '156'
 							));
 						} else {
 							echo $this->html->image('/img/no-image-small.jpeg', array(
 									'title' => "No Image Available",
-									'width' => "280",
+							'width' => '156'
 									));
 						}
 					?>
@@ -41,28 +41,6 @@
 						<?php echo $event->blurb ?>
 					<?php endif ?>
 				
-					<?php
-					if($missChristmasCount>0){
-					?>
-								<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#990000; font-size:11px;text-align:left;">
-								<img src="/img/truck_red.png">
-								Items in this sale are not guaranteed to be delivered on or before 12/25.* 
-								</div>
-					
-					
-					<?php
-					}
-					else{
-					?>
-								<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
-								<img src="/img/truck_grey.png">
-								Items in this sale will be delivered on or before 12/23.*
-								</div>
-					
-					
-					<?php
-					}
-					?>
 
 
 					</div>
@@ -73,7 +51,7 @@
 <div class="grid_3 alpha omega" style="margin-top:10px;">
 						<!-- Display Logo Image -->
 						
-							<img src="/image/<?=$event->images->logo_image?>.gif" alt="<?= $event->name; ?>" title="<?= $event->name; ?>" width="148" height="52" />
+							<img src="/image/<?php echo $event->images->logo_image?>.gif" alt="<?php echo  $event->name; ?>" title="<?php echo  $event->name; ?>" width="148" height="52" />
 						
 					</div>
 <?php endif ?>
@@ -98,10 +76,10 @@
 			</select -->
 			<?php if(!empty($filters)): ?>
 		<div id='filterb' style='text-align:right'>
-			<?=$this->form->create(null, array('id' => 'filterform')); ?>
+			<?php echo $this->form->create(null, array('id' => 'filterform')); ?>
 			<label style="font-weight:bold; font-size:13px;">View by: &nbsp;</label>
-			<?=$this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
-			<?=$this->form->end(); ?>
+			<?php echo $this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'value' => array($departments => $departments))); ?>
+			<?php echo $this->form->end(); ?>
 		</div>
 		<?php endif ?>
 		</div>
@@ -130,12 +108,12 @@
 					<?php endif ?>
 					<div class="md-gray p-container roundy_product">
 						<?php if ($item->total_quantity <= 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
+								<?php echo $this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
 									'style' => 'z-index : 99999; position : absolute; right:0;'
 								)); ?>
 						<?php endif ?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image($productImage, array(
 								'alt' => $item->name,
 								'title' => $item->name,
@@ -148,11 +126,11 @@
 								<table style="margin:5px;">
 									<tr>
 										<td width="227" valign="top">
-											<a href="<?="/sale/$event->url/$item->url"?>"><h2><?=$item->description ?></h2></a>
+											<a href="<?php echo "/sale/$event->url/$item->url"?>"><h2><?php echo $item->description ?></h2></a>
 										</td>
 										<td align="right">
-											<span class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?=number_format($item->sale_retail,2);?></span><br>
-											<span class="original-price" style="font-size:10px; white-space:nowrap;">Original $<?=number_format($item->msrp,2);?></span>
+											<span class="price" style="text-transform:uppercase; font-weight:normal; font-size:20px; color: #009900; float:right;">$<?php echo number_format($item->sale_retail,2);?></span><br>
+											<span class="original-price" style="font-size:10px; white-space:nowrap;">Original $<?php echo number_format($item->msrp,2);?></span>
 										</td>
 									</tr>
 								</table>
@@ -164,29 +142,6 @@
 			<?php endforeach ?>
 		<?php endif ?>
 <div class="clear"></div>
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-				
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				* Your items will arrive safely, but after 12/25.				
-				<?php
-				}
-				else{
-				?>
-				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-				
-				<?php
-				}
-				?>
-				
-</div>
 
 
 	</div>
@@ -226,11 +181,11 @@ function filter() {
 
 <script type="text/javascript">
 var cto_params = [];
-cto_params["kw"] = "<?=$event->name?>"; //REMOVE LINE IF NOT APPLICABLE
+cto_params["kw"] = "<?php echo $event->name?>"; //REMOVE LINE IF NOT APPLICABLE
 <?php if (!empty($items)): ?>
 <?php $iCounter = 1; ?>
 <?php foreach ($items as $item): ?>
-cto_params["i<?=$iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
+cto_params["i<?php echo $iCounter;?>"] = "<?php echo (string) $item->_id; ?>";
 <?php if($iCounter==5) break; ?>
 <?php $iCounter++; ?>
 <?php endforeach ?>

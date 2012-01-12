@@ -54,7 +54,7 @@ class ItemTest extends \lithium\test\Unit {
 		$this->assertTrue(!empty($item));
 
 		$result = Item::sizes($item);
-		$expected = array(4, 5, 6, 7);
+		$expected = array(0, 1, 2, 3);
 		$this->assertEqual($expected, $result);
 	}
 }

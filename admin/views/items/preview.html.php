@@ -1,16 +1,16 @@
-<?=$this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights'));?>
+<?php echo $this->html->script(array('jqzoom.pack.1.0.1','jquery.equalheights'));?>
 
 <?php if ($event): ?>
 <div id="product-detail-right">
 	<div id="product-detail-right-top">
 	<?php $logo = $event->images->logo_image;?>
-		<?=$this->html->image("/image/$logo.jpg", array(
+		<?php echo $this->html->image("/image/$logo.jpg", array(
 			'alt' => $event->name, 'width' => "148", 'height' => "52"
 		)); ?>
 		<div id="listingCountdown" class="listingCountdown"></div>
 	</div>
 	<div id="detail-top-left">
-		<h1><strong><?=$event->name?></strong> <?=$item->description." ".$item->color; ?></h1>
+		<h1><strong><?php echo $event->name?></strong> <?php echo $item->description." ".$item->color; ?></h1>
 
 		<div class="product-detail-attribute">
 
@@ -19,14 +19,14 @@
 					<label for="size" class="required">Size<span>*</span></label>&nbsp;
 						<select name="item_size" id="size-select">
 							<?php foreach ($sizes as $value): ?>
-									<option value="<?=$value?>"><?=$value?></option>
+									<option value="<?php echo $value?>"><?php echo $value?></option>
 							<?php endforeach ?>
 						</select>
 				<?php endif ?>
 			<?php endif ?>
 		</div>
 	</div>
-	<?=$this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
+	<?php echo $this->form->hidden("item_id", array('value' => "$item->_id", 'id'=>'item_id')); ?>
 
 	<div id="detail-top-right" class="r-container">
 
@@ -34,10 +34,10 @@
 		<div class="tr"></div>
 		<div class="md-gray p-container">
 
-			<h2 class="caps">$<?=number_format($item->sale_retail,2); ?><br />Totsy Price</h2>
+			<h2 class="caps">$<?php echo number_format($item->sale_retail,2); ?><br />Totsy Price</h2>
 
 			<p class="caps">
-				$<?=number_format($item->msrp,2); ?><br />Original</p>
+				$<?php echo number_format($item->msrp,2); ?><br />Original</p>
 			<?php if ($item->total_quantity != 0): ?>
 				<button class="flex-btn" id='item-submit'>Buy Now</button>
 				<div id="all-reserved"></div>
@@ -55,8 +55,8 @@
 			<dt><strong>Share</strong></dt>
 			<dd>
 				<ul>
-					<li><a href="http://www.facebook.com/sharer.php?u=<?=urlencode($shareurl);?>&t=<?=urlencode('Checking out the  '.$item->description.' on Totsy.com');?>" target="_blank" title="Share this item with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
-					<li><a href="http://twitter.com/home?status=Checking out the <?=$item->description; ?> at Totsy.com: <?=$shareurl;?>" target="_blank" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
+					<li><a href="http://www.facebook.com/sharer.php?u=<?php echo urlencode($shareurl);?>&t=<?php echo urlencode('Checking out the  '.$item->description.' on Totsy.com');?>" target="_blank" title="Share this item with your friends on Facebook" class="sm-facebook sm-btn">Share this sale on Facebook</a></li>
+					<li><a href="http://twitter.com/home?status=Checking out the <?php echo $item->description; ?> at Totsy.com: <?php echo $shareurl;?>" target="_blank" title="Tweet this sale to your followers" class="sm-twitter sm-btn">Tweet this sale on Twitter</a></li>
 				</ul>
 			</dd>
 		</dl>
@@ -79,10 +79,10 @@
 		<!-- Start Shipping Tab -->
 		<div id="shipping" class="ui-tabs-hide">
 
-		<strong>Shipping:</strong>Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?=$this->html->link('checkout process', array('Orders::add')); ?>.
-		Complete shipping details are available at <?=$this->html->link('shipping terms', array('Pages::shipping')); ?>.
+		<strong>Shipping:</strong>Totsy will ship this item via Standard UPS or Standard US Mail shipping based on your selection at the end of your <?php echo $this->html->link('checkout process', array('Orders::add')); ?>.
+		Complete shipping details are available at <?php echo $this->html->link('shipping terms', array('Pages::shipping')); ?>.
 
-		<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?=$this->html->link('returns section', array('Pages::returns')); ?>.</p>
+		<p><strong>Returns:</strong> Totsy accept returns on selected items only. You will get a merchandise credit and free shipping (AK &amp; HI: air shipping rates apply). Simply be sure that we receive the merchandise you wish to return within 30 days from the date you originally received it in its original condition with all the packaging intact. Please note: Final Sale items cannot be returned. Want to learn more? Read more in our <?php echo $this->html->link('returns section', array('Pages::returns')); ?>.</p>
 
 
 
@@ -133,7 +133,7 @@
 		<div class="tr"></div>
 		<div class="md-gray p-container loading" id="img-container">
 			<?php if ($item->total_quantity == 0): ?>
-					<?=$this->html->image('/img/soldout.gif', array(
+					<?php echo $this->html->image('/img/soldout.gif', array(
 						'title' => "Sold Out",
 						'style' => 'z-index : 2; position : absolute; left:20%'
 					)); ?>
@@ -153,7 +153,7 @@
 				<?php if (!empty($item->alternate_images)): ?>
 					<?php $x = 2; ?>
 					<?php foreach ($item->alternate_images as $value): ?>
-						<div class="zoom-container" id="full_img_<?=$x?>">
+						<div class="zoom-container" id="full_img_<?php echo $x?>">
 							<?php echo $this->html->link($this->html->image("/image/{$value}.jpg", array(
 									"width" => "298",
 									"height" => "300",
@@ -187,7 +187,7 @@
 		<?php if (!empty($item->alternate_images)): ?>
 			<?php $x = 2; ?>
 			<?php foreach ($item->alternate_images as $value): ?>
-					<?=$this->html->image("/image/{$value}.jpg", array(
+					<?php echo $this->html->image("/image/{$value}.jpg", array(
 						'class' => "img-th",
 						'width' => "93",
 						'height' => "93",

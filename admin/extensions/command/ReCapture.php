@@ -5,9 +5,10 @@ namespace admin\extensions\command;
 use lithium\core\Environment;
 use lithium\analysis\Logger;
 use admin\models\Order;
+use admin\models\User;
 use admin\extensions\Mailer;
-use li3_payments\extensions\Payments;
-use li3_payments\extensions\payments\exceptions\TransactionException;
+use li3_payments\payments\Processor;
+use li3_payments\extensions\adapter\payment\CyberSource;
 use MongoId;
 use MongoDate;
 
@@ -47,6 +48,20 @@ class ReCapture extends \lithium\console\Command {
 	public $adjustment = 0.00;
 	
 	/**
+	 * Creating new auth during recapture process
+	 *
+	 * @var string
+	 */
+	public $createNewAuth = true;
+	
+	/**
+	 * Creating only a reauth during recapture process
+	 *
+	 * @var string
+	 */
+	public $onlyReauth = false;
+	
+	/**
 	 * Instances
 	 */
 	public function run() {
@@ -58,21 +73,20 @@ class ReCapture extends \lithium\console\Command {
 		#Setup Output File Headers
 		$report = array();
 		$report[0] = array('error_type', 'error_message', 'order_id','authKey','total');
-		$idx = 0;
 		$reportCounter = 1;
-		
 		$orderIds = $this->parseOrderIdsFromCSV();
-		
 		if(!empty($orderIds)) {
 			foreach($orderIds as $orderId) {
 				Logger::debug('Processing Order Id : ' . $orderId);
-				$conditions = array('order_id' => $orderId, 
+				$conditions = array('order_id' => $orderId,
+									'total' => array('$ne' => 0),
+									'cancel' => array('$ne' => true),
 									'payment_captured' => array('$exists' => false)
 									);
 				$order = $ordersCollection->findOne($conditions);
-				if(!empty($order)) {			
-					if(!empty($order['cc_payment'])) {
-						$creditCard = $this->decryptCC($order);
+				if(!empty($order)) {		
+					if(!empty($order['cc_payment']) && !empty($this->createNewAuth)) {
+						$creditCard = Order::getCCinfos($order);
 					}
 					if(!empty($creditCard)) {
 						$authKeyAndReport = $this->authorize($creditCard, $order);
@@ -81,22 +95,24 @@ class ReCapture extends \lithium\console\Command {
 							$reportCounter++;
 						}
 						Logger::debug('New Authorize Key : ' . $authKeyAndReport['authKey']);
-						if(!empty($authKeyAndReport['authKey'])) {
-							$reportCapture = $this->capture($authKeyAndReport['authKey'], $order);
-							if(!empty($reportCapture)) {
-								$report[$reportCounter] = $reportCapture;
-								$reportCounter++;
-							}
+					} else {
+						if($order['authKey']) {
+							$authKeyAndReport['authKey'] = $order['authKey'];
 						}
 					}
-					$idx++;
+					if(!empty($authKeyAndReport['authKey']) && empty($this->onlyReauth)) {
+						$reportCapture = $this->capture($authKeyAndReport['authKey'], $order);
+						if(!empty($reportCapture)) {
+							$report[$reportCounter] = $reportCapture;
+							$reportCounter++;
+						}
+					}			
 				} else {
 					Logger::debug('Order Not Found or Already Captured : ' . $orderId);
 				}
 			}
 		}
 		$this->logReport($report);
-		echo $idx . ' Orders has been processed';
 	}
 	
 	public function parseOrderIdsFromCSV() {
@@ -110,48 +126,52 @@ class ReCapture extends \lithium\console\Command {
 		}
 		return $orderIds;
 	}
-	
-	public function decryptCC($order) {
-		Logger::debug('Decrypting Credit Card');
-		#Decrypt CC Infos
-		$creditCard = null;
-		$cc_encrypt = $order['cc_payment'];
-		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
-		Logger::debug('iv_size=' . $iv_size);
-		$iv =  base64_decode($order['cc_payment']['vi']);
-		Logger::debug('iv=' . $iv);
-		$encryptionKey = md5($order['user_id']);
-		Logger::debug('encryptionKey=' . $encryptionKey);
-		unset($cc_encrypt['vi']);
-		foreach	($cc_encrypt as $key => $cc_info) {
-			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $encryptionKey.sha1($key), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
-			$creditCard[$key] = $crypt_info;
-		}
-		return $creditCard;
-	}
-	
+
 	public function authorize($creditCard = null, $order = null) {
 		Logger::debug('Authorize');
+		$ordersCollection = Order::Collection();
 		$report = null;
 		$authKey = null;
-		$card = Payments::create('default', 'creditCard', $creditCard + array(
-													'billing' => Payments::create('default', 'address', array(
+		$userInfos = User::lookup($order['user_id']);
+		$card = Processor::create('default', 'creditCard', $creditCard + array(
+													'billing' => Processor::create('default', 'address', array(
 													'firstName' => $order['billing']['firstname'],
 													'lastName'  => $order['billing']['lastname'],
 													'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
 													'city'      => $order['billing']['city'],
 													'state'     => $order['billing']['state'],
 													'zip'       => $order['billing']['zip'],
-													'country'   => $order['billing']['country']
+													'country'   => $order['billing']['country'] ?: 'US',
+													'email'     => $userInfos['email']
 		))));
 		#Create a new Transaction and Get a new Authorization Key
-		try {
-			$authKey = Payments::authorize('default', ($order['total'] + $this->adjustment), $card);
-			Logger::debug('Authorize Complete: ' . $authKey);
-		} catch (TransactionException $e) {
-			Logger::debug('Authorize Error: ' . $e->getMessage());
+		$auth = Processor::authorize('default', ($order['total'] + $this->adjustment), $card);
+		if ($auth->success()) {
+			Logger::debug('Authorize Complete: ' . $auth->key);
+			$authKey = $auth->key;
+			if(!empty($this->onlyReauth)) {
+				$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('authKey' => $auth->key,
+											  'auth' => $auth->export(),
+											  'authTotal' => $order['total'],
+											  'processor' => $auth->adapter
+						)), array( 'upsert' => true)
+				);
+			}
+		} else {
+			#Record errors in DB
+			$error = implode('; ', $auth->errors);
+			Logger::debug('Authorize Error: ' . $error);
+			$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('error_date' => new MongoDate(),
+											  'auth_error' => $error
+						)), array( 'upsert' => true)
+			);
+			#Include errors in Report
 			$reportAuthorize[] = 'authorize_error';
-			$reportAuthorize[] = $e->getMessage();
+			$reportAuthorize[] = $error;
 			$reportAuthorize[] = $order['order_id'];
 			$reportAuthorize[] = $order['authKey'];
 			$reportAuthorize[] = $order['total'];
@@ -163,27 +183,52 @@ class ReCapture extends \lithium\console\Command {
 		Logger::debug('Capture');
 		$ordersCollection = Order::Collection();
 		$report = null;
-		try {
-			$auth_capture = Payments::capture('default', $authKey, floor($order['total']*100)/100);
-			Logger::debug('Capture Succeeded: ' . $auth_capture);
+		$auth_capture = Processor::capture(
+				'default',
+				$authKey,
+				floor($order['total'] * 100) / 100,
+				array(
+					'processor' => isset($order['processor']) ? $order['processor'] : null
+				)
+		);
+		if ($auth_capture->success()) {
+			Logger::debug('Capture Succeeded: ' . $auth_capture->key);
 			$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
-						array('$set' => array('authKey' => $authKey,
+						array('$set' => array('authKey' => $auth_capture->key,
+											  'auth' => $auth_capture->export(),
+											  'authTotal' => $order['total'],
+											  'processor' => $auth_capture->adapter,
 											  'payment_date' => new MongoDate(),
-           									  'auth_confirmation' => $auth_capture,
+           									  'auth_confirmation' => $auth_capture->key,
            									  'payment_captured' => true
 						)), array( 'upsert' => true)
 			);
+			#Unset Old Errors fields
+			$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$unset' => array('error_date' => 1,
+												'auth_error' => 1
+			)));
 			$report[] = 'capture_succeeded';
 			$report[] = '';
 			$report[] = $order['order_id'];
 			$report[] = $authKey;
 			$report[] = $order['total'];
 			Logger::debug('Order Document Updated!');
-		} catch (TransactionException $e) {
-			Logger::debug('Capture Error: ' . $e->getMessage());
+		} else {
+			#Record errors in DB
+			$error = implode('; ', $auth_capture->errors);
+			Logger::debug('Capture Error: ' .$error);
+			$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('error_date' => new MongoDate(),
+											  'auth_error' => $error
+						)), array( 'upsert' => true)
+			);
+			#Include errors in Report
 			$report[] = 'capture_error';
-			$report[] = $e->getMessage();
+			$report[] = $error;
 			$report[] = $order['order_id'];
 			$report[] = $order['authKey'];
 			$report[] = $order['total'];

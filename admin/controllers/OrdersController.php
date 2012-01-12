@@ -2,6 +2,7 @@
 
 namespace admin\controllers;
 
+use lithium\core\Environment;
 use admin\models\User;
 use admin\models\Event;
 use admin\models\Item;
@@ -18,6 +19,7 @@ use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 use li3_flash_message\extensions\storage\FlashMessage;
+use li3_payments\payments\Processor;
 use admin\extensions\Mailer;
 
 /**
@@ -44,7 +46,7 @@ class OrdersController extends BaseController {
 		'Shipping Info',
 		'Order Cost',
 		'Tracking Info',
-		'Estimated Ship Date',
+		'Estimated Delivery Date',
 		'Customer Profile'
 	);
 
@@ -222,14 +224,24 @@ class OrdersController extends BaseController {
 		$order_data['id'] = $order_data['_id'];
 		$order_data['items'][$line_number]['initial_quantity'] = $order_data['items'][$line_number]['quantity'];
 		$order_data['items'][$line_number]['cancel'] = "true";
-		$order_data['save'] = true;
 		$order_data['comment'] = 'Bulk Cancel of Item';
 
 		$this->request->data = $order_data;
 
-		$order = $this->manage_items();
+		$order_temp = $this->manage_items();
 
+		#SAVING DATAS
+		$order_data_to_be_saved = $order_temp->data();
+		$order_data_to_be_saved[id] = $order_data[_id];
+		$order_data_to_be_saved[items][$line_number][initial_quantity] = $order_data[items][$line_number][quantity];
+		$order_data_to_be_saved[items][$line_number][cancel] = "true";
+		$order_data_to_be_saved[save] = true;
+		$order_data_to_be_saved[comment] = 'Bulk Cancel of Item';
+		$this->request->data = $order_data_to_be_saved;
+		$order = $this->manage_items();
+		
 		$this->redirect('/items/bulkCancel/' . $sku);
+
 	}
 
 	/**
@@ -246,9 +258,12 @@ class OrdersController extends BaseController {
 	public function manage_items() {
 		$orderClass = $this->_classes['order'];
 		$current_user = Session::read('userLogin');
-		$orderCollection = $orderClass::collection();
 
-		if ($this->request->data){
+		$orderCollection = $orderClass::collection();
+		$userCollection = User::collection();
+
+		if($this->request->data) {
+
 			$datas = $this->request->data;
 			$selected_order = $orderCollection->findOne(array("_id" => new MongoId($datas["id"])));
 			/**
@@ -343,7 +358,9 @@ class OrdersController extends BaseController {
 					'order' => $order_temp->data(),
 					'shipDate' => date('M d, Y', $shipDate)
 				);
-				Mailer::send('Cancel_Order', $user["email"], $data);
+				if (Environment::is('production')) {
+					Mailer::send('Cancel_Order', $user["email"], $data);
+				}
 			}
 
 			// If order is updated without cancel, send email
@@ -363,7 +380,9 @@ class OrdersController extends BaseController {
 					'order' => $order->data(),
 					'shipDate' => date('M d, Y', $shipDate)
 				);
-				Mailer::send('Order_Update', $user["email"], $data);
+				if (Environment::is('production')) {
+					Mailer::send('Order_Update', $user["email"], $data);
+				}
 			}
 		}
 		return $order_temp;
@@ -431,7 +450,147 @@ class OrdersController extends BaseController {
 			);
 		}
 	}
+	
+	/**
+	* The updatePayment method push the old value of payment with details about author,type and date
+	* After that it updates the billing/cc values by the new datas from the form
+	* @param string $id The _id of the order
+	*/
+	public function updatePayment($id){
+		$orderClass = $this->_classes['order'];
+		$current_user = Session::read('userLogin');
 
+		$orderCollection = $orderClass::collection();
+
+		// Get datas from the shipping form.
+		$datas = $this->request->data;
+		$update = true;
+		$count = 0;
+		$missing = false;
+
+		// Check if all billing informations are present
+		foreach ($datas['billing'] as $data) {
+			if ($data == null){
+				$missing = true;
+			} else {
+				$count++;
+			}
+		}
+		// Check if all credit card informations are present
+		foreach ($datas['creditcard'] as $data) {
+			if ($data == null){
+				$missing = true;
+			} else {
+				$count++;
+			}
+		}
+		
+		// If yes, we prepare the array of modification datas.
+		if ((!$missing) && ($count > 11)) {
+			#Create new authorization
+			$errors = $this->authorize($datas, $id);
+			if(empty($errors)) {
+				$order = $orderClass::find('first', array(
+					'conditions' => array('_id' => new MongoId($id))
+				));
+				$cc_encrypted = $orderClass::creditCardEncrypt($datas['creditcard'], $order['user_id']);
+				$modification_datas["author"] = $current_user["email"];
+				$modification_datas["date"] = new MongoDate(strtotime('now'));
+				$modification_datas["type"] = "billing";
+				if($order["cc_payment"]) {
+					$modification_datas["old_datas"]["cc_payment"] = $order["cc_payment"]->data();
+				}
+				$modification_datas["old_datas"] = array(
+					"firstname" => $order["billing"]["firstname"],
+					"lastname" => $order["billing"]["lastname"],
+					"address" => $order["billing"]["address"],
+					"city" => $order["billing"]["city"],
+					"state" => $order["billing"]["state"],
+					"zip" => $order["billing"]["zip"],
+					"phone" => $order["billing"]["phone"]
+				);
+				// We push the modifications datas with the old shipping.
+				$orderCollection->update(
+					array("_id" => new MongoId($id)),
+					array('$push' => array('modifications' => $modification_datas)),
+					array('upsert' => true)
+				);
+				$orderCollection->update(
+					array("_id" => new MongoId($id)),
+					array('$set' => array('billing' => $datas['billing'], 
+										'cc_payment' => $cc_encrypted,
+										'card_type' => $datas['creditcard']['type'],
+										'card_number' => substr($datas['creditcard']['number'], -4) 
+					))
+				);
+				FlashMessage::write("Payment details has been updated.", array('class' => 'pass'));	
+			} else {
+				FlashMessage::write(
+					$errors,
+					array('class' => 'warning')
+				);
+			}
+
+		} else {
+			FlashMessage::write(
+				"Some informations for the new payments are missing",
+				array('class' => 'warning')
+			);
+		}
+	}
+	
+	public function authorize($datas, $id) {
+		$orderClass = $this->_classes['order'];
+		$ordersCollection = $orderClass::Collection();
+		$order = $ordersCollection->findOne(array("_id" => new MongoId($id)));
+		$usersCollection = User::Collection();
+		#Save Old AuthKey with Date
+		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
+		#Cancel Previous Transaction	
+		if($order['card_type'] != 'amex' && !empty($order['authTotal'])) {
+			$auth = Processor::void('default', $order['auth'], array(
+				'processor' => isset($order['processor']) ? $order['processor'] : null
+			));
+		}
+		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($order['user_id'])));
+		#Create Card and Check Billing Infos
+		$card = Processor::create('default', 'creditCard', $datas['creditcard'] + array(
+			'billing' => Processor::create('default', 'address', array(
+				'firstName' => $datas['billing']['firstname'],
+				'lastName'  => $datas['billing']['lastname'],
+				'address'   => trim($datas['billing']['address'] . ' ' . $datas['billing']['address2']),
+				'city'      => $datas['billing']['city'],
+				'state'     => $datas['billing']['state'],
+				'zip'       => $datas['billing']['zip'],
+				'country'   => $datas['billing']['country'] ?: 'US',
+				'email'     => $userInfos['email']
+
+		))));
+		#Create a new Transaction and Get a new Authorization Key
+		$auth = Processor::authorize('default', $order['total'], $card);
+		if($auth->success()) {
+			#Setup new AuthKey
+			$update = $ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$set' => array(
+						'authKey' => $auth->key,
+						'auth' => $auth->export(),
+						'processor' => $auth->adapter,
+						'authTotal' => $order['total']
+					)), array( 'upsert' => true)
+			);
+			#Add to Auth Records Array
+			$update = $ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
+			);
+		} else {
+			$message  = "Authorize failed for order id `{$order['order_id']}`:";
+			$message .= $error = implode('; ', $auth->errors);
+		}
+		return $message;
+	}
+	
 	/**
 	* The view method renders the order confirmation page that is sent to the customer
 	* after they have placed their order
@@ -449,9 +608,8 @@ class OrdersController extends BaseController {
 		$orderClass = $this->_classes['order'];
 
 		$userCollection = User::collection();
-		$orderCollection = $orderClass::collection();
-
-		//Only view
+		$ordersCollection = $orderClass::Collection();
+		// Only view
 		$edit_mode = false;
 
 		// update the shipping address by adding the new one and pushing the old one.
@@ -463,8 +621,7 @@ class OrdersController extends BaseController {
 
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
-
-			if (strlen($order_temp["user_id"]) > 10){
+			if(strlen($order_temp["user_id"]) > 10){
 				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
 			} else {
 				$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
@@ -478,7 +635,16 @@ class OrdersController extends BaseController {
 				'order' => $order_temp->data(),
 				'shipDate' => date('M d, Y', $shipDate)
 			);
-			Mailer::send('Cancel_Order', $user["email"], $data);
+			if (Environment::is('production')) {
+				Mailer::send('Cancel_Order', $user["email"], $data);
+			}
+		}
+		if(!empty($datas["process-as-an-exception"])){
+			$update = $ordersCollection->update(
+					array('_id' => new MongoId($id)),
+					array('$set' => array('process-as-an-exception' => true)), array( 'upsert' => true)
+			);
+			FlashMessage::write("This Order is on the queue as Dotcom Exception", array('class' => 'pass'));	
 		}
 		if (!empty($datas["save"])){
 			$order = $this->manage_items();
@@ -486,9 +652,10 @@ class OrdersController extends BaseController {
 			$order = null;
 		}
 		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["phone"])) {
-			if($this->request->data){
-				$this->updateShipping($id);
-			}
+			$this->updateShipping($id);
+		}
+		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["billing"])) {
+			$this->updatePayment($id);
 		}
 		$this->_render['layout'] = 'base';
 
@@ -535,8 +702,10 @@ class OrdersController extends BaseController {
 		}
 
 		#Get Services
-		if (!empty($order->service)) {
+		if(is_object($order->service)) {
 			$service = $order->service->data();
+		} else {
+			$service = $order->service;
 		}
 
 		$shipDate = $this->shipDate($order);

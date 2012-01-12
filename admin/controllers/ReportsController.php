@@ -16,6 +16,7 @@ use MongoDate;
 use MongoRegex;
 use MongoId;
 use li3_flash_message\extensions\storage\FlashMessage;
+use lithium\analysis\Logger;
 use admin\models\PurchaseOrder;
 use lithium\data\Model;
 use FusionCharts;
@@ -26,7 +27,7 @@ use admin\extensions\util\String;
  */
 class ReportsController extends BaseController {
 
-	/**
+  /**
 	 * The purchase order column headings.
 	 *
 	 * @var array
@@ -253,20 +254,20 @@ class ReportsController extends BaseController {
 							$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
 						}
 						$inital = array('total' => 0, 'bounced'=>0);
-						$reduce = new MongoCode('function(doc, prev){ 
+						$reduce = new MongoCode('function(doc, prev){
 							prev.total += 1;
 							if (typeof(doc.email_engagement)!="undefined"){ prev.bounced++; }
 						}');
-		
+
 						$collection = User::collection();
 						$results = $collection->group($keys, $inital, $reduce, $conditions);
 						$results['total'] = $results['bounced'] = 0;
-						
+
 						foreach ($results['retval'] as $result) {
 							$results['bounced'] += $result['bounced'];
 							$results['total'] += $result['total'];
 						}
-						
+
 						$results['bounced'] = number_format($results['bounced']);
 						$results['total'] = number_format($results['total']);
 					break;
@@ -316,15 +317,17 @@ class ReportsController extends BaseController {
 			$time = date('ymdis', $event->_id->getTimestamp());
 			$poNumber = 'TOT'.'-'.$vendorName.$time;
 			$eventItems = Event::getItems($eventId);
-			
 			$itemIds = array();
+			$temp = array();
 			foreach ($eventItems as $key => $eventItem) {
-				$eventItems[$eventItem['_id']] = $eventItem;
-				unset($eventItems[$key]);
-				
-				$itemIds[] = $eventItem['_id'];
-			}
+			    $eventItem = get_object_vars($eventItem);
+			    $eventItem = $eventItem['_config']['data'];
+			    $id = (string)$eventItem['_id'];
+				$temp[$id] = $eventItem;
 
+				$itemIds[] = $id;
+			}
+			$eventItems = $temp;
 			$orders = Order::find('all', array(
 				'conditions' => array(
 					'items.item_id' => array('$in' => $itemIds),
@@ -359,7 +362,7 @@ class ReportsController extends BaseController {
 						}
 					}
 				}
-				
+
 				// Sloppy code to make sure that the results are sorted by Vendor Style then Size
 				foreach ($purchaseOrder as $key => $row) {
 				    $vendor_style[$key]  = $row['Vendor Style'];
@@ -787,13 +790,13 @@ class ReportsController extends BaseController {
 						foreach ($items as $item) {
 							$itemQuantity += $item['quantity'];
 						}
-						$orderSummary['gross'] = ($order['tax'] + $order['subTotal'] + $order['handling'] + $order['overSizeHandling'] 
+						$orderSummary['gross'] = ($order['tax'] + $order['subTotal'] + $order['handling'] + $order['overSizeHandling']
 							- $order['handlingDiscount'] - $order['overSizeHandlingDiscount']);
 						$orderSummary['tax'] = $order['tax'];
 						$orderSummary['sub_total'] = $order['subTotal'];
 						$orderSummary['total'] = $order['total'];
 						$orderSummary['state'] = $order['shipping']['state'];
-						$orderSummary['handling'] = ($order['handling'] + $order['overSizeHandling'] 
+						$orderSummary['handling'] = ($order['handling'] + $order['overSizeHandling']
 							- $order['handlingDiscount'] - $order['overSizeHandlingDiscount']);
 						$orderSummary['quantity'] = $itemQuantity;
 						$orderSummary['date'] = $order['date_created'];
@@ -1292,7 +1295,7 @@ class ReportsController extends BaseController {
 			$strParam = "yAxisName=Users;numberSuffix=%";
 			$ServiceCharts->setChartParams($strParam);
 			# add chart values and  category names
-			$ServiceCharts->addChartDataFromArray($arrData,$arrCatNames);	
+			$ServiceCharts->addChartDataFromArray($arrData,$arrCatNames);
 			/**** 2ND Charts ****/
 			//Categories
 			$arrCatNames_2[0 + $i] =  $key.' '.$year;
@@ -1329,7 +1332,7 @@ class ReportsController extends BaseController {
 		}
 		return compact('ServiceCharts','Service2ndCharts');
 	}
-	
+
 	private function generateConditions(array $data = array()){
 		extract($data);
 		$conditions = array();

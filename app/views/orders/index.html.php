@@ -15,7 +15,7 @@
 	<h2 class="page-title gray">My Orders
 	<span style="color:#ff6d1d; margin-left:290px;">Your Lifetime Savings: </span><span class="fr">
 		<?php if (!empty($lifeTimeSavings)) : ?>
-			<span style="color:#ff6d1d; font-size:18px; float:right;">$<?=number_format((float) $lifeTimeSavings, 2);?></span>
+			<span style="color:#ff6d1d; font-size:18px; float:right;">$<?php echo number_format((float) $lifeTimeSavings, 2);?></span>
 		<?php endif ?></span></h2>
 		<div class="clear"></div>
 	<hr />
@@ -49,10 +49,10 @@
 				<?php foreach ($orders as $order): ?>
 					<?php if(empty($order->cancel)): ?>
 					<tr class="alt$x" style="border-bottom:1px solid #ddd;">
-						<td><?=date('M d, Y', $order->date_created->sec); ?></td>
+						<td><?php echo date('M d, Y', $order->date_created->sec); ?></td>
 						<td>
 							<?php if (!empty($order->order_id)): ?>
-								<?=$this->html->link("$order->order_id", array(
+								<?php echo $this->html->link("$order->order_id", array(
 									'Orders::view',
 									'args' => $order->order_id
 									));
@@ -65,10 +65,10 @@
 						<td>
 						<?php foreach ($items as $item): ?>
 							<?php if(empty($item["cancel"])) : ?>
-								<strong><?=$item['description']?></strong><br />
-								<span style="font-size:12px;">Color: <?=$item['color']?></span><br />
-								<span style="font-size:12px;">Size: <?=$item['size']?></span><br />
-								<span style="font-size:12px;">Quantity: <?=$item['quantity']?></span><br />
+								<strong><?php echo $item['description']?></strong><br />
+								<span style="font-size:12px;">Color: <?php echo $item['color']?></span><br />
+								<span style="font-size:12px;">Size: <?php echo $item['size']?></span><br />
+								<span style="font-size:12px;">Quantity: <?php echo $item['quantity']?></span><br />
 							<?php endif ?>
 						<?php endforeach ?>
 						</td>
@@ -78,18 +78,18 @@
 								<?php if ($trackingNumbers): ?>
 									<?php if (!empty($trackingNumbers["$order->_id"])): ?>
 										<?php foreach ($trackingNumbers["$order->_id"] as $trackingNumber): ?>
-											<?=$this->shipment->link($trackingNumber['code'], array('type' => $trackingNumber['method']))?>
+											<?php echo $this->shipment->link($trackingNumber['code'], array('type' => $trackingNumber['method']))?>
 										<?php endforeach ?>
 									<?php endif ?>
 								<?php endif ?>
 								<?php if (!empty($order->tracking_numbers)): ?>
 									<?php foreach ($order->tracking_numbers as $number): ?>
-										<?=$this->shipment->link($number, array('type' => 'UPS'))?>
+										<?php echo $this->shipment->link($number, array('type' => 'UPS'))?>
 									<?php endforeach ?>
 								<?php endif ?>
 							<?php else: ?>
 								<?php if ($shipDate["$order->_id"] > time()): ?>
-									Estimated Ship Date: <br/><?=date('M d, Y', $shipDate["$order->_id"]); ?>
+									Estimated Delivery Date: <br/><?php echo date('M d, Y', $shipDate["$order->_id"]); ?>
 								<?php else: ?>
 									-
 								<?php endif ?>

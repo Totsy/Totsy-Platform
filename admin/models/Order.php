@@ -9,6 +9,7 @@ use lithium\analysis\Logger;
 use admin\models\User;
 use admin\models\Item;
 use admin\models\Credit;
+use li3_payments\extensions\adapter\payment\CyberSource;
 use Exception;
 
 /**
@@ -115,8 +116,21 @@ class Order extends Base {
 		if ($order['total'] == 0 || !is_numeric($order['authKey'])) {
 			$data['void_confirm'] = -1;
 			$error = "Can't capture because total is zero.";
+		} else if ($order['card_type'] == 'amex') {
+			$data['void_confirm'] = -1;
+			$error = "Can't void because the card type is Amex.";
+		} else if ($order['authTotal'] == 0) {
+			$data['void_confirm'] = -1;
+			$error = "Can't void because authorization amount is 0";
 		} else {
-            $auth = $payments::void('default', array('key' => $order['authKey']));
+			if(!empty($order['auth'])) {
+				$transaction = $order['auth'];
+			} else {
+				$transaction = $order['authKey'];
+			}
+			$auth = $payments::void('default', $transaction, array(
+				'processor' => isset($order['processor']) ? $order['processor'] : null
+			));
 
 			if ($auth->success()) {
 				$data['void_confirm'] = $auth->key;
@@ -173,12 +187,31 @@ class Order extends Base {
 			$data['auth_confirmation'] = -1;
 			$error = "Can't capture because total is zero.";
 		} else {
-			$auth = $payments::capture(
-				'default',
-				array('key' => $order['authKey']),
-				floor($order['total'] * 100) / 100
-			);
-
+			if(empty($order['auth'])) {
+				$auth = $payments::capture(
+					'default',
+					$order['authKey'],
+					floor($order['total'] * 100) / 100,
+					array(
+						'processor' => isset($order['processor']) ? $order['processor'] : null
+					)
+				);
+			} else {
+				if(empty($order['cyberSourceProfileId'])) {
+					$auth = $payments::capture(
+						'default',
+						$order['auth'],
+						floor($order['total'] * 100) / 100,
+						array(
+							'processor' => isset($order['processor']) ? $order['processor'] : null
+						)
+					);
+				} else {
+					$cybersource = new CyberSource($payments::config('default'));
+					$profile = $cybersource->profile($order['cyberSourceProfileId']);
+					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile);
+				}
+			}
 			if ($auth->success()) {
 				$data['auth_confirmation'] = $auth->key;
 				$data['payment_date'] = new MongoDate();
@@ -434,18 +467,27 @@ class Order extends Base {
 			'comment' => null,
 			'initial_credit_used' => null
 		);
+				
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
 			'handling' => (float) $selected_order["handling"],
-			'overSizeHandling' => (float) $selected_order["overSizeHandling"],
-			'handlingDiscount' => (float) $selected_order["handlingDiscount"],
-			'overSizeHandlingDiscount' => (float) $selected_order["overSizeHandlingDiscount"],		
 			'promo_discount' => (float) $selected_order["promo_discount"],
-			'discount' => (float) $selected_order["discount"],
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'comment' => $selected_order["comment"]
 		);
+		if(!empty($selected_order["overSizeHandling"])) {
+			$datas_order_prices['overSizeHandling'] = (float) $selected_order["overSizeHandling"];
+		}
+		if(!empty($selected_order["discount"])) {
+			$datas_order_prices['discount'] = (float) $selected_order["discount"];
+		}
+		if(!empty($selected_order["handlingDiscount"])) {
+			$datas_order_prices['handlingDiscount'] = (float) $selected_order["handlingDiscount"];
+		}
+		if(!empty($selected_order["overSizeHandlingDiscount"])) {
+			$datas_order_prices['overSizeHandlingDiscount'] = (float) $selected_order["overSizeHandlingDiscount"];
+		}
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		   $datas_order_prices['original_credit_used'] = $selected_order["original_credit_used"];
 		}
@@ -679,7 +721,13 @@ class Order extends Base {
 		}
 		/***********END OF CREDITS TREATMENT*************/
 		/***********CHECK TAX, HANDLING, TOTAL***********/
-		$total = $afterDiscount + $tax + $selected_order["handling"] + $selected_order["overSizeHandling"];
+		$total = $afterDiscount + $tax;
+		if(!empty($selected_order["handling"])) {
+			$total += $selected_order["handling"];
+		}
+		if(!empty($selected_order["overSizeHandling"])) {
+			$total += $selected_order["overSizeHandling"];
+		}
 		$datas_order_prices = array(
 			'total' => $total,
 			'subTotal' => $subTotal,
@@ -865,6 +913,36 @@ class Order extends Base {
 	     }
 
 	     return $failed;
+	}
+	
+	public static function getCCinfos($order = null) {
+		$creditCard = null;
+		if(!empty($order['cc_payment'])) {
+			$cc_encrypt = $order['cc_payment'];
+			$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+			$iv =  base64_decode($order['cc_payment']['vi']);
+			$key = $order['user_id'];
+			unset($cc_encrypt['vi']);
+			foreach	($cc_encrypt as $k => $cc_info) {
+				$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key . $k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+				$creditCard[$k] = $crypt_info;
+			}
+		}
+		return $creditCard; 
+	}
+
+	/**
+	 * Encrypt all credits card informations with MCRYPT and store it in the Session
+	 */
+	public static function creditCardEncrypt($cc_infos, $user_id) {
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+		$cc_encrypt['vi'] = base64_encode($iv);
+		foreach	($cc_infos as $k => $cc_info) {
+			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), $cc_info, MCRYPT_MODE_CFB, $iv);
+			$cc_encrypt[$k] = base64_encode($crypt_info);
+		}
+		return $cc_encrypt;
 	}
 }
 

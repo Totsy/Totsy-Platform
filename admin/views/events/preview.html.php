@@ -1,12 +1,12 @@
 <?php
 	$this->title($event->name);
 ?>
-<?=$this->html->script('jquery.countdown.min');?>
-<?=$this->html->style('jquery.countdown');?>
+<?php echo $this->html->script('jquery.countdown.min');?>
+<?php echo $this->html->style('jquery.countdown');?>
 
 	<div id="middle" class="fullwidth">
 
-		<h1 class="page-title gray"><span class="red"><a href="/" title="Sales"><?=$type?> Sales</a> /</span> <?=$event->name; ?></h1>
+		<h1 class="page-title gray"><span class="red"><a href="/" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?></h1>
 		<hr />
 
 
@@ -48,7 +48,7 @@
 					<div style="width:300px;">
 						<!-- Display Logo Image -->
 						<?php if (!empty($event->images->logo_image)): ?>
-							<img src="/image/<?=$event->images->logo_image?>.gif" alt="<?= $event->name; ?>" title="<?= $event->name; ?>" width="148" height="52" />
+							<img src="/image/<?php echo $event->images->logo_image?>.gif" alt="<?php echo  $event->name; ?>" title="<?php echo  $event->name; ?>" width="148" height="52" />
 						<?php endif ?>
 						<div class="title table-cell v-bottom">
 							<!--  h1> <? //=$event->name; ?> </h1 -->
@@ -108,12 +108,12 @@
 					<div class="tr"></div>
 					<div class="md-gray p-container">
 						<?php if ($item->total_quantity <= 0): ?>
-								<?=$this->html->image('/img/soldout.png', array(
+								<?php echo $this->html->image('/img/soldout.png', array(
 									'title' => "Sold Out",
 									'style' => 'z-index : 2; position : absolute; left:69%; margin:10px;'
 								)); ?>
 						<?php endif ?>
-						<?=$this->html->link(
+						<?php echo $this->html->link(
 							$this->html->image($productImage, array(
 								'alt' => $item->name,
 								'title' => $item->name,
@@ -127,11 +127,11 @@
 								<table width="280">
 									<tr>
 										<td width="170" valign="top">
-											<a href="<?="/sale/$event->url/$item->url"?>"><h2><?=$item->description ?></h2></a>
+											<a href="<?php echo "/sale/$event->url/$item->url"?>"><h2><?php echo $item->description ?></h2></a>
 										</td>
 										<td align="right">
-											<font class="price">$<?=number_format($item->sale_retail,2);?></font><br>
-											<font class="original-price">Original $<?=number_format($item->msrp,2);?></font>
+											<font class="price">$<?php echo number_format($item->sale_retail,2);?></font><br>
+											<font class="original-price">Original $<?php echo number_format($item->msrp,2);?></font>
 										</td>
 								</table>
 							</div>

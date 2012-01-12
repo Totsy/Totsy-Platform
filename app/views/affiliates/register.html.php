@@ -4,15 +4,15 @@
 	var categoryName = "";
 	
 	<?php if($affiliateName) {  ?>
-		affiliateName= "<?=$affiliateName?>";	
+		affiliateName= "<?php echo $affiliateName?>";	
 	<?php } ?>
 	
 	<?php if($affiliateName) { ?>
-		categoryName= "<?=$categoryName?>";
+		categoryName= "<?php echo $categoryName?>";
 	<?php } ?>
 	
 	<?php if($affBgroundImage) { ?>
-		affBgroundImage = "<?=$affBgroundImage?>"; 	
+		affBgroundImage = "<?php echo $affBgroundImage?>"; 	
 	<?php } ?>
 	
 </script>
@@ -89,6 +89,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="round">
 <!-- left side -->
 <div class="grid_6">
+
 <?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 </div>
 <!-- right side -->
@@ -97,16 +98,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 <div class="clear"></div>
-
-
-<div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
+<?php
+	if (isset($userfb)) {
+		$fbInfo = $userfb; 
+	} else {
+		$fbInfo = "";
+	}
+?>
+<div class="round gradient" style="border:1px #eeeeee solid; overflow:hidden;">
 
 	<div class="grid_6" style="float:left;">	
 		<div style="width:310px; margin-top:5px;">
-		<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
+		<?php echo $this->view()->render(array('element' => 'registrationForm'), array('fbInfo'=>$fbInfo)); ?>
 		</div>
-		
-		
 	</div>
 	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
 		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
@@ -157,7 +161,9 @@ var google_conversion_value = 0;
 //your fb login function
 function fblogin() {
 FB.login(function(response) {
-}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+	if (response.authResponse) {
+		window.location.reload();    
+  }}, {scope:'email'});
 }
 </script>
 
