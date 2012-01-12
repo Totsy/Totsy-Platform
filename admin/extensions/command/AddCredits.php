@@ -48,8 +48,6 @@ class AddCredits extends \lithium\console\Command {
 		$pid = new Pid($this->tmp,  'AddCredits');
 		
 		if ($pid->already_running == false) {
-			$this->getCommandLineParams();
-				
 			$this->addCredits();
 		} else {
 			Logger::info('Already Running! Stoping Execution'."\n");
