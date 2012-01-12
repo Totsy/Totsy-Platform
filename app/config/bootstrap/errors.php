@@ -15,7 +15,7 @@ use lithium\storage\Session;
 ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception'),
     function($info, $params) {
         $url = $params['request']->url;
-        if (Environment::is('production')) {
+        if (!Environment::is('production')) {
             /* Do we want to provide any kind of info except a blank page? */
             $inc = 0;
             $message = "PAGE ERROR OCCURED ON: /{$params['request']->url} \n";
@@ -43,7 +43,7 @@ ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception
                     'template' => '505'
                 )));
             }
-            mail('bugs@totsy.com', "500 Error on /{$params['request']->url}", $message);
+            mail('lhanson@totsy.com', "500 Error on /{$params['request']->url}", $message);
         } else {
             /* Full post mortem in non-production envs. */
             $request = $params['request'];

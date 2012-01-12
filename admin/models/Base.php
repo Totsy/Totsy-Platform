@@ -45,6 +45,15 @@ class Base extends \lithium\data\Model {
 		return $user['_id'];
 	}
 
+	public static function idToString($array) {
+	    $ids = array();
+
+	    foreach($array as $id) {
+	        $ids[] = (string) $id;
+	    }
+	    return $ids;
+	}
+
 }
 
 ?>
