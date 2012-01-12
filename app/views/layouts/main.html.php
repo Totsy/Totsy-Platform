@@ -73,21 +73,20 @@
 		</div>
 		<!-- /#contentMain -->
 
-
-		<div id="footer" class="container_16">
-			<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
-		</div>
-		<!-- end footer nav -->
-	
-		<div class="container_16 clear" style="margin-top:50px;">
-			<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
-		</div>
-		<!-- end footer icons -->
-	
-		<div id='toTop'>^ Top</div>
-		
 	</div><!-- /#totsy -->
 
+	<div id="footer" class="container_16 group">
+		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
+	</div>
+	<!-- end footer nav -->
+
+	<div class="container_16 group">
+		<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
+	</div>
+	<!-- end footer icons -->
+
+	<div id='toTop'>^ Top</div>
+		
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
 
