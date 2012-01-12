@@ -77,7 +77,7 @@ class CreditTransaction extends \lithium\console\Command {
 		foreach($orderIds as $orderId) {
 			Logger::debug('Processing Order Id : ' . $orderId);
 			$conditions = array('order_id' => $orderId,
-								'total' => array('$gt' => 1),
+								'total' => array('$gt' => 1)
 			);
 			$order = $ordersCollection->findOne($conditions);
 			if(!empty($order)) {				
