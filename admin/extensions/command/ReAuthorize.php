@@ -137,9 +137,7 @@ class ReAuthorize extends \lithium\console\Command {
 	
 	public function sendReports($report = null) {
 		$reportToSend = $report;
-		if($reportToSend['skipped']) {
-			unset($reportToSend['skipped']);
-		}
+		unset($reportToSend['skipped']);
 		Logger::debug('Sending Report');
 		#If Errors Send Email to Customer Service
 		if(!empty($reportToSend['updated']) || !empty($reportToSend['errors']) ) {
