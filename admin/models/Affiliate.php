@@ -130,7 +130,7 @@ class Affiliate extends Base {
         return $registrations;
 	}
 
-	public static function generateConditions(array $data = array()){
+	public static function generateConditions(array $data = array()){a;
 		extract($data);
 		$conditions = array();
 		$dateField = 'date_created';
