@@ -2,6 +2,7 @@
 namespace admin\extensions\command;
 
 use lithium\core\Environment;
+use lithium\analysis\Logger;
 use admin\models\Credit;
 use admin\models\Order;
 use admin\models\User;
