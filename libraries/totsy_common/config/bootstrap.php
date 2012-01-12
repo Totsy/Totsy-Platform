@@ -1,10 +1,14 @@
 <?php
 
 /**
+ * Loads common libraries.
+ */
+require __DIR__ . '/bootstrap/libraries.php';
+
+/**
  * Sets up environment detection.
  */
 require __DIR__ . '/bootstrap/environment.php';
-
 
 /**
  * Error handling.

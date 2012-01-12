@@ -62,8 +62,6 @@ Libraries::add('PEAR', array(
 	}
 ));
 Libraries::add('totsy_common');
-Libraries::add('li3_fixtures');
-Libraries::add('li3_docs');
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel.php';
 require LITHIUM_APP_PATH . '/libraries/phpexcel/PHPExcel/IOFactory.php';
 require LITHIUM_APP_PATH . '/libraries/FusionCharts/FusionCharts_Gen.php';
