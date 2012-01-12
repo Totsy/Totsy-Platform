@@ -10,6 +10,7 @@ use admin\models\Item;
 use admin\models\Base;
 use admin\models\Report;
 use admin\models\Service;
+use admin\models\Affiliate;
 use Mongo;
 use MongoCode;
 use MongoDate;
@@ -152,139 +153,46 @@ class ReportsController extends BaseController {
 			$criteria = $this->request->data;
 			$name = $this->request->data['affiliate'];
 			$subaff = $this->request->data['subaffiliate'];
+			$min_date = $this->request->data['min_date'];
+			$max_date = $this->request->data['max_date'];
+			$result = array();
+			if (empty($name)) {
+			    FlashMessage::set("Affiliate Code Required" ,	array('class' => 'fail'));
+			    return compact('search', 'results', 'searchType', 'criteria');
+			}
 			if((bool)$subaff){
 				$affiliate = new MongoRegex('/^' . $name . '/i');
 			}else{
 				$affiliate = $name;
 			}
-			if ($this->request->data['min_date'] && $this->request->data['max_date']) {
-				//Conditions with date converted to the right timezone
-				$min = new MongoDate(strtotime($this->request->data['min_date']));
-				$max = new MongoDate(strtotime($this->request->data['max_date']));
-				$date = array(
-					'created_date' => array(
-						'$gte' => $min,
-						'$lte' => $max)
-				);
-				$searchType = $this->request->data['search_type'];
-				$total = 0;
-				switch ($searchType) {
-					case 'Revenue':
-						switch ($name) {
-							case 'keyade':
-							$conditions = array(
-								'purchase_count' => array('$gte' => 1),
-								'$or' => array(
-										array(
-											'keyade_referral_user_id' => array('$ne' => NULL )
-										),
-										array(
-											'keyade_user_id' => array('$ne' => NULL )
-										)
-								)
-							);
-							break;
-							default:
-								$conditions = array(
-										'invited_by' => $affiliate,
-										'purchase_count' => array('$gte' => 1)
-								);
-							break;
-						}
-						$users = User::find('all', array(
-							'conditions' => $conditions
-						));
-						if ($users) {
-							$reportId = substr(md5(uniqid(rand(),1)), 1, 15);
-							$collection = Report::collection();
-							foreach ($users as $user) {
-								$orders = Order::find('all', array(
-									'conditions' => array(
-										'user_id' => (string) $user->_id,
-										'date_created' => array(
-											'$gte' => $min,
-											'$lte' => $max
-								))));
-								$orders = $orders->data();
-								if ($orders) {
-									foreach ($orders as $order) {
-										$order['date_created'] = new MongoDate($order['date_created']['sec']);
-										$order['subaff'] = $user->invited_by;
-										$collection->save(array('data' => $order, 'report_id' => $reportId));
-									}
-								}
-							}
-						}
-						if(($subaff)){
-							$keys = new MongoCode("function(doc){
-							return {
-								'Date': doc.data.date_created.getMonth(),
-								'subaff' : doc.data.subaff
 
-							}}");
-						}else{
-							$keys = new MongoCode("function(doc){return {'Date': doc.data.date_created.getMonth()}}");
-						}
-						$inital = array('total' => 0);
-						$reduce = new MongoCode('function(doc, prev){
-							prev.total += doc.data.total
-							}'
-						);
-						$conditions = array('report_id' => $reportId);
-						$results = $collection->group($keys, $inital, $reduce, $conditions);
-						$results['total'] = 0;
-						foreach ($results['retval'] as $result)
-						{
-							$results['total'] += $result['total'];
-						}
-						$results['total'] = round($results['total'], 2);
-						$results['total'] = number_format($results['total']);
-						$results['total'] = "$".$results['total'];
-						$collection->remove($conditions);
-					break;
-					case 'Registrations':
-						extract( $this->generateConditions(compact('name','date','affiliate')),EXTR_OVERWRITE);
-						if($subaff){
-							$keys = new MongoCode("function(doc){
-								return {
-									'Date': doc.$dateField.getMonth(),
-									'subaff':doc.invited_by
-								}}");
-						}else{
-							$keys = new MongoCode("function(doc){return {'Date': doc.$dateField.getMonth()}}");
-						}
-						$inital = array('total' => 0, 'bounced'=>0);
-						$reduce = new MongoCode('function(doc, prev){
-							prev.total += 1;
-							if (typeof(doc.email_engagement)!="undefined"){ prev.bounced++; }
-						}');
-
-						$collection = User::collection();
-						$results = $collection->group($keys, $inital, $reduce, $conditions);
-						$results['total'] = $results['bounced'] = 0;
-
-						foreach ($results['retval'] as $result) {
-							$results['bounced'] += $result['bounced'];
-							$results['total'] += $result['total'];
-						}
-
-						$results['bounced'] = number_format($results['bounced']);
-						$results['total'] = number_format($results['total']);
-					break;
-					case 'Bounces':
-						extract( $this->generateConditions(compact('name','date','affiliate')),EXTR_OVERWRITE);
-						$conditions = $conditions + array('email_engagement'=>array('$exists'=>true));
-						$cursor = User::collection()->
-											find($conditions)->
-											fields(array(
-												'email'=>true,
-												'email_engagement'=>true,
-												'created_date' => true
-											));
-						$total = $cursor->count();
-						return compact('search', 'searchType', 'criteria', 'cursor', 'total');
-					break;
-				}
+			if (empty($min_date) || empty($max_date)) {
+			    FlashMessage::set("Missing Min and/or max date" ,	array('class' => 'fail'));
+			    return compact('search', 'results', 'searchType', 'criteria');
+			}
+            //Conditions with date converted to the right timezone
+            $min = new MongoDate(strtotime($this->request->data['min_date']));
+            $max = new MongoDate(strtotime($this->request->data['max_date']));
+            $date = array(
+                'created_date' => array(
+                    '$gte' => $min,
+                    '$lte' => $max)
+            );
+            $searchType = $this->request->data['search_type'];
+            $total = 0;
+            switch ($searchType) {
+                case 'Revenue':
+                    $results = Affiliate::revenueCount($name,$affiliate,$min,$max);
+                break;
+                case 'Registrations':
+                    $results = Affiliate::registrationCount($name, $date, $affiliate);
+                    break;
+                case 'Bounces':
+                    $results = Affiliate::bounceReport($name, $date, $affiliate);
+                    break;
+                case 'Effective':
+                    $results = Affiliate::effectiveCoReg($name, $date, $affiliate);
+                    break;
 			}
 		}
 		return compact('search', 'results', 'searchType', 'criteria');
@@ -324,7 +232,6 @@ class ReportsController extends BaseController {
 			    $eventItem = $eventItem['_config']['data'];
 			    $id = (string)$eventItem['_id'];
 				$temp[$id] = $eventItem;
-
 				$itemIds[] = $id;
 			}
 			$eventItems = $temp;

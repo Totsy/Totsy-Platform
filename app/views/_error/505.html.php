@@ -17,6 +17,7 @@
 			</div>
 
 	<div id="content">
+	    booboo
 		<h1>There was an error processing your request.</h1>
 		<hr/>
 		<p>Our engineers have been alerted and will work quickly to correct any issues.</p>

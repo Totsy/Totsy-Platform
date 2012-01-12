@@ -14,6 +14,7 @@ if (is_array($events) && count($events)>0){
 			<short><?php echo (empty($event['short'])) ? default_events_rss_cut_string($event['blurb'],45) : $event['short']; ?></short>
 			<category>OPEN</category> 
 			<image><?php echo $event['event_image']; ?></image> 
+			<image_small><?php echo $event['event_image_small']; ?></image_small> 
 			<brandName><?php echo htmlspecialchars($event['vendor'])?></brandName>
 			<availableItems><?php echo $event['available_items']==true?'YES':'NO';?></availableItems>
 			<discount><?php echo floor($event['maxDiscount']); ?></discount>
