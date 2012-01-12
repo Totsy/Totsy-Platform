@@ -29,7 +29,8 @@ class EventsController extends BaseController {
 			'infant' => 'Infant 0 -12M',
 			'toddler' => 'Toddler 1-3Y',
 			'preschool' => 'Preschool 4-5Y',
-			'school' => 'School Age 5+'
+			'school' => 'School Age 5+',
+			'adult' => 'Adult'
 		)
 	);
 
