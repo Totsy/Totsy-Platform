@@ -76,7 +76,7 @@ class EventsController extends BaseController {
 			$openEvents = Event::open()->data();
 		} else {
 			$map = $this->_mapCategories[ $this->request->params['action'] ];
-			$categories =  $map[ $this->request->args[0] ];
+			$ages =  $map[ $this->request->args[0] ];
 			$openEvents = Event::open(null,array(),null,null, $ages)->data();
 			unset($map);
 		}
