@@ -168,7 +168,7 @@ class UsersController extends BaseController {
 					return $this->redirect($landing);
 					unset($landing);
 				} else {
-					return $this->redirect('/sales');
+					$this->redirect('/sales?req=invite');
 				}
 
 			} else {
@@ -611,6 +611,10 @@ class UsersController extends BaseController {
 			}
 			$flashMessage = '<div class="success_flash">Your invitations have been sent</div>';
 		}
+		
+		if(substr_count($this->request->env('HTTP_REFERER'), "/sales?req=invite")>0) {
+			$this->redirect('/sales');
+		}
 		$open = Invitation::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user->_id,
@@ -621,11 +625,11 @@ class UsersController extends BaseController {
 				'user_id' => (string) $user->_id,
 				'status' => 'Accepted')
 		));
-
+		
 		$pixel = Affiliate::getPixels('invite', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
-			                                            array('invite' => $_SERVER['REQUEST_URI'])
-			                                            );
+		array('invite' => $_SERVER['REQUEST_URI'])
+		);
 		if($this->request->is('mobile')){
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_invite';
@@ -721,7 +725,7 @@ class UsersController extends BaseController {
 				$this->redirect($landing);
 				unset($landing);
 			} else {
-				$this->redirect('/sales');
+				$this->redirect('/sales?req=invite');
 			}
 		}
 
