@@ -1,5 +1,4 @@
-blooo
-<?php $this->title("Page Not Found"); ?>
+<?php $this->title("Page Not Found - Totsy [404]"); ?>
 
 <div class="grid_16">
 <h2 class="page-title gray">We're sorry, we couldn't find what you were looking for.</h2>

@@ -40,7 +40,7 @@ ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception
                 $response->body(Media::render($response, compact('info', 'params'), array(
                     'layout' => null,
                     'controller' => '_error',
-                    'template' => '505'
+                    'template' => '503'
                 )));
             }
             mail('lhanson@totsy.com', "500 Error on /{$params['request']->url}", $message);
