@@ -13,6 +13,97 @@ use app\models\Affiliate;
 
 class EventsController extends BaseController {
 
+	private $_mapCategories = array (
+		'category' =>  array(
+			'girls-apparel' => "Girls Apparel",
+			'boys-apparel' => "Boys Apparel",
+			'shoes' => "Shoes",
+			'accessories' =>"Accessories",
+			'toys-books' => "Toys &amp; Books",
+			'gear' => "Gear",
+			'home' => "Home",
+			'moms-dads' => "Moms &amp; Dads"
+		),
+		'age' => array(
+			'newborn' => 'Newborn',
+			'infant' => 'Infant 0 -12M',
+			'toddler' => 'Toddler 1-3Y',
+			'preschool' => 'Preschool 4-5Y',
+			'school' => 'School Age 5+',
+			'adult' => 'Adult'
+		)
+	);
+
+	public function category() {
+		$datas = $this->request->args;
+		$categories = array();
+		
+	
+		if(empty($this->request->args[0])) {
+			$openEvents = Event::open()->data();
+		} else {
+			$map = $this->_mapCategories[ $this->request->params['action'] ];
+			$categories =  $map[ $this->request->args[0] ];
+			$openEvents = Event::open(null,array(),null,$categories)->data();
+			unset($map);
+		}
+
+		$itemCounts = array();
+
+		$eventCount = count($openEvents);		
+
+		$itemsCollection = Item::collection();
+
+		for($i=0; $i<$eventCount; $i++){
+			$eventId = (string)$openEvents[$i]['_id'];
+			
+			$items = $itemsCollection->find( array('event' =>  array($eventId)) )
+									  ->limit(6);		
+			
+			foreach($items as $eachitem){
+				$openEvents[$i]['eventItems'][] = $eachitem;
+			}
+		}
+		
+		return compact('openEvents', 'items', 'categories', 'eventCount');
+	}
+
+
+	public function age() {
+		$datas = $this->request->args;
+		$categories = array();
+
+		if(empty($this->request->args[0])) {
+			$openEvents = Event::open()->data();
+		} else {
+			$map = $this->_mapCategories[ $this->request->params['action'] ];
+			$ages =  $map[ $this->request->args[0] ];
+			$openEvents = Event::open(null,array(),null,null, $ages)->data();
+			unset($map);
+		}
+
+		$itemCounts = array();
+
+		$eventCount = count($openEvents);		
+
+		$itemsCollection = Item::collection();
+
+		for($i=0; $i<$eventCount; $i++){
+			$eventId = (string)$openEvents[$i]['_id'];
+
+			$items = $itemsCollection->find(array('event' =>  array($eventId)))
+									 ->limit(6);
+			
+			foreach($items as $eachitem){
+				$openEvents[$i]['eventItems'][] = $eachitem;
+			}
+		}
+		
+		$this->_render['template'] = 'category';
+
+		return compact('openEvents', 'items', 'categories', 'eventCount');
+	}
+
 	public function index() {
 		$datas = $this->request->data;
 		$departments = array();
@@ -130,7 +221,6 @@ class EventsController extends BaseController {
 					foreach ($eventItems as $eventItem) {
 						$result = $eventItem->data();
 
-						
 						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
 							if(in_array($departments,$result['departments']) ) {
 								if ($eventItem->total_quantity <= 0) {
