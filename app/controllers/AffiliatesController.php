@@ -36,7 +36,7 @@ class AffiliatesController extends BaseController {
 				return compact('success', 'errors');
 			}
 
-			if ($this->request->data){
+			if ($this->request->data) {
 				$data = $this->request->data;
 				$query = $this->request->query;
 				$genpasswd = false;
@@ -67,6 +67,7 @@ class AffiliatesController extends BaseController {
                         $user['terms'] = "1";
                         
                         extract(UsersController::registration($user));
+                        
                         if ($saved) {
                             if ($code == 'bamboo') {
                                  if ($this->request->query) {
@@ -114,7 +115,6 @@ class AffiliatesController extends BaseController {
 	**/
 
 	public function register($affiliate = NULL) {
-		//ini_set("display_errors", 1);
 		
 		//affiliate category name
 		$categoryName = "";
@@ -122,16 +122,6 @@ class AffiliatesController extends BaseController {
 		$affiliateName = "";
 		//for affiliate background images
 		$affBgroundImage = "";
-		
-		/*
-		switch($this->request->env("HTTP_HOST")) {
-		    case "mamasource.totsy.com":
-		    case "evan.totsy.com":
-		        $affiliate = "mamasource";
-		    	break;
-		    default:
-		        break;
-		}*/
 		
 		if (isset($this->request->query['a']) || preg_match('/^[a-z_]+$/', $this->request->query['a'])) {
 		
@@ -164,11 +154,11 @@ class AffiliatesController extends BaseController {
 		$cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		
-		if (($affiliate)) {
+		if ($affiliate) {
 			$pixel = Affiliate::getPixels('after_reg', $affiliate);
 			$gdata = $this->request->query;
 			$params = $this->request->params;
-			if (($gdata)) {
+			if ($gdata) {
 				$affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
 				if (array_key_exists('redirect', $gdata)) {
 					$urlredirect = parse_url(htmlspecialchars_decode(urldecode($gdata['redirect'])), PHP_URL_PATH);
@@ -198,7 +188,7 @@ class AffiliatesController extends BaseController {
                 }
             }
 
-			if (($pdata)) {
+			if ($pdata) {
 				$data['email'] = htmlspecialchars_decode(strtolower($pdata['email']));
 				$data['confirmemail'] = htmlspecialchars_decode(strtolower($pdata['email']));
 				$data['password'] = $pdata['password'];
@@ -223,6 +213,7 @@ class AffiliatesController extends BaseController {
                         }
                 }
 				extract(UsersController::registration($data));
+				
 				if ($saved) {
 					$message = $saved;
 					Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
@@ -232,17 +223,21 @@ class AffiliatesController extends BaseController {
 		            Session::write('pixel', $pixel, array('name' => 'default'));
 					Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 					User::log($ipaddress);
-					$this->redirect($urlredirect);
+					
+					$this->redirect($urlredirect, array('exit' => true));
 				}
 			}
 		}
-				
+						
 		if($this->request->is('mobile')){
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_register';
 		} else {
 			$this->_render['layout'] = 'login';
 		}	
+		
+		
+				
 		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliate');
 	}
 }

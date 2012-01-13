@@ -77,7 +77,7 @@ class UsersController extends BaseController {
 		* redirects to the affiliate registration page if the left the page
 		* and then decided to register afterwards.
 		*/
-
+		
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
 			return $this->redirect($cookie['landing_url']);
@@ -86,19 +86,21 @@ class UsersController extends BaseController {
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
 			Session::write('landing',$referer['path'],array('name'=>'default'));
 		}
-		
-		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
-           $affiliate = new AffiliatesController(array('request' => $this->request));
-           $affiliate->register("mamasource");
-       	}
-		
+				
 		unset($referer);
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
 			$data['email_hash'] = md5($data['email']);
 		}
+		
+		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
+        	$affiliate = new AffiliatesController(array('request' => $this->request));
+        	$affiliate->register("mamasource");
+        }
+		
 		$user = User::create($data);
+		
 		if ($this->request->data && $user->validates() ) {
 			$email = $data['email'];
 			$data['password'] = sha1($this->request->data['password']);
@@ -125,7 +127,9 @@ class UsersController extends BaseController {
 						$data['keyade_user_id'] = $affiliate_user_id;
 					}
 			}
-			if ($user->save($data)) {
+			
+			if ($user->save($data) && $user->validates()) {
+						
 				$userLogin = array(
 					'_id' => (string) $user->_id,
 				//	'firstname' => $user->firstname,
@@ -143,9 +147,14 @@ class UsersController extends BaseController {
 					'email' => $user->email
 				);
 				$mailer = $this->_classes['mailer'];
-				$mailer::send('Welcome_Free_Shipping', $user->email);
-				$mailer::addToMailingList($data['email']);
-				$mailer::addToSuppressionList($data['email']);
+				
+				//don't send email to mamapedia-registered users 
+				if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
+					$mailer::send('Welcome_Free_Shipping', $user->email);
+					$mailer::addToMailingList($data['email']);
+					$mailer::addToSuppressionList($data['email']);
+				}
+								
 				$ipaddress = $this->request->env('REMOTE_ADDR');
 				User::log($ipaddress);
 
@@ -153,6 +162,7 @@ class UsersController extends BaseController {
 				if (Session::check('landing')){
 					$landing = Session::read('landing');
 				}
+								
 				if (!empty($landing)){
 					Session::delete('landing',array('name'=>'default'));
 					return $this->redirect($landing);
@@ -161,30 +171,17 @@ class UsersController extends BaseController {
 					return $this->redirect('/sales');
 				}
 
+			} else {
+				if ($this->request->data) {
+				$message = '<div class="error_flash">Error in registering your account</div>';
+				} 
 			}
 		}
-
-		/*
-		if($this->request->is('mobile')){
-		 	$this->_render['layout'] = 'mobile_login';
-		 	$this->_render['template'] = 'mobile_register';
-		} else {
-			//$this->_render['layout'] = 'login';
-		}*/
-
-		if ($this->request->data && !$user->validates() ) {
-			$message = '<div class="error_flash">Error in registering your account</div>';
-		} 
 		
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
 		}
-
-		/*
-		else {
-			//$this->_render['layout'] = 'login';
-		} */
 
 		return compact('message', 'user');
 	}
@@ -206,6 +203,7 @@ class UsersController extends BaseController {
 				$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 				$data['email_hash'] = md5($data['email']);
 				$user = User::create($data);
+				
 				if ($user->validates()) {
 					$email = $data['email'];
 					$data['password'] = sha1($data['password']);
@@ -218,40 +216,39 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
-						$mail_template = 'Welcome_Free_Shipping';
-						$params = array();
-
-						$data = array(
-							'user' => $user,
-							'email' => $user->email
-						);
-
-						if (isset($user['clear_token'])) {
-							$mail_template = 'Welcome_auto_passgen';
-							$params['token'] = $user['clear_token'];
-						}
 						
-						//don't send 'free shipping on 1st order email' to Mamasource users
-						if( $data['invited_by']!=="mamasource" ) { 
-							Mailer::send($mail_template, $user->email,$params);
-						}
+						if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
+							$mail_template = 'Welcome_Free_Shipping';
+							$params = array();
 						
-						$args = array();
-						if (!empty($user->firstname)) $args['name'] = $user->firstname;
-						if (!empty($user->lastname)) $args['name'] = $args['name'] . $user->lastname;
-						if (!empty($user->invited_by)) {
-							$affiliate_cusror = Affiliate::collection()->find(array('invitation_codes'=>$user->invited_by));
-							if ($affiliate_cusror->hasNext()) {
-								$affiliate = $affiliate_cusror->getNext();
-								$args['source'] = $affiliate['name'];
-								unset($affiliate);
+							$data = array(
+								'user' => $user,
+								'email' => $user->email
+							);
+						
+							if (isset($user['clear_token'])) {
+								$mail_template = 'Welcome_auto_passgen';
+								$params['token'] = $user['clear_token'];
 							}
-							unset($affiliate_cusror);
+							
+							Mailer::send($mail_template, $user->email,$params);
+							
+							$args = array();
+							if (!empty($user->firstname)) $args['name'] = $user->firstname;
+							if (!empty($user->lastname)) $args['name'] = $args['name'] . $user->lastname;
+							if (!empty($user->invited_by)) {
+							    $affiliate_cusror = Affiliate::collection()->find(array('invitation_codes'=>$user->invited_by));
+							    if ($affiliate_cusror->hasNext()) {
+							    	$affiliate = $affiliate_cusror->getNext();
+							    	$args['source'] = $affiliate['name'];
+							    	unset($affiliate);
+							    }
+							    unset($affiliate_cusror);
+							}
+							
+							Mailer::addToMailingList($data['email'],$args);
+							Mailer::addToSuppressionList($data['email']);
 						}
-
-						Mailer::addToMailingList($data['email'],$args);
-						Mailer::addToSuppressionList($data['email']);
-
 					}
 				}
 			}

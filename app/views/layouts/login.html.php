@@ -27,7 +27,6 @@
 	<script type="text/javascript">
 		function deleteFBCookie(name) {
 			document.cookie = name +'=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			//window.location = "http://evan.totsy.com/login";
 		} 
 	</script>
 	
