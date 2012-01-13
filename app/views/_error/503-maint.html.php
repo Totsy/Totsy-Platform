@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
-	<title>Site Down For Maintenance - Totsy</title>
+	<title>Site Down For Maintenance - Totsy [503 Service Unavailable]</title>
 	<link rel="stylesheet" type="text/css" href="/css/base.css" media="screen" />
 	<link href="/img/favicon.ico" title="Icon" type="image/x-icon" rel="icon" />
 	<link href="/img/favicon.ico" title="Icon" type="image/x-icon" rel="shortcut icon" />

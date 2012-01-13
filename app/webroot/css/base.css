@@ -4758,3 +4758,18 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #description img {
 	max-width: 410px;
 }
+
+/*
+	Status Pages - 404, 500, 503 Maintenance
+*/
+.p-status #totsy > header {
+	margin-top:0;
+}
+.p-status #totsy > header em {
+	position: absolute; top:0; left:0;
+	display: block;
+	width:100px; height: 58px;
+	background: url(../img/logo-125x77.png) 0 0 no-repeat;
+	background-size: 100px 58px;
+	text-indent: -999em;
+}

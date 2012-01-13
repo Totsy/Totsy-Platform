@@ -40,10 +40,11 @@ ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception
                 $response->body(Media::render($response, compact('info', 'params'), array(
                     'layout' => null,
                     'controller' => '_error',
-                    'template' => '503'
+                    'template' => '500' // 500 is for Internal Server Error ("woopsies"); 503-maint is Maintenance page
                 )));
             }
-            mail('lhanson@totsy.com', "500 Error on /{$params['request']->url}", $message);
+            // @TODO - add back in mail function
+            //mail('bugs@totsy.com', "500 Error on /{$params['request']->url}", $message);
         } else {
             /* Full post mortem in non-production envs. */
             $request = $params['request'];
