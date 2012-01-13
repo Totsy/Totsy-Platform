@@ -76,8 +76,6 @@ use lithium\storage\Session;
 
 </head>
 <body class="app">
-
-<<<<<<< HEAD
 	<?php if(isset($branch)) { echo $branch; } ?>
 	<div id="totsy" class="container_16 roundy glow">
 		
@@ -88,26 +86,19 @@ use lithium\storage\Session;
 		</div>
 		<!-- /#contentMain -->
 
-
-		<div id="footer" class="container_16">
-			<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
-		</div>
-		<!-- end footer nav -->
-	
-		<div class="container_16 clear" style="margin-top:50px;">
-			<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
-		</div>
-		<!-- end footer icons -->
-	
-		<div id="toTop">^ Top</div>
-		
 	</div><!-- /#totsy -->
 
-	<!--affiliate pixels-->
-	<?php echo $pixel; ?>
+	<div id="footer" class="container_16 group">
+		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
+	</div>
+	<!-- end footer nav -->
 
-<!-- @TODO - @DG: all these scripts should be externalized -->
+	<div class="container_16 group">
+		<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
+	</div>
+	<!-- end footer icons -->
 	<div id='toTop'>^ Top</div>
+
 <?php 
 if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) { 
 ?>
@@ -127,6 +118,7 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 <? } ?>
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
+
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
