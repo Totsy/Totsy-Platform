@@ -86,11 +86,28 @@
 	<!-- end footer icons -->
 
 	<div id='toTop'>^ Top</div>
-		
+
+<?php 
+if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) { 
+?>
+<div id="invites">
+		<span class="ui-icon ui-icon-circle-check"></span>
+		<?php echo $this->view()->render(array('element' => 'inviteModal')); ?>
+</div>
+<script>
+	$(function() {
+		$( "#dialog:ui-dialog" ).dialog( "destroy" );
+		$( "#invites" ).dialog({
+			modal: true,
+			width: 760,
+		});
+	});
+</script>
+<? } ?>
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
 
-<!-- @TODO - @DG: all these scripts should be externalized -->
+<!-- @TODO: externalize scripts where applicable -->
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
