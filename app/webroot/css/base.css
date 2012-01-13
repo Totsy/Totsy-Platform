@@ -760,7 +760,8 @@ h2.page-title {
 	font-weight:normal;
 	font-size:20px;
 }
-#openEvents > header h2 {
+.fullwidth > section > header h2 {
+	margin-bottom:6px; padding-bottom:6px;
 	border-bottom:1px solid #ddd;
 }
 #page p {
