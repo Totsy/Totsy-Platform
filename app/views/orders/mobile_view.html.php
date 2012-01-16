@@ -122,3 +122,47 @@
 	</div>
 <?php endif ?>
 </div>
+
+<!--- ECOMMERCE TRACKING -->
+<?php if ($brandNew): ?>
+	<script type="text/javascript">
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-675412-20']);
+	  _gaq.push(['_trackPageview']);
+	  _gaq.push(['_addTrans',
+	    '<?php echo $order->order_id?>',           // order ID - required
+	    '',  // affiliation or store name
+	    '<?php echo $order->total?>',          // total - required
+	    '<?php echo $order->tax?>',           // tax
+	    '<?php echo $order->handling?>',              // shipping
+	    '<?php echo $order->shipping->city?>',       // city
+	    '<?php echo $order->shipping->state?>',     // state or province
+	    'US'             // country
+	  ]);
+
+	   // add item might be called for every item in the shopping cart
+	   // where your ecommerce engine loops through each item in the cart and
+	   // prints out _addItem for each
+
+	  <?php foreach($itemsByEvent as $event): ?>
+			<?php foreach($event as $item): ?>
+				 _gaq.push(['_addItem',
+				'<?php echo $order->order_id?>',			// order ID - required
+				'<?php echo $item['sku']?>',			// SKU/code - required
+				'<?php echo $item['description']?>',		// product name
+				'<?php echo $item['color']?>',		// category or variation
+				'<?php echo $item['sale_retail']?>',        // unit price - required
+				'<?php echo $item['quantity']?>'         // quantity - required
+				 ]);
+			<?php endforeach ?>
+		<?php endforeach ?>
+	  _gaq.push(['_trackTrans']); //submits transaction to the Analytics servers
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+<?php endif ?>
