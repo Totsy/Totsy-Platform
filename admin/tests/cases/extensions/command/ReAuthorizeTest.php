@@ -438,7 +438,7 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		$cc_encrypt = Order::creditCardEncrypt($this->_VisaCard, (string) $user->_id);
 		#Temporary Order Creation
 		$order = Order::create(array('_id' => new MongoId()));
-		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
+		$order->date_created = new MongoDate(mktime(date("H"), date("i"), date("s"), date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$order->save(array(
 				'total' => 100.00,
@@ -460,7 +460,7 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		$void_records = $order_test['void_records'];
-		$void_records[0]['date_saved'] = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - 0.5, date("Y")));
+		$void_records[0]['date_saved'] = new MongoDate(mktime(date("H") - 12, date("i"), date("s"), date("m"), date("d"), date("Y")));
 		$update = $ordersCollection->update(
 			array('_id' => $order->_id),
 			array('$set' => array('void_records' => $void_records)), array( 'upsert' => true)
