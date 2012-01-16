@@ -80,6 +80,7 @@ class ReCapture extends \lithium\console\Command {
 				Logger::debug('Processing Order Id : ' . $orderId);
 				$conditions = array('order_id' => $orderId,
 									'total' => array('$ne' => 0),
+									'cancel' => array('$ne' => true),
 									'payment_captured' => array('$exists' => false)
 									);
 				$order = $ordersCollection->findOne($conditions);
@@ -159,17 +160,18 @@ class ReCapture extends \lithium\console\Command {
 				);
 			}
 		} else {
-			Logger::debug('Authorize Error: ' . implode('; ', $auth->errors));
 			#Record errors in DB
+			$error = implode('; ', $auth->errors);
+			Logger::debug('Authorize Error: ' . $error);
 			$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
 						array('$set' => array('error_date' => new MongoDate(),
-											  'auth_error' => $auth->errors
+											  'auth_error' => $error
 						)), array( 'upsert' => true)
 			);
 			#Include errors in Report
 			$reportAuthorize[] = 'authorize_error';
-			$reportAuthorize[] = implode('; ', $auth->errors);
+			$reportAuthorize[] = $error;
 			$reportAuthorize[] = $order['order_id'];
 			$reportAuthorize[] = $order['authKey'];
 			$reportAuthorize[] = $order['total'];
@@ -195,6 +197,7 @@ class ReCapture extends \lithium\console\Command {
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth_capture->key,
 											  'auth' => $auth_capture->export(),
+											  'authTotal' => $order['total'],
 											  'processor' => $auth_capture->adapter,
 											  'payment_date' => new MongoDate(),
            									  'auth_confirmation' => $auth_capture->key,
@@ -214,17 +217,18 @@ class ReCapture extends \lithium\console\Command {
 			$report[] = $order['total'];
 			Logger::debug('Order Document Updated!');
 		} else {
-			Logger::debug('Capture Error: ' . implode('; ', $auth_capture->errors));
 			#Record errors in DB
+			$error = implode('; ', $auth_capture->errors);
+			Logger::debug('Capture Error: ' .$error);
 			$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
 						array('$set' => array('error_date' => new MongoDate(),
-											  'auth_error' => $auth_capture->errors
+											  'auth_error' => $error
 						)), array( 'upsert' => true)
 			);
 			#Include errors in Report
 			$report[] = 'capture_error';
-			$report[] = implode('; ', $auth_capture->errors);
+			$report[] = $error;
 			$report[] = $order['order_id'];
 			$report[] = $order['authKey'];
 			$report[] = $order['total'];

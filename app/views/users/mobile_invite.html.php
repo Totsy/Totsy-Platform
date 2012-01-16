@@ -1,5 +1,3 @@
-<?php $this->title("My Invitations"); ?>
-
 <link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/validation-template.css" media="screen" />
 <script type="text/javascript" src="/js/form_validator/jquery.validation-engine.js" charset="utf-8"></script>    

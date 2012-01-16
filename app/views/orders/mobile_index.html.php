@@ -1,6 +1,4 @@
-<?php $this->title("My Orders"); ?>
-
-	<h2>My Orders</h2>
+<h2>My Orders</h2>
 	<hr />
 	<?php if (!empty($lifeTimeSavings)) : ?>
 	<div class="holiday_message"><p style="font-size:14px;">Your Total Lifetime Savings: <strong style="color:#009900;">$<?php echo number_format((float) $lifeTimeSavings, 2);?></strong></p></div>
@@ -43,7 +41,7 @@
 								<?php endif ?>
 							<?php else: ?>
 								<?php if ($shipDate["$order->_id"] > time()): ?>
-									Estimated Ship Date: <br/><?php echo date('M d, Y', $shipDate["$order->_id"]); ?>
+									Estimated Delivery Date: <br/><?php echo date('M d, Y', $shipDate["$order->_id"]); ?> 
 								<?php else: ?>
 								<?php endif ?>
 						<?php endif ?></p>

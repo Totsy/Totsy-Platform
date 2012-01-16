@@ -41,26 +41,31 @@ class BaseController extends \lithium\action\Controller {
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
+        if(Environment::is('production')){
+            $version = "<!-- Current version: " . $this->currentVersion() . " -->";
+            $this->set(compact('version'));
+        }
+
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
-	    
-		/**
-		 * Setup all the necessary facebook stuff
-		 */
-		
+
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
 
-		$this->fbsession = $fbsession = FacebookProxy::getUser();		
-		$fbconfig = FacebookProxy::config(); 
+		/**
+		 * Setup all the necessary facebook stuff
+		 */
+
+		$this->fbsession = $fbsession = FacebookProxy::getUser();
+		$fbconfig = FacebookProxy::config();
 
 		if ($this->fbsession) {
-			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));
 		} else {
 			$fblogout = "/logout";
 		}
@@ -74,8 +79,8 @@ class BaseController extends \lithium\action\Controller {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/			    
-			    if ($user->deactivated == true) {			    
+			    **/
+			    if ($user->deactivated == true) {
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
 					//FacebookProxy::setSession(null);
@@ -145,7 +150,7 @@ class BaseController extends \lithium\action\Controller {
 		$this->set(compact('pixel'));
 
 
-			
+
 	}
 
 	/**
@@ -245,6 +250,18 @@ class BaseController extends \lithium\action\Controller {
 			return;
 		}
 		$head = trim(file_get_contents("{$git}/HEAD"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
+	}
+	/**
+	* Displays what git version is deployed
+	**/
+	public function currentVersion() {
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/refs/heads/master"));
 		$head = explode('/', $head);
 
 		return array_pop($head);

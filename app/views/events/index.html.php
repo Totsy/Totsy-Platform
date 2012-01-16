@@ -87,7 +87,7 @@
 							'title' => $event->name,
 							'alt' => $event->name,
 							'width' => '228',
-							'height' => '266'
+							'height' => '263'
 						)), "sale/$url", array('escape'=> false));
 						 ?>
 					<?php endif ?>
@@ -165,7 +165,7 @@
 							'title' => $event->name,
 							'alt' => $event->name,
 							'width' => '228',
-							'height' => '266'
+							'height' => '263'
 						)), 'sale/'.$event->url, array('escape'=> false));
 						 ?>
 				<div class="splash-details">

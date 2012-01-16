@@ -278,7 +278,7 @@ $(function() {
 				</div>
 
 				<div id="shipDateOverride">
-					<?=$this->form->label('Estimated Ship Date'); ?>
+					<?php echo $this->form->label('Estimated Delivery Date'); ?>
 					<p>This date will override the calcualted ship date for orders.</p>
 					<?=$this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
@@ -519,12 +519,26 @@ $(document).ready(function() {
 $(document).ready(function(){
 
 tinyMCE.init({
-	// General options
-	mode : "exact",
-	elements: "Blurb,ShipMessage,"+allitemids,
-	theme : "simple",
-	editor_selector : "mceSimple"
+// General options
+mode : "exact",
+elements: "Blurb,ShipMessage,"+allitemids,
+theme : "advanced",
+plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
+editor_deselector : "mceNoEditor",
+// Theme options
+theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
 
+theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
+
+theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
+/* theme_advanced_button3:
+theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
+theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
+
+theme_advanced_toolbar_location : "top",
+theme_advanced_toolbar_align : "left",
+theme_advanced_statusbar_location : "bottom",
+theme_advanced_resizing : false,
 
 });
 

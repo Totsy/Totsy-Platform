@@ -3681,7 +3681,7 @@ a.nivo-prevNav {
 	border:1px solid #D7D7D7;
 	margin:0 0 10px;
 	overflow:hidden;
-	min-height:321px;
+	min-height:318px;
 }
 
 .roundy_product {
@@ -4396,4 +4396,8 @@ Text Align > left / right
 	font-weight: normal!important;
 	border-bottom: 2px solid #DDDDDD!important;
 	margin: 9px 9px 3px!important;
+}
+
+#description img {
+	max-width: 410px;
 }

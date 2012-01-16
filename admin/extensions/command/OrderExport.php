@@ -755,7 +755,6 @@ class OrderExport extends Base {
 					'event' => array('$in' => array($eventId)
 			    )
 			)));
-			$items = $items->data();
 		}
 		return $items;
 	}

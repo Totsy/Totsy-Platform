@@ -1,5 +1,3 @@
-<?php $this->title("Order Confirmation"); ?>
-
 <?php if ($order): ?>
 	<h2>My Orders</h2>
 	<hr />
@@ -17,7 +15,7 @@
 									<?php echo $orderEvents[$key]['ship_message']?>
 							
 							<?php endif ?>
-								Estimated Ship Date:
+								Estimated Delivery Date:
 								<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
 									<?
 									//echo date('M d, Y', strtotime($orderEvents[$key]['ship_date']));

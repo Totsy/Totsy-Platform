@@ -53,10 +53,23 @@ Dispatcher::applyFilter('_callable', function($self, $params, $chain) {
 	return $chain->next($self, $params, $chain);
 });
 
+
 $decode = function($data) { return $data; };
 Media::type('png', 'image/png', compact('decode'));
 Media::type('jpg', 'image/jpeg', compact('decode'));
 Media::type('gif', 'image/gif', compact('decode'));
 Media::type('tiff', 'image/tiff', compact('decode'));
 Media::type('txt', 'text/plain', compact('decode'));
+
+Media::type('xml', 'text/xml', array(
+    'layout' => '{:library}/views/layouts/default.xml.php',
+    'view' => 'lithium\template\View',
+    'template' => array(
+            '{:library}/views/{:controller}/{:template}.xml.php'
+        ),
+    'conditions' => array('type' => true),
+    'encode' => function($data) {
+       return $data;
+    }
+));
 ?>

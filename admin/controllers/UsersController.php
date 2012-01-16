@@ -95,7 +95,7 @@ class UsersController extends \admin\controllers\BaseController {
 				    if(is_array($userData['created_date'])){
 				        $userData['register date'] = date("M d, Y",$userData["created_date"]['sec']);
 				    } else {
-				        $userData['register date'] = date("M d, Y",strtotime($userData["created_date"]));
+				        $userData['register date'] = date("M d, Y",$userData["created_date"]);
 				    }
 				}
 				if (array_key_exists('created_on', $userData)) {
@@ -138,10 +138,10 @@ class UsersController extends \admin\controllers\BaseController {
 		$message = false;
 		if ($this->request->data) {
 		    $this->request->data['email'] = strtolower($this->request->data['email']);
-		    var_dump(Auth::check("userLogin", $this->request));
 			if (Auth::check("userLogin", $this->request)) {
 				return $this->redirect('/');
 			}
+
 			$message = 'Login Failed - Please Try Again';
 		}
 		return compact('message');

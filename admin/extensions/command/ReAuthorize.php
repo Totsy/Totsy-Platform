@@ -136,15 +136,18 @@ class ReAuthorize extends \lithium\console\Command {
 	}
 	
 	public function sendReports($report = null) {
+		$reportToSend = $report;
+		unset($reportToSend['skipped']);
 		Logger::debug('Sending Report');
 		#If Errors Send Email to Customer Service
-		if(!empty($report['updated']) || !empty($report['errors']) ) {
+		if(!empty($reportToSend['updated']) || !empty($reportToSend['errors']) ) {
 			if (Environment::is('production')) {
-				Mailer::send('ReAuth_Errors_CyberSource','searnest@totsy.com', $report);
-				Mailer::send('ReAuth_Errors_CyberSource','mruiz@totsy.com', $report);
-				Mailer::send('ReAuth_Errors_CyberSource','gene@totsy.com', $report);
+				Mailer::send('ReAuth_Errors_CyberSource','searnest@totsy.com', $reportToSend);
+				Mailer::send('ReAuth_Errors_CyberSource','mruiz@totsy.com', $reportToSend);
+				Mailer::send('ReAuth_Errors_CyberSource','gene@totsy.com', $reportToSend);
 			}
-			Mailer::send('ReAuth_Errors_CyberSource','troyer@totsy.com', $report);
+			Mailer::send('ReAuth_Errors_CyberSource','troyer@totsy.com', $reportToSend);
+			Logger::debug('Report Sent!');
 		}
 	}
 
@@ -313,6 +316,12 @@ class ReAuthorize extends \lithium\console\Command {
 					} else {
 						$message  = "Authorize failed for order id `{$order['order_id']}`:";
 						$message .= $error = implode('; ', $auth->errors);
+						$update = $ordersCollection->update(
+													array('_id' => $order['_id']),
+													array('$set' => array('error_date' => new MongoDate(),
+																			'auth_error' => $error
+													)), array( 'upsert' => true)
+						);
 						$report['errors'][] = array(
 							'error_message' => $message,
 							'order_id' => $order['order_id'],
@@ -414,6 +423,19 @@ class ReAuthorize extends \lithium\console\Command {
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
 			Logger::debug($message);
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => array('error_date' => new MongoDate(),
+					'auth_error' => $error
+				)), array( 'upsert' => true)
+			);
+			if($this->fullAmount) {
+				$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('processed' => false
+					)), array( 'upsert' => true)
+				);
+			}
 			$report['errors'][] = array(
 			'error_message' => $message, 
 			'order_id' => $order['order_id'], 

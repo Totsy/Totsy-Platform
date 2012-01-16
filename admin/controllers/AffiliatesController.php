@@ -29,7 +29,6 @@ class AffiliatesController extends BaseController {
 	);
 
 	public function index() {
-
 	   $affiliates = Affiliate::collection()->find(array('affiliate'=>true), array(
        'date_created' => true,
        'created_by' => true,
@@ -68,6 +67,34 @@ class AffiliatesController extends BaseController {
         return compact('affiliates');
 	}
 
+	/* Gets all unique categories from the affiliates collection */
+	public function getCategories() {
+
+		$affiliateCategories = array();
+		$temp = Affiliate::collection()->find( array('affiliate'=>true), array(
+    	'date_created' => true,
+    	'created_by' => true,
+    	'active' => true,
+    	'name' => true,
+    	'category' => true,
+    	'level' => true
+    	));
+
+    	foreach($temp as $affCat) {
+    		if(array_key_exists('category', $affCat)) {
+    			if(is_array($affCat['category'])) {
+    				foreach($affCat['category'] as $cat) {
+    				    if(!in_array($cat['name'], $affiliateCategories)) {
+    				    	$affiliateCategories[] = $cat['name'];
+    				    }
+    				}
+    			}
+    		}
+    	}
+
+    	return $affiliateCategories;
+	}
+
 	/**
 	* Adds a new affiliate in the collection.  Admin user can only create one landing page when
 	* creating affiliate.
@@ -76,6 +103,7 @@ class AffiliatesController extends BaseController {
 	* @see admin\models\Affiliate::pixelFormating()
 	*/
 	public function add() {
+
         $info = array();
         $landing = array();
        	$data = $this->request->data;
@@ -110,6 +138,7 @@ class AffiliatesController extends BaseController {
 			}
 
 			$info['created_by'] = Affiliate::createdBy();
+
 			$info['date_created'] = new MongoDate( strtotime( date('D M d Y') ) );
 
        		if (isset($info['name']) && isset($info['category'])) {
@@ -124,6 +153,7 @@ class AffiliatesController extends BaseController {
 					if($affiliate->save($info)) {
 						$this->redirect(array('Affiliates::edit', 'args' => array($affiliate->_id)));
 					}
+
 				}
 			}
 
@@ -139,6 +169,7 @@ class AffiliatesController extends BaseController {
 		$packages = $this->packages;
 
         return compact('affiliate','sitePages','packages', 'prospective_id');
+
 	}
 	/**
 	* Edits Affiliate information
@@ -156,6 +187,7 @@ class AffiliatesController extends BaseController {
 
         if( ($data) ) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
+
             $info['name'] = $data['affiliate_name'];
             $info['level'] = $data['level'];
             $info['invitation_codes'] = array_values( $data['invitation_codes'] );

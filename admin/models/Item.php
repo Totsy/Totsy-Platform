@@ -10,7 +10,7 @@ use lithium\analysis\Logger;
  * The `Item` class extends the generic `lithium\data\Model` class to provide
  * access to the Item MongoDB collection. This collection contains all product items.
  */
-class Item extends \lithium\data\Model {
+class Item extends Base {
 
 	protected $_floats = array(
 		'msrp',
@@ -85,7 +85,7 @@ class Item extends \lithium\data\Model {
 		}
 		$sizes = array();
 
-		foreach ($item->details->data() as $key => $val) {
+		foreach ($item->details as $key => $val) {
 			if ($val && ($val > 0)) {
 				$sizes[] = $key;
 			}

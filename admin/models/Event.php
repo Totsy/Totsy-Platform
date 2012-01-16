@@ -306,7 +306,6 @@ class Event extends \lithium\data\Model {
 				'conditions' => array(
 					'event' => array('$in' => array($eventId)
 			))));
-			$items = $items->data();
 		}
 		return $items;
 	}
