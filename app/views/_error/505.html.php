@@ -1,3 +1,7 @@
+<?php
+	// @DG-2012.01.16 - this is the current/original woopsies/maintenance page… 
+	// replaced with separate 500 (error) and 503 (maintenance) pages
+?>
 <!doctype html>
 <html>
 <head>
@@ -17,7 +21,6 @@
 			</div>
 
 	<div id="content">
-	    booboo
 		<h1>There was an error processing your request.</h1>
 		<hr/>
 		<p>Our engineers have been alerted and will work quickly to correct any issues.</p>
