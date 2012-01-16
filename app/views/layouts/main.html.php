@@ -126,7 +126,6 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
 <script type="text/javascript">
-	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
 	  _gaq.push(['_trackPageview']);
