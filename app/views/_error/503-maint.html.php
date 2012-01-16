@@ -11,11 +11,13 @@
 <body class="app p-maint">
 
 	<div id="totsy">
-	
+		<header>
+			<h1>We need a toggle: https://totsy1.jira.com/browse/TOTSY-415</h1>
+		</header>
 	</div>
 
 	<div id="footer">
-		<span id="copyright">&copy; <?php echo date(Y0) ?> Totsy.com. All Rights Reserved.</span>
+		<span id="copyright">&copy; <?php echo date(Y) ?> Totsy.com. All Rights Reserved.</span>
 	</div>
 
 	<script type="text/javascript">

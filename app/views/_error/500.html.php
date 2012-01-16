@@ -16,8 +16,7 @@
 			<h1><em>Totsy - </em>Our best people are on this!</h1>
 		</header>
 		<section>
-			<h2>Yo, Dude! Fix the localhost assignment in app/config/bootstra/connections and this automatic FAIL will cease...</h2>
-			<p>Unfortunately, our youngster got a little rambunctious and needed a time-out, so the site is down at the moment. (Growing pains are never easy, are they?)</p>
+			<p>Unfortunately, our youngster got a little rambunctious and needed a time-out, so the site is down at the moment. <br/>(Growing pains are never easy, are they?)</p>
 			<p>We apologize for any inconvenience you may be experiencing. Please don't fret. We'll be back as quick as we can. We promise!</p>
 			<p>In the meantime, feel free to contact <a href="mailto:support@totsy.com" title="Email Totsy Support">support@totsy.com</a> if you'd like more information, or if you just miss us.</p>
 		</section>
