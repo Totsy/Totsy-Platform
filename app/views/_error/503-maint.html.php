@@ -1,19 +1,26 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Site Down For Maintenance - Totsy [503 Service Unavailable]</title>
-	<link rel="stylesheet" type="text/css" href="/css/base.css" media="screen" />
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/base.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/base.css') . '" />'; ?>
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/960.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/960.css') . '" />'; ?>
 	<link href="/img/favicon.ico" title="Icon" type="image/x-icon" rel="icon" />
 	<link href="/img/favicon.ico" title="Icon" type="image/x-icon" rel="shortcut icon" />
 </head>
 
-<body class="app p-maint">
+<body class="app p-status p-status-503">
 
-	<div id="totsy">
-		<header>
-			<h1>We need a toggle: https://totsy1.jira.com/browse/TOTSY-415</h1>
+	<div id="totsy" class="container_16 roundy glow">
+		<header class="group">
+			<h1><em>Totsy - </em>We're taking a scheduled time-out.</h1>
 		</header>
+		<section>
+			<p>Totsy is down for some quick maintenance to improve your shopping experience. </p>
+			<p>We apologize for any inconvenience and will be back around <?php // @TODO: dynamically pull in ETA? ?>8:00 PM EST.</p>
+			<p>In the meantime, feel free to contact <a href="mailto:support@totsy.com" title="Email Totsy Support">support@totsy.com</a> if you'd like more information, or if you just miss us.</p>
+		</section>
+	
 	</div>
 
 	<div id="footer">

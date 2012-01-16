@@ -41,7 +41,7 @@ ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception
                 $response->body(Media::render($response, compact('info', 'params'), array(
                     'layout' => null,
                     'controller' => '_error',
-                    'template' => '500' // 500 is for Internal Server Error ("woopsies"); 503-maint is Maintenance page
+                    'template' => '503-maint' // 500 is for Internal Server Error ("woopsies"); 503-maint is Maintenance page
                 )));
             }
             // @TODO - @DG: add back in mail function

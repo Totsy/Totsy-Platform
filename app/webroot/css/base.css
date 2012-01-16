@@ -4763,34 +4763,60 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	Status Pages - 404, 500, 503 Maintenance
 */
 .p-status #footer {width:810px;}
-.p-status #totsy > header {
-	margin-top:0; margin-bottom:26px; padding-top:58px;
-}
 .p-status #totsy h1 {
 	margin:32px 0 0;
 	height: 37px;
-	background: url(../img/status_500_title.gif) 0 0 no-repeat;
 	text-indent: -999em;
 }
-
 .p-status #totsy > header em {
-	position: absolute; top:0; left:-7px; /* offsetting the extra whitespace left in logo image… */
 	display: block;
 	width:100px; height: 58px;
 	background: url(../img/logo.png) 0 0 no-repeat;
 	background-size: 100px 58px;
 	text-indent: -999em;
 }
-.p-status section {width:485px;}
 .p-status section p {
 	margin:1.3em 0 0;
 	font-size:16px;
 	letter-spacing: 0.0225em; line-height:1.25;
 }
 .p-status section p:first-child {margin-top:0;}
+
+/* Status 500 - Site down */
 .p-status-500 #totsy {
 	padding:53px 5px 46px 253px;
 	width:557px; /* 810 - 253 */
 	min-height: 423px;
-	background:#fff url(../img/status_500_toolkid.png) 0 0 no-repeat;
+	background:#fff url(../img/status-500-toolbeltkid.png) 0 0 no-repeat;
+}
+.p-status-500 #totsy > header {
+	margin-top:0; margin-bottom:26px; padding-top:58px;
+}
+.p-status-500 #totsy h1 {
+	text-indent: -999em;
+}
+.p-status-500 #totsy > header em {
+	position: absolute; top:0; left:-7px; /* offsetting the extra whitespace left in logo image… */
+}
+.p-status-500 section {width:485px;}
+
+/* Status 503 - Maintenance page */
+.p-status-503 #totsy {width:800px;}
+.p-status-503 #totsy header {
+	margin:0 0 17px;
+	padding-left:54px;
+	width:auto;
+}
+.p-status-503 #totsy h1 {
+	position: relative;
+	margin:32px 0 0; padding-left:100px;
+	width:606px;
+	height:58px;
+	background: url(../img/status-503-title.gif) 100px 0 no-repeat;
+}
+.p-status-503 header em {position:absolute; top:0; left: 0;}
+.p-status-503 section {
+	padding:18px 0 0 384px;
+	width:380px; min-height: 264px;
+	background: url(../img/status-503-toolboxkid.png) 0 0 no-repeat;
 }
