@@ -1,4 +1,3 @@
-blooo
 <?php $this->title("Page Not Found"); ?>
 
 <div class="grid_16">

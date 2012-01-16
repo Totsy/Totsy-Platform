@@ -62,6 +62,13 @@ class ReCapture extends \lithium\console\Command {
 	public $onlyReauth = false;
 	
 	/**
+	 * Decrypt Credit Card with the Old Encrypt Method
+	 *
+	 * @var string
+	 */
+	public $oldWayToDecrypt = false;
+	
+	/**
 	 * Instances
 	 */
 	public function run() {
@@ -84,9 +91,13 @@ class ReCapture extends \lithium\console\Command {
 									'payment_captured' => array('$exists' => false)
 									);
 				$order = $ordersCollection->findOne($conditions);
-				if(!empty($order)) {		
+				if(!empty($order)) {
 					if(!empty($order['cc_payment']) && !empty($this->createNewAuth)) {
-						$creditCard = Order::getCCinfos($order);
+						if(!$this->oldWayToDecrypt) {
+							$creditCard = Order::getCCinfos($order);
+						} else {
+							$creditCard = Order::getCCinfosByTheOldWay($order);
+						}
 					}
 					if(!empty($creditCard)) {
 						$authKeyAndReport = $this->authorize($creditCard, $order);
