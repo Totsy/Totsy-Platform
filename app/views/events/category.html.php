@@ -32,7 +32,7 @@
 		
 		<article class="event grid-x">
 			<header class="eventDetails group">
-				<h3><?php echo $event['name']; ?> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event['end_date'] *1000 ; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
+				<h3><a href="" title="See the <?php echo $event['name']; ?> sale"><?php echo $event['name']; ?></a> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event['end_date'] *1000 ; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
 				<!--
 				<div>
 					<?php // @DG-2012.01.12 - commented out the event image but retained in case we want it back…
