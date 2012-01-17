@@ -46,7 +46,8 @@
 											<?php echo $this->html->link('Terms and Conditions','pages/terms')?>
 									</div>
 									<br>
-									<?php echo $this->form->submit('Sign Up'); ?>
+									<?php echo $this->form->submit('Sign Up', array('data-inline' => 'true')); ?>  
+<a href="javascript:;" data-inline="true" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr" style="margin-top:7px;"></a>
 									<?php echo $this->form->error('terms'); ?>
 									</div>
 								<?php echo $this->form->end(); ?>
