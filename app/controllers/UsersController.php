@@ -411,7 +411,7 @@ class UsersController extends BaseController {
 			array('email' => $loginInfo['email']),
 			array('$unset' => array('autologinHash' => 1))
 			);
-		$success = Session::delete('userLogin');
+		$success = Session::delete('userLogin', array('name' => 'default'));
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 
 		unset($cookie['autoLoginHash']);
@@ -600,7 +600,7 @@ class UsersController extends BaseController {
 			}
 			$flashMessage = '<div class="success_flash">Your invitations have been sent</div>';
 		}
-		
+
 		if(substr_count($this->request->env('HTTP_REFERER'), "/sales?req=invite")>0) {
 			$this->redirect('/sales');
 		}
@@ -614,7 +614,7 @@ class UsersController extends BaseController {
 				'user_id' => (string) $user->_id,
 				'status' => 'Accepted')
 		));
-		
+
 		$pixel = Affiliate::getPixels('invite', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 		array('invite' => $_SERVER['REQUEST_URI'])
