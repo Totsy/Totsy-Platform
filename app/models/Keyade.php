@@ -221,8 +221,6 @@ class Keyade extends \lithium\data\Model {
 		    $ouser_info[$order['user_id']][] = $order;
 		    if (strlen($order['user_id']) > 10 ) {
 		       $ouser_ids[] = new MongoId($order['user_id']);
-		    } else {
-		       $ouser_ids[] = new MongoId($order['user_id']);
 		    }
 		}
 		$users = $c_users->find(array(
