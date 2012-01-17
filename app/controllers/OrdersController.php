@@ -7,6 +7,7 @@ use app\models\Cart;
 use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
+use app\models\Order;
 use app\models\Event;
 use app\models\Affiliate;
 use app\models\Promotion;
@@ -304,6 +305,7 @@ class OrdersController extends BaseController {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
+						
 		$cartEmpty = ($cart->data()) ? false : true;
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_main';

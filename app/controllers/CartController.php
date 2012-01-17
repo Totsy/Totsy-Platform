@@ -133,6 +133,7 @@ class CartController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
+		
 		#Get Total of The Cart after Discount
 		$total = round(floatval($vars['postDiscountTotal']),2);
 		
