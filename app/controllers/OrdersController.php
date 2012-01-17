@@ -12,6 +12,7 @@ use app\models\Event;
 use app\models\Affiliate;
 use app\models\Promotion;
 use app\models\CreditCard;
+use app\models\Order;
 use app\models\Promocode;
 use app\models\OrderShipped;
 use app\models\Service;

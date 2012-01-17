@@ -188,7 +188,7 @@ class CartController extends BaseController {
 
 			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
-			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
+			$avail = $item->details[$size] - Cart::reserved($itemId, $size);
 
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
