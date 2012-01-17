@@ -62,7 +62,6 @@
 
 </head>
 <body class="app">
-
 	<?php if(isset($branch)) { echo $branch; } ?>
 	<div id="totsy" class="container_16 roundy glow">
 		
@@ -92,6 +91,7 @@
 	<?php echo $pixel; ?>
 
 <!-- @TODO - @DG: all these scripts should be externalized -->
+
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
