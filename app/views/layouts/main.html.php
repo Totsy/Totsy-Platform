@@ -62,6 +62,7 @@
 
 </head>
 <body class="app">
+
 	<?php if(isset($branch)) { echo $branch; } ?>
 	<div id="totsy" class="container_16 roundy glow">
 		
@@ -72,26 +73,41 @@
 		</div>
 		<!-- /#contentMain -->
 
-
-		<div id="footer" class="container_16">
-			<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
-		</div>
-		<!-- end footer nav -->
-	
-		<div class="container_16 clear" style="margin-top:50px;">
-			<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
-		</div>
-		<!-- end footer icons -->
-	
-		<div id='toTop'>^ Top</div>
-		
 	</div><!-- /#totsy -->
 
+	<div id="footer" class="container_16 group">
+		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
+	</div>
+	<!-- end footer nav -->
+
+	<div class="container_16 group">
+		<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
+	</div>
+	<!-- end footer icons -->
+
+	<div id='toTop'>^ Top</div>
+
+<?php 
+if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) { 
+?>
+<div id="invites">
+		<span class="ui-icon ui-icon-circle-check"></span>
+		<?php echo $this->view()->render(array('element' => 'inviteModal')); ?>
+</div>
+<script>
+	$(function() {
+		$( "#dialog:ui-dialog" ).dialog( "destroy" );
+		$( "#invites" ).dialog({
+			modal: true,
+			width: 760,
+		});
+	});
+</script>
+<? } ?>
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
 
-<!-- @TODO - @DG: all these scripts should be externalized -->
-
+<!-- @TODO: externalize scripts where applicable -->
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];

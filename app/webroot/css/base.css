@@ -754,13 +754,16 @@ li.item5 a:hover,li.item5.over a,li.active.item5 a {
 .v-bottom {
 	vertical-align:bottom;
 }
-
+section > header {margin:0 5px;}
 h2.page-title {
-	margin:0 0 20px 5px;
+	margin:0 0 20px 0;
 	font-weight:normal;
 	font-size:20px;
 }
-
+.fullwidth > section > header h2 {
+	margin-bottom:6px; padding-bottom:6px;
+	border-bottom:1px solid #ddd;
+}
 #page p {
 	margin-bottom:10px;
 }
@@ -4417,7 +4420,7 @@ Text Align > left / right
 */
 #totsy {
 	position: relative;
-	margin:43px auto 10px;
+	margin:43px auto 30px;
 	overflow: visible;
 }
 #totsy > header {
@@ -4668,10 +4671,11 @@ nav .haschild li a:hover {
 */
 h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #events-wrap .event {
-	margin:0 5px 40px; padding:9px 8px;
+	margin:40px 5px 0; padding:9px 8px;
 	border:1px solid #ccc;
 	border-radius:0px 0px 10px 10px;
 }
+#events-wrap header + .event {margin-top:0;}
 #events-wrap .eventDetails {
 	margin-bottom:27px;
 }

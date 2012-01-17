@@ -21,8 +21,12 @@
 	};
 })(jQuery);
 </script>
-	<h2 class="page-title gray"> <?php echo $categories; ?> <em>(<?php echo $eventCount; ?> Sales Found)</em></h2>
-	<div id="events-wrap" class="fullwidth">
+
+<div class="fullwidth">
+	<section id="events-wrap">
+		<header>
+			<h2 class="page-title gray"> <?php echo $categories; ?> <em>(<?php echo $eventCount; ?> Sales Found)</em></h2>
+		</header>
 		<?php $x = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
 		
@@ -92,11 +96,9 @@
 		<?php $x++; ?>
 		<?php endforeach ?>
 	
-	<div style="margin-bottom:35px;" class="clear"></div>
-
+	</section><!-- /#events-wrap -->
 </div><!-- /.full-width -->
-</div><!-- b -->
-</div><!-- c -->
+	
 <div id="modal" style="background:#fff!important;"></div>
 
 <script type="text/javascript">
