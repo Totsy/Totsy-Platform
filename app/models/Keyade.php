@@ -195,7 +195,6 @@ class Keyade extends \lithium\data\Model {
 	}
 
 	public static function referringSales($data){
-	    $start_time = time();
 		$c_users = static::_connection()->connection->users;
 		$c_orders = static::_connection()->connection->orders;
 		$output = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>
@@ -227,7 +226,7 @@ class Keyade extends \lithium\data\Model {
 		}
 		$users = $c_users->find(array(
 		    '_id' => array('$in' => $ouser_ids),
-		    '$where' => "(this.invited_by != 'keyade') && this.invited_by"),array(
+		    '$where' => "(this.invited_by != '/^keyade/i') && this.invited_by"),array(
 		    'invited_by' => true,
 		    'keyade_referral_user_id' => true
 		    ));
@@ -324,7 +323,6 @@ class Keyade extends \lithium\data\Model {
             }
         }
 		$output .= "</report>\n";
-		 $finish = time();
 		return $output;
 	}
 
