@@ -7,7 +7,6 @@ use app\models\Cart;
 use app\models\Item;
 use app\models\Credit;
 use app\models\Address;
-use app\models\Order;
 use app\models\Event;
 use app\models\Affiliate;
 use app\models\Promotion;
@@ -375,8 +374,6 @@ class OrdersController extends BaseController {
 
 		$i = 0;
 		foreach ($cart as $cartValue) {
-
-
 			#Get Last Expiration Date
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
@@ -407,7 +404,9 @@ class OrdersController extends BaseController {
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
+						
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
+				
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
@@ -417,10 +416,12 @@ class OrdersController extends BaseController {
 		}
 		#Get Services
 		$services = $vars['services'];
+		
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
+				
 		#Calculate Order Total
 		$total = round(floatval($vars['postDiscountTotal']), 2);
 		
@@ -432,6 +433,7 @@ class OrdersController extends BaseController {
 			'user', 'cart', 'total', 'subTotal',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount','creditCard'
 		);
+		
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 
 			/* Process this order and run it through the payment processor. */

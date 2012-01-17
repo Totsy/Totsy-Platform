@@ -197,7 +197,7 @@ class BaseController extends \lithium\action\Controller {
 	**/
 	public function freeShippingEligible($userInfo) {
 	    $sessionServices = Session::read('services', array('name' => 'default'));
-	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping') ));
+	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
 	        if ($user) {

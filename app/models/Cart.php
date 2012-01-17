@@ -626,8 +626,16 @@ class Cart extends Base {
 		/** Services, Promocodes,Credits Management **/
 		#Apply Services
 		$services = array();
-		$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
-		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
+		
+		if (Session::read('layout', array('name'=>'default'))!=="mamapedia") {
+			$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
+				
+			$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
+		} else {
+			unset($services['freeshipping']);
+			unset($services['tenOffFitfy']);
+		}
+				
 		#Apply Promocodes
 		$cartPromo = Promotion::create();
 		$promo_code = null;
@@ -649,10 +657,11 @@ class Cart extends Base {
 		}
 		#Disable Service if Promocode Used
 		if(!empty($cartPromo['saved_amount'])) {
-			if($services['freeshipping']['enable']) {
+			if($services['freeshipping']['enable']) {			
 				$services['freeshipping'] = array('shippingCost' => 0, 'overSizeHandling' => 0, 'enable' => false);
 				$serviceName = 'Free Shipping';
 			}
+			
 			if(!empty($services['tenOffFitfy'])) {
 				$services['tenOffFitfy'] = 0.00;
 				$serviceName = '$10 Off $50';
@@ -668,6 +677,15 @@ class Cart extends Base {
 		if (array_key_exists('credit_amount', $data)) {
 			$credit_amount = $data['credit_amount'];
 		}
+		
+		/*
+		print $shippingCost. "<br>";
+		print $overShippingCost. "<br>"; 
+		print $services['tenOffFitfy']. "<br>"; 
+		print $services['freeshipping']['shippingCost']. "<br>"; 
+		print $services['freeshipping']['overSizeHandling'];
+		*/
+		
 		#Calculation of the subtotal with shipping and services discount
 		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
 		#Calculation After Promo
