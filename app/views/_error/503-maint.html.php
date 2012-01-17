@@ -17,7 +17,7 @@
 		</header>
 		<section>
 			<p>Totsy is down for some quick maintenance to improve your shopping experience. </p>
-			<p>We apologize for any inconvenience and will be back around <?php // @TODO: dynamically pull in ETA? ?>8:00 PM EST.</p>
+			<p>We apologize for any inconvenience and will be back soon.</p>
 			<p>In the meantime, feel free to contact <a href="mailto:support@totsy.com" title="Email Totsy Support">support@totsy.com</a> if you'd like more information, or if you just miss us.</p>
 		</section>
 	
