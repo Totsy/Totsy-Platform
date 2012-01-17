@@ -79,8 +79,8 @@ class UsersController extends BaseController {
 		*/
 
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){		
-			return $this->redirect($cookie['landing_url']);			
+		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
+			return $this->redirect($cookie['landing_url']);
 		}
 		$referer = parse_url($this->request->env('HTTP_REFERER')) + array('host' => null);
 		if ($referer['host']==$this->request->env('HTTP_HOST') && preg_match('(/sale/)',$referer['path'])){
@@ -152,12 +152,12 @@ class UsersController extends BaseController {
 					return $this->redirect($landing);
 					unset($landing);
 				} else {
-					return $this->redirect('/sales');
+					$this->redirect('/sales?req=invite');
 				}
 
 			}
 		}
-		
+
 		/*
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
@@ -165,20 +165,20 @@ class UsersController extends BaseController {
 		} else {
 			//$this->_render['layout'] = 'login';
 		}*/
-		
+
 		if ($this->request->data && !$user->validates() ) {
 			$message = '<div class="error_flash">Error in registering your account</div>';
 		}
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
-		} 
-		
+		}
+
 		/*
 		else {
 			//$this->_render['layout'] = 'login';
 		} */
-		
+
 		return compact('message', 'user');
 	}
 
@@ -349,11 +349,10 @@ class UsersController extends BaseController {
 	}
 
 	protected function autoLogin() {
-		
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		
+
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 
 		extract($result);
@@ -364,8 +363,9 @@ class UsersController extends BaseController {
 		}
 
 		if (!$success) {
-			if (!empty($userfb)) {	
-				if(!$fbCancelFlag) {				
+
+			if (!empty($userfb)) {
+				if(!$fbCancelFlag) {
 					$this->redirect('/register/facebook');
 				}
 			}
@@ -552,7 +552,7 @@ class UsersController extends BaseController {
 			} else {
 				$message =  '<div class="error_flash">This email doesn\'t exist.</div>';
 			}
-			
+
 		}
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
@@ -593,6 +593,10 @@ class UsersController extends BaseController {
 			}
 			$flashMessage = '<div class="success_flash">Your invitations have been sent</div>';
 		}
+		
+		if(substr_count($this->request->env('HTTP_REFERER'), "/sales?req=invite")>0) {
+			$this->redirect('/sales');
+		}
 		$open = Invitation::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user->_id,
@@ -603,11 +607,11 @@ class UsersController extends BaseController {
 				'user_id' => (string) $user->_id,
 				'status' => 'Accepted')
 		));
-
+		
 		$pixel = Affiliate::getPixels('invite', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
-			                                            array('invite' => $_SERVER['REQUEST_URI'])
-			                                            );
+		array('invite' => $_SERVER['REQUEST_URI'])
+		);
 		if($this->request->is('mobile')){
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_invite';
@@ -675,14 +679,13 @@ class UsersController extends BaseController {
 	 * @return compact
 	 */
 	public function fbregister() {
-		
 		$message = null;
 		$user = null;
 		$fbuser = FacebookProxy::api("/me");
 		$user = User::create();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
-		
+
 			$user->email = $fbuser['email'];
 			$user->email_hash = md5($user->email);
 			$user->confirmemail = $fbuser['email'];
@@ -699,16 +702,15 @@ class UsersController extends BaseController {
 			if (Session::check('landing')){
 				$landing = Session::read('landing');
 			}
-
 			if (!empty($landing)){
 				Session::delete('landing',array('name'=>'default'));
 				$this->redirect($landing);
 				unset($landing);
 			} else {
-				$this->redirect('/sales');
+				$this->redirect('/sales?req=invite');
 			}
 		}
-		
+
 		return compact('message', 'user', 'fbuser');
 	}
 
@@ -748,19 +750,19 @@ class UsersController extends BaseController {
 				//$userfb = FacebookProxy::getUser();
 				$user->facebook_info = $userfb;
 				$user->save(null, array('validate' => false));
-				
+
 				$sessionWrite = $self->writeSession($user->data());
-				
+
 				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
-				
+
 				User::log($ipaddress);
-				
+
 				$landing = null;
-				
+
 				if (Session::check('landing')){
 					$landing = Session::read('landing');
 				}
-				
+
 				if (!empty($landing)) {
 				    Session::delete('landing',array('name'=>'default'));
 				    $self->redirect($landing, array('exit' => true));
