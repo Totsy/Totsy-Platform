@@ -9,7 +9,7 @@
 	<title>
 		<?php echo $this->title() ?: 'Totsy'; ?>
 	</title>
-	<meta property="fb:app_id" content="181445585225391"/>
+	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
@@ -95,6 +95,40 @@ $.mobile.fixedToolbars
 
 $.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 </script>
-
+<?php
+use li3_facebook\extension\FacebookProxy;
+$fbconfig = FacebookProxy::config();
+$appId = $fbconfig['appId'];
+?>
+<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
+<script type="text/javascript">
+var fbCookie = 'fbsr_<?php echo $appId; ?>';
+var mobilefbCookie = 'fbm_<?php echo $appId; ?>';
+var logoutURL = '<?php echo $logout; ?>';
+function deleteFBCookies() {
+//all posible FB cookies
+try {
+document.cookie = fbCookie + '=; domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+document.cookie = mobilefbCookie + '=; base_domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+return true;
+} catch(err) {
+return false;
+}
+}
+function goToLogout() {
+if (deleteFBCookies()==true) {
+window.location = logoutURL;
+}
+}
+</script>
 </body>
 </html>
