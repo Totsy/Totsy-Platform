@@ -4781,6 +4781,42 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 .p-status section p:first-child {margin-top:0;}
 
 /* Status 404 - page not found */
+#p-status-404 {
+	position: relative; top:10px;
+	background: url(../img/status-404-oopsgirl.png) 0 0 no-repeat;
+
+}
+#p-status-404 section {
+	padding:0 0 0 390px;
+	min-height: 348px;
+}
+#p-status-404 h2 {
+	height: 56px;
+	background: url(../img/status-404-title.gif) 0 0 no-repeat;
+	text-indent: -999em;
+}
+#p-status-404 section p {
+	font-size:16px;
+}
+#p-status-404 section h2 + p {
+	margin:0.8em 0 2em;
+}
+#p-status-404 ul {margin-top:8px;}
+#p-status-404 ul li {
+	float: left;
+	margin-left:27px;
+	width:110px;
+	font-size:14px;
+}
+#p-status-404 ul li:first-child {margin-left:0;}
+#p-status-404 ul li a {
+	display: block;
+	width:100%;
+}
+#p-status-404 ul li a:link,
+#p-status-404 ul li a:visited {color:#636466;}
+#p-status-404 ul li a:hover {color:#ED1C25;}
+#p-status-404 ul li img {display:block; margin-bottom:0.3em; width:100%;}
 
 
 /* Status 500 - Site down */

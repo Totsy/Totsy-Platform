@@ -49,7 +49,7 @@ Connections::add('default', array(
 	'local' =>array(
 		'type' =>  'MongoDb',
 		'database' => 'totsy',
-		'host' => 'ocalhost',
+		'host' => 'localhost',
 		'adapter' => 'app\extensions\adapter\data\source\MongoDb'
 	)
 
