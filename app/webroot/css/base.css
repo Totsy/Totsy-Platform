@@ -4712,6 +4712,9 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	color:#636466;
 	font-size: 16px;
 }
+#events-wrap .eventDetails > h3 a:link,
+#events-wrap .eventDetails > h3 a:visited { color:#636466;}
+#events-wrap .eventDetails > h3 a:hover { color:#ED1C25;}
 #events-wrap .eventDetails > h3 em {
 	display: inline-block;
 	color:rgba(99,100,102,0.7);

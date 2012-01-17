@@ -19,10 +19,10 @@ class EventsController extends BaseController {
 			'boys-apparel' => "Boys Apparel",
 			'shoes' => "Shoes",
 			'accessories' =>"Accessories",
-			'toys-books' => "Toys &amp; Books",
+			'toys-books' => "Toys and Books",
 			'gear' => "Gear",
 			'home' => "Home",
-			'moms-dads' => "Moms &amp; Dads"
+			'moms-dads' => "Moms and Dads"
 		),
 		'age' => array(
 			'newborn' => 'Newborn',
@@ -60,6 +60,8 @@ class EventsController extends BaseController {
 			$items = $itemsCollection->find( array('event' =>  array($eventId)) )
 									  ->limit(6);		
 			
+			//$items = Item::filter(array($eventId), null, $categories, null, 6);
+
 			foreach($items as $eachitem){
 				$openEvents[$i]['eventItems'][] = $eachitem;
 			}
@@ -98,9 +100,11 @@ class EventsController extends BaseController {
 				$openEvents[$i]['eventItems'][] = $eachitem;
 			}
 		}
-		
-		$this->_render['template'] = 'category';
 
+		//hack to make the ages appear on top of same view file		
+		$categories = $ages;
+		$this->_render['template'] = 'category';
+	
 		return compact('openEvents', 'items', 'categories', 'eventCount');
 	}
 
