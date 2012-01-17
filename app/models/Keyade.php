@@ -6,6 +6,7 @@ use lithium\data\Connections;
 use MongoDate;
 use MongoId;
 use lithium\util\Validator;
+use MongoRegex;
 
 
 class Keyade extends \lithium\data\Model {
@@ -245,7 +246,7 @@ class Keyade extends \lithium\data\Model {
         $invite_codes = array_unique($invite_codes);
         $keyade_users = $c_users->find(array(
 		    'invitation_codes' => array('$in' => $invite_codes),
-		    'invited_by' => 'keyade'),array(
+		    'invited_by' => new MongoRex('/^keyade/i'),array(
 		    'invitation_codes' => true,
 		    'keyade_user_id' => true
 		    ));
