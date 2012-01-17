@@ -70,14 +70,12 @@ class AddCredits extends \lithium\console\Command {
 			// check if tmp collections exist
 			// and create proper handlers
 			$this->setTmpCollections();
-			// split multiple emails in emails field
-			// $this->splitMultipleEmails();
 			// filter invitation data
-			//$this->applyFilterCredits();
+			$this->applyFilterCredits();
 			// apply cderits
 			$this->addCredits();
 			// clean tmp collection
-			//$this->clean();
+			$this->clean();
 		} else {
 			Logger::info('Already Running! Stoping Execution'."\n");
 		}
@@ -92,7 +90,7 @@ class AddCredits extends \lithium\console\Command {
 		$totsy = Invitation::connection()->connection; 
 		
 		// drop tmp collections if any
-		/*
+		
 		$dbs = $totsy->listCollections();
 		foreach ($dbs as $db){
 			if (in_array($db->getName(),$list)){
@@ -107,7 +105,7 @@ class AddCredits extends \lithium\console\Command {
 				'capped' => false
 			));
 		}
-		*/		
+				
 		$this->tmpInvites = $totsy->{'tmp.invites'};
 		$this->tmpInvites->ensureIndex(array('user_id'=>1));
 		
