@@ -173,7 +173,7 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		$cc_encrypt = Order::creditCardEncrypt($this->_VisaCard, (string) $user->_id);
 		#Temporary Order Creation
 		$order = Order::create(array('_id' => new MongoId()));
-		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - ($this->_VoidLimitDate - 1), date("Y")));
+		$order->date_created = new MongoDate(mktime(date("H"), date("i"), date("s"), date("m"), date("d") - ($this->_VoidLimitDate - 1), date("Y")));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$order->save(array(
 				'total' => 100.00,
