@@ -10,12 +10,8 @@ use app\models\Event;
 		* trying to call in events… 
 		* updated SearchController.php to call in same stuff as EventsController, all dropped in below... no surprise: ain't working
 */
-use app\controllers\EventsController;
-use app\models\Item;
-use app\models\Banner;
-use MongoDate;
-use lithium\storage\Session;
-use app\models\Affiliate;
+
+
 /*
 	/ @DAVID F'ING AROUND IN HERE
 */
@@ -26,15 +22,27 @@ use app\models\Affiliate;
  */
 class SearchController extends BaseController {
 
+	// show only * number of open events
+	private $showEvents = 4;
+
 	public function view() {
 		$events = null;
+		$openEventsData = Event::open()->data();
+		$openEvents = array_slice($openEventsData,0,$this->showEvents,true);
+		unset($openEventsData);
 
+		echo 'TOTAL $openEventsData: '.count($openEventsData).'<br>';
+		echo 'TOTAL: '.count($openEvents).'<br>';
+		echo '<pre>';
+		print_r($openEvents);
+		echo '</pre>';
+			
 		if ($this->request->search) {
 			$events = Event::all(array('conditions' => array('blurb' => array(
 				'like' => '/' . preg_quote($this->request->search, '/') . '/'
 			))));
 		}
-		return compact('events');
+		return compact('events', 'openEvents');
 	}
 }
 
