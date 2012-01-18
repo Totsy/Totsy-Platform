@@ -1,4 +1,6 @@
-<?php use lithium\net\http\Router; 
+<?php 
+use lithium\net\http\Router; 
+use lithium\storage\Session;
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -12,7 +14,21 @@
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	
-	<?php echo $this->html->style(array('base.css', '960.css', 'jquery_ui_custom/jquery.ui.all.css'), array('media' => 'screen')); ?>
+<?php
+
+$baseCSSPath = "";
+$jQueryAllPath = "";
+	
+	if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
+			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
+			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
+		} else {
+			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
+			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
+		}
+?>
+	
+	<?php echo $this->html->style(array($baseCSSPath, '960.css', $jQueryAllPath), array('media' => 'screen')); ?>
 		
 	<script src="http://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:true});</script>

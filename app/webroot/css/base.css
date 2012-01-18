@@ -2575,6 +2575,14 @@ body.login {
 	height:100%;
 }
 
+#featured-brands-box {
+border:1px #eeeeee solid; 
+height:330px; 
+width:300px; 
+margin-top:83px;
+margin-left:20px;
+}
+
 #fullscreen {
 	position:relative;
 	overflow:hidden;

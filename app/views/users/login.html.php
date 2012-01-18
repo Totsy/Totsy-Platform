@@ -115,7 +115,7 @@ if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
 
 <div class="grid_6" style="float:right; ">
 <div class="fr" style="padding-right:20px;padding-top:10px;">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
-<div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:300px; margin-top:83px;margin-left:20px;">
+<div id="featured-brands-box" class="round gradient featured_brands_box">
 <img src="/img/logos_home_right.jpg">
 </div>
 

@@ -1056,7 +1056,7 @@ ul.content-list {
 }
 
 .ui-state-default a,.ui-state-default a:link,.ui-state-default a:visited {
-	background:url(../img/tab-bg-gray.gif) right top no-repeat;
+	/*background:url(../img/tab-bg-gray.gif) right top no-repeat; */
 	color:#FFF;
 	text-decoration:none;
 }
@@ -1071,7 +1071,7 @@ ul.content-list {
 }
 
 .ui-state-active a,.ui-widget-content .ui-state-active a,.ui-widget-header .ui-state-active a {
-	background:url(../img/tab-bg-red.gif) right top no-repeat;
+	/*background:url(../img/tab-bg-red.gif) right top no-repeat; */
 	color:#FFF;
 }
 
@@ -2572,6 +2572,15 @@ body.login {
 	height:100%;
 }
 
+#featured-brands-box{
+border:1px #eeeeee solid; 
+height:330px; 
+width:300px; 
+margin-top:61px;
+margin-left:20px;
+}
+
+
 #fullscreen {
 	position:relative;
 	overflow:hidden;
@@ -3275,8 +3284,8 @@ body.login .our365-login #intro-copy {
 	-webkit-border-radius:6px;
 	-moz-border-radius:6px;
 	border-radius:6px;
-	border:1px solid #eb132c;
-	background:#eb132c;
+	border:1px solid #de6076;
+	background:#de6076;
 	text-align:center;
 	padding:5px;
 	color:#fff;
@@ -3769,7 +3778,7 @@ div.splash-details {
 	background:url(../img/gray-80-bg.png) repeat scroll 0 0 transparent;
 	padding:5px 10px 4px;
 	display:block;
-	color:#eb132c;
+	color:#de6076;
 	font-size:14px;
 	font-weight:bold;
 	position:absolute;
@@ -3835,19 +3844,19 @@ ul#navlist {
 #navlist a:link,#navlist a:visited {
 	background-color:#fff;
 	border-radius:6px 6px 6px 6px;
-	color:#EB132C;
+	color:#de6076;
 	margin:0 2px;
 	text-decoration:none;
 }
 
 #navlist a:hover {
 	color:#fff;
-	background:#EB132C;
+	background:#de6076;
 	text-decoration:none;
 }
 
 #navlist li ul li a {
-	color:#EB132C!important;
+	color:#de6076!important;
 	background:none!important;
 	font-size:12px!important;
 	left:2px;
@@ -3859,7 +3868,7 @@ ul#navlist {
 }
 
 #navlist li ul li a:hover {
-	background:#EB132C!important;
+	background:#de6076!important;
 	color:#fff!important;
 	font-size:12px!important;
 }
@@ -4212,13 +4221,13 @@ ul#navlist {
 
 #navlist a:link,#navlist a:visited {
 	border-radius:6px 6px 6px 6px;
-	color:#EB132C;
+	color:#de6076;
 	margin:0 2px;
 	text-decoration:none;
 }
 
 #navlist li a.active,#navlist a:hover {
-	background-color:#EB132C;
+	background-color:#de6076;
 	border-radius:6px 6px 6px 6px;
 	-moz-border-radius:6px 6px 6px 6px;
 	-webkit-border-radius:6px 6px 6px 6px;
@@ -4229,12 +4238,12 @@ ul#navlist {
 
 #navlist a:hover {
 	color:#fff;
-	background:#EB132C;
+	background:#de6076;
 	text-decoration:none;
 }
 
 #navlist li ul li a {
-	color:#EB132C!important;
+	color:#de6076!important;
 	background:none!important;
 	font-size:12px!important;
 	left:2px;
@@ -4246,7 +4255,7 @@ ul#navlist {
 }
 
 #navlist li ul li a:hover {
-	background:#EB132C!important;
+	background:#de6076!important;
 	color:#fff!important;
 	font-size:12px!important;
 }
@@ -4383,7 +4392,7 @@ Text Align > left / right
 	-moz-border-radius:40px; 
 	-webkit-border-radius:40px; 
 	border-radius:40px; 
-	background:#EB132C; 
+	background:#de6076; 
 	color:#fff; 
 	padding:3px; 
 	width:18px; 
@@ -4436,12 +4445,14 @@ Text Align > left / right
 */
 #totsy {
 	position: relative;
-	margin:100px auto 75px;
+	margin:100px auto 30px;
 	overflow: visible;
 }
 #totsy > header {
-	position:relative; z-index: 100;
-	margin:-54px 0 30px; padding-top:26px;
+	position:relative; 
+	z-index: 100;
+	margin:-54px 0 30px; 
+	padding-top:26px;
 	width:100%;
 }
 #logo {
