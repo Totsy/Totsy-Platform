@@ -67,6 +67,7 @@ class ReAuthorize extends \lithium\console\Command {
 		}
 		#Send Email containing informations about the Reauth Process
 		if(!$this->unitTest) {
+			Logger::debug('Reports Processing...');
 			$this->sendReports($report);
 			$this->logReport($report);
 		}
@@ -177,6 +178,7 @@ class ReAuthorize extends \lithium\console\Command {
 				);
 			}
 		}
+		Logger::debug('End Of Manage Reauth');
 		return $report;
 	}
 
@@ -443,6 +445,7 @@ class ReAuthorize extends \lithium\console\Command {
 			'total' => $order['authTotal']
 			);
 		}
+		Logger::debug('End of Order Process: ' . $order['order_id']);
 		return $report;
 	}
 
