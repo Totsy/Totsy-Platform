@@ -1,3 +1,4 @@
+<?php // @DG-2012.01.18 - moved a copy to webroot/errors, per convo w Slav. This retained for… posterity? ?>
 <!doctype html>
 <html>
 <head>

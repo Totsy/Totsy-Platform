@@ -198,7 +198,9 @@ class EventsController extends BaseController {
 			)));
 		}
 		if (!$event) {
-			$this->_render['template'] = 'noevent';
+			
+			$this->redirect('/search/'.$this->request->params['event'], array('exit' => true));
+			$this->_render['template'] = '';
 			return array('event' => null, 'items' => array(), 'shareurl');
 		}
 
