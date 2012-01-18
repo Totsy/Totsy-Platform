@@ -40,10 +40,11 @@ Connections::add('default', array(
 		'host' => 'localhost'
 	),
 
-	'eric' => array(
+	'staging' => array(
 		'type' =>  'MongoDb',
-		'database' => 'totsy_eric',
-		'host' => 'localhost'
+		'database' => 'totsy',
+		'host' => 'db1-dc1.totsystaging.com',
+		'adapter' => 'app\extensions\adapter\data\source\MongoDb'
 	),
 
 	'local' =>array(
