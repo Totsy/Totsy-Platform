@@ -156,15 +156,8 @@ class ReAuthorize extends \lithium\console\Command {
 			#Check If Reauth Needed
 			$reAuth = $this->isReauth($order);
 			if($reAuth) {
-				if(empty($order['authTotal']) || !empty($this->fullAmount)) {
-					$total = $order['total'];
-				} else {
-					$total = $order['authTotal'];
-				}
 				if($order['processor'] == 'CyberSource') {
 					$report = $this->reAuthCyberSource($order, $report, $total);
-				} else {
-					$report = $this->reAuthAuthorizeNet($order, $report, $total);
 				}
 			} else {
 				$report['skipped'][] = array(
@@ -226,120 +219,15 @@ class ReAuthorize extends \lithium\console\Command {
 				$reAuth = false;
 			}
 		}
+		if(!isset($order['cyberSourceProfileId'])) {
+			$reAuth = false;
+		}
 		Logger::debug('Eligible for Reauth: ' . $reAuth);
 		return $reAuth;
 	}
-
-	/*** REAUTHORIZE WITH VISA/MASTERCARD THROUGH AUTHORIZE.NET ***/
-	public function reAuthAuthorizeNet($order = null, $report = null, $total) {
-		Logger::debug('Reauthorizing Through Auth.net');
-		$ordersCollection = Order::Collection();
-		$usersCollection = User::Collection();
-		#Decrypt Credit Card Infos
-		if(!empty($order['cc_payment'])) {
-			$creditCard = Order::getCCinfos($order);
-			#If Credit Card Has Been well Decrypted
-			if(!empty($creditCard)) {
-				#Save Old AuthKey with Date
-				$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
-				#Cancel Previous Transaction
-				// change 'authorizenet' to 'default' below when ready to reauth older Amex Authorize.net orders through CyberSource
-/*
-				$auth = Processor::void('authorizenet', $order['authKey'], array(
-					'processor' => isset($order['processor']) ? $order['processor'] : null
-				));
-				if ($auth->success()) {
-*/
-					$userInfos = User::lookup($order['user_id']);
-					#Create Card and Check Billing Infos
-					$card = Processor::create('authorizenet', 'creditCard', $creditCard + array(
-						'billing' => Processor::create('authorizenet', 'address', array(
-							'firstName' => $order['billing']['firstname'],
-							'lastName'  => $order['billing']['lastname'],
-							'address'   => trim($order['billing']['address']),
-							'city'      => $order['billing']['city'],
-							'state'     => $order['billing']['state'],
-							'zip'       => $order['billing']['zip'],
-							'country'   => $order['billing']['country'] ?: 'US',
-							'email'     => $userInfos['email']
-			
-					))));
-					#Create a new Transaction and Get a new Authorization Key
-					// change 'authorizenet' to 'default' below when ready to reauth older Amex Authorize.net orders through CyberSource
-					$auth = Processor::authorize('default', $total, $card);
-					if ($auth->success()) {
-						Logger::debug("Authorization Succeeded");
-						$customer = Processor::create('default', 'customer', array(
-							'firstName' => $userInfos['firstname'],
-							'lastName' => $userInfos['lastname'],
-							'email' => $userInfos['email'],
-							'payment' => $card
-						));
-						$result = $customer->save();
-						$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
-						$update = $usersCollection->update(
-							array('_id' => new MongoId($user['_id'])),
-							array('$push' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
-						);
-						#Setup new AuthKey
-						$update = $ordersCollection->update(
-							array('_id' => $order['_id']),
-							array('$set' => array(
-								'cyberSourceProfileId' => $profileID
-							)), array( 'upsert' => true)
-						);
-						#Setup new AuthKey
-						$update = $ordersCollection->update(
-								array('_id' => $order['_id']),
-								array('$set' => array(
-									'authKey' => $auth->key,
-									'auth' => $auth->export(),
-									'processor' => $auth->adapter,
-									'authTotal' => $total
-								)), array( 'upsert' => true)
-						);
-						#Add to Auth Records Array
-						$update = $ordersCollection->update(
-								array('_id' => $order['_id']),
-								array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
-						);
-						$report['updated'][] = array(
-							'error_message' => 'updated',
-							'order_id' => $order['order_id'], 
-							'authKey' => $order['authKey'],
-							'new_authKey' => $auth->key,
-							'total' => $total
-						);
-					} else {
-						$message  = "Authorize failed for order id `{$order['order_id']}`:";
-						$message .= $error = implode('; ', $auth->errors);
-						$report['errors'][] = array(
-							'error_message' => $message,
-							'order_id' => $order['order_id'],
-							'authKey' => $order['authKey'],
-							'authKey_declined' => $auth->key, 
-							'total' => $total
-						);
-					}
-/*
-				} else {
-					$message  = "Void failed for order id `{$order['order_id']}`:";
-					$message .= $error = implode('; ', $auth->errors);
-					$report['errors'][] = array(
-							'error_message' => $message, 
-							'order_id' => $order['order_id'], 
-							'authKeyDeclined' => $order['authKey'], 
-							'total' => $total
-					);
-				}
-*/
-			}
-		}
-		return $report;
-	}
 				
 	/*** REAUTHORIZE WITH VISA/MASTERCARD / AMEX THROUGH CYBERSOURCE ***/
-	public function reAuthCyberSource($order, $report = null, $total) {
+	public function reAuthCyberSource($order, $report = null) {
 		Logger::debug('Reauthorizing Through CyberSource');
 		$ordersCollection = Order::Collection();
 		#Save Old AuthKey with Date
@@ -361,31 +249,11 @@ class ReAuthorize extends \lithium\console\Command {
 				);
 			}
 		}
-		if (!empty($order['cyberSourceProfileId'])) {
-			Logger::debug("Getting CyberSource Profile");
-			$cybersource = new CyberSource(Processor::config('default'));
-			$profile = $cybersource->profile($order['cyberSourceProfileId']);
-			$auth = Processor::authorize('default', $total, $profile);
-		} else {
-			Logger::debug("Getting Credit Card Informations");
-			$userInfos = User::lookup($order['user_id']);
-			$creditCard = Order::getCCinfos($order);
-			#Create Card and Check Billing Infos
-			$card = Processor::create('default', 'creditCard', $creditCard + array(
-				'billing' => Processor::create('default', 'address', array(
-					'firstName' => $order['billing']['firstname'],
-					'lastName'  => $order['billing']['lastname'],
-					'address'   => trim($order['billing']['address']),
-					'city'      => $order['billing']['city'],
-					'state'     => $order['billing']['state'],
-					'zip'       => $order['billing']['zip'],
-					'country'   => $order['billing']['country'] ?: 'US',
-					'email'     => $userInfos['email']
-	
-			))));
-			#Create a new Transaction and Get a new Authorization Key
-			$auth = Processor::authorize('default', $total, $card);
-		}
+		Logger::debug("Getting CyberSource Profile");
+		$cybersource = new CyberSource(Processor::config('default'));
+		$profile = $cybersource->profile($order['cyberSourceProfileId']);
+		Logger::debug("Authorizing...");
+		$auth = Processor::authorize('default', $order['total'], $profile);
 		if($auth->success()) {
 			Logger::debug("Authorization Succeeded");
 			#Setup new AuthKey
