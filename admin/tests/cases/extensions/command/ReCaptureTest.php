@@ -125,6 +125,7 @@ class ReCaptureTest extends \lithium\test\Unit {
 		$order = Order::create(array('_id' => new MongoId()));
 		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+			
 		$order->save(array(
 				'total' => 100.00,
 				'card_type' => 'amex',

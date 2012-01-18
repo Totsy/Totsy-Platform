@@ -130,8 +130,8 @@ class ReCapture extends \lithium\console\Command {
 		$report = null;
 		$authKey = null;
 		$userInfos = User::lookup($order['user_id']);
-		#Retrieve Profile using CyberSourceProfile ID
-		$cybersource = new CyberSource($payments::config('default'));
+		#Retrieve Profile using CyberSourceProfile ID		
+		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
 		#Create a new Transaction and Get a new Authorization Key
 		$auth = Processor::authorize('default', ($order['total'] + $this->adjustment), $profile);
