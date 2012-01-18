@@ -89,7 +89,7 @@ class UsersController extends \admin\controllers\BaseController {
 				$orders = Order::find('all', array('conditions' => array('user_id' => $id)));
 				$userData = $user->data();
 				if (array_key_exists('created_orig', $userData)) {
-				    $userData['register date'] = date("M d, Y", $userData['created_orig']['sec']);
+				    $userData['register date'] = date("M d, Y", $userData['created_orig']);
 				}
 				if (array_key_exists('created_date', $userData)) {
 				    if(is_array($userData['created_date'])){
@@ -99,7 +99,7 @@ class UsersController extends \admin\controllers\BaseController {
 				    }
 				}
 				if (array_key_exists('created_on', $userData)) {
-				    $userData['register date'] = date("M d, Y", $userData['created_on']['sec']);
+				    $userData['register date'] = date("M d, Y", $userData['created_on']);
 				}
 				if (array_key_exists('deactivated_date', $userData)) {
 				    if(is_array($userData['deactivated_date'])){

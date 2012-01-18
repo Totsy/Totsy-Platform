@@ -636,10 +636,13 @@ class Order extends Base {
 				}
 			} else {
 				if ($promocode['type'] == 'percentage') {
-					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
+					$selected_order["promo_discount"] =+ ($subTotal * $promocode['discount_amount']);
 					$datas_order["promo_discount"] = $selected_order["promo_discount"];
 				}
-				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];
+				$preAfterDiscount = $subTotal - $selected_order["promo_discount"];
+				if($preAfterDiscount < 0) {
+					$preAfterDiscount = 0;
+				}
 				if ($promocode['type'] == 'free_shipping') {
 					$datas_order["handlingDiscount"] = $selected_order["handling"];
 					$datas_order["overSizeHandlingDiscount"] = $selected_order["overSizeHandling"];

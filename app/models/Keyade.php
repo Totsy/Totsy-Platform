@@ -6,6 +6,7 @@ use lithium\data\Connections;
 use MongoDate;
 use MongoId;
 use lithium\util\Validator;
+use MongoRegex;
 
 
 class Keyade extends \lithium\data\Model {
@@ -194,11 +195,6 @@ class Keyade extends \lithium\data\Model {
 		return $output;
 	}
 
-	/**
-	 * Referring Sales list
-	 *
-	 * @return xml object
-	 */
 	public static function referringSales($data){
 		$c_users = static::_connection()->connection->users;
 		$c_orders = static::_connection()->connection->orders;
@@ -206,39 +202,128 @@ class Keyade extends \lithium\data\Model {
 		<!DOCTYPE report PUBLIC "report" "https://dtool.keyade.com/dtd/conversions_v5.dtd">
 		<report>
 		';
-		// Get a list of orders from the requested date range
+
 		$options = array(
 			'date_created' =>  array(
 				'$gte' => $data['start_date'],
 				'$lte' => $data['end_date']
 			)
 		);
-		// Run that sucker!
-		$orders = $c_orders->find( $options );
-		foreach($orders AS $order){
-			// test to see if a user_id is a numeric or objectid
-			if((strlen($order['user_id']) != 24)){
-				// numeric id
-				$user_id = $order['user_id'];
-			}else{
-				// objectid
-				$user_id = new MongoId( $order['user_id'] );
-			}
-			// See if the user was invited
-			$user = $c_users->findOne( array( '_id' => $user_id, 'invited_by' => array( '$exists' => true) ));
-			if($user != null){
-				// Invited user
-				$inviter = $c_users->findOne( array( 'invitation_codes' => $user['invited_by'], 'keyade_user_id' => array( '$exists' => true)));
-				if($inviter != null){
-					// KEYADE ORDER!
-					$output .= '	<entry clickId="' . $inviter['keyade_user_id'] . '" lifetimeId="' . $order['user_id'] . '" eventMerchantId="' . $order['order_id'] . '" value1="' . $order['total'] . '" time="' .  $order['date_created']->sec . '" />
-					';
+		$orders = $c_orders->find($options, array(
+		    'total' => true,
+		    'order_id' => true,
+		    'user_id' => true,
+		    'date_created' => true));
 
-				}
-			}
+		$ouser_info = array();
+        $ouser_ids = array();
+		foreach($orders as $order) {
+		    $ouser_info[$order['user_id']][] = $order;
+		    if (strlen($order['user_id']) > 10 ) {
+		       $ouser_ids[] = new MongoId($order['user_id']);
+		    }
 		}
+		$users = $c_users->find(array(
+		    '_id' => array('$in' => $ouser_ids),
+		    '$where' => "(this.invited_by != '/^keyade/i') && this.invited_by"),array(
+		    'invited_by' => true,
+		    'keyade_referral_user_id' => true
+		    ));
+
+        //separate those who already have keyade referrer id
+        $no_referral_field = array();
+        $invite_codes = array();
+        foreach($users as $user) {
+            if (array_key_exists('keyade_referral_user_id', $user)) {
+                $ouser_info[(string)$user['_id']]['keyade_user_id'] = $user['keyade_referral_user_id'];
+            } else {
+                $no_referral_field[(string)$user['_id']] = $user;
+                 $invite_codes[] = $user['invited_by'];
+            }
+        }
+        $invite_codes = array_unique($invite_codes);
+        $keyade_users = $c_users->find(array(
+		    'invitation_codes' => array('$in' => $invite_codes),
+		    'invited_by' => new MongoRex('/^keyade/i'),array(
+		    'invitation_codes' => true,
+		    'keyade_user_id' => true
+		    ));
+
+	    /*
+	    * closure that searches on a multi-dimensional array by one level.
+	    * @var array haystack : array to search in
+	    * @var mixed $needle : value to search for
+	    * @var string $multi_key : key to search against
+	    * @var string $return_key_value : name of key value to return
+	    * @var bool $recursive : tell the function to search one more level down
+	    * @var bool $return_multiple : tell function to return all matching values
+	    * @return mixed :
+	    *   - can return array if you set $return_multiple to `true`
+	    *   - false if search failed
+	    *   - return value
+	    */
+        $multiD_search = function($haystack, $needle, $multi_key = null, $return_key_value = null, $recursive = false, $return_multiple = false) {
+            $multi = array();
+            foreach ($haystack as $key => $value) {;
+                if (is_array($value) ) {
+                    if ($recursive) {
+                        foreach($value as $s_key => $s_value) {
+                            if ($multi_key && ((string)$s_value[$multi_key] == $needle) && $return_key_value) {
+                                if ($return_multiple) {
+                                    $multi[] = $s_value[$return_key_value];
+                                } else {
+                                    return $s_value[$return_key_value];
+                                }
+                            }
+                        }
+                    } else if ($multi_key && ((string)$value[$multi_key] == $needle) && $return_key_value) {
+                        if ($return_multiple) {
+                            $multi[] = $value[$return_key_value];
+                        } else {
+                            return $value[$return_key_value];
+                        }
+                    }
+                } else {
+                    return false;
+                }
+            }
+            if ($return_multiple) {
+                return $multi;
+            } else{
+                return false;
+            }
+        };
+
+        foreach($keyade_users as $k_user) {
+            $search = $multiD_search($no_referral_field, $k_user['invitation_codes'][0], 'invited_by', '_id',false,true);
+            foreach($search as $result) {
+                if (array_key_exists((string)$result, $ouser_info)) {
+                    $ouser_info[(string)$result]['keyade_user_id'] = $k_user['keyade_user_id'];
+                }
+            }
+        }
+        //cleanup
+        foreach($ouser_info as $key => $value) {
+            if(!array_key_exists('keyade_user_id', $value)) {
+                unset($ouser_info[$key]);
+            }
+        }
+
+        if(!empty($ouser_info)){
+            foreach($ouser_info as $id => $info) {
+                foreach($info as $key => $value) {
+                    if ($key != 'keyade_user_id') {
+                        $output .= '	<entry clickId="' . $ouser_info[$id]['keyade_user_id'] .
+                            '" lifetimeId="' . $value['user_id'] . '" eventMerchantId="' .
+                                $value['order_id'] . '" value1="' . $value['total'] . '" time="' .
+                                $value['date_created']->sec . '" />';
+                    }
+                }
+            }
+        }
 		$output .= "</report>\n";
 		return $output;
 	}
 
 }
+?>
