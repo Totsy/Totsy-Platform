@@ -37,6 +37,9 @@ Environment::set('production', array(
 Environment::set('development', array(
 	'avatax' => $dev + $base
 ));
+Environment::set('staging', array(
+	'avatax' => $dev + $base
+));
 Environment::set('test', array(
 	'avatax' => $dev + $base
 ));
