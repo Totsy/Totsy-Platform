@@ -284,8 +284,8 @@ selectlist.css (line 1)
 				<h3 id="">Upload Items</h3>
 	            <hr />
 				<p>Please select the default option for all items being uploaded:</p>
-					<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-					<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+					<input type="radio" name="enable_items" value="1" id="enable_items" checked> Enable All <br>
+					<input type="radio" name="enable_items" value="0" id="enable_items"> Disable All <br><br>
 				<p>Add "Final Sale" to the item description?:</p>
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
