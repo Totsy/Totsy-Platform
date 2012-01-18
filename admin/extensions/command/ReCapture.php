@@ -62,6 +62,13 @@ class ReCapture extends \lithium\console\Command {
 	public $onlyReauth = false;
 	
 	/**
+	 * Decrypt Credit Card with the Old Encrypt Method
+	 *
+	 * @var string
+	 */
+	public $oldWayToDecrypt = false;
+	
+	/**
 	 * Instances
 	 */
 	public function run() {
@@ -186,6 +193,7 @@ class ReCapture extends \lithium\console\Command {
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth_capture->key,
 											  'auth' => $auth_capture->export(),
+											  'authTotal' => $order['total'],
 											  'processor' => $auth_capture->adapter,
 											  'payment_date' => new MongoDate(),
            									  'auth_confirmation' => $auth_capture->key,

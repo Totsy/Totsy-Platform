@@ -11,6 +11,7 @@ use app\models\Event;
 use app\models\Affiliate;
 use app\models\Promotion;
 use app\models\CreditCard;
+use app\models\Order;
 use app\models\Promocode;
 use app\models\OrderShipped;
 use app\models\Service;
@@ -426,7 +427,6 @@ class OrdersController extends BaseController {
 		}
 		#Calculate Order Total
 		$total = round(floatval($vars['postDiscountTotal']), 2);
-
 		#Read Credit Card Informations
 		if (Session::check('cc_infos')) {
 			$creditCard = $creditCardClass::decrypt((string)$user['_id']);
@@ -444,8 +444,6 @@ class OrdersController extends BaseController {
 			
 			$creditCard = $selectedCyberSourceProfile[creditCard];
 		}
-		
-
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal',
@@ -474,6 +472,7 @@ class OrdersController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_review';
 		}
+		
 		return $vars + compact(
 			'cartEmpty',
 			'order',
