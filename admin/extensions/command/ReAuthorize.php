@@ -14,10 +14,10 @@ use MongoDate;
 
 /**
  * This Script Reauthorize all orders that has not been shipped and that got 7 days old AuthKey
- * 
+ *
  */
 class ReAuthorize extends \lithium\console\Command {
-		
+
 	/**
 	 * The environment to use when running the command. 'production' is the default.
 	 * Set to 'development' or 'test' if you want to execute command on a different database.
@@ -25,27 +25,27 @@ class ReAuthorize extends \lithium\console\Command {
 	 * @var string
 	 */
 	public $env = 'development';
-	
+
 	/**
 	 * Directory of files holding the files
 	 *
 	 * @var string
 	 */
 	public $source = '/resources/totsy/tmp/';
-	
+
 	/**
 	 * Set How Old Can Be the Auth.Key to be replaced
 	 *
 	 * @var string
 	 */
 	public $expiration = 8;
-	
+
 	public $orders = array();
-	
+
 	public $fullAmount = false;
-	
+
 	public $reauthVisaMC = true;
-	
+
 	public $unitTest = false;
 	/**
 	 * Instances
@@ -67,6 +67,7 @@ class ReAuthorize extends \lithium\console\Command {
 		}
 		#Send Email containing informations about the Reauth Process
 		if(!$this->unitTest) {
+			Logger::debug('Reports Processing...');
 			$this->sendReports($report);
 			$this->logReport($report);
 		}
@@ -74,9 +75,9 @@ class ReAuthorize extends \lithium\console\Command {
 		if(!empty($this->fullAmount)) {
 			$ordersToBeProcessed = $this->getOrdersToShipped($report);
 			return $ordersToBeProcessed;
-		}	
+		}
 	}
-	
+
 	public function getOrdersToShipped($report) {
 		$ordersCollection = Order::Collection();
 		$ordersUpdated = null;
@@ -107,7 +108,7 @@ class ReAuthorize extends \lithium\console\Command {
 		}
 		return $ordersUpdated;
 	}
-	
+
 	public function getOrders() {
 		Logger::debug('Getting Orders to be Reauth');
 		$ordersCollection = Order::Collection();
@@ -116,13 +117,15 @@ class ReAuthorize extends \lithium\console\Command {
 			'cc_payment' => 1
 		));
 		#Limit to X days Old Authkey
-		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $this->expiration, date("Y"));
+		$limitDate = mktime(23, 59, 59, date("m"), date("d") - $this->expiration, date("Y"));
 		#Get All Orders with Auth Date >= 7days, Not Void Manually or Shipped
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
 							'cc_payment' => array('$exists' => true),
-							'date_created' => array('$lte' => new MongoDate($limitDate))
+							'date_created' => array('$lte' => new MongoDate($limitDate)),
+							'auth' => array('$exists' => true),
+							'$where' => 'this.total == this.authTotal'
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -134,17 +137,18 @@ class ReAuthorize extends \lithium\console\Command {
 		Logger::debug('End of Getting Orders to be Reauth');
 		return $orders;
 	}
-	
+
 	public function sendReports($report = null) {
+		$reportToSend = $report;
+		unset($reportToSend['skipped']);
 		Logger::debug('Sending Report');
 		#If Errors Send Email to Customer Service
-		if(!empty($report['updated']) || !empty($report['errors']) ) {
+		if(!empty($reportToSend['updated']) || !empty($reportToSend['errors']) ) {
 			if (Environment::is('production')) {
-				Mailer::send('ReAuth_Errors_CyberSource','searnest@totsy.com', $report);
-				Mailer::send('ReAuth_Errors_CyberSource','mruiz@totsy.com', $report);
-				Mailer::send('ReAuth_Errors_CyberSource','gene@totsy.com', $report);
+				Mailer::send('ReAuth_Errors_CyberSource','authorization_errors@totsy.com', $reportToSend);
 			}
-			Mailer::send('ReAuth_Errors_CyberSource','troyer@totsy.com', $report);
+			Mailer::send('ReAuth_Errors_CyberSource','troyer@totsy.com', $reportToSend);
+			Logger::debug('Report Sent!');
 		}
 	}
 
@@ -175,13 +179,14 @@ class ReAuthorize extends \lithium\console\Command {
 				);
 			}
 		}
+		Logger::debug('End Of Manage Reauth');
 		return $report;
 	}
-	
+
 	public function isReauth($order = null) {
 		$reAuth = false;
 		#Limit to X days Old Authkey
-		$limitDate = mktime(0, 0, 0, date("m"), date("d") - $this->expiration, date("Y"));
+		$limitDate = mktime(23, 59, 59, date("m"), date("d") - $this->expiration, date("Y"));
 		#Check If There were already ReAuthorization Records
 		if(!empty($order['auth_records'])) {
 			$lastDate = $order['date_created'];
@@ -208,7 +213,7 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 			if($order['card_type'] != 'amex' && $this->reauthVisaMC) {
 				if(!empty($order['void_records'])) {
-					$limitDate = mktime(0, 0, 0, date("m"), date("d") - 1, date("Y"));
+					$limitDate = mktime(23, 59, 59, date("m"), date("d") - 1, date("Y"));
 					$lastDateVoid = $order['date_created'];
 					foreach($order['void_records'] as $record) {
 						if($lastDateVoid->sec < $record['date_saved']->sec) {
@@ -262,7 +267,7 @@ class ReAuthorize extends \lithium\console\Command {
 							'zip'       => $order['billing']['zip'],
 							'country'   => $order['billing']['country'] ?: 'US',
 							'email'     => $userInfos['email']
-			
+
 					))));
 					#Create a new Transaction and Get a new Authorization Key
 					// change 'authorizenet' to 'default' below when ready to reauth older Amex Authorize.net orders through CyberSource
@@ -305,7 +310,7 @@ class ReAuthorize extends \lithium\console\Command {
 						);
 						$report['updated'][] = array(
 							'error_message' => 'updated',
-							'order_id' => $order['order_id'], 
+							'order_id' => $order['order_id'],
 							'authKey' => $order['authKey'],
 							'new_authKey' => $auth->key,
 							'total' => $total
@@ -323,7 +328,7 @@ class ReAuthorize extends \lithium\console\Command {
 							'error_message' => $message,
 							'order_id' => $order['order_id'],
 							'authKey' => $order['authKey'],
-							'authKey_declined' => $auth->key, 
+							'authKey_declined' => $auth->key,
 							'total' => $total
 						);
 					}
@@ -332,9 +337,9 @@ class ReAuthorize extends \lithium\console\Command {
 					$message  = "Void failed for order id `{$order['order_id']}`:";
 					$message .= $error = implode('; ', $auth->errors);
 					$report['errors'][] = array(
-							'error_message' => $message, 
-							'order_id' => $order['order_id'], 
-							'authKeyDeclined' => $order['authKey'], 
+							'error_message' => $message,
+							'order_id' => $order['order_id'],
+							'authKeyDeclined' => $order['authKey'],
 							'total' => $total
 					);
 				}
@@ -343,14 +348,14 @@ class ReAuthorize extends \lithium\console\Command {
 		}
 		return $report;
 	}
-				
+
 	/*** REAUTHORIZE WITH VISA/MASTERCARD / AMEX THROUGH CYBERSOURCE ***/
 	public function reAuthCyberSource($order, $report = null, $total) {
 		Logger::debug('Reauthorizing Through CyberSource');
 		$ordersCollection = Order::Collection();
 		#Save Old AuthKey with Date
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
-		#Cancel Previous Transaction	
+		#Cancel Previous Transaction
 		if($order['card_type'] != 'amex' && (!empty($order['authTotal']))) {
 			$auth = Processor::void('default', $order['auth'], array(
 				'processor' => isset($order['processor']) ? $order['processor'] : null
@@ -360,9 +365,9 @@ class ReAuthorize extends \lithium\console\Command {
 				$message  = "Void failed for order id `{$order['order_id']}`:";
 				$message .= $error = implode('; ', $auth->errors);
 				$report['errors'][] = array(
-						'error_message' => $message, 
-						'order_id' => $order['order_id'], 
-						'authKey' => $order['authKey'], 
+						'error_message' => $message,
+						'order_id' => $order['order_id'],
+						'authKey' => $order['authKey'],
 						'total' => $order['authTotal']
 				);
 			}
@@ -387,7 +392,7 @@ class ReAuthorize extends \lithium\console\Command {
 					'zip'       => $order['billing']['zip'],
 					'country'   => $order['billing']['country'] ?: 'US',
 					'email'     => $userInfos['email']
-	
+
 			))));
 			#Create a new Transaction and Get a new Authorization Key
 			$auth = Processor::authorize('default', $total, $card);
@@ -411,8 +416,8 @@ class ReAuthorize extends \lithium\console\Command {
 			);
 			$report['updated'][] = array(
 				'error_message' => 'updated',
-				'order_id' => $order['order_id'], 
-				'authKey' => $order['authKey'], 
+				'order_id' => $order['order_id'],
+				'authKey' => $order['authKey'],
 				'new_authKey' => $auth->key,
 				'total' => $total
 			);
@@ -434,13 +439,14 @@ class ReAuthorize extends \lithium\console\Command {
 				);
 			}
 			$report['errors'][] = array(
-			'error_message' => $message, 
-			'order_id' => $order['order_id'], 
+			'error_message' => $message,
+			'order_id' => $order['order_id'],
 			'authKey' => $order['authKey'],
-			'authKeyDeclined' => $auth->key, 
+			'authKeyDeclined' => $auth->key,
 			'total' => $order['authTotal']
 			);
 		}
+		Logger::debug('End of Order Process: ' . $order['order_id']);
 		return $report;
 	}
 
@@ -466,7 +472,7 @@ class ReAuthorize extends \lithium\console\Command {
 						fputcsv($fh, $line);
 						$idx++;
 					}
-				}				
+				}
 			}
 		}
 		fclose($fh);

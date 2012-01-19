@@ -62,6 +62,13 @@ class ReCapture extends \lithium\console\Command {
 	public $onlyReauth = false;
 	
 	/**
+	 * Decrypt Credit Card with the Old Encrypt Method
+	 *
+	 * @var string
+	 */
+	public $oldWayToDecrypt = false;
+	
+	/**
 	 * Instances
 	 */
 	public function run() {
@@ -81,12 +88,17 @@ class ReCapture extends \lithium\console\Command {
 				$conditions = array('order_id' => $orderId,
 									'total' => array('$ne' => 0),
 									'cancel' => array('$ne' => true),
-									'payment_captured' => array('$exists' => false)
+									'payment_captured' => array('$exists' => false),
+									'payment_date' => array('$exists' => false)
 									);
 				$order = $ordersCollection->findOne($conditions);
-				if(!empty($order)) {		
+				if(!empty($order)) {
 					if(!empty($order['cc_payment']) && !empty($this->createNewAuth)) {
-						$creditCard = Order::getCCinfos($order);
+						if(!$this->oldWayToDecrypt) {
+							$creditCard = Order::getCCinfos($order);
+						} else {
+							$creditCard = Order::getCCinfosByTheOldWay($order);
+						}
 					}
 					if(!empty($creditCard)) {
 						$authKeyAndReport = $this->authorize($creditCard, $order);
@@ -197,6 +209,7 @@ class ReCapture extends \lithium\console\Command {
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth_capture->key,
 											  'auth' => $auth_capture->export(),
+											  'authTotal' => $order['total'],
 											  'processor' => $auth_capture->adapter,
 											  'payment_date' => new MongoDate(),
            									  'auth_confirmation' => $auth_capture->key,

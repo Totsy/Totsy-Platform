@@ -88,17 +88,20 @@ Processor::config(array(
 	'default' => array(
 		'production' => $cybersourceProduction,
 		'test' => $cybersourceTest,
+		'staging' => $cybersourceTest,
 		'development' => $cybersourceTest,
 		'local' => $cybersourceTest
 	),
 	'authorizenet' => array(
 		'production' => $authorizenetProduction,
 		'test' => $authorizenetTest,
+		'staging' => $authorizenetTest,
 		'development' => $authorizenetTest,
 		'local' => $authorizenetTest
 	),
 	'local' => $cybersourceTest,
-	'test' => $cybersourceTest
+	'test' => $cybersourceTest,
+	'staging' => $cybersourceTest
 ));
 
 ?>

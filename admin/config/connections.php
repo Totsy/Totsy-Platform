@@ -20,7 +20,8 @@ Connections::add('default', array(
 		'host' => array(
 			'db1-dc1.totsy.com',
 			'db2-dc1.totsy.com',
-			'db3-dc1.totsy.com'
+			'db3-dc1.totsy.com',
+			'db4-dc1.totsy.com'
 		),
 		'adapter' => 'admin\extensions\adapter\data\source\MongoDb'
 	),
@@ -36,6 +37,13 @@ Connections::add('default', array(
 		'type' =>  'MongoDb',
 		'database' => 'totsy',
 		'host' => 'localhost'
+	),
+	
+	'staging' => array(
+		'type' =>  'MongoDb',
+		'database' => 'totsy',
+		'host' => 'db1-dc1.totsystaging.com',
+		'adapter' => 'admin\extensions\adapter\data\source\MongoDb'
 	),
 
 	'local' => array(

@@ -636,10 +636,13 @@ class Order extends Base {
 				}
 			} else {
 				if ($promocode['type'] == 'percentage') {
-					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
+					$selected_order["promo_discount"] =+ ($subTotal * $promocode['discount_amount']);
 					$datas_order["promo_discount"] = $selected_order["promo_discount"];
 				}
-				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];
+				$preAfterDiscount = $subTotal - $selected_order["promo_discount"];
+				if($preAfterDiscount < 0) {
+					$preAfterDiscount = 0;
+				}
 				if ($promocode['type'] == 'free_shipping') {
 					$datas_order["handlingDiscount"] = $selected_order["handling"];
 					$datas_order["overSizeHandlingDiscount"] = $selected_order["overSizeHandling"];
@@ -943,6 +946,25 @@ class Order extends Base {
 			$cc_encrypt[$k] = base64_encode($crypt_info);
 		}
 		return $cc_encrypt;
+	}
+	
+	/**
+	 * Decrypt all credits card processed with Auth.Net
+	 */
+	public static function getCCinfosByTheOldWay($order) {
+		$creditCard = null;
+		if(!empty($order['cc_payment'])) {
+			$cc_encrypt = $order['cc_payment'];
+			$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+			$iv =  base64_decode($order['cc_payment']['vi']);
+			$key = md5($order['user_id']);
+			unset($cc_encrypt['vi']);
+			foreach  ($cc_encrypt as $k => $cc_info) {
+				$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+				$creditCard[$k] = $crypt_info;
+			}
+		}
+		return $creditCard;
 	}
 }
 
