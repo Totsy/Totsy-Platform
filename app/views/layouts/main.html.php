@@ -69,6 +69,7 @@
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
 				
 		<div id="contentMain" class="container_16 group">
+			<noscript><div>Unfortunately, JavaScript is currently disabled or not supported by your browser. Please enable JavaScript for full functionality.</div></noscript>
 			<?php echo $this->content(); ?>
 		</div>
 		<!-- /#contentMain -->
