@@ -360,10 +360,12 @@ class User extends Base {
 	public static function hasCyberSourceProfile($cyberSourceProfiles, $creditCard) {
 		$cyberSourceProfileDetected = null;
 		foreach($cyberSourceProfiles as $cyberSourceProfile) {
-			if ($cyberSourceProfile[creditCard][number] == substr($creditCard[number],-4)
-				&& $cyberSourceProfile[creditCard][month] == $creditCard[month]
-				&& $cyberSourceProfile[creditCard][year] == $creditCard[year]) {
-				$cyberSourceProfileDetected = $cyberSourceProfile;
+			if(is_array($cyberSourceProfile)) {
+				if ($cyberSourceProfile[creditCard][number] == substr($creditCard[number],-4)
+					&& $cyberSourceProfile[creditCard][month] == $creditCard[month]
+					&& $cyberSourceProfile[creditCard][year] == $creditCard[year]) {
+						$cyberSourceProfileDetected = $cyberSourceProfile;
+				}
 			}
 		}
 		return $cyberSourceProfileDetected;
