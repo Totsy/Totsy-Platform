@@ -408,6 +408,8 @@ span.breadcrumbs span {
 }
 *:first-child+html .group {min-height:1px;} /* IE7 */
 
+#contentMain > noscript div {display:block; margin:1em 10px; padding:0.5em; background:#ececec; color:#333; font-size:14px; font-weight: bold; text-align: center;}
+
 /* #wrapper { width:960px; padding:1px 18px 0 18px; margin:0 auto; background:url(../img/cnt-bg.png) repeat-y #FFF } */
 
 /* @TODO: remove unused styles - #header, #main-nav et al */
