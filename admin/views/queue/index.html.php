@@ -79,6 +79,7 @@
 				<thead>
 				<tr>
 					<th>Date</th>
+					<th>Queue Id </th>
 					<th>Orders Processed</th>
 					<th>Order Lines</th>
 					<th># POs Processed</th>
@@ -96,6 +97,7 @@
 						<?php else: ?>
 							<td>0</td>
 						<?php endif ?>
+						<td><?=$data["_id"];?></td>
 						<?php if (!empty($data['summary']['order']['lines'])): ?>
 							<td><?=$data['summary']['order']['lines']?></td>
 						<?php else: ?>
@@ -151,6 +153,7 @@
 <div id="clear"></div>
 
 <script type="text/javascript" charset="utf-8">
+    TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 	$(document).ready(function() {
 		$('#eventTable').dataTable({
 			"sDom": 'T<"clear">lfrtip'
@@ -159,6 +162,7 @@
 	} );
 </script>
 <script type="text/javascript" charset="utf-8">
+TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 	$(document).ready(function() {
 		$('#summary_table').dataTable({
 			"sDom": 'T<"clear">lfrtip'
