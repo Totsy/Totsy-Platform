@@ -161,7 +161,7 @@ class ReAuthorize extends \lithium\console\Command {
 			$reAuth = $this->isReauth($order);
 			if($reAuth) {
 				if($order['processor'] == 'CyberSource') {
-					$report = $this->reAuthCyberSource($order, $report, $total);
+					$report = $this->reAuthCyberSource($order, $report);
 				}
 			} else {
 				$report['skipped'][] = array(
@@ -267,7 +267,7 @@ class ReAuthorize extends \lithium\console\Command {
 						'authKey' => $auth->key,
 						'auth' => $auth->export(),
 						'processor' => $auth->adapter,
-						'authTotal' => $total
+						'authTotal' => $order['total']
 					)), array( 'upsert' => true)
 			);
 			#Add to Auth Records Array
@@ -280,7 +280,7 @@ class ReAuthorize extends \lithium\console\Command {
 				'order_id' => $order['order_id'],
 				'authKey' => $order['authKey'],
 				'new_authKey' => $auth->key,
-				'total' => $total
+				'total' => $order['total']
 			);
 		} else {
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";

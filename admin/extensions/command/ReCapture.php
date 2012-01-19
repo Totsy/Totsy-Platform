@@ -92,7 +92,7 @@ class ReCapture extends \lithium\console\Command {
 									);
 				$order = $ordersCollection->findOne($conditions);
 				if(!empty($order)) {		
-					if(!empty($order['cyberSourceProfileId'])) {
+					if(!empty($order['cyberSourceProfileId']) && !empty($this->createNewAuth)) {
 						$authKeyAndReport = $this->authorize($order);
 						if(!empty($authKeyAndReport['reportAuthorize'])) {
 							$report[$reportCounter] = $authKeyAndReport['reportAuthorize'];
