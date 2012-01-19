@@ -18,6 +18,7 @@ class Keyade extends \lithium\data\Model {
 	 */
 	public static function signups( $data ){
 		$connection = static::_connection()->connection->users;
+
 		$options = array(
 			'keyade_user_id' => array( '$exists' => true),
 			'created_date' =>  array(
@@ -244,7 +245,7 @@ class Keyade extends \lithium\data\Model {
         $invite_codes = array_unique($invite_codes);
         $keyade_users = $c_users->find(array(
 		    'invitation_codes' => array('$in' => $invite_codes),
-		    'invited_by' => new MongoRex('/^keyade/i')),array(
+		    'invited_by' => new MongoRegex('/^keyade/i')),array(
 		    'invitation_codes' => true,
 		    'keyade_user_id' => true
 		    ));
