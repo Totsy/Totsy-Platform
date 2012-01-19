@@ -88,7 +88,8 @@ class ReCapture extends \lithium\console\Command {
 				$conditions = array('order_id' => $orderId,
 									'total' => array('$ne' => 0),
 									'cancel' => array('$ne' => true),
-									'payment_captured' => array('$exists' => false)
+									'payment_captured' => array('$exists' => false),
+									'payment_date' => array('$exists' => false)
 									);
 				$order = $ordersCollection->findOne($conditions);
 				if(!empty($order)) {
