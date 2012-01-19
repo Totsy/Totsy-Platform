@@ -35,6 +35,12 @@ class AddCredits extends \lithium\console\Command {
 	public $tmp = '/resources/totsy/tmp/';
 	
 	/**
+	 * Set development user id. Meaning process invitations
+	 * only send by this user
+	 */
+	public $test = null;
+	
+	/**
 	 * temporary var to store invitation data
 	 * 
 	 * @var array
@@ -90,7 +96,6 @@ class AddCredits extends \lithium\console\Command {
 		$totsy = Invitation::connection()->connection; 
 		
 		// drop tmp collections if any
-		
 		$dbs = $totsy->listCollections();
 		foreach ($dbs as $db){
 			if (in_array($db->getName(),$list)){
@@ -105,7 +110,7 @@ class AddCredits extends \lithium\console\Command {
 				'capped' => false
 			));
 		}
-				
+			
 		$this->tmpInvites = $totsy->{'tmp.invites'};
 		$this->tmpInvites->ensureIndex(array('user_id'=>1));
 		
@@ -130,10 +135,17 @@ class AddCredits extends \lithium\console\Command {
 	
 	public function applyFilterCredits(){
 		// get users ivited users and codes
-		$invitedCursor = Invitation::collection()->find(array(
+		
+		$conditions = array(
 			'credited' => array( '$ne' => true ),
 			'processed' => array( '$ne' => true )
-		));
+		);
+		
+		if (!empty($this->test)){
+			$conditions['user_id'] = $this->test;
+		}
+		
+		$invitedCursor = Invitation::collection()->find($conditions);
 		if (!$invitedCursor->hasNext()){ 
 			Logger::info('No pending invitations found'."\n");
 			unset($invitedCursor);
@@ -144,7 +156,8 @@ class AddCredits extends \lithium\console\Command {
 		while($invitedCursor->hasNext()){
 
 			$row =  $invitedCursor->getNext();
-
+			
+			
 			$tmpInviterCursor = $this->tmpInvites->find(array(
 				'user_id'=>$row['user_id']
 			));
@@ -205,11 +218,12 @@ class AddCredits extends \lithium\console\Command {
 			unset($invitedCursor);
 			return ;
 		}
-		
+	
 		$total = 0;
 		while($invitedCursor->hasNext()){
+		
 			$row = $invitedCursor->getNext();
-
+			
 			foreach ($row['emails'] as $k=> $email){
 				
 				$invited_email = $email['email'];
@@ -218,6 +232,10 @@ class AddCredits extends \lithium\console\Command {
 					'user_id' => $row['user_id'],
 					'email' => $invited_email
 				));
+				if( $invited == false ){
+					$this->row = array();
+					continue;
+				}
 				
 				// check if invited user made a order
 				if( $this->_checkUserOrder() == false ){
@@ -226,7 +244,7 @@ class AddCredits extends \lithium\console\Command {
 				}
  				
 				//check for credited
-				if( $this->_checkForCredited() === false ){
+				if( $this->_checkForCredited() === true ){
 					$this->row = array();
 					continue;
 				}
@@ -248,11 +266,13 @@ class AddCredits extends \lithium\console\Command {
 	}
 	
 	private function _checkForCredited(){
-		$num  = Invitation::collection()->find(array(
-			'email' => $row['email']
+		$num = Invitation::collection()->find(array(
+			'email' => $this->row['email'],
+			'credited' => true
 		))->count();
 		
 		if ($num>0){
+			BlackBox::AddCreditsOUT('Credit already applied to invter for email: '.$this->row['email']);
 			return true;
 		} else {
 			return false;
@@ -261,7 +281,7 @@ class AddCredits extends \lithium\console\Command {
 	
 	private function _updateTmpInvites(&$tmpInvites,&$row){
 		
-		BlackBox::AddCreditsOUT("\n".'Updating tmp invites processed: '.$row['_id']);
+		BlackBox::AddCreditsOUT('Updating tmp invites processed: '.$row['_id']);
 		
 		$this->tmpInvites->update(
 			array('_id'=> $row['_id']),
