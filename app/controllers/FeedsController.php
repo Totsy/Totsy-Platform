@@ -27,14 +27,15 @@ class FeedsController extends \lithium\action\Controller {
 	   // $this->render(array('layout' => false));
 		// Make sure you ALWAYS pull the token from the request object and not the URL
 		// Sanitize that input from the URL
+
 		$start_date = new MongoDate(
 			strtotime(
-				substr($start_date, 0, 4) . '-' . substr($start_date, 4, 2) . '-' . substr($start_date, 6, 2)
+				substr($start_date, 0, 4) . '-' . substr($start_date, 4, 2) . '-' . substr($start_date, 6, 2) . " 00:00:00"
 			)
 		);
 		$end_date = new MongoDate(
 			strtotime(
-				substr($end_date, 0, 4) . '-' . substr($end_date, 4, 2) . '-' . substr($end_date, 6, 2)
+				substr($end_date, 0, 4) . '-' . substr($end_date, 4, 2) . '-' . substr($end_date, 6, 2) . " 23:59:59"
 			)
 		);
 		$data = array(
