@@ -160,6 +160,21 @@ class ReCapture extends \lithium\console\Command {
 		$auth = Processor::authorize('default', ($order['total'] + $this->adjustment), $card);
 		if ($auth->success()) {
 			Logger::debug('Authorize Complete: ' . $auth->key);
+			$customer = Processor::create('default', 'customer', array(
+				'firstName' => $userInfos['firstname'],
+				'lastName' => $userInfos['lastname'],
+				'email' => $userInfos['email'],
+				'payment' => $card
+			));
+			$result = $customer->save();
+			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
+			#Setup new AuthKey
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => array(
+							'cyberSourceProfileId' => $profileID
+				)), array( 'upsert' => true)
+			);
 			$authKey = $auth->key;
 			if(!empty($this->onlyReauth)) {
 				$update = $ordersCollection->update(
