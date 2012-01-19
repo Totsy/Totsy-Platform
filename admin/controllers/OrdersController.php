@@ -493,13 +493,9 @@ class OrdersController extends BaseController {
 				$order = $orderClass::find('first', array(
 					'conditions' => array('_id' => new MongoId($id))
 				));
-				$cc_encrypted = $orderClass::creditCardEncrypt($datas['creditcard'], $order['user_id']);
 				$modification_datas["author"] = $current_user["email"];
 				$modification_datas["date"] = new MongoDate(strtotime('now'));
 				$modification_datas["type"] = "billing";
-				if($order["cc_payment"]) {
-					$modification_datas["old_datas"]["cc_payment"] = $order["cc_payment"]->data();
-				}
 				$modification_datas["old_datas"] = array(
 					"firstname" => $order["billing"]["firstname"],
 					"lastname" => $order["billing"]["lastname"],
@@ -518,7 +514,6 @@ class OrdersController extends BaseController {
 				$orderCollection->update(
 					array("_id" => new MongoId($id)),
 					array('$set' => array('billing' => $datas['billing'], 
-										'cc_payment' => $cc_encrypted,
 										'card_type' => $datas['creditcard']['type'],
 										'card_number' => substr($datas['creditcard']['number'], -4) 
 					))
@@ -569,6 +564,20 @@ class OrdersController extends BaseController {
 		#Create a new Transaction and Get a new Authorization Key
 		$auth = Processor::authorize('default', $order['total'], $card);
 		if($auth->success()) {
+			$customer = Processor::create('default', 'customer', array(
+				'firstName' => $userInfos['firstname'],
+				'lastName' => $userInfos['lastname'],
+				'email' => $userInfos['email'],
+				'payment' => $card
+			));
+			$result = $customer->save();
+			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => array(
+					'cyberSourceProfileId' => $profileID
+							)), array( 'upsert' => true)
+			);
 			#Setup new AuthKey
 			$update = $ordersCollection->update(
 					array('_id' => $order['_id']),
