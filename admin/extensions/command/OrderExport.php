@@ -265,7 +265,7 @@ class OrderExport extends Base {
 		 $this->queue->percent = null;
 		$this->queue->save();
 		$this->log('Starting Full Reauthorize');
-	//	$orders = $ReAuthorize->run();
+		$orders = $ReAuthorize->run();
 		//total same until here 345pm
 		if ($orders) {
 			$order_total = $orders->count();
@@ -545,9 +545,7 @@ class OrderExport extends Base {
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
 							$fields[$inc]['SKU'] = $sku;
-							 if ($sku == false) {
-							    var_dump($eventItem);die();
-					        }
+							 
 							if ($this->verbose == 'true') {
 								$this->log("Adding SKU: $sku to $handle");
 							}
