@@ -79,7 +79,8 @@ class VoidTransaction extends \lithium\console\Command {
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate)),
-							'auth' => array('$exists' => true)
+							'auth' => array('$exists' => true),
+							'$where' => 'this.total == this.authTotal'
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
