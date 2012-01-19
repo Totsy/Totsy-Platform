@@ -188,8 +188,7 @@ class OrderExport extends Base {
 					$queueData = $queue->data();
 					$this->queue = $queue;
 					if ($queueData['orders']) {
-					    $this->queue->status = "Processing Order File";
-					    $this->queue->save();
+
 						$this->orderEvents = $queueData['orders'];
 						$this->_orderGenerator();
 					}
@@ -262,8 +261,11 @@ class OrderExport extends Base {
 		}
 		$ReAuthorize->fullAmount = true;
 		$ReAuthorize->orders = $orders;
+		$this->queue->status = "Authorizing Full Amount on orders";
+		 $this->queue->percent = null;
+		$this->queue->save();
 		$this->log('Starting Full Reauthorize');
-		$orders = $ReAuthorize->run();
+	//	$orders = $ReAuthorize->run();
 		//total same until here 345pm
 		if ($orders) {
 			$order_total = $orders->count();
@@ -315,7 +317,8 @@ class OrderExport extends Base {
 			}
 			$orderArray = array();
 			$ecounter = 0;
-
+            $this->queue->status = "Processing Order Files";
+		    $this->queue->save();
 			//new counts for email breakdown
 			$allitems = 0;
 			$unprocessed_orders = 0;
@@ -516,7 +519,8 @@ class OrderExport extends Base {
 					        $sku = $eventItem['sku_details'][$key];
 					    } else {
 					        $sku = $this->findSku(String::asciiClean($description), $key);
-					        if (!($sku)) {
+
+					        if (!$sku) {
 					            $makeSku = new MakeSku();
 					            $makeSku->generateSku(array($eventItem));
                               $eventItem = Item::find('first', array(
@@ -534,12 +538,16 @@ class OrderExport extends Base {
                                         'details' => true
                                     )
                                 ));
+                                $sku = $eventItem['sku_details'][$key];
 					        }
 					    }
-						$conditions = array('SKU' => $sku);
+						$conditions = array('SKU' => $sku, 'style' => $eventItem['vendor_style']);
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
 							$fields[$inc]['SKU'] = $sku;
+							 if ($sku == false) {
+							    var_dump($eventItem);die();
+					        }
 							if ($this->verbose == 'true') {
 								$this->log("Adding SKU: $sku to $handle");
 							}
@@ -565,8 +573,8 @@ class OrderExport extends Base {
 							}
 							fputcsv($fp, $productFile[$inc]);
 						}
-						++$inc;
 					}
+					++$inc;
 				}
 			    if ($event_count != 0) {
                     $this->queue->percent = (float)number_format((($inc/$event_count) * 100), 2);
