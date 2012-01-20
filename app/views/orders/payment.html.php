@@ -82,6 +82,11 @@ var paymentForm = new Object();
 
     		 		invalid_count++;
     		 	}
+
+				if (field.name == 'zip' && !field.value.match(/^\d{5}$/)) {
+					$('#' + field.name).validationEngine('showPrompt', 'Enter a numeric ZIP code.');
+					invalid_count++;
+				}
 			});
 
 			if(invalid_count > 0 ) {
