@@ -774,20 +774,10 @@ class UsersController extends BaseController {
 												
 				if (!empty($landing)) {
 				    Session::delete('landing', array('name'=>'default'));    
-				    
-				    if(!$affiliate) {
-				    	$self->redirect($landing);
-				    } else { 
-				    $self->redirect($landing, array("exit"=>true));
-				    }  
+				    $self->redirect($landing);
 				    unset($landing);
 				} else {
-				    
-				    if(!$affiliate) {
-				    	$self->redirect("/sales");
-				    } else { 
-				    $self->redirect("/sales", array("exit"=>true));
-				    } 
+				    $self->redirect("/sales");
 				}
 			}
 		}
