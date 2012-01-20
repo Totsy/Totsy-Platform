@@ -603,11 +603,11 @@ class FinancialExport extends Base  {
 	    while ($this->orders->hasNext()){
 	           $order = $this->orders->getNext();
                 $orderItems = $order['items'];
-                
+
                 if (array_key_exists('tax', $order) ){
 					$order['tax'] = (float) $order['tax'];
                 }
-                
+
                 if (array_key_exists('authKey', $order)) {
                    $order['authKey'] = $order['authKey'];
                 } else {
@@ -713,12 +713,18 @@ class FinancialExport extends Base  {
                 }
 
                 if (array_key_exists('auth_records', $order)) {
-					$order['auth_records'] = $order['auth_records'];
+                    $tmp = array();
+					foreach($order['auth_records'] as $auth_record) {
+					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
+					    $tmp[] = $auth_record;
+					}
+					$order['auth_records'] = $tmp;
+
 				} else {
 					$order['auth_records'] = array(
 						array(
-							'authKey' => "",
-							'date_saved' => ""
+							'authKey' => $order['authKey'],
+							'date_saved' => date("m/d/Y h:i:s A", $order['date_created']->sec )
 						));
 				}
                 /*
@@ -922,14 +928,15 @@ class FinancialExport extends Base  {
         foreach($record as $key => $value) {
             //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
             if (is_array($value) && ($key == "auth_records")) {
-				$parent = $recordTag->addChild($key);
+				$auth_records = $recordTag->addChild($key);
+				$auth = $auth_records->addChild('auth');
 				foreach($value as $sub_key => $sub_value){
                     if (is_array($sub_value)) {
                         foreach($sub_value as $k => $v) {
-                            $parent->addChild($k, $v);
+                            $auth->addChild($k, $v);
                         }
                     } else {
-                        $parent->addChild($sub_key, $sub_value);
+                        $auth->addChild($sub_key, $sub_value);
                     }
 				}
 		   } else {

@@ -63,4 +63,10 @@ require __DIR__ . '/bootstrap/auth.php';
  */
 require __DIR__ . '/bootstrap/session.php';
 
+/**
+ *
+ */
+require __DIR__ . '/bootstrap/media.php';
+
+
 ?>
