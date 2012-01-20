@@ -31,6 +31,28 @@ class BaseController extends \lithium\action\Controller {
 			}
 	}
 
+
+	/** 
+		get cart subtotal for price
+	*/
+	public function getCartSubTotal () {
+
+	     $subTotal = 0;
+	
+		foreach(Cart::active() as $cartItem) {
+			$currentSec = is_object($cartItem->expires) ? $cartItem->expires->sec : $cartItem->expires;
+			if ($cartData['cartExpirationDate'] < $currentSec) {
+				$cartData['cartExpirationDate'] = $currentSec;
+			}
+	
+			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
+			$i++;
+		}
+
+		return $subTotal;
+	}
+
+
 	/**
 	 * Get the userinfo for the rest of the site from the session.
 	 */
@@ -49,6 +71,9 @@ class BaseController extends \lithium\action\Controller {
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
+		
+		$cartSubTotal = $this->getCartSubTotal();
+		
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
@@ -89,7 +114,7 @@ class BaseController extends \lithium\action\Controller {
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
 		}
-		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
+		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout', 'cartSubTotal'));
 		$this->freeShippingEligible($userInfo);
 		$this->tenOffFiftyEligible($userInfo);
 		/**
@@ -277,6 +302,7 @@ class BaseController extends \lithium\action\Controller {
 			Session::delete('cc_infos');
 		}
 	}
+		
 }
 
 ?>

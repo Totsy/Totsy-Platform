@@ -247,6 +247,7 @@ class CartController extends BaseController {
 	}
 	
 
+
 	/**
 	* Method for sending all required cart data to Ajax driven cart popup.
 	*
