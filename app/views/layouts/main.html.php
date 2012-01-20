@@ -139,13 +139,15 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 ?>
 <?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 <script type="text/javascript">
-	var fbCookie = 'fbsr_<?php echo $appId; ?>';	
+	var fbCookie = 'fbsr_<?php echo $appId; ?>';
+	var mobilefbCookie = 'fbm_<?php echo $appId; ?>';
 	var logoutURL = '<?php echo $logout; ?>';
 	
 		function deleteFBCookies() {
 		    //all posible FB cookies
 		    try {
 		    	document.cookie = fbCookie + '=; domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+				document.cookie = mobilefbCookie + '=; base_domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
 		    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';

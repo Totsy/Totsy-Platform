@@ -359,7 +359,7 @@ class UsersController extends BaseController {
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 
-	protected function autoLogin() {
+	protected function autoLogin() {		
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
@@ -372,9 +372,8 @@ class UsersController extends BaseController {
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-
+		
 		if (!$success) {
-
 			if (!empty($userfb)) {
 				if(!$fbCancelFlag) {
 					$this->redirect('/register/facebook');
@@ -772,13 +771,23 @@ class UsersController extends BaseController {
 				if (Session::check('landing')){
 					$landing = Session::read('landing');
 				}
-
+												
 				if (!empty($landing)) {
 				    Session::delete('landing',array('name'=>'default'));
-				    $self->redirect($landing, array('exit' => true));
+				    
+				    if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+				    	$self->redirect($landing);
+				    } else {
+				    	$self->redirect($landing, array("exit"=>true));
+				    }
 				    unset($landing);
 				} else {
-				    $self->redirect("/sales", array('exit' => true));
+				    
+				    if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+				    	$self->redirect("/sales");
+				    } else {
+				    	$self->redirect("/sales", array("exit"=>true));
+				    }
 				}
 
 			}
