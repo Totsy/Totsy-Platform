@@ -4495,6 +4495,7 @@ Text Align > left / right
 	font-size:13px;
 	text-align: center;
 	text-transform: uppercase;
+	white-space: nowrap;
 }
 #totsy > header > #invite a:hover {
 	text-decoration: none;

@@ -27,74 +27,92 @@
 		<header>
 			<h2 class="page-title gray"> <?php echo $categories; ?> <em>(<?php echo $eventCount; ?> Sales Found)</em></h2>
 		</header>
-		<?php $x = 0; ?>
-		<?php foreach ($openEvents as $event): ?>
 		
-		<article class="event grid-x">
-			<header class="eventDetails group">
-				<h3><a href="<?php echo '/sale/' . $event['url'];?>" title="See the <?php echo $event['name']; ?> sale"><?php echo $event['name']; ?></a> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event['end_date'] *1000 ; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
-				<!--
-				<div>
-					<?php // @DG-2012.01.12 - commented out the event image but retained in case we want it back…
-					/*
-					// store event image
-						if(!empty($event['images']['event_image'])) {
-							$eventImage = "/image/{$event['images']['event_image']}.jpg";
-						}
-						else {
-							$eventImage = "img/no-image-small.jpeg";
-						}
+		<?php // do we have events?
+			if ($openEvents != null) {
+			?>
+				<?php $x = 0; ?>
+				<?php foreach ($openEvents as $event): ?>
 				
-					// build link and image
-						$url = $event['url'];
-						echo $this->html->link(
-							$this->html->image("$eventImage", array(
-								'title' => $event['name'],
-								'alt' => $event['name'],
-								'width' => '126',
-								'height' => '145'
-							)), "sale/$url", array('escape'=> false)
-						);
-					*/
+				<article class="event grid-x">
+					<header class="eventDetails group">
+						<h3><a href="<?php echo '/sale/' . $event['url'];?>" title="See the <?php echo $event['name']; ?> sale"><?php echo $event['name']; ?></a> <em id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event['end_date'] *1000 ; ?>" class="counter end"></em><!-- @TODO - use data-attribute instead of title… better, use a date/time element instead of an em --></h3>
+						<!--
+						<div>
+							<?php // @DG-2012.01.12 - commented out the event image but retained in case we want it back…
+							/*
+							// store event image
+								if(!empty($event['images']['event_image'])) {
+									$eventImage = "/image/{$event['images']['event_image']}.jpg";
+								}
+								else {
+									$eventImage = "img/no-image-small.jpeg";
+								}
+						
+							// build link and image
+								$url = $event['url'];
+								echo $this->html->link(
+									$this->html->image("$eventImage", array(
+										'title' => $event['name'],
+										'alt' => $event['name'],
+										'width' => '126',
+										'height' => '145'
+									)), "sale/$url", array('escape'=> false)
+								);
+							*/
+							?>
+						</div>
+						-->
+						<p><?php echo strip_tags($event['blurb']); ?></p>
+					</header><!-- /.eventDetails -->
+					
+					<div class="items group">
+					<?php
+					//print_r($event->eventItems);
+					
+					foreach($event['eventItems'] as $item){ ?>
+						<?//php print_r($item); ?>
+						<div class="item" data-prodID="<?php echo $item['_id'] ?>">
+							<a href="<?php echo '/sale/' . $event['url'] . '/' . $item['url']?>" title="<?php echo $item['description'];?>">
+								<img width="125" height="126" src="<?php echo "/image/" . $item['primary_image'] . ".jpg";?>" alt="<?php echo $item['description'];?>" />
+								<h4><?php echo $item['description'];?></h4>
+								<p>$<?php echo number_format($item['sale_retail'],2);?></p>
+							</a>
+						</div><!-- /.item -->
+					<?php
+					}
 					?>
-				</div>
-				-->
-				<p><?php echo strip_tags($event['blurb']); ?></p>
-			</header><!-- /.eventDetails -->
-			
-			<div class="items group">
-			<?php
-			//print_r($event->eventItems);
-			
-			foreach($event['eventItems'] as $item){ ?>
-				<?//php print_r($item); ?>
-				<div class="item" data-prodID="<?php echo $item['_id'] ?>">
-					<a href="<?php echo '/sale/' . $event['url'] . '/' . $item['url']?>" title="<?php echo $item['description'];?>">
-						<img width="125" height="126" src="<?php echo "/image/" . $item['primary_image'] . ".jpg";?>" alt="<?php echo $item['description'];?>" />
-						<h4><?php echo $item['description'];?></h4>
-						<p>$<?php echo number_format($item['sale_retail'],2);?></p>
-					</a>
-				</div><!-- /.item -->
+						<div class="btn viewAllEvents">
+							<?php
+								echo $this->html->link(
+									$this->html->image("/img/btn-viewevents-bug.png", array(
+										'title' => 'View all items from this sale',
+										'alt' => 'View all items from this sale',
+										'width' => '135',
+										'height' => '203'
+									)), 'sale/'.$event['url'], array('escape'=> false)
+								);
+							?>
+						</div>
+					</div><!-- /.items -->
+					<footer>View all items from <?php echo $this->html->link($event['name'], 'sale/'.$event['url'], array('escape'=> false) );?></footer>
+				</article><!-- /.event -->
+				<?php $x++; ?>
+				<?php endforeach ?>
+
 			<?php
 			}
+			
+			// if no events, give 'em a message / alternative
+			else { 
 			?>
-				<div class="btn viewAllEvents">
-					<?php
-						echo $this->html->link(
-							$this->html->image("/img/btn-viewevents-bug.png", array(
-								'title' => 'View all items from this sale',
-								'alt' => 'View all items from this sale',
-								'width' => '135',
-								'height' => '203'
-							)), 'sale/'.$event['url'], array('escape'=> false)
-						);
-					?>
-				</div>
-			</div><!-- /.items -->
-			<footer>View all items from <?php echo $this->html->link($event['name'], 'sale/'.$event['url'], array('escape'=> false) );?></footer>
-		</article><!-- /.event -->
-		<?php $x++; ?>
-		<?php endforeach ?>
+		<article class="event grid-x">
+			Nothing to see here, please go home.
+		</article>
+		
+			<?php
+			}
+		?>
 	
 	</section><!-- /#events-wrap -->
 </div><!-- /.full-width -->
