@@ -390,6 +390,8 @@ span.breadcrumbs span {
 }
 *:first-child+html .group {min-height:1px;} /* IE7 */
 
+#contentMain > noscript div {display:block; margin:1em 10px; padding:0.5em; background:#ececec; color:#333; font-size:14px; font-weight: bold; text-align: center;}
+
 /* #wrapper { width:960px; padding:1px 18px 0 18px; margin:0 auto; background:url(../img/cnt-bg.png) repeat-y #FFF } */
 
 /* @TODO: remove unused styles - #header, #main-nav et al */
@@ -763,6 +765,9 @@ h2.page-title {
 .fullwidth > section > header h2 {
 	margin-bottom:6px; padding-bottom:6px;
 	border-bottom:1px solid #ddd;
+}
+#events-wrap > header h2 {
+	border: none;
 }
 #page p {
 	margin-bottom:10px;
@@ -4466,6 +4471,7 @@ Text Align > left / right
 	font-size:13px;
 	text-align: center;
 	text-transform: uppercase;
+	white-space: nowrap;
 }
 #totsy > header > #invite a:hover {
 	text-decoration: none;
@@ -4755,6 +4761,11 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 }
 #events-wrap .viewAllEvents a {display: block; line-height: 0;}
 #events-wrap .event > footer {text-align: right;}
+
+/* no events */
+#noevents {
+	font-size:14px;
+}
 
 /* prevent image from breaking out of layout */
 /* - @DG thought: consider putting max-width on container, and setting image to width:100% */
