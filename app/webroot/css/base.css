@@ -4499,7 +4499,7 @@ nav > ul > li {
 *:first-child+html nav > ul > li {margin-left:10px;} /* IE7 */
 nav > ul > li:first-child {margin-left:0;}
 nav > ul > li,
-#totsy > header #userUtils {box-shadow: 4px 3px 6px rgba(0,0,0,0.10);}
+#totsy > header #userUtils {box-shadow: 4px 3px 6px rgba(0,0,0,0.10); min-height:45px; }
 nav > ul > li:after,
 #totsy > header #userUtils:after {
 	content: "";
