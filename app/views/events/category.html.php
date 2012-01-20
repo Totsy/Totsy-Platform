@@ -106,10 +106,12 @@
 			// if no events, give 'em a message / alternative
 			else { 
 			?>
-		<article class="event grid-x">
-			Nothing to see here, please go home.
-		</article>
-		
+				<div class="grid_16" id="noevents">
+					<section>
+						<p>We're sorry, there are no events currently running in this category right now.</h2>
+						<p>Visit the <a title="Totsy's Sales" href="/sales">Home Page</a> to check out our latest sales.</p>
+					</section>	
+				</div>
 			<?php
 			}
 		?>

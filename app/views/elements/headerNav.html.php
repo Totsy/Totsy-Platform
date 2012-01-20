@@ -1,3 +1,4 @@
+<?php use lithium\storage\Session; ?>
 <header class="group">
 	
 	<h1 id="logo">
@@ -8,6 +9,18 @@
 		use li3_facebook\extension\FacebookProxy; 
 		$fbconfig = FacebookProxy::config();
 		$appId = $fbconfig['appId'];	
+		
+		//savings to be shown in header nav
+		//read from session, then piped to a string
+		$userSavings = Array();
+		
+		//numeric var used in this template
+		$savings = 0;
+		
+		if(Session::read('userSavings')) {
+			$userSavings = Session::read('userSavings');
+			$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
+		} 
 	?>	
 	<?php
 		if (!(empty($userInfo))) { ?>
@@ -34,15 +47,33 @@
 								?>
 								</em>
 							</div>
+						
+						<?php
+						
+						$currentURI  = $_SERVER['REQUEST_URI'];
+					
+		    			$URIArray = explode("/", $currentURI);
+		    			$controllerName = $URIArray[1];			
+		    																	 
+						if( $controllerName!=="checkout" && $controllerName!=="orders" && $controllerName!=="cart"){ ?>	
 							<div id="usercart">
 							
-								<a href="/cart/view" class="icon cart cart_icon" title="Go to My Cart"><em><?php echo $cartCount;?> Items</em> | <strong>$<?php echo number_format($cartSubTotal,2)?></strong></a>
+								<a href="/cart/view" class="icon cart cart_icon" title="Go to My Cart">
+								<em>
+								<span id="cart-count">
+									<?php echo $cartCount;?>
+								</span> Items</em> | <strong>$<span id="cart-subtotal"><?php echo number_format($cartSubTotal,2)?></span></strong></a>
 								<a href="/cart/view" class="btn checkout" title="My Cart: <?php echo $cartCount . ' Items | $' . number_format($cartSubTotal,2)?>"><strong>CHECKOUT</strong></a>
-								<?php
-									// credits logic - retained but commented out for possible re-inclusion
-									//if (!(empty($credit))) : echo '<a href="/account/credits" title="My Credits $' . $credit . '>My Credits $' . $credit . '</a>';
-								?>
-							</div><?php
+							</div>
+						<?php } else { ?>
+							<div id="usercart" style="float:right !important">
+								<a href="/cart/view" class="icon cart cart_icon" title="Go to My Cart">
+								<em> Your Savings: </em> | <strong>$<span id="cart-savings"><?php echo number_format($savings, 2)?></span></strong></a>
+							</div>
+						<?php } ?>
+						
+						
+					<?php
 						} else { ?>
 							<div id="loggedOut">
 								<a href="/login" title="Sign In">Sign In</a> | <strong>Not a member?</strong> <a href="/register" title="Sign Up">Join Now</a>

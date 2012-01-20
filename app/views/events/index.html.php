@@ -2,7 +2,7 @@
 <?php echo $this->html->script(array('jquery.nivo.slider.pack'));?>
 <script src="/js/jquery.tmpl.js" type="text/javascript"></script>
 
-<?php echo $this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
+<?php echo $this->html->script(array('cart-timer.js?v='.filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-timer.js'), 'cart-items-timer.js?v='. filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-items-timer.js'), 'cart-popup.js?v=' . filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-popup.js')));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?php echo $this->view()->render( array('element' => 'popupCartItems') ); ?>

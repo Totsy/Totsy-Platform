@@ -25,10 +25,10 @@ class EventsController extends BaseController {
 			'moms-dads' => "Moms and Dads"
 		),
 		'age' => array(
-			'newborn' => 'Newborn',
-			'infant' => 'Infant 0 -12M',
-			'toddler' => 'Toddler 1-3Y',
-			'preschool' => 'Preschool 4-5Y',
+			'newborn' => 'Newborn 0-6M',
+			'infant' => 'Infant 6-24M',
+			'toddler' => 'Toddler 1-3 Y',
+			'preschool' => 'Preschool 3-4Y',
 			'school' => 'School Age 5+',
 			'adult' => 'Adult'
 		)
@@ -57,7 +57,12 @@ class EventsController extends BaseController {
 		for($i=0; $i<$eventCount; $i++){
 			$eventId = (string)$openEvents[$i]['_id'];
 			
-			$items = $itemsCollection->find( array('event' =>  array($eventId)) )
+			//$items = $itemsCollection->find( array('event' =>  array($eventId)) )
+			$items = $itemsCollection->find(array(
+												'event' =>  array($eventId), 
+												'categories' => array('$in' => array($categories)), 
+												'enabled' => true
+												))
 									  ->limit(6);		
 			
 			//$items = Item::filter(array($eventId), null, $categories, null, 6);
@@ -93,8 +98,14 @@ class EventsController extends BaseController {
 		for($i=0; $i<$eventCount; $i++){
 			$eventId = (string)$openEvents[$i]['_id'];
 
-			$items = $itemsCollection->find(array('event' =>  array($eventId)))
-									 ->limit(6);
+			//$items = $itemsCollection->find(array('event' =>  array($eventId)))
+
+			$items = $itemsCollection->find(array(
+												'event' =>  array($eventId), 
+												'ages' => array('$in' => array($ages)), 
+												'enabled' => true
+												))
+									  ->limit(6);		
 			
 			foreach($items as $eachitem){
 				$openEvents[$i]['eventItems'][] = $eachitem;
