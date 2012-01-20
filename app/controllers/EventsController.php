@@ -58,7 +58,11 @@ class EventsController extends BaseController {
 			$eventId = (string)$openEvents[$i]['_id'];
 			
 			//$items = $itemsCollection->find( array('event' =>  array($eventId)) )
-			$items = $itemsCollection->find(array('event' =>  array($eventId), 'categories' => array('$in' => array($categories))))
+			$items = $itemsCollection->find(array(
+												'event' =>  array($eventId), 
+												'categories' => array('$in' => array($categories)), 
+												'enabled' => true
+												))
 									  ->limit(6);		
 			
 			//$items = Item::filter(array($eventId), null, $categories, null, 6);
@@ -95,8 +99,13 @@ class EventsController extends BaseController {
 			$eventId = (string)$openEvents[$i]['_id'];
 
 			//$items = $itemsCollection->find(array('event' =>  array($eventId)))
-			$items = $itemsCollection->find(array('event' =>  array($eventId), 'ages' => array('$in' => array($ages))))
-									 ->limit(6);
+
+			$items = $itemsCollection->find(array(
+												'event' =>  array($eventId), 
+												'ages' => array('$in' => array($ages)), 
+												'enabled' => true
+												))
+									  ->limit(6);		
 			
 			foreach($items as $eachitem){
 				$openEvents[$i]['eventItems'][] = $eachitem;
