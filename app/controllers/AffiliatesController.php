@@ -23,7 +23,7 @@ class AffiliatesController extends BaseController {
 	* @see app/models/Invitation::linkUpInvites()
 	**/
 	public function registration($code = NULL) {
-			
+
 		$success = false;
 		$message = '';
 		$errors = '';
@@ -115,39 +115,38 @@ class AffiliatesController extends BaseController {
 	**/
 
 	public function register($affiliate = NULL) {
-		
 		//affiliate category name
 		$categoryName = "";
 		//affiliate name
 		$affiliateName = "";
 		//for affiliate background images
 		$affBgroundImage = "";
-		
+
 		if (isset($this->request->query['a']) || preg_match('/^[a-z_]+$/', $this->request->query['a'])) {
-		
+
        		$categoryName = trim($this->request->params['args'][1]);
-			$affiliateName = trim($this->request->params['args'][0]); 
+			$affiliateName = trim($this->request->params['args'][0]);
 			$backgroundImage = "";
-			
+
 			$affiliate = $affiliateName;
-							
+
 			$getAff = Affiliate::find('first',
 				array('conditions' => array(
 					'name'=> $affiliateName)
 			));
-			
+
 			foreach($getAff['category'] as $record=>$value) {
 				$catRecord = $value->data();
-				
+
 				if($catRecord['name']==$categoryName){
 					$affBgroundImage = $catRecord['background_image'];
 					break;
-				}	
-			}			
+				}
+			}
 		}
-				
+
 		$pdata = $this->request->data;
-		
+
 		$message = false;
 		$user = User::create();
 		$urlredirect = '/sales';
@@ -199,19 +198,16 @@ class AffiliatesController extends BaseController {
 			        $data['firstname'] = $userfb['first_name'];
 			        $data['lastname'] = $userfb['last_name'];
 				}
-				switch ($affiliate) {
-                    case 'our365':
-                    case 'our365widget':
-                     //   $this->_render['template'] = 'our365';
-                        break;
-                    case 'keyade':
-                      //  $this->_render['template'] = 'keyade';
-                        if(count($params['args'] > 1)){
-                            $data['keyade_user_id'] = $params['args'][1];
-                        } else {
-                            $data['keyade_user_id'] = 0;
-                        }
-                }
+
+				if (preg_match('/^keyade/i', $affiliate)) {
+				    if (array_key_exists('clickId', $gdata)){
+				        $data['keyade_user_id'] = $gdata['clickId'];
+				    } else if(count($params['args'] > 1) && is_numeric($params['args'][1])){
+                        $data['keyade_user_id'] = $params['args'][1];
+                    } else {
+                        $data['keyade_user_id'] = 0;
+                    }
+				}
 				extract(UsersController::registration($data));
 				
 				if ($saved) {
@@ -234,11 +230,10 @@ class AffiliatesController extends BaseController {
 			$this->_render['template'] = 'mobile_register';
 		} else {
 			$this->_render['layout'] = 'login';
-		}	
-		
-		
+		}			
 				
 		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliate');
+
 	}
 }
 ?>
