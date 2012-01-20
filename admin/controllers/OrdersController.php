@@ -56,7 +56,7 @@ class OrdersController extends BaseController {
 	 *
 	 * @var int
 	 **/
-	protected $_shipBuffer = 18;
+	protected $_shipBuffer = 15;
 
 	/**
 	 * Any holidays that need to be factored into the estimated ship date calculation.
@@ -609,8 +609,6 @@ class OrdersController extends BaseController {
 
 		$userCollection = User::collection();
 		$ordersCollection = $orderClass::Collection();
-		// Only view
-		$edit_mode = false;
 
 		// update the shipping address by adding the new one and pushing the old one.
 		if ($this->request->data) {
@@ -646,7 +644,7 @@ class OrdersController extends BaseController {
 			);
 			FlashMessage::write("This Order is on the queue as Dotcom Exception", array('class' => 'pass'));	
 		}
-		if (!empty($datas["save"])){
+		if (!empty($datas["save"])){	
 			$order = $this->manage_items();
 		} else {
 			$order = null;
@@ -668,13 +666,6 @@ class OrdersController extends BaseController {
 			}
 			$orderData = $order_current->data();
 
-			// Check if order has been authorize.net confirmed
-			if (empty($orderData["void_confirm"]) && empty($orderData["auth_confirmation"])) {
-				$edit_mode = true;
-			}
-			if (array_key_exists('tax_commit',$orderData)) {
-				$edit_mode = false;
-			}
 			$orderItems = $orderData['items'];
 
 			if (!empty($orderItems)){
@@ -697,7 +688,6 @@ class OrdersController extends BaseController {
 
 		// Check if order has been canceled
 		if (!empty($order->cancel)) {
-			$edit_mode = false;
 			$itemscanceled = false;
 		}
 
@@ -709,7 +699,7 @@ class OrdersController extends BaseController {
 		}
 
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku', 'itemscanceled','edit_mode', 'service');
+		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service');
 	}
 
 	/**

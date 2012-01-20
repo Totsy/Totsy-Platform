@@ -1,6 +1,32 @@
 <?php use lithium\net\http\Router; ?>
 <?php $request = $this->request(); ?>
 <!doctype html>
+<?php
+  // Copyright 2010 Google Inc. All Rights Reserved.
+
+  $GA_ACCOUNT = "MO-675412-20";
+  $GA_PIXEL = "/ga.php";
+
+  function googleAnalyticsGetImageUrl() {
+    global $GA_ACCOUNT, $GA_PIXEL;
+    $url = "";
+    $url .= $GA_PIXEL . "?";
+    $url .= "utmac=" . $GA_ACCOUNT;
+    $url .= "&utmn=" . rand(0, 0x7fffffff);
+    $referer = $_SERVER["HTTP_REFERER"];
+    $query = $_SERVER["QUERY_STRING"];
+    $path = $_SERVER["REQUEST_URI"];
+    if (empty($referer)) {
+      $referer = "-";
+    }
+    $url .= "&utmr=" . urlencode($referer);
+    if (!empty($path)) {
+      $url .= "&utmp=" . urlencode($path);
+    }
+    $url .= "&guid=ON";
+    return str_replace("&", "&amp;", $url);
+  }
+?>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:og="http://ogp.me/ns#"
       xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -9,7 +35,7 @@
 	<title>
 		<?php echo $this->title() ?: 'Totsy'; ?>
 	</title>
-	<meta property="fb:app_id" content="181445585225391"/>
+	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
@@ -32,20 +58,6 @@
 	
 	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
 	<?php echo $this->scripts(); ?>
-	
-	<script type="text/javascript">
-	
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-675412-20']);
-	  _gaq.push(['_trackPageview']);
-	
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-	
-	</script>
 </head>
 <body>
 <?php if (!empty($userInfo)){ ?>
@@ -95,6 +107,43 @@ $.mobile.fixedToolbars
 
 $.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 </script>
-
+<?php
+use li3_facebook\extension\FacebookProxy;
+$fbconfig = FacebookProxy::config();
+$appId = $fbconfig['appId'];
+?>
+<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
+<script type="text/javascript">
+var fbCookie = 'fbsr_<?php echo $appId; ?>';
+var mobilefbCookie = 'fbm_<?php echo $appId; ?>';
+var logoutURL = '<?php echo $logout; ?>';
+function deleteFBCookies() {
+//all posible FB cookies
+try {
+document.cookie = fbCookie + '=; domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+document.cookie = mobilefbCookie + '=; base_domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+return true;
+} catch(err) {
+return false;
+}
+}
+function goToLogout() {
+if (deleteFBCookies()==true) {
+window.location = logoutURL;
+}
+}
+</script>
+<?php
+  $googleAnalyticsImageUrl = googleAnalyticsGetImageUrl();
+  echo '<img src="' . $googleAnalyticsImageUrl . '" />';?>
 </body>
 </html>

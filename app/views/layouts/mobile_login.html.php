@@ -1,5 +1,31 @@
 <?php use lithium\net\http\Router; ?>
 <!doctype html>
+<?php
+  // Copyright 2010 Google Inc. All Rights Reserved.
+
+  $GA_ACCOUNT = "MO-675412-20";
+  $GA_PIXEL = "/ga.php";
+
+  function googleAnalyticsGetImageUrl() {
+    global $GA_ACCOUNT, $GA_PIXEL;
+    $url = "";
+    $url .= $GA_PIXEL . "?";
+    $url .= "utmac=" . $GA_ACCOUNT;
+    $url .= "&utmn=" . rand(0, 0x7fffffff);
+    $referer = $_SERVER["HTTP_REFERER"];
+    $query = $_SERVER["QUERY_STRING"];
+    $path = $_SERVER["REQUEST_URI"];
+    if (empty($referer)) {
+      $referer = "-";
+    }
+    $url .= "&utmr=" . urlencode($referer);
+    if (!empty($path)) {
+      $url .= "&utmp=" . urlencode($path);
+    }
+    $url .= "&guid=ON";
+    return str_replace("&", "&amp;", $url);
+  }
+?>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:og="http://ogp.me/ns#"
       xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -26,22 +52,9 @@
 	
 	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
 	<?php echo $this->scripts(); ?>
-
-	<script type="text/javascript">
-	
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-675412-20']);
-	  _gaq.push(['_trackPageview']);
-	
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-	
-	</script>
 </head>
 <body>
+<div id="fb-root"></div>
 <div class="nav_head"></div>
 	<div class="mobile_ui">
 	<div class="logo">
@@ -52,5 +65,49 @@
 	</div>
 	<p class="legal">&copy;2012 Totsy, Inc. All rights reserved.</p>
 </div>
+	<script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId   : <?php echo $fbconfig['appId']; ?>,
+          session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
+          oauth	  : true, 
+          status  : true, // check login status
+          cookie  : true, // enable cookies to allow the server to access the session
+          xfbml   : true // parse XFBML
+        });
+
+        // whenever the user logs in, we refresh the page
+        FB.Event.subscribe('auth.login', function() {
+          window.location.reload();
+        });
+        
+        /*
+        FB.Event.subscribe('auth.logout', function(response) {
+		    window.location.href='/logout';
+ 		});
+ 		*/
+        
+      };
+
+      (function() {
+        var e = document.createElement('script');
+        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+        e.async = true;
+        document.getElementById('fb-root').appendChild(e);
+      }());
+    </script>
+<script>
+//your fb login function
+function fblogin() {
+	FB.login(function(response) {
+		if (response.authResponse) {
+			window.location.reload();    
+  		}	
+	}, 		 {scope:'email'});
+}
+</script>
+<?php
+  $googleAnalyticsImageUrl = googleAnalyticsGetImageUrl();
+  echo '<img src="' . $googleAnalyticsImageUrl . '" />';?>
 </body>
 </html>

@@ -26,5 +26,6 @@
 
 <p><?php echo $this->form->checkbox('remember_me', array('class' => 'checkbox', 'data-role' => 'none')); ?> Remember Me </p>
 
-<?php echo $this->form->submit('Sign In', array('data-theme' => 'b', 'data-ajax' => 'false', 'class' => 'button_mobile'));?> 
+<?php echo $this->form->submit('Sign In', array('data-theme' => 'b', 'data-ajax' => 'false', 'class' => 'button_mobile', 'data-inline' => 'true'));?> 
+<a href="javascript:;" data-inline="true" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr" style="margin-top:7px;"></a>
 <?php echo $this->form->end();?>

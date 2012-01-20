@@ -81,7 +81,8 @@ class VoidTransaction extends \lithium\console\Command {
 							'authKey' => array('$exists' => true),
 							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate)),
-							'auth' => array('$exists' => true)
+							'auth' => array('$exists' => true),
+							'$where' => 'this.total == this.authTotal'
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -99,9 +100,7 @@ class VoidTransaction extends \lithium\console\Command {
 		#If Errors Send Email to Customer Service
 		if(!empty($report['updated']) || !empty($report['errors']) ) {
 			if (Environment::is('production')) {
-				Mailer::send('Void_Errors_CyberSource','searnest@totsy.com', $report);
-				Mailer::send('Void_Errors_CyberSource','mruiz@totsy.com', $report);
-				Mailer::send('Void_Errors_CyberSource','gene@totsy.com', $report);
+				Mailer::send('Void_Errors_CyberSource','authorization_errors@totsy.com', $report);
 			}
 			Mailer::send('Void_Errors_CyberSource','troyer@totsy.com', $report);
 		}

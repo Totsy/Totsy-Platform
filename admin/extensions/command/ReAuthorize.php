@@ -67,6 +67,7 @@ class ReAuthorize extends \lithium\console\Command {
 		}
 		#Send Email containing informations about the Reauth Process
 		if(!$this->unitTest) {
+			Logger::debug('Reports Processing...');
 			$this->sendReports($report);
 			$this->logReport($report);
 		}
@@ -123,7 +124,8 @@ class ReAuthorize extends \lithium\console\Command {
 							'authKey' => array('$exists' => true),
 							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate)),
-							'auth' => array('$exists' => true)
+							'auth' => array('$exists' => true),
+							'cancel' => array('$ne' => true)
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -143,9 +145,7 @@ class ReAuthorize extends \lithium\console\Command {
 		#If Errors Send Email to Customer Service
 		if(!empty($reportToSend['updated']) || !empty($reportToSend['errors']) ) {
 			if (Environment::is('production')) {
-				Mailer::send('ReAuth_Errors_CyberSource','searnest@totsy.com', $reportToSend);
-				Mailer::send('ReAuth_Errors_CyberSource','mruiz@totsy.com', $reportToSend);
-				Mailer::send('ReAuth_Errors_CyberSource','gene@totsy.com', $reportToSend);
+				Mailer::send('ReAuth_Errors_CyberSource','authorization_errors@totsy.com', $reportToSend);
 			}
 			Mailer::send('ReAuth_Errors_CyberSource','troyer@totsy.com', $reportToSend);
 			Logger::debug('Report Sent!');
@@ -179,6 +179,7 @@ class ReAuthorize extends \lithium\console\Command {
 				);
 			}
 		}
+		Logger::debug('End Of Manage Reauth');
 		return $report;
 	}
 
@@ -445,6 +446,7 @@ class ReAuthorize extends \lithium\console\Command {
 			'total' => $order['authTotal']
 			);
 		}
+		Logger::debug('End of Order Process: ' . $order['order_id']);
 		return $report;
 	}
 
