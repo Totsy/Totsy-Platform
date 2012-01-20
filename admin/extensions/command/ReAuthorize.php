@@ -124,7 +124,8 @@ class ReAuthorize extends \lithium\console\Command {
 							'authKey' => array('$exists' => true),
 							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate)),
-							'auth' => array('$exists' => true)
+							'auth' => array('$exists' => true),
+							'cancel' => array('$ne' => true)
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;

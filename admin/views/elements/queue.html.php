@@ -8,6 +8,7 @@
                 <tr>
                     <th>#</th>
                     <th>Date</th>
+                    <th>Queue ID</th>
                     <th>Event Orders Queued</th>
                     <th>Event POs Queued</th>
                     <th>Expected Order/Line Count </th>
@@ -15,7 +16,7 @@
                 </tr>
             </thead>
             <tbody id="queue_body">
-                <td colspan="5"><center>Loading...</center></td>
+                <td colspan="7"><center>Loading...</center></td>
             </tbody>
         </table>
 	</div>
@@ -46,6 +47,7 @@ function updateCurrentQueue() {
                     var table = "<tr>" +
                         "<td>" + (index +1) + "</td>" +
                         "<td>" + queue[index].created_date + "</td>" +
+                        "<td>" + queue[index]._id + "</td>" +
                         "<td>" + queue[index].orders + "</td>" +
                         "<td>" + queue[index].purchase_orders + "</td>" +
                         "<td>" + queue[index].order_count + "/" +
