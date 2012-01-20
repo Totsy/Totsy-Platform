@@ -773,26 +773,24 @@ class UsersController extends BaseController {
 				}
 												
 				if (!empty($landing)) {
-				    Session::delete('landing',array('name'=>'default'));
+				    Session::delete('landing', array('name'=>'default'));    
 				    
-				    if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+				    if(!$affiliate) {
 				    	$self->redirect($landing);
-				    } else {
-				    	$self->redirect($landing, array("exit"=>true));
-				    }
+				    } else { 
+				    $self->redirect($landing, array("exit"=>true));
+				    }  
 				    unset($landing);
 				} else {
 				    
-				    if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+				    if(!$affiliate) {
 				    	$self->redirect("/sales");
-				    } else {
-				    	$self->redirect("/sales", array("exit"=>true));
-				    }
+				    } else { 
+				    $self->redirect("/sales", array("exit"=>true));
+				    } 
 				}
-
 			}
 		}
-
 		return compact('success', 'userfb');
 	}
 
