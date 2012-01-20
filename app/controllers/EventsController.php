@@ -25,7 +25,7 @@ class EventsController extends BaseController {
 			'moms-dads' => "Moms and Dads"
 		),
 		'age' => array(
-			'newborn' => 'Newborn',
+			'newborn' => 'Newborn 0-6M',
 			'infant' => 'Infant 6-24M',
 			'toddler' => 'Toddler 1-3 Y',
 			'preschool' => 'Preschool 3-4Y',
@@ -40,10 +40,14 @@ class EventsController extends BaseController {
 		
 	
 		if(empty($this->request->args[0])) {
-			$openEvents = Event::open()->data();
+//			$openEvents = Event::open()->data();
+			$this->redirect('/sales');
 		} else {
 			$map = $this->_mapCategories[ $this->request->params['action'] ];
 			$categories =  $map[ $this->request->args[0] ];
+			if($categories==""){
+				$this->redirect('/'.$this->request->args[0]);
+			}
 			$openEvents = Event::open(null,array(),null,$categories)->data();
 			unset($map);
 		}
@@ -58,7 +62,11 @@ class EventsController extends BaseController {
 			$eventId = (string)$openEvents[$i]['_id'];
 			
 			//$items = $itemsCollection->find( array('event' =>  array($eventId)) )
-			$items = $itemsCollection->find(array('event' =>  array($eventId), 'categories' => array('$in' => array($categories))))
+			$items = $itemsCollection->find(array(
+												'event' =>  array($eventId), 
+												'categories' => array('$in' => array($categories)), 
+												'enabled' => true
+												))
 									  ->limit(6);		
 			
 			//$items = Item::filter(array($eventId), null, $categories, null, 6);
@@ -77,10 +85,14 @@ class EventsController extends BaseController {
 		$categories = array();
 
 		if(empty($this->request->args[0])) {
-			$openEvents = Event::open()->data();
+//			$openEvents = Event::open()->data();
+			$this->redirect('/sales');
 		} else {
 			$map = $this->_mapCategories[ $this->request->params['action'] ];
 			$ages =  $map[ $this->request->args[0] ];
+			if($ages==""){
+				$this->redirect('/'.$this->request->args[0]);
+			}
 			$openEvents = Event::open(null,array(),null,null, $ages)->data();
 			unset($map);
 		}
@@ -95,8 +107,13 @@ class EventsController extends BaseController {
 			$eventId = (string)$openEvents[$i]['_id'];
 
 			//$items = $itemsCollection->find(array('event' =>  array($eventId)))
-			$items = $itemsCollection->find(array('event' =>  array($eventId), 'ages' => array('$in' => array($ages))))
-									 ->limit(6);
+
+			$items = $itemsCollection->find(array(
+												'event' =>  array($eventId), 
+												'ages' => array('$in' => array($ages)), 
+												'enabled' => true
+												))
+									  ->limit(6);		
 			
 			foreach($items as $eachitem){
 				$openEvents[$i]['eventItems'][] = $eachitem;
