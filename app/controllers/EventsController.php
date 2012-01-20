@@ -25,7 +25,7 @@ class EventsController extends BaseController {
 			'moms-dads' => "Moms and Dads"
 		),
 		'age' => array(
-			'newborn' => 'Newborn',
+			'newborn' => 'Newborn 0-6M',
 			'infant' => 'Infant 6-24M',
 			'toddler' => 'Toddler 1-3 Y',
 			'preschool' => 'Preschool 3-4Y',
