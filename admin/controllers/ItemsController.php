@@ -104,16 +104,17 @@ class ItemsController extends BaseController {
 		//Filter ages
 		if(!empty($item->ages)) {
 			$values = $item->ages->data();
+			
 			foreach ($values as $value) {
-				$age_filters[$value] = $value;
+				$age_filters[$value] = $key = array_search($value, $this->_mapCategories['age']); 
 			}
-		} 
+		}
 		
 		//Filter categories
 		if(!empty($item->categories)) {
 			$values = $item->categories->data();
 			foreach ($values as $value) {
-				$category_filters[$value] = $value;
+				$category_filters[$value] = $key = array_search($value, $this->_mapCategories['category']); 
 			}
 		}
 		
@@ -140,6 +141,28 @@ class ItemsController extends BaseController {
 					}
 				}
 				$data["departments"] = $departments;
+			}
+			
+			//parse ages
+			if(!empty($data["ages"])) {
+				$ages = array();
+				foreach($data["ages"] as $value) {
+					if(!empty($value)) {
+						$ages[] = $this->_mapCategories['age'][$value];
+					}
+				}
+				$data["ages"] = $ages;
+			}
+			
+			//parse categories
+			if(!empty($data["categories"])) {
+				$categories = array();
+				foreach($data["categories"] as $value) {
+					if(!empty($value)) {
+						$categories[] = $this->_mapCategories['category'][$value];
+					}
+				}
+				$data["categories"] = $categories;
 			}
 			
 			//check for new size
