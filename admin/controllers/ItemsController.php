@@ -19,23 +19,22 @@ class ItemsController extends BaseController {
 
 	private $_mapCategories = array (
 		'category' =>  array(
-			'' => 'None',
-			'Girls Apparel' => 'Girls Apparel',
-			'Boys Apparel' => 'Boys Apparel',
-			'Shoes' => 'Shoes',
-			'Accessories' => 'Accessories',
-			'Toys and Books' => 'Toys and Books',
-			'Gear' => 'Gear',
-			'Home' => 'Home',
-			'Moms and Dads' => 'Moms and Dads'
+			'girls-apparel' => "Girls Apparel",
+			'boys-apparel' => "Boys Apparel",
+			'shoes' => "Shoes",
+			'accessories' =>"Accessories",
+			'toys-books' => "Toys and Books",
+			'gear' => "Gear",
+			'home' => "Home",
+			'moms-dads' => "Moms and Dads"
 		),
 		'age' => array(
-			'' => 'None',
-			'Newborn' => 'Newborn',
-			'Infant 0-12 M' => 'Infant 0-12 M',
-			'Toddler 1-3 Y' => 'Toddler 1-3 Y',
-			'Preschool 4-5 Y' => 'Preschool 4-5 Y',
-			'School Age 5+' => 'School Age 5+'
+			'newborn' => 'Newborn 0-6M',
+			'infant' => 'Infant 6-24M',
+			'toddler' => 'Toddler 1-3 Y',
+			'preschool' => 'Preschool 3-4Y',
+			'school' => 'School Age 5+',
+			'adult' => 'Adult'
 		)
 	);
 	
