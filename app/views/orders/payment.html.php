@@ -43,6 +43,7 @@
 
 <script type="text/javascript">
 var paymentForm = new Object();
+var billingAddresses = new Object();
 </script>
 <?php
 	use app\models\Address;
@@ -277,10 +278,14 @@ endforeach;
 				</div>
 				<br />
 				<br />
-				<div id="billing_address_form" style="display: <?php if ($cyberSourceProfiles) { if (sizeof($cyberSourceProfiles->data()) > 0) { print 'none'; } } else { print 'block'; } ?>;">				
+				<div id="billing_address_form" style="display: <?php if ($cyberSourceProfiles) { if ( sizeof($cyberSourceProfiles->data() ) > 0) { print 'none'; } } else { print 'block'; } ?>;">				
 				<h3>Billing Address</h3>
 				<hr />
-				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+				<?php 
+				
+				//array_unshift($addresses_ddwn, "Please select a billing address....");
+				
+				if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
 					Choose your address :<?php echo $this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
 					<div style="clear:both"></div>
 				<hr />
@@ -352,7 +357,8 @@ endforeach;
 </div>
 <script>
 
-var shippingAddress = <?php echo $shipping; ?>
+var shippingAddress = <?php echo $shipping; ?>;
+var billingAddresses = <?php echo json_encode($billingAddresses); ?>;
 
 //validate card number when a correct card is entered
 $("#card_number").blur( function(){
@@ -383,6 +389,19 @@ function replace_address() {
     		}
     	);
     }
+};
+
+function pickBillingAddress(selectedIndex) {
+	$.each( billingAddresses[selectedIndex], function (k, v) {
+    	if(k!=="user_id") {
+    		if(k=="state") {
+				$("#" + k + 'option:selected').next('option').attr('selected', 'selected');
+  				$("#" + k + "").change();    		
+  			} else {
+    			$("#" + k + "").val(v);
+    		}
+    	} 
+	});
 };
 
 function isValidCard(cardNumber) {
@@ -445,8 +464,9 @@ function validCC() {
 <script>
 $(document).ready(function(){
 	$("#addresses").change(function () {
-		$("#address_id").val($("#addresses option:selected").val());
-		$("#selectForm").submit();
+		var selectedIndex = $("#addresses option:selected").val();		
+		pickBillingAddress(selectedIndex);
+		//$("#selectForm").submit();
 	});
 });
 </script>
