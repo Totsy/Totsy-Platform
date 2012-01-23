@@ -77,6 +77,50 @@ function checkspreadsheet(){
 
 </script>
 
+<style>
+
+
+div.xls_cell{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+}
+
+
+div.xls_cell_error{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+	background:#ff0000;
+	color:#ffffff;
+}
+
+div.xls_cell:hover{
+	background:#eeeeee;
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+}
+
+.xls_holder{
+	width:800px;
+	height:400px;
+	overflow:scroll;
+}
+
+.xls_holder_inner{
+	width:5000px;
+}
+
+</style>
+
 <?php echo $this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event - <?php echo $event->name?></h2>
