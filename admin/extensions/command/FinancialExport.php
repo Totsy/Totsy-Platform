@@ -837,68 +837,54 @@ class FinancialExport extends Base  {
 	 * @param
 	 */
 	private function exportFiles() {
-	    $processed = LITHIUM_APP_PATH . $this->processed_dir;
-	    $source = $this->tmp;
-	    $finished = false;
-	    $reporting = array(
-	        'success' => true,
-	        'error' => array(),
-	        'files_sent' => array(),
-	        'files_failed' => array()
-	    );
-	    $obj = $this;
-	    $error_handling = function ($errno, $errstr,$errfile) use ($obj, &$reporting) {
-	       $obj->log($errstr);
-	       $reporting['success'] = false;
-           $reporting['error'][] = $errstr;
-	    };
-	    set_error_handler($error_handling, E_WARNING);
+            $processed = LITHIUM_APP_PATH . $this->processed_dir;
+            $source = $this->tmp;
+            $finished = false;
+            $reporting = array(
+                'success' => true,
+                'error' => array(),
+                'files_sent' => array(),
+                'files_failed' => array()
+            );
+            $obj = $this;
 
-	   $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
-	   $headers = "From: reports@totsy.com";
-	   echo "Exporting Files";
-	    $this->log("Exporting to Accounting Server...");
-	    $directory = $this->directory;
-
-            $localDirectory = opendir($source);
+            //$To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
+            $To = "lhanson@totsy.com";
+            $headers = "From: reports@totsy.com";
+            echo "Exporting Files \n\r";
+            $this->log("Exporting to Accounting Server...");
+            $directory = $this->directory;
+            $output = "";
             if (is_dir($source)) {
-                if($localDirectory) {
-                    while(($file = readdir($localDirectory)) !== false) {
-                        $length = strlen($file);
-                       if (substr($file,$length - 4, $length) == ".xml") {
-                        $fp = fopen($source.$file,"r");
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, "scp://@accounting.totsy.com/C/TotsyData/{$file}");
-                        curl_setopt($ch, CURLOPT_PORT, 50220);
-                        curl_setopt($ch, CURLOPT_USERPWD, "administrator:accounting6N1Wlm5Ig");
-                        curl_setopt($ch, CURLOPT_UPLOAD, 1);
-                        curl_setopt($ch, CURLOPT_PROTOCOLS, CURLPROTO_SCP);
-                        curl_setopt($ch, CURLOPT_INFILE, $fp);
-                        curl_setopt($ch, CURLOPT_INFILESIZE, filesize($source.$file));
-                        curl_exec ($ch);
-                        $error_no = curl_errno($ch);
-                        if ($error_no == 0) {
-                                $reporting['success'] = true;
-                                $this->log("Moving " . $source.$file . " to processed folder.");
-                                $reporting['files_sent'][] = $file . " " . filesize($source.$file) . " Bytes" ;
-                                rename($source.$file,$processed.$file);
-                        } else {
-                                $this->log("Fail: " .  print_r(curl_error($ch), true));
-                                $reporting['success'] = false;
-                                $reporting['error'][] = "Fail: " .  print_r(curl_error($ch), true);
-                                $this->log("Fail: File upload error.");
-                                $this->log("Fail: {$error_codes[$error_no]}");
+                $cmd = "scp -r -P 50220 $source/*.xml administrator@accounting.totsy.com:$directory .";
+                $proc = proc_open($cmd, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+                fwrite($pipes[0], $input); fclose($pipes[0]);
+                $stdout = stream_get_contents($pipes[1]);fclose($pipes[1]);
+                $stderr = stream_get_contents($pipes[2]);fclose($pipes[2]);
+                $rtn = proc_close($proc);
+
+                if ($rtn == 0) {
+                        $reporting['success'] = true;
+                        $this->log("Moving " . $source.$file . " to processed folder.");
+                        foreach(glob("{$source}*.xml") as $file) {
+                            $filename = preg_split("#($source)#", $file);
+                            $reporting['files_sent'][] = $filename[1] . " " . filesize($file) . " Bytes" ;
+                            rename($file,$processed.$filename[1]);
                         }
-                        fclose($fp);
-                        curl_close ($ch);
-                       }
-                    }
+                } else {
+                        $this->log("Fail: " .  print_r($stderr, true));
+                        $reporting['success'] = false;
+                        $reporting['error'][] = "Fail: " .  print_r($stderr, true);
+                        $this->log("Fail: File upload error.");
                 }
             }
-            $subject = "Accounting Auto Reporting Job - Report";
-            $message = "Automating reporting results: \r\n";
+            $subject = "Accounting Auto Reporting Job - Report - test";
+
             if (!$reporting['success']) {
+                $message = "Automating reporting results - FAILED: \r\n";
                 $message .= implode("\r\n", $reporting['error']);
+            } else {
+                 $message = "Automating reporting results - SUCCESS: \r\n";
             }
             if (!empty($reporting['files_failed'])) {
                 $message .= "The following files failed to transfer: \r\n";
@@ -910,7 +896,6 @@ class FinancialExport extends Base  {
             }
             $this->log("Sending out email");
             mail($To , $subject , $message , $headers);
-            restore_error_handler();
 	}
 
 	/**
