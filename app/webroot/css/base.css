@@ -4463,6 +4463,7 @@ Text Align > left / right
 	padding:0 12px;
 	background: #ececec;
 	border:#ccc;
+	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 	-webkit-box-shadow: 2px 1px 6px rgba(0,0,0,0.35);
 	-moz-box-shadow: 2px 1px 6px rgba(0,0,0,0.35);
