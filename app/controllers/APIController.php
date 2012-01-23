@@ -325,6 +325,10 @@ class APIController extends  \lithium\action\Controller {
 			$data['available_items'] = false;
 			$data['maxDiscount'] = 0;
 			$data['vendor'] = '';
+			$data['groups'] = array(
+				'categories' => array(),
+				'ages' => array()
+			);
 			
 			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
 			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
@@ -368,12 +372,22 @@ class APIController extends  \lithium\action\Controller {
 					
 					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
+					
+					if (!empty($it['ages'])){ 
+						$data['groups']['ages'] = array_merge($data['groups']['ages'],$it['ages']); 
+					}
+					if (!empty($it['categories'])){
+						$data['groups']['categories'] = array_merge($data['groups']['categories'],$it['categories']);
+					}
 				}
 				
 			}
 			
+			$data['groups']['ages'] = array_unique( $data['groups']['ages'] );
+			$data['groups']['categories'] = array_unique($data['groups']['categories']);
 			$events[] = $data;
 		}
+		
 		$pendingEvents = Event::pending();
 		$pending = array();
 		foreach ($pendingEvents as $pendingEvent){
@@ -439,6 +453,10 @@ class APIController extends  \lithium\action\Controller {
 			$data['available_items'] = false;
 			$data['maxDiscount'] = 0;
 			$data['vendor'] = '';
+			$data['groups'] = array(
+				'categories' => array(),
+				'ages' => array()
+			);
 			
 			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
 			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
@@ -482,9 +500,14 @@ class APIController extends  \lithium\action\Controller {
 					
 					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
+					
+					$data['groups']['ages'] = array_merge($data['groups']['ages'],$it['ages']);
+					$data['groups']['categories'] = array_merge($data['groups']['categories'],$it['categories']);
 				}
 				
 			}
+			$data['groups']['ages'] = array_unique( $data['groups']['ages'] );
+			$data['groups']['categories'] = array_unique($data['groups']['categories']);
 			$events[] = $data;
 		}
 		
