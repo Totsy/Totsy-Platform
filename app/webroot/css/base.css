@@ -4463,6 +4463,7 @@ Text Align > left / right
 	padding:0 12px;
 	background: #ececec;
 	border:#ccc;
+	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 	-webkit-box-shadow: 2px 1px 6px rgba(0,0,0,0.35);
 	-moz-box-shadow: 2px 1px 6px rgba(0,0,0,0.35);
@@ -4771,4 +4772,110 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 /* - @DG thought: consider putting max-width on container, and setting image to width:100% */
 #description img {
 	max-width: 410px;
+}
+
+/*
+	Status Pages - 404, 500, 503 Maintenance
+*/
+.p-status #footer {width:810px;}
+.p-status #totsy h1 {
+	text-indent: -999em;
+}
+.p-status #totsy > header em {
+	display: block;
+	width:100px; height: 58px;
+	background: url(../img/logo.png) 0 0 no-repeat;
+	background-size: 100px 58px;
+	text-indent: -999em;
+}
+.p-status section p {
+	margin:1.3em 0 0;
+	font-size:16px;
+	letter-spacing: 0.0225em; line-height:1.25;
+}
+.p-status section p:first-child {margin-top:0;}
+
+/* Status 404 - page not found */
+#p-status-404 {
+	position: relative; top:10px;
+	background: url(../img/status-404-oopsgirl.png) 0 0 no-repeat;
+
+}
+#p-status-404 section {
+	padding:0 0 0 390px;
+	min-height: 348px;
+}
+#p-status-404 h2 {
+	height: 56px;
+	background: url(../img/status-404-title.gif) 0 0 no-repeat;
+	text-indent: -999em;
+}
+#p-status-404 section p {
+	font-size:16px;
+}
+#p-status-404 section h2 + p {
+	margin:0.8em 0 2em;
+}
+#p-status-404 ul {margin-top:8px;}
+#p-status-404 ul li {
+	float: left;
+	margin-left:27px;
+	width:110px;
+	font-size:14px;
+}
+#p-status-404 ul li:first-child {margin-left:0;}
+#p-status-404 ul li a {
+	display: block;
+	width:100%;
+}
+#p-status-404 ul li a:link,
+#p-status-404 ul li a:visited {color:#636466;}
+#p-status-404 ul li a:hover {color:#ED1C25;}
+#p-status-404 ul li img {display:block; margin-bottom:0.3em; width:100%;}
+
+
+/* Status 500 - Site down */
+.p-status-500 #totsy {
+	padding:53px 5px 46px 253px;
+	width:557px; /* 810 - 253 */
+	min-height: 423px;
+	background:#fff url(../img/status-500-toolbeltkid.png) 0 0 no-repeat;
+}
+.p-status-500 #totsy > header {
+	margin-top:0; margin-bottom:26px; padding-top:58px;
+}
+.p-status-500 #totsy h1 {
+	margin:32px 0 0;
+	height: 37px;
+	background: url(../img/status-500-title.gif) 0 0 no-repeat;
+}
+.p-status-500 #totsy > header em {
+	position: absolute; top:0; left:-7px; /* offsetting the extra whitespace left in logo image… */
+}
+.p-status-500 section {width:485px;}
+
+/* Status 503 - Maintenance page */
+.p-status-503 #totsy {width:800px;}
+.p-status-503 #totsy header {
+	margin:0 0 17px;
+	padding-left:54px;
+	width:auto;
+}
+.p-status-503 #totsy h1 {
+	position: relative;
+	margin:32px 0 0; padding-left:100px;
+	width:606px;
+	height:58px;
+	background: url(../img/status-503-title.gif) 100px 0 no-repeat;
+}
+.p-status-503 header em {position:absolute; top:0; left: 0;}
+.p-status-503 section {
+	padding:18px 49px 90px 384px;
+	min-height: 264px;
+	background: url(../img/status-503-toolboxkid.png) 0 0 no-repeat;
+}
+
+/* webkit one-offs for Status pages */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	.p-status-503 section {padding-right:55px;}
 }
