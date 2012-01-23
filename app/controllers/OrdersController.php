@@ -669,6 +669,9 @@ class OrdersController extends BaseController {
 				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id']))) {
 					$address = $value;
 				}
+				foreach($value as $key => $addressInfo) {
+					$billingAddresses[(string)$value['_id']][$key] = $addressInfo;
+				}
 				#Get selected ddwn address
 				if((string)$value['_id'] == $address['_id']) {
 					$selected = (string) $value['_id'];
@@ -725,7 +728,9 @@ class OrdersController extends BaseController {
 			$cyberSourceProfiles = array();			
 		}
 		
-		return compact('address',
+		return compact(
+			'billingAddresses',
+			'address',
 			'addresses_ddwn',
 			'selected',
 			'cartEmpty',
