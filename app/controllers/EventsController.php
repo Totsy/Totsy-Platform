@@ -13,6 +13,120 @@ use app\models\Affiliate;
 
 class EventsController extends BaseController {
 
+	private $_mapCategories = array (
+		'category' =>  array(
+			'girls-apparel' => "Girls Apparel",
+			'boys-apparel' => "Boys Apparel",
+			'shoes' => "Shoes",
+			'accessories' =>"Accessories",
+			'toys-books' => "Toys and Books",
+			'gear' => "Gear",
+			'home' => "Home",
+			'moms-dads' => "Moms and Dads"
+		),
+		'age' => array(
+			'newborn' => 'Newborn 0-6M',
+			'infant' => 'Infant 6-24M',
+			'toddler' => 'Toddler 1-3 Y',
+			'preschool' => 'Preschool 3-4Y',
+			'school' => 'School Age 5+',
+			'adult' => 'Adult'
+		)
+	);
+
+	public function category() {
+		$datas = $this->request->args;
+		$categories = array();
+		
+	
+		if(empty($this->request->args[0])) {
+//			$openEvents = Event::open()->data();
+			$this->redirect('/sales');
+		} else {
+			$map = $this->_mapCategories[ $this->request->params['action'] ];
+			$categories =  $map[ $this->request->args[0] ];
+			if($categories==""){
+				$this->redirect('/'.$this->request->args[0]);
+			}
+			$openEvents = Event::open(null,array(),null,$categories)->data();
+			unset($map);
+		}
+
+		$itemCounts = array();
+
+		$eventCount = count($openEvents);		
+
+		$itemsCollection = Item::collection();
+
+		for($i=0; $i<$eventCount; $i++){
+			$eventId = (string)$openEvents[$i]['_id'];
+			
+			//$items = $itemsCollection->find( array('event' =>  array($eventId)) )
+			$items = $itemsCollection->find(array(
+												'event' =>  array($eventId), 
+												'categories' => array('$in' => array($categories)), 
+												'enabled' => true
+												))
+									  ->limit(6);		
+			
+			//$items = Item::filter(array($eventId), null, $categories, null, 6);
+
+			foreach($items as $eachitem){
+				$openEvents[$i]['eventItems'][] = $eachitem;
+			}
+		}
+		
+		return compact('openEvents', 'items', 'categories', 'eventCount');
+	}
+
+
+	public function age() {
+		$datas = $this->request->args;
+		$categories = array();
+
+		if(empty($this->request->args[0])) {
+//			$openEvents = Event::open()->data();
+			$this->redirect('/sales');
+		} else {
+			$map = $this->_mapCategories[ $this->request->params['action'] ];
+			$ages =  $map[ $this->request->args[0] ];
+			if($ages==""){
+				$this->redirect('/'.$this->request->args[0]);
+			}
+			$openEvents = Event::open(null,array(),null,null, $ages)->data();
+			unset($map);
+		}
+
+		$itemCounts = array();
+
+		$eventCount = count($openEvents);		
+
+		$itemsCollection = Item::collection();
+
+		for($i=0; $i<$eventCount; $i++){
+			$eventId = (string)$openEvents[$i]['_id'];
+
+			//$items = $itemsCollection->find(array('event' =>  array($eventId)))
+
+			$items = $itemsCollection->find(array(
+												'event' =>  array($eventId), 
+												'ages' => array('$in' => array($ages)), 
+												'enabled' => true
+												))
+									  ->limit(6);		
+			
+			foreach($items as $eachitem){
+				$openEvents[$i]['eventItems'][] = $eachitem;
+			}
+		}
+
+		//hack to make the ages appear on top of same view file		
+		$categories = $ages;
+		$this->_render['template'] = 'category';
+	
+		return compact('openEvents', 'items', 'categories', 'eventCount');
+	}
+
 	public function index() {
 		$datas = $this->request->data;
 		$departments = array();
@@ -130,7 +244,6 @@ class EventsController extends BaseController {
 					foreach ($eventItems as $eventItem) {
 						$result = $eventItem->data();
 
-						
 						if (array_key_exists('departments',$result) && !empty($result['departments'])) {
 							if(in_array($departments,$result['departments']) ) {
 								if ($eventItem->total_quantity <= 0) {

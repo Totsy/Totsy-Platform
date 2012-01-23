@@ -2,12 +2,9 @@
 <!doctype html>
 <?php
   // Copyright 2010 Google Inc. All Rights Reserved.
-
-  $GA_ACCOUNT = "MO-675412-20";
-  $GA_PIXEL = "/ga.php";
-
   function googleAnalyticsGetImageUrl() {
-    global $GA_ACCOUNT, $GA_PIXEL;
+    $GA_ACCOUNT = "MO-675412-20";
+    $GA_PIXEL = "/ga.php";
     $url = "";
     $url .= $GA_PIXEL . "?";
     $url .= "utmac=" . $GA_ACCOUNT;
@@ -111,3 +108,5 @@ function fblogin() {
   echo '<img src="' . $googleAnalyticsImageUrl . '" />';?>
 </body>
 </html>
+
+
