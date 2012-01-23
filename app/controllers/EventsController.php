@@ -40,10 +40,14 @@ class EventsController extends BaseController {
 		
 	
 		if(empty($this->request->args[0])) {
-			$openEvents = Event::open()->data();
+//			$openEvents = Event::open()->data();
+			$this->redirect('/sales');
 		} else {
 			$map = $this->_mapCategories[ $this->request->params['action'] ];
 			$categories =  $map[ $this->request->args[0] ];
+			if($categories==""){
+				$this->redirect('/'.$this->request->args[0]);
+			}
 			$openEvents = Event::open(null,array(),null,$categories)->data();
 			unset($map);
 		}
@@ -81,10 +85,14 @@ class EventsController extends BaseController {
 		$categories = array();
 
 		if(empty($this->request->args[0])) {
-			$openEvents = Event::open()->data();
+//			$openEvents = Event::open()->data();
+			$this->redirect('/sales');
 		} else {
 			$map = $this->_mapCategories[ $this->request->params['action'] ];
 			$ages =  $map[ $this->request->args[0] ];
+			if($ages==""){
+				$this->redirect('/'.$this->request->args[0]);
+			}
 			$openEvents = Event::open(null,array(),null,null, $ages)->data();
 			unset($map);
 		}
