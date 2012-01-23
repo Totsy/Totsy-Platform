@@ -32,27 +32,34 @@
 	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
-			$title = "Totsy index. Evenets.";
+			$title = 'Totsy Sales';
 			$tags = 'Sales';
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
 				$tags =  $request->params['args'][0];
 			}
-		} else  {
-			if (isset($event) && isset($item)) {
-				$edata = $event->data();
-				$idata = $item->data();
+		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
+			$title = $tags = $categories;
+		} else if (isset($event) && isset($item)) {
+			$edata = $event->data();
+			$idata = $item->data();
 
-				if(isset($idata['departments'])) {
-					$title = $edata['name'] .' - '. $idata['description'];
-					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
-				}
-
-				unset($edata, $idata);
-			} else if (isset($event)){
-				$edata = $event->data();
-				$title = $tags = $edata['name'];
-				unset($edata, $idata);
+			if(isset($idata['departments'])) {
+				$title = $edata['name'] .' - '. $idata['description'];
+				$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
 			}
+
+			unset($edata, $idata);
+		} else if (isset($event)){
+			$edata = $event->data();
+			$title = $edata['name'];
+			$tags  = $edata['name'];
+			if (count($edata['departments'])) {
+				$tags .= ', ' . implode(', ', $edata['departments']);
+			}
+			if (count($edata['tags'])) {
+				$tags .= ', ' . implode(', ', $edata['tags']);
+			}
+			unset($edata, $idata);
 		}
 	?>
 	<?php if (isset($title) && isset($tags)){ ?>
