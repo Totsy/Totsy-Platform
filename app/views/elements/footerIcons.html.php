@@ -10,6 +10,6 @@
 		<a href="//privacy-policy.truste.com/click-with-confidence/wps/en/www.totsy.com/seal_m" title="TRUSTe online privacy certification" target="_blank"><img style="border: none" src="//privacy-policy.truste.com/certified-seal/wps/en/www.totsy.com/seal_m.png" alt="TRUSTe online privacy certification"/></a>
 	</div>
 	<div class="forbes">
-		<img src="../img/badges-forbes.png" height="72" alt="Forbes 2011 America's Most Promising Companies" />
+		<img src="../img/badges-forbes-96x72.png" width="96" height="72" alt="Forbes 2011 America's Most Promising Companies" />
 	</div>
 </div>
