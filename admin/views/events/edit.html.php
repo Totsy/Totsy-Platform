@@ -54,6 +54,29 @@ selectlist.css (line 1)
 
 </style>
 
+<script>
+
+
+function object(){
+	this.dinkers = "stinkers";
+}
+
+function checkspreadsheet(){
+	params = new object();
+	params.items_submit = $("#ItemsSubmit").val();
+
+	$.post('/events/uploadcheck_clearance', params, function(result) {
+		if(result.substring(0,7)=="success"){
+			$("#items_errors").html(result);
+		}
+		else{
+			$("#events_edit").submit();
+		}
+	});
+}
+
+</script>
+
 <?php echo $this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event - <?php echo $event->name?></h2>
@@ -295,10 +318,13 @@ selectlist.css (line 1)
 					<?php echo $this->form->file('upload_file'); ?>
 					-->
 
-				<?php echo $this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
+				<?php echo $this->form->field('ItemsSubmit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
 
 
 			<?php echo $this->form->submit('Update Event')?>
+			
+			<input type="button" value="Update Event" onclick="checkspreadsheet();">
+			
 			<?php echo $this->form->end(); ?>
 			</div>
 
