@@ -361,12 +361,14 @@ class UsersController extends BaseController {
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-
+		
+		
+		//autogenerate password here, just fbregister($data) instead, bypassing that form	
 		if (!$success) {
-
 			if (!empty($userfb)) {
 				if(!$fbCancelFlag) {
-					$this->redirect('/register/facebook');
+					$this->fbregister();
+					//$this->redirect('/register/facebook');
 				}
 			}
 		}
@@ -678,6 +680,8 @@ class UsersController extends BaseController {
 	 * Register with a facebook account
 	 * @return compact
 	 */
+	 	 
+	//for the new FB registration flow, pass data (email, first name, last name and fb info to this function: the fbregisterform is no longer used and linking will happen in the background)  
 	public function fbregister() {
 		$message = null;
 		$user = null;
@@ -691,6 +695,7 @@ class UsersController extends BaseController {
 			$user->confirmemail = $fbuser['email'];
 		}
 		$this->_render['layout'] = 'login';
+		
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$data['facebook_info'] = $fbuser;
@@ -699,7 +704,7 @@ class UsersController extends BaseController {
 			static::registration($data);
 
 			$landing = null;
-			if (Session::check('landing')){
+			if (Session::check('landing')) {
 				$landing = Session::read('landing');
 			}
 			if (!empty($landing)){
@@ -733,7 +738,6 @@ class UsersController extends BaseController {
 		//If the users already exists in the database
 		$success = false;
 		$userfb = array();
-
 
 		if ($self->fbsession) {
 
