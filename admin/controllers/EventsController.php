@@ -409,8 +409,7 @@ class EventsController extends BaseController {
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
-				compact('items'),
-				compact('images'),
+				compact('items', 'images', 'departments'),
 				array('url' => $url)
 			);
 
