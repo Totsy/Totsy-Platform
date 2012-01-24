@@ -371,13 +371,12 @@ class UsersController extends BaseController {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
 		
-		
 		//autogenerate password here, just fbregister($data) instead, bypassing that form	
 		if (!$success) {
 			if (!empty($userfb)) {
 				if(!$fbCancelFlag) {
-					$this->fbregister();
-					//$this->redirect('/register/facebook');
+					//$this->fbregister();
+					$this->redirect('/register/facebook');
 				}
 			}
 		}
@@ -778,10 +777,10 @@ class UsersController extends BaseController {
 
 				if (!empty($landing)) {
 				    Session::delete('landing',array('name'=>'default'));
-				    $self->redirect($landing, array('exit' => true));
+				    $self->redirect($landing);
 				    unset($landing);
 				} else {
-				    $self->redirect("/sales", array('exit' => true));
+				    $self->redirect("/sales");
 				}
 
 			}
