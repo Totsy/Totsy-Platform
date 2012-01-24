@@ -4753,7 +4753,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 }
 #events-wrap .viewAllEvents:after {
 	content: "";
-	position: absolute; top:45px; right:0px;
+	position: absolute; top:42px; right:0px;
 	display: block;
 	width:1px; height:45px;
 	-moz-box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
