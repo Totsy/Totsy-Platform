@@ -39,28 +39,31 @@
 			}
 		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
 			$title = $tags = $categories;
-		} else if (isset($event) && isset($item)) {
-			$edata = $event->data();
-			$idata = $item->data();
+		} else if (isset($item)) {
+			$itemData = $item->data();
+			$title = $tags = $itemData['description'];
 
-			if(isset($idata['departments'])) {
-				$title = $edata['name'] .' - '. $idata['description'];
-				$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
+			if (count($itemData['departments'])) {
+				$tags .= ', ' . implode(', ', $itemData['departments']);
 			}
+			if (count($itemData['categories'])) {
+				$tags .= ', ' . implode(', ', $itemData['categories']);
+			}
+			if (count($itemData['ages'])) {
+				$tags .= ', ' . implode(', ', $itemData['ages']);
+			}
+		} else if (isset($event)) {
+			$eventData = $event->data();
+			$title = $tags = $eventData['name'];
 
-			unset($edata, $idata);
-		} else if (isset($event)){
-			$edata = $event->data();
-			$title = $edata['name'];
-			$tags  = $edata['name'];
-			if (count($edata['departments'])) {
-				$tags .= ', ' . implode(', ', $edata['departments']);
+			if (count($eventData['departments'])) {
+				$tags .= ', ' . implode(', ', $eventData['departments']);
 			}
-			if (count($edata['tags'])) {
-				$tags .= ', ' . implode(', ', $edata['tags']);
+			if (count($eventData['tags'])) {
+				$tags .= ', ' . implode(', ', $eventData['tags']);
 			}
-			unset($edata, $idata);
 		}
+
 	?>
 	<?php if (isset($title) && isset($tags)){ ?>
 	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
