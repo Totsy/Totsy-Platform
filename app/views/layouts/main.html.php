@@ -69,7 +69,7 @@
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
 				
 		<div id="contentMain" class="container_16 group">
-			<noscript><div>Unfortunately, JavaScript is currently disabled or not supported by your browser. Please enable JavaScript for full functionality.</div></noscript>
+			<div id="noscript">Unfortunately, JavaScript is currently disabled or not supported by your browser. Please enable JavaScript for full functionality.</div>
 			<?php echo $this->content(); ?>
 		</div>
 		<!-- /#contentMain -->
@@ -109,6 +109,12 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 	<?php echo $pixel; ?>
 
 <!-- @TODO: externalize scripts where applicable -->
+<script>
+	$(document).ready(function() {
+		// hide noscript for js-enabled - revisit: http://www.learningjquery.com/2008/10/1-way-to-avoid-the-flash-of-unstyled-content
+		$('#noscript').hide();
+	});
+</script>
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
@@ -162,6 +168,7 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 </script>
 
 <script type="text/javascript">
+	<?php // global functions here (although all js *really* should be externalized and view-specific… Magento Magento Magento we'll make it happen) ?>
 	$(document).ready(function() {
 		$("input:file, select").uniform();
 		$("#tabs").tabs();
