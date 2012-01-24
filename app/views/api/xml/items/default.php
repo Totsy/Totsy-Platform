@@ -13,7 +13,7 @@
 			<instock><?php echo $item['total_quantity']>0?true:false;?></instock>
 			<discount><?php echo floor($item['percent_off']); ?></discount>
 			<event><?php echo $item['event']['0']; ?></event>
-			<brandName><?php echo $item['vendor']; ?></brandName>
+			<brandName><?php echo htmlspecialchars($item['vendor']); ?></brandName>
 			<?php 
 			if (array_key_exists('blurb',$item)) {
 				?><description><?php echo htmlspecialchars($item['blurb']); ?></description><?php 
