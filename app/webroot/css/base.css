@@ -4884,4 +4884,4 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #badges {padding:0; text-align: center;}
 #badges > div {display:inline-block; margin-left:5px;}
 #badges > div:first-child {margin-left:0;}
-#badges .truste {position: relative; top:-16px;}
+#badges .truste {position: relative; top:-16px; margin-right:2px;}
