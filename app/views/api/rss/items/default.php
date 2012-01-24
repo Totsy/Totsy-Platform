@@ -41,7 +41,7 @@
 			<category><?php echo $c; ?></category><?php		
 			}
 } ?>
-			<tsn:brand><?php echo $item['vendor']; ?></tsn:brand>
+			<tns:brand><?php echo htmlspecialchars($item['vendor']); ?></tns:brand>
 			<tns:event id="<?php echo $item['event']['0']; ?>" />
 			<tns:instock><?php echo $item['total_quantity']>0?true:false;?></tns:instock>
 			<tns:discount><?php echo floor($item['percent_off']); ?></tns:discount>
