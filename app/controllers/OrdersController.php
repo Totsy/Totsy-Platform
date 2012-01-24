@@ -528,7 +528,6 @@ class OrdersController extends BaseController {
 		$payment = null;
 		$checked = false;
 		$card = array();
-		$selected = array();
 		$addresses_ddwn = array();
 
 		#Get billing address from shipping one in session
@@ -672,10 +671,7 @@ class OrdersController extends BaseController {
 				foreach($value as $key => $addressInfo) {
 					$billingAddresses[(string)$value['_id']][$key] = $addressInfo;
 				}
-				#Get selected ddwn address
-				if((string)$value['_id'] == $address['_id']) {
-					$selected = (string) $value['_id'];
-				}
+				
 				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
@@ -732,7 +728,6 @@ class OrdersController extends BaseController {
 			'billingAddresses',
 			'address',
 			'addresses_ddwn',
-			'selected',
 			'cartEmpty',
 			'payment',
 			'shipping',
