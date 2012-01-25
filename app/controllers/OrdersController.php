@@ -528,7 +528,6 @@ class OrdersController extends BaseController {
 		$payment = null;
 		$checked = false;
 		$card = array();
-		$selected = array();
 		$addresses_ddwn = array();
 
 		#Get billing address from shipping one in session
@@ -669,10 +668,10 @@ class OrdersController extends BaseController {
 				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id']))) {
 					$address = $value;
 				}
-				#Get selected ddwn address
-				if((string)$value['_id'] == $address['_id']) {
-					$selected = (string) $value['_id'];
+				foreach($value as $key => $addressInfo) {
+					$billingAddresses[(string)$value['_id']][$key] = $addressInfo;
 				}
+				
 				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
@@ -725,9 +724,10 @@ class OrdersController extends BaseController {
 			$cyberSourceProfiles = array();			
 		}
 		
-		return compact('address',
+		return compact(
+			'billingAddresses',
+			'address',
 			'addresses_ddwn',
-			'selected',
 			'cartEmpty',
 			'payment',
 			'shipping',

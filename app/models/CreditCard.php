@@ -131,10 +131,11 @@ class CreditCard extends \lithium\data\Model {
 				foreach($userInfos['cyberSourceProfiles'] as $key => $cyberSourceProfile) {
 					if($cyberSourceProfile['profileID'] == $cyberSourceProfileDuplicate['profileID'] && !$cyberSourceProfile['savedByUser']) {
 						$usersCollection->update(array('_id' => $userInfos['_id']), array('$set' => array('cyberSourceProfiles.'.$key.'.savedByUser' => true)));
+						return "success"; //returned duplicate before but should tell the user the card has been saved instead of saying it's a duplicate
 					}
 				}
 			}
-			return "success"; //returned duplicate before but should tell the user the card has been saved instead of saying it's a duplicate
+			return "duplicate";
 		} else {	
 			#Create Address Array
 			$address = array(

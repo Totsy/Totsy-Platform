@@ -144,6 +144,68 @@ var paymentForm = new Object();
 		<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
 	</div>
 </h2>
+
+<!-- start-->
+<?php
+ 
+if ($cyberSourceProfiles) { 
+	if (sizeof($cyberSourceProfiles->data()) > 0) { 
+?>
+<h3 style="margin-bottom: 11px;">Pay with a saved Credit Card: </h3>
+<div id="saved_credit_cards" class="grid_5"  style="display: block;">
+<table width="500px" border="0" cellspacing="0" cellpadding="0">
+
+<?php
+	$i = 0;
+	foreach ($cyberSourceProfiles as $cyberSourceProfile):
+		if($cyberSourceProfile[savedByUser]) :
+?>
+<tr>
+	<td align="right">
+		<input type="radio" name="savedCreditCard" value="<?php print $cyberSourceProfile[profileID];?>" onclick="fadeOut_BillingAddressForm(); fadeOut_CCForm();" <?php if ($i == 0) print 'checked'; ?>>
+	</td>
+	<td align="middle">
+		<img src="<?php
+switch ($cyberSourceProfile[creditCard][type]) {
+	case 'visa': 
+		print "/img/cc_visa.gif"; 
+	break;
+	case 'mastercard': 
+		print "/img/cc_mastercard.gif"; 
+	break;
+	case 'amex': 
+		print "/img/cc_amex.gif"; 
+	break;
+}	?>">
+	</td>
+	<td align="left">
+		<?php echo ucfirst($cyberSourceProfile[creditCard][type]);?> ending in <?php echo $cyberSourceProfile[creditCard][number]; ?>
+	</td>
+	<!-- <td>
+		<?php echo $cyberSourceProfile[billing][firstname]." ".$cyberSourceProfile[billing][lastname];?>
+	</td> -->
+	<td>
+		Expires on <?php echo $cyberSourceProfile[creditCard][month];?> / <?php echo $cyberSourceProfile[creditCard][year];?>
+	</td>
+</tr>
+<?php
+	$i++;
+	endif;
+endforeach;
+?>
+</table>
+</div>
+<h3 style="margin-top: 11px"><a href="#" onclick="fadeIn_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm();" style="text-decoration:underline;">Add New Card</a></h3>
+<?php 
+}
+} else {
+?>
+<h3>Pay with a Credit Card</h3>
+<?php
+}
+?> 
+<!-- end -->
+
 <?php if (!empty($error)) { ?>
 	<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /></div>
 <?php } ?>

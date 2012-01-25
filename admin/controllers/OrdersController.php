@@ -538,7 +538,6 @@ class OrdersController extends BaseController {
 		$orderClass = $this->_classes['order'];
 		$ordersCollection = $orderClass::Collection();
 		$order = $ordersCollection->findOne(array("_id" => new MongoId($id)));
-		$usersCollection = User::Collection();
 		#Save Old AuthKey with Date
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 		#Cancel Previous Transaction	
@@ -547,7 +546,7 @@ class OrdersController extends BaseController {
 				'processor' => isset($order['processor']) ? $order['processor'] : null
 			));
 		}
-		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($order['user_id'])));
+		$userInfos = User::lookup($order['user_id']);
 		#Create Card and Check Billing Infos
 		$card = Processor::create('default', 'creditCard', $datas['creditcard'] + array(
 			'billing' => Processor::create('default', 'address', array(

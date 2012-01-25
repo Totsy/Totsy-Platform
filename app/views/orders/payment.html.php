@@ -43,6 +43,7 @@
 
 <script type="text/javascript">
 var paymentForm = new Object();
+var billingAddresses = new Object();
 </script>
 <?php
 	use app\models\Address;
@@ -277,11 +278,13 @@ endforeach;
 				</div>
 				<br />
 				<br />
-				<div id="billing_address_form" style="display: <?php if ($cyberSourceProfiles) { if (sizeof($cyberSourceProfiles->data()) > 0) { print 'none'; } } else { print 'block'; } ?>;">				
+				<div id="billing_address_form" style="display: <?php if ($cyberSourceProfiles) { if ( sizeof($cyberSourceProfiles->data() ) > 0) { print 'none'; } } else { print 'block'; } ?>;">				
 				<h3>Billing Address</h3>
 				<hr />
-				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
-					Choose your address :<?php echo $this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
+				<?php 
+				if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+					Choose your address :
+					<?php echo $this->form->select('addresses', $addresses_ddwn, array("id" => "addresses", "class"=>"validate[required] inputbox"));?>					
 					<div style="clear:both"></div>
 				<hr />
 				<?php endif ?>
@@ -343,16 +346,15 @@ endforeach;
 
 <div class="clear"></div>
 
-
-
 <div id="address_form" style="display:none">
 	<?php echo $this->form->create(null ,array('id'=>'selectForm')); ?>
 	<?php echo $this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
 	<?php echo $this->form->end();?>
 </div>
-<script>
+<script type="text/javascript">
 
-var shippingAddress = <?php echo $shipping; ?>
+var shippingAddress = <?php echo $shipping; ?>;
+var billingAddresses = <?php echo json_encode($billingAddresses); ?>;
 
 //validate card number when a correct card is entered
 $("#card_number").blur( function(){
@@ -383,6 +385,18 @@ function replace_address() {
     		}
     	);
     }
+};
+
+function pickBillingAddress(selectedAddressIndex) {
+	$.each( billingAddresses[selectedAddressIndex], function (k, v) {
+    	if(k!=="user_id" && k!=="type" && k!=="_id" && k!=="addresses") {
+    		if(k=="state") {
+				$("#" + k + 'option:selected').next('option').attr('selected', 'selected');
+  			} else {
+    			$("#" + k + "").val(v);
+    		}
+    	}    	
+	});	
 };
 
 function isValidCard(cardNumber) {
@@ -425,7 +439,6 @@ function isValidCard(cardNumber) {
 	}
 }
 
-
 function validCC() {
 	var test = isValidCard($("#card_number").val());
 	$("#card_valid").val(test);
@@ -442,11 +455,11 @@ function validCC() {
 }
 
 </script>
-<script>
-$(document).ready(function(){
+<script type="text/javascript">
+$(document).ready(function() {
 	$("#addresses").change(function () {
-		$("#address_id").val($("#addresses option:selected").val());
-		$("#selectForm").submit();
+		var selectedAddressIndex = $("#addresses option:selected").val();						
+		pickBillingAddress(selectedAddressIndex);
 	});
 });
 </script>

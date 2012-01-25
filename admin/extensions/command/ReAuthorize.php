@@ -112,17 +112,12 @@ class ReAuthorize extends \lithium\console\Command {
 	public function getOrders() {
 		Logger::debug('Getting Orders to be Reauth');
 		$ordersCollection = Order::Collection();
-		$ordersCollection->ensureIndex(array(
-			'date_created' => 1,
-			'cc_payment' => 1
-		));
 		#Limit to X days Old Authkey
 		$limitDate = mktime(23, 59, 59, date("m"), date("d") - $this->expiration, date("Y"));
 		#Get All Orders with Auth Date >= 7days, Not Void Manually or Shipped
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
-							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate)),
 							'auth' => array('$exists' => true),
 							'cancel' => array('$ne' => true),
@@ -144,12 +139,17 @@ class ReAuthorize extends \lithium\console\Command {
 		$reportToSend = $report;
 		unset($reportToSend['skipped']);
 		Logger::debug('Sending Report');
+		if($this->fullAmount) {
+			$template = 'Auth_Initial_Errors_CyberSource';
+		} else {
+			$template = 'ReAuth_Errors_CyberSource';
+		}
 		#If Errors Send Email to Customer Service
 		if(!empty($reportToSend['updated']) || !empty($reportToSend['errors']) ) {
 			if (Environment::is('production')) {
-				Mailer::send('ReAuth_Errors_CyberSource','authorization_errors@totsy.com', $reportToSend);
+				//Mailer::send($template,'authorization_errors@totsy.com', $reportToSend);
 			}
-			Mailer::send('ReAuth_Errors_CyberSource','troyer@totsy.com', $reportToSend);
+			Mailer::send($template,'troyer@totsy.com', $reportToSend);
 			Logger::debug('Report Sent!');
 		}
 	}
@@ -240,21 +240,10 @@ class ReAuthorize extends \lithium\console\Command {
 		#Save Old AuthKey with Date
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 		#Cancel Previous Transaction
-		if($order['card_type'] != 'amex' && (!empty($order['authTotal']))) {
+		if($order['card_type'] != 'amex' && (!empty($order['authTotal'])) && $this->fullAmount) {
 			$auth = Processor::void('default', $order['auth'], array(
 				'processor' => isset($order['processor']) ? $order['processor'] : null
 			));
-			if(!$auth->success()) {
-				Logger::debug("Void failed for order id " . $order['order_id']);
-				$message  = "Void failed for order id `{$order['order_id']}`:";
-				$message .= $error = implode('; ', $auth->errors);
-				$report['errors'][] = array(
-						'error_message' => $message,
-						'order_id' => $order['order_id'],
-						'authKey' => $order['authKey'],
-						'total' => $order['authTotal']
-				);
-			}
 		}
 		Logger::debug("Getting CyberSource Profile");
 		$cybersource = new CyberSource(Processor::config('default'));
