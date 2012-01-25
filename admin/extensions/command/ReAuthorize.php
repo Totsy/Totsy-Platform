@@ -147,7 +147,7 @@ class ReAuthorize extends \lithium\console\Command {
 		#If Errors Send Email to Customer Service
 		if(!empty($reportToSend['updated']) || !empty($reportToSend['errors']) ) {
 			if (Environment::is('production')) {
-				//Mailer::send($template,'authorization_errors@totsy.com', $reportToSend);
+				Mailer::send($template,'authorization_errors@totsy.com', $reportToSend);
 			}
 			Mailer::send($template,'troyer@totsy.com', $reportToSend);
 			Logger::debug('Report Sent!');
