@@ -11,6 +11,27 @@ use MongoRegex;
 
 class BaseController extends \lithium\action\Controller {
 
+	public $_mapCategories = array (
+		'category' =>  array(
+			'girls-apparel' => "Girls Apparel",
+			'boys-apparel' => "Boys Apparel",
+			'shoes' => "Shoes",
+			'accessories' =>"Accessories",
+			'toys-books' => "Toys and Books",
+			'gear' => "Gear",
+			'home' => "Home",
+			'moms-dads' => "Moms and Dads"
+		),
+		'age' => array(
+			'newborn' => 'Newborn 0-6M',
+			'infant' => 'Infant 6-24M',
+			'toddler' => 'Toddler 1-3 Y',
+			'preschool' => 'Preschool 3-4Y',
+			'school' => 'School Age 5+',
+			'adult' => 'Adult'
+		)
+	);
+
 	public function __construct(array $config = array()) {
 		/* Merge $_classes of parent. */
 		$vars = get_class_vars('\lithium\action\Controller');
@@ -105,4 +126,5 @@ class BaseController extends \lithium\action\Controller {
 
 		return array_pop($head);
 	}
+
 }

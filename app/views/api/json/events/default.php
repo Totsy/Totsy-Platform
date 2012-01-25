@@ -6,6 +6,7 @@ if (isset($token)){
 
 if (is_array($events)){ 
 	foreach($events as $event){ 
+		$evnt['id'] = $event['_id'];
 		$evnt['name'] = $event['name'];
 		$evnt['description'] = $event['blurb'];
 		$evnt['short'] = (empty($event['short'])) ? events_default_json_cut_string($event['blurb'],45) : $event['short'];
@@ -17,6 +18,9 @@ if (is_array($events)){
 		$evnt['url'] = $base_url.'sale/'.$event['url'];
 		$evnt['start_date'] = date('m-d-y g:i:s A',$event['start_date']['sec']);
 		$evnt['end_date'] = date('m-d-y g:i:s A',$event['end_date']['sec']);
+		$evnt['categories'] = $event['groups']['categories'];
+		$evnt['ages'] = $event['groups']['ages'];
+		$evnt['items'] = $event['items'];
 		$out['events'][] = $evnt;
 	}
 }

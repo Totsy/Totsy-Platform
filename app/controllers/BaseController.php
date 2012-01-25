@@ -49,7 +49,6 @@ class BaseController extends \lithium\action\Controller {
 		$this->set(compact('img_path_prefix'));		
 	}
 
-
 	/** 
 		get cart subtotal for price
 	*/

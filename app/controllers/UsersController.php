@@ -177,7 +177,19 @@ class UsersController extends BaseController {
 				} 
 			}
 		}
-		
+
+		if ($this->request->data && !$user->validates() ) {
+			$message = '<div class="error_flash">Error in registering your account';
+			$errors  = $user->errors();
+
+			// append the error message to the output message when available
+			if (count($errors)) {
+				$firstError = current($errors);
+				$message .= ': ' . $firstError[0];
+			}
+
+			$message .= '</div>';
+		}
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';

@@ -97,8 +97,12 @@ class EventsController extends BaseController {
 
 	public function uploadcheck_clearance() {
 	    $this->_render['layout'] = false;
-
+	    unset($branch);
+		//$this->_render['head'] = true;
+		$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
+		return Event::check_spreadsheet($fullarray, $this->_mapCategories);
 	}
+
 	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
 
 		$items_quantities[] = array();
@@ -409,8 +413,7 @@ class EventsController extends BaseController {
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
-				compact('items'),
-				compact('images'),
+				compact('items', 'images', 'departments'),
 				array('url' => $url)
 			);
 
