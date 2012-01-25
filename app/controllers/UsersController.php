@@ -200,24 +200,38 @@ class UsersController extends BaseController {
 	 * @return boolean
 	 */
 		public static function registration($data = null) {
+							
 			$saved = false;
+			
 			if ($data) {
+
 				$data['email'] = strtolower($data['email']);
-				$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
+				$data['emailcheck'] = $data['email'];
 				$data['email_hash'] = md5($data['email']);
 				$user = User::create($data);
+				
+				//print "test";
+				//exit();
+																
 				if ($user->validates()) {
+				
 					$email = $data['email'];
-					$data['password'] = sha1($data['password']);
+					
+					//temporarily generating password for FB registrees
+					//the method of doing this will change
+					$data['password'] = sha1("kpqa31");
 					$data['created_date'] = User::dates('now');
 					$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
 					$inviteCheck = User::count( array(
 							'invitation_codes' => $data['invitation_codes']
 							));
+							
 					if ($inviteCheck > 0) {
 						$data['invitation_codes'] = array(static::randomString());
-					}
-					if ($saved = $user->save($data)) {
+					}		
+										
+					if ($saved = $user->save($data)) {		
+					
 						$mail_template = 'Welcome_Free_Shipping';
 						$params = array();
 
@@ -247,7 +261,6 @@ class UsersController extends BaseController {
 
 						Mailer::addToMailingList($data['email'],$args);
 						Mailer::addToSuppressionList($data['email']);
-
 					}
 				}
 			}
@@ -374,9 +387,9 @@ class UsersController extends BaseController {
 		//autogenerate password here, just fbregister($data) instead, bypassing that form	
 		if (!$success) {
 			if (!empty($userfb)) {
-				if(!$fbCancelFlag) {
-					//$this->fbregister();
-					$this->redirect('/register/facebook');
+				if (!$fbCancelFlag) {
+					$this->fbregister();
+					//$this->redirect('/register/facebook');
 				}
 			}
 		}
@@ -695,34 +708,39 @@ class UsersController extends BaseController {
 		$user = null;
 		$fbuser = FacebookProxy::api("/me");
 		$user = User::create();
+		$data =Array();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
-
 			$user->email = $fbuser['email'];
 			$user->email_hash = md5($user->email);
 			$user->confirmemail = $fbuser['email'];
 		}
-		$this->_render['layout'] = 'login';
+		//$this->_render['layout'] = 'login';
 		
-		if ($this->request->data) {
-			$data = $this->request->data;
+		//if ($this->request->data) {
+			//$data = $this->request->data;
+			$data['email'] = $fbuser['email'];
+			
 			$data['facebook_info'] = $fbuser;
 			$data['firstname'] = $fbuser['first_name'];
 			$data['lastname'] = $fbuser['last_name'];
+						
 			static::registration($data);
-
+			
 			$landing = null;
+			
 			if (Session::check('landing')) {
 				$landing = Session::read('landing');
 			}
-			if (!empty($landing)){
+			
+			if (!empty($landing)) {
 				Session::delete('landing',array('name'=>'default'));
 				$this->redirect($landing);
 				unset($landing);
 			} else {
 				$this->redirect('/sales?req=invite');
 			}
-		}
+		//}
 
 		return compact('message', 'user', 'fbuser');
 	}
