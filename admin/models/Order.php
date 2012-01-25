@@ -906,7 +906,6 @@ class Order extends Base {
 	* @params (string) $orderId : short id of the order
 	* @return boolean
 	**/
-
 	public static function failedCaptureCheck($orderId = null) {
 	    $failed = false;
 	    $coll = static::collection();
@@ -918,7 +917,7 @@ class Order extends Base {
 	     return $failed;
 	}
 	
-	public static function getCCinfos($order = null) {
+		public static function getCCinfos($order = null) {
 		$creditCard = null;
 		if(!empty($order['cc_payment'])) {
 			$cc_encrypt = $order['cc_payment'];

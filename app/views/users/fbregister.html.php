@@ -20,10 +20,8 @@
 						<div class="tc login-inner register-inner">
 
 							<div id='logo'>
-                            <h1>
                               <a href="/login/?fbcancel=true" title="Totsy.com">
                                 Totsy</a>
-                              </h1>
                             </div>
 							
 							<div id="intro-copy">

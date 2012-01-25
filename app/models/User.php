@@ -376,16 +376,18 @@ class User extends Base {
 	* If yes, return the cyberSourceProfileId
 	* If no, return null
 	**/
-	public static function hasCyberSourceProfile($userInfos, $creditCardNumber) {
-		$cyberSourceProfileId = null;
-		if(!empty($userInfos['cyberSourceProfiles'])) {
-			foreach($userInfos['cyberSourceProfiles'] as $profile) {
-				if(substr($profile, -4) == substr($creditCardNumber, -4)) {
-					$cyberSourceProfileId = $profile;
+	public static function hasCyberSourceProfile($cyberSourceProfiles, $creditCard) {
+		$cyberSourceProfileDetected = null;
+		foreach($cyberSourceProfiles as $cyberSourceProfile) {
+			if(!is_string($cyberSourceProfile)) {
+				if ($cyberSourceProfile[creditCard][number] == substr($creditCard[number],-4)
+					&& $cyberSourceProfile[creditCard][month] == $creditCard[month]
+					&& $cyberSourceProfile[creditCard][year] == $creditCard[year]) {
+						$cyberSourceProfileDetected = $cyberSourceProfile;
 				}
 			}
 		}
-		return $cyberSourceProfileId;
+		return $cyberSourceProfileDetected;
 	}
 }
 
