@@ -32,28 +32,38 @@
 	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
-			$title = "Totsy index. Evenets.";
+			$title = 'Totsy Sales';
 			$tags = 'Sales';
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
 				$tags =  $request->params['args'][0];
 			}
-		} else  {
-			if (isset($event) && isset($item)) {
-				$edata = $event->data();
-				$idata = $item->data();
+		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
+			$title = $tags = $categories;
+		} else if (isset($item)) {
+			$itemData = $item->data();
+			$title = $tags = $itemData['description'];
 
-				if(isset($idata['departments'])) {
-					$title = $edata['name'] .' - '. $idata['description'];
-					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
-				}
+			if (count($itemData['departments'])) {
+				$tags .= ', ' . implode(', ', $itemData['departments']);
+			}
+			if (count($itemData['categories'])) {
+				$tags .= ', ' . implode(', ', $itemData['categories']);
+			}
+			if (count($itemData['ages'])) {
+				$tags .= ', ' . implode(', ', $itemData['ages']);
+			}
+		} else if (isset($event)) {
+			$eventData = $event->data();
+			$title = $tags = $eventData['name'];
 
-				unset($edata, $idata);
-			} else if (isset($event)){
-				$edata = $event->data();
-				$title = $tags = $edata['name'];
-				unset($edata, $idata);
+			if (count($eventData['departments'])) {
+				$tags .= ', ' . implode(', ', $eventData['departments']);
+			}
+			if (count($eventData['tags'])) {
+				$tags .= ', ' . implode(', ', $eventData['tags']);
 			}
 		}
+
 	?>
 	<?php if (isset($title) && isset($tags)){ ?>
 	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
@@ -163,9 +173,15 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("input:file, select").uniform();
+		$("input:file, select").not('.uniform-hidden').uniform().each(function(i,elt) {
+			// find any elements processed that were hidden, and hide the
+			// new container for the element created by uniform.js
+			if (this.style.display == 'none') {
+				this.parentNode.style.display = 'none';
+			}
+		});
 		$("#tabs").tabs();
-		
+
 		// back to top
 		$(function () {
 			$(window).scroll(function () {

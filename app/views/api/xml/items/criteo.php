@@ -13,6 +13,7 @@
 			<smallimage><?php echo $item['base_url'].'image/'.$item['primary_image'].'.jpg';?></smallimage>
 			<instock><?php echo $item['total_quantity']>0?true:false;?></instock>
 			<event><?php echo $item['event']['0']; ?></event>
+			<vendor><?php echo htmlspecialchars($item['vendor']); ?></vendor>
 			<categories><?php
 			if (count($item['categories'])>0){
 				foreach ($item['categories'] as $c){
