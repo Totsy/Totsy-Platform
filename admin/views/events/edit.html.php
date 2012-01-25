@@ -67,10 +67,10 @@ function checkspreadsheet(){
 
 	$.post('/events/uploadcheck_clearance', params, function(result) {
 		if(result.substring(0,7)=="success"){
-			$("#items_errors").html(result);
+			$("#events_edit").submit();
 		}
 		else{
-			$("#events_edit").submit();
+			$("#items_errors").html(result);
 		}
 	});
 }
@@ -364,10 +364,12 @@ div.xls_cell:hover{
 
 				<?php echo $this->form->field('ItemsSubmit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
 
-
+			<?php if ($event->clearance == 1){ ?>
 			<?php echo $this->form->submit('Update Event')?>
 			
+			<?php } else{ ?>
 			<input type="button" value="Update Event" onclick="checkspreadsheet();">
+			<?php } ?>
 			
 			<?php echo $this->form->end(); ?>
 			</div>
