@@ -173,9 +173,15 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("input:file, select").uniform();
+		$("input:file, select").not('.uniform-hidden').uniform().each(function(i,elt) {
+			// find any elements processed that were hidden, and hide the
+			// new container for the element created by uniform.js
+			if (this.style.display == 'none') {
+				this.parentNode.style.display = 'none';
+			}
+		});
 		$("#tabs").tabs();
-		
+
 		// back to top
 		$(function () {
 			$(window).scroll(function () {
