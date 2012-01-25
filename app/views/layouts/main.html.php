@@ -22,6 +22,7 @@
 	
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
 	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
+	<script>$('html').addClass('js'); /* for js-enabled - avoid FOUC */</script>
 	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements support -->
 	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<?php echo $this->scripts(); ?>
@@ -119,12 +120,6 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 	<?php echo $pixel; ?>
 
 <!-- @TODO: externalize scripts where applicable -->
-<script>
-	$(document).ready(function() {
-		// hide noscript for js-enabled - revisit: http://www.learningjquery.com/2008/10/1-way-to-avoid-the-flash-of-unstyled-content
-		$('#noscript').hide();
-	});
-</script>
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
