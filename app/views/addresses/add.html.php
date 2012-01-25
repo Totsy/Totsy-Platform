@@ -39,6 +39,11 @@
 				</div>
 			<?php endif ?>
 			<div class="form-row">
+				<label for="type" class='required'>Type <span>*</span></label>
+				<?php echo $this->form->select('type', array('Shipping' => 'Shipping', 'Billing' => 'Billing')); ?>
+				<?php echo $this->form->error('type'); ?>
+			</div>
+			<div class="form-row">
 
 				<?php echo $this->form->label('description', 'Description <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('description', array('class' => 'inputbox')); ?>
