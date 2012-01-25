@@ -22,6 +22,7 @@
 	
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
 	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
+	<script>$('html').addClass('js'); /* for js-enabled - avoid FOUC */</script>
 	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements support -->
 	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<?php echo $this->scripts(); ?>
@@ -79,7 +80,7 @@
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
 				
 		<div id="contentMain" class="container_16 group">
-			<noscript><div>Unfortunately, JavaScript is currently disabled or not supported by your browser. Please enable JavaScript for full functionality.</div></noscript>
+			<div id="noscript">Unfortunately, JavaScript is currently disabled or not supported by your browser. Please enable JavaScript for full functionality.</div>
 			<?php echo $this->content(); ?>
 		</div>
 		<!-- /#contentMain -->
@@ -172,6 +173,7 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 </script>
 
 <script type="text/javascript">
+	<?php // global functions here (although all js *really* should be externalized and view-specific… Magento Magento Magento we'll make it happen) ?>
 	$(document).ready(function() {
 		$("input:file, select").not('.uniform-hidden').uniform().each(function(i,elt) {
 			// find any elements processed that were hidden, and hide the
