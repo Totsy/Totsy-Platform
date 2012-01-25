@@ -115,6 +115,9 @@
 								<?php echo $order['billing']['city']?>
 							<?php endif ?>
 							<?php echo $order['billing']['state']?> <?php echo $order['billing']['zip']?>
+							<?php if (!empty($order['billing']['telephone'])): ?>
+								<br><?php echo $order['billing']['telephone']?>
+							<?php endif ?>
 						<?php endif ?>
 						</div>
 					</td>
