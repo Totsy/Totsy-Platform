@@ -388,13 +388,15 @@ function replace_address() {
 };
 
 function pickBillingAddress(selectedAddressIndex) {
-	$.each( billingAddresses[selectedAddressIndex], function (k, v) {
-    	if(k!=="user_id" && k!=="type" && k!=="_id" && k!=="addresses") {
+		
+		$.each( billingAddresses[selectedAddressIndex], function (k, v) {
+    	if( $("#" + k + "").length > 0 ) {
+    		$("#" + k + "").val(v);
+    		
     		if(k=="state") {
 				$("#" + k + 'option:selected').next('option').attr('selected', 'selected');
-  			} else {
-    			$("#" + k + "").val(v);
-    		}
+				$("#" + k + "").change();	
+  			} 
     	}    	
 	});	
 };
