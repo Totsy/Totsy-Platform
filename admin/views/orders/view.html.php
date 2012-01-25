@@ -559,6 +559,9 @@
 	                                                                                                <?php echo $order->billing->address; ?> <?php echo $order->billing->address_2; ?><br />
 	                                                                                                <?php echo $order->billing->city; ?>, <?php echo $order->billing->state; ?>
 	                                                                                                <?php echo $order->billing->zip; ?>
+																									<?php if (!empty($order->billing->telephone)): ?>
+		                                                                                                <br><?php echo $order->billing->telephone; ?>
+																									<?php endif ?>
 													<hr /></div>
 												<div style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?php echo strtoupper($order->card_type)?> ending with <?php echo $order->card_number?></div>
 											</td>
