@@ -845,6 +845,44 @@ class UsersController extends BaseController {
 	
 	}
 
+	/**
+	 * Verify a user's password, and return the result as JSON.
+	 * When the user hasn't created their own password yet (e.g. connected via
+	 * Facebook Connect), the provided password will be made their own.
+	 */
+	public function passwordVerify() {
+		$redirectUrl = $this->request->data['redirect_url'];
+		$password    = $this->request->data['pwd'];
+		$email       = $this->request->data['email'];
+		$user        = User::getUser(null, $this->sessionKey);
+		$errors      = array();
+
+		if ($user->requires_set_password) {
+			if (strlen($password) < 5) {
+				$errors[] = 'Your new password must contain at least five (5) characters.';
+				$result = false;
+			} else {
+				$user->email = $email;
+				$user->password = sha1($password);
+				$user->legacy = 0;
+				$user->requires_set_password = null;
+				$user->reset_token = '0';
+				if ($user->save(null, array('validate' => false))) {
+					Session::write('userLogin', $user, array('name'=>'default'));
+				}
+
+				$result = true;
+			}
+
+		} else {
+			$result = ($user->legacy == 1)
+				? $this->authIllogic($password, $user)
+				: (sha1($password) == $user->password);
+		}
+
+		echo json_encode(array('result' => $result, 'errors' => $errors));
+		$this->_render['head'] = true;
+	}
 }
 
 ?>
