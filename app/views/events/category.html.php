@@ -71,6 +71,7 @@
 					//print_r($event->eventItems);
 					
 					foreach($event['eventItems'] as $item){ ?>
+					<?php if ($item['total_quantity'] >= 1){ ?>
 						<?//php print_r($item); ?>
 						<div class="item" data-prodID="<?php echo $item['_id'] ?>">
 							<a href="<?php echo '/sale/' . $event['url'] . '/' . $item['url']?>" title="<?php echo $item['description'];?>">
@@ -79,6 +80,9 @@
 								<p>$<?php echo number_format($item['sale_retail'],2);?></p>
 							</a>
 						</div><!-- /.item -->
+					<?php
+					}
+					?>
 					<?php
 					}
 					?>
