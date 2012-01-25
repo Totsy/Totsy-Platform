@@ -4879,3 +4879,9 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	.p-status-503 section {padding-right:55px;}
 }
+
+/* footer badges */
+#badges {padding:0; text-align: center;}
+#badges > div {display:inline-block; margin-left:5px;}
+#badges > div:first-child {margin-left:0;}
+#badges .truste {position: relative; top:-16px; margin-right:2px;}
