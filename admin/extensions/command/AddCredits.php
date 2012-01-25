@@ -138,7 +138,7 @@ class AddCredits extends \lithium\console\Command {
 		
 		$conditions = array(
 			'credited' => array( '$ne' => true ),
-			'processed' => array( '$ne' => true )
+			'status' => 'Accepted'
 		);
 		
 		if (!empty($this->test)){
@@ -162,6 +162,7 @@ class AddCredits extends \lithium\console\Command {
 				'user_id'=>$row['user_id']
 			));
 			$emails = $this->_parseEmail($row);
+
 			if ($emails==false){
 				continue;
 			}
@@ -181,15 +182,15 @@ class AddCredits extends \lithium\console\Command {
 						);
 					}
 				}
-				
+
 				$this->tmpInvites->update(
-					array('_id'=>$row['_id']),
-					array(
-						'user_id' => $row['user_id'],
+					array('_id'=>$tmpInvite['_id']),
+					array( '$set' => array(
 						'emails' => $add,
 						'email_counter' => count($add)
-				));
+				)));
 			} else {
+				
 				$add = array();
 				foreach ($emails as $email){
 					$mail5 = md5($email);
@@ -203,7 +204,7 @@ class AddCredits extends \lithium\console\Command {
 					'user_id' => $row['user_id'],
 					'emails' => $add,
 					'email_counter' => count($add)
-				));
+				), true);
 			}
 			unset($add,$emails);
 		}
@@ -352,6 +353,9 @@ class AddCredits extends \lithium\console\Command {
 		}
 		
 		$inviter = $userCursor->getNext();
+		if (!is_array($inviter['invitation_codes']) && is_string($inviter['invitation_codes'])){
+			$inviter['invitation_codes'] = array($inviter['invitation_codes']);
+		}
 		unset($userCursor);
 		
 		// get invited user info
@@ -379,6 +383,7 @@ class AddCredits extends \lithium\console\Command {
 			return true;
 		} else {
 			BlackBox::AddCreditsOUT('Invited user ('.$invited['email'].') accepted invitation from another inviter');
+			BlackBox::AddCreditsOUT('invited by '.$invited['invited_by'].' VS. '.implode(',',$inviter['invitation_codes']));
 		}
 		
 		unset($invited,$inviter);

@@ -15,6 +15,8 @@ use lithium\storage\Session;
 ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception'),
     function($info, $params) {
         $url = $params['request']->url;
+        // @TODO - @DG: use "not production" ! ONLY when working on dev
+        //if (!Environment::is('production')) {
         if (Environment::is('production')) {
             /* Do we want to provide any kind of info except a blank page? */
             $inc = 0;
@@ -40,9 +42,10 @@ ErrorHandler::apply('lithium\action\Dispatcher::run', array('type' => 'Exception
                 $response->body(Media::render($response, compact('info', 'params'), array(
                     'layout' => null,
                     'controller' => '_error',
-                    'template' => '505'
+                    'template' => '500' // 500 is for Internal Server Error ("woopsies"); 503-maint is Maintenance page
                 )));
             }
+            // @TODO - @DG: add back in mail function (comment it out when working on dev to prevent annoying the bugs list folks )
             mail('bugs@totsy.com', "500 Error on /{$params['request']->url}", $message);
         } else {
             /* Full post mortem in non-production envs. */

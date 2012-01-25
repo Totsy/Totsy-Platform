@@ -49,7 +49,9 @@ $(document).ready( function() {
 		$("#order_total_num").html("");
 		$("#order_total_num").text("$" + cartObj.subTotal.toFixed(2) + "");
 		
+		//nav header variables
 		$("#cart-count").text(cartObj.itemCount);
+		$("#cart-subtotal").text(cartObj.subTotal.toFixed(2));
 		
 		//set var for cart timer
 		var cartExpirationDate = new Date(cartObj.cartExpirationDate * 1000);
@@ -125,7 +127,7 @@ $(document).ready( function() {
 			url: $.base + 'cart/add',
 			data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 			context: document.body,
-			success: function(data) {
+			success: function(data) {			
 				showCartPopup(data);
 			}
 		});
