@@ -16,7 +16,7 @@ use MongoDate;
  * This Script Recapture all orders that has been shipped and that got Capture Errors
  * 
  */
-class ReCapture extends \lithium\console\Command {
+class ReCaptureOld extends \lithium\console\Command {
 		
 	/**
 	 * The environment to use when running the command. 'production' is the default.
@@ -91,9 +91,16 @@ class ReCapture extends \lithium\console\Command {
 									'payment_captured' => array('$exists' => false)
 									);
 				$order = $ordersCollection->findOne($conditions);
-				if(!empty($order)) {		
-					if(!empty($order['cyberSourceProfileId']) && !empty($this->createNewAuth)) {
-						$authKeyAndReport = $this->authorize($order);
+				if(!empty($order)) {
+					if(!empty($order['cc_payment']) && !empty($this->createNewAuth)) {
+						if(!$this->oldWayToDecrypt) {
+							$creditCard = Order::getCCinfos($order);
+						} else {
+							$creditCard = Order::getCCinfosByTheOldWay($order);
+						}
+					}
+					if(!empty($creditCard)) {
+						$authKeyAndReport = $this->authorize($creditCard, $order);
 						if(!empty($authKeyAndReport['reportAuthorize'])) {
 							$report[$reportCounter] = $authKeyAndReport['reportAuthorize'];
 							$reportCounter++;
@@ -131,19 +138,42 @@ class ReCapture extends \lithium\console\Command {
 		return $orderIds;
 	}
 
-	public function authorize($order = null) {
+	public function authorize($creditCard = null, $order = null) {
 		Logger::debug('Authorize');
 		$ordersCollection = Order::Collection();
 		$report = null;
 		$authKey = null;
 		$userInfos = User::lookup($order['user_id']);
-		#Retrieve Profile using CyberSourceProfile ID		
-		$cybersource = new CyberSource(Processor::config('default'));
-		$profile = $cybersource->profile($order['cyberSourceProfileId']);
+		$card = Processor::create('default', 'creditCard', $creditCard + array(
+													'billing' => Processor::create('default', 'address', array(
+													'firstName' => $order['billing']['firstname'],
+													'lastName'  => $order['billing']['lastname'],
+													'address'   => trim($order['billing']['address'] . ' ' . $order['billing']['address2']),
+													'city'      => $order['billing']['city'],
+													'state'     => $order['billing']['state'],
+													'zip'       => $order['billing']['zip'],
+													'country'   => $order['billing']['country'] ?: 'US',
+													'email'     => $userInfos['email']
+		))));
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', ($order['total'] + $this->adjustment), $profile);
+		$auth = Processor::authorize('default', ($order['total'] + $this->adjustment), $card);
 		if ($auth->success()) {
 			Logger::debug('Authorize Complete: ' . $auth->key);
+			$customer = Processor::create('default', 'customer', array(
+				'firstName' => $userInfos['firstname'],
+				'lastName' => $userInfos['lastname'],
+				'email' => $userInfos['email'],
+				'payment' => $card
+			));
+			$result = $customer->save();
+			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
+			#Setup new AuthKey
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => array(
+							'cyberSourceProfileId' => $profileID
+				)), array( 'upsert' => true)
+			);
 			$authKey = $auth->key;
 			if(!empty($this->onlyReauth)) {
 				$update = $ordersCollection->update(
