@@ -99,7 +99,7 @@ class EventsController extends BaseController {
 	    $this->_render['layout'] = false;
 	    unset($branch);
 		//$this->_render['head'] = true;
-		$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
+		$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
 		return Event::check_spreadsheet($fullarray, $this->_mapCategories);
 	}
 
@@ -114,7 +114,7 @@ class EventsController extends BaseController {
 		$itemsCollection = Item::Collection();
 
 		//convert textarea content into an array
-		//$fullarray = Event::convert_spreadsheet($_POST['items_submit']);
+		//$fullarray = Event::convert_spreadsheet($_POST['ItemsSubmit']);
 
 		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
 		foreach($fullarray as $item_sku_quantity){
@@ -327,10 +327,10 @@ class EventsController extends BaseController {
 			));
 
 		//process new items
-		if(!empty($this->request->data['items_submit'])) {
+		if(!empty($this->request->data['ItemsSubmit'])) {
 			$enableItems = $this->request->data['enable_items'];
 
-			$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
+			$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
 			if($event->clearance){
 				$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
 			}
