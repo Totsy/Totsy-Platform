@@ -673,7 +673,7 @@ class UsersController extends BaseController {
 						unset($this->request->data['password_confirm']);
 						if ($user->save($this->request->data, array('validate' => false))) {
 							$info = Session::read('userLogin');
-							Session::write('userLogin', $info, array('name'=>'default'));
+							Session::write('userLogin', $user, array('name'=>'default'));
 						}
 					} else {
 						$status = 'shortpass';
