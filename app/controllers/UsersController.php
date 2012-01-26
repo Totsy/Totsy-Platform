@@ -190,7 +190,7 @@ class UsersController extends BaseController {
 
 			$message .= '</div>';
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
 		}
@@ -361,7 +361,7 @@ class UsersController extends BaseController {
 
 		}
 		//detect mobile and make the view switch
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_login';
 		} else {
@@ -535,7 +535,7 @@ class UsersController extends BaseController {
 				$status = "email";
 			}
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_info';
 		}
@@ -584,7 +584,7 @@ class UsersController extends BaseController {
 			}
 
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_reset';
 		} else {
@@ -642,7 +642,7 @@ class UsersController extends BaseController {
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 		array('invite' => $_SERVER['REQUEST_URI'])
 		);
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_invite';
 		}
@@ -697,7 +697,7 @@ class UsersController extends BaseController {
 				}
 			}
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_password';
 		}

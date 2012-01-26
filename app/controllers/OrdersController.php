@@ -82,7 +82,7 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
-		}if($this->request->is('mobile')){
+		}if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_index';
 		}
@@ -187,7 +187,7 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_view';
 		}
@@ -308,7 +308,7 @@ class OrdersController extends BaseController {
 		}
 						
 		$cartEmpty = ($cart->data()) ? false : true;
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_shipping';
 		}
@@ -474,7 +474,7 @@ class OrdersController extends BaseController {
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_review';
 		}
@@ -714,7 +714,7 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_payment';
 		}

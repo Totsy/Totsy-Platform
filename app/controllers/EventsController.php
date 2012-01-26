@@ -171,7 +171,7 @@ class EventsController extends BaseController {
 			}
 		}
 		
-	if($this->request->is('mobile')){
+	if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_index';
 		} else {
@@ -182,7 +182,7 @@ class EventsController extends BaseController {
 	}
 
 	public function view() {
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_view';
 		} else {

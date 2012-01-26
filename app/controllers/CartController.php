@@ -142,7 +142,7 @@ class CartController extends BaseController {
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}		
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_view';
 		}
