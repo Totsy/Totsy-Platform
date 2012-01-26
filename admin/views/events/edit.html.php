@@ -407,11 +407,27 @@ div.xls_cell:hover{
 			<?php echo $this->form->end(); ?>
 
 			<br><br>
+
+<script>
+
+function deleteitems(){
+//item-delete
+	var answer = confirm("are you sure you want to delete all items? this cannot be undone!")
+	if (answer){
+		$("#item-delete").submit();
+	}
+
+}
+
+</script>
+
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
-				<?php echo $this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
+				<?php echo $this->form->create(null, array('url' => 'Items::removeItems', 'id' => 'item-delete', 'name' => 'item-delete')); ?>
 					<?php echo $this->form->hidden('event', array('value' => $event->_id)); ?>
-					<?php echo $this->form->submit('Delete All Items'); ?>
+					
+					<input type="button" onclick="deleteitems()" value="Delete All Items">
+					<?php //echo $this->form->submit('Delete All Items'); ?> 
 				<?php echo $this->form->end(); ?>
 		</div>
 
