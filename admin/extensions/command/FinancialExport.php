@@ -712,19 +712,18 @@ class FinancialExport extends Base  {
                 	$order['process_by'] = $order['auth']['adapter'];
                 }
 
-                if (array_key_exists('auth_records', $order)) {
+                if (array_key_exists('auth_records', $order) && array_key_exists('auth', $order)) {
                     $tmp = array();
 					foreach($order['auth_records'] as $auth_record) {
 					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
 					    $tmp[] = $auth_record;
 					}
 					$order['auth_records'] = $tmp;
-
 				} else {
 					$order['auth_records'] = array(
 						array(
 							'authKey' => $order['authKey'],
-							'date_saved' => date("m/d/Y h:i:s A", $order['date_created']->sec )
+							'date_saved' => date("m/d/Y h:i:s A", $order['date_created']->sec)
 						));
 				}
                 /*
@@ -855,8 +854,9 @@ class FinancialExport extends Base  {
             $this->log("Exporting to Accounting Server...");
             $directory = $this->directory;
             $output = "";
+
             if (is_dir($source)) {
-                $cmd = "scp -r -P 50220 $source/*.xml administrator@accounting.totsy.com:$directory .";
+                $cmd = "scp -F ~/.ssh/config {$source}*.xml accounting.totsy.com:/C/$directory";
                 $proc = proc_open($cmd, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
                 fwrite($pipes[0], $input); fclose($pipes[0]);
                 $stdout = stream_get_contents($pipes[1]);fclose($pipes[1]);
@@ -865,10 +865,13 @@ class FinancialExport extends Base  {
 
                 if ($rtn == 0) {
                         $reporting['success'] = true;
-                        $this->log("Moving " . $source.$file . " to processed folder.");
                         foreach(glob("{$source}*.xml") as $file) {
                             $filename = preg_split("#($source)#", $file);
+                            $this->log("Moving " . $filename[1] . " to processed folder.");
                             $reporting['files_sent'][] = $filename[1] . " " . filesize($file) . " Bytes" ;
+                            if (!is_dir($processed)) {
+                                mkdir($processed, 0777, true);
+                            }
                             rename($file,$processed.$filename[1]);
                         }
                 } else {
