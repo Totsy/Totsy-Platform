@@ -44,7 +44,7 @@
  				$type = "/img/cc_visa.gif"; 
  				$cc_name = "Visa";
  			break;
- 			case 'mc': 
+ 			case 'mastercard': 
  				$type = "/img/cc_mastercard.gif"; 
 				$cc_name = "MasterCard";
  			break;
