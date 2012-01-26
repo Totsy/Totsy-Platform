@@ -39,12 +39,9 @@
 	<?php
 		/* 
 			@TODO
-			@DG-2012.01.06 in progress:
-				- rebuild template to split into sections:
-				- Today's Sales
-					featured
-					grid of items
-				- Upcoming Sales
+			@DG-2012.01.06: rebuild template to split Today's Sales into sections:
+				- featured
+				- grid of current events
 		*/
 	?>
 	
@@ -73,7 +70,8 @@
 			<?php if ($y == 3): ?>
 				<?php $y = 1; ?>
 			<?php endif ?>
-			<div class="p-container roundy_product_home">
+				<div class="p-container roundy_product_home status">
+					<em>Stock Added</em>
 						<!-- this is where the items count was -->
 						<?php
 							//check if top two area, show big splash
@@ -115,19 +113,19 @@
 							)), "sale/$url", array('escape'=> false));
 							 ?>
 						<?php endif ?>
-	
-				<div class="splash-details">
-							<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
+				
+					<div class="splash-details">
+						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 							 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
 							 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></span>
-							</div>
-	
-							<div class="table-cell right">
-								<?php echo $this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
-							</div>
 						</div>
-					</div>
-				</div>
+						
+						<div class="table-cell right">
+							<?php echo $this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
+						</div>
+					</div><!-- /.splash-details -->
+				</div><!-- /.p-container -->
+			</div>
 	
 				<?php if ($x == 1): ?>
 					<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;">

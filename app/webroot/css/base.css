@@ -1909,6 +1909,15 @@ h2:link .p-container .details strong {
 	padding:10px 12px;
 }
 
+/* event status */
+.status > em {
+	display: block;
+	position: absolute; top:0; right: 0;
+	width:89px; height:89px;
+	background: url(../img/ribbon-evstat-sa.png) 0 0 no-repeat;
+	text-indent: -999em;
+}
+
 .invite-column {
 	width:180px;
 	text-align:center;
