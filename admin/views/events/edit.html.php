@@ -65,8 +65,9 @@ function checkspreadsheet(){
 	params = new object();
 	params.items_submit = $("#ItemsSubmit").val();
 
-	$.post('/events/uploadcheck_clearance', params, function(result) {
+	$.post('/events/uploadcheck', params, function(result) {
 		if(result.substring(0,7)=="success"){
+			//$("#items_errors").html(result);
 			$("#events_edit").submit();
 		}
 		else{
