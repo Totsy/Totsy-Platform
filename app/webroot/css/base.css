@@ -1914,9 +1914,9 @@ h2:link .p-container .details strong {
 	display: block;
 	position: absolute; top:0; right: 0;
 	width:89px; height:89px;
-	background: url(../img/ribbon-evstat-sa.png) 0 0 no-repeat;
 	text-indent: -999em;
 }
+.status-sa > em {background: url(../img/ribbon-evstat-sa.png) 0 0 no-repeat;}
 
 .invite-column {
 	width:180px;

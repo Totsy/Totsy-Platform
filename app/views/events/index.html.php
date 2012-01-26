@@ -70,8 +70,25 @@
 			<?php if ($y == 3): ?>
 				<?php $y = 1; ?>
 			<?php endif ?>
-				<div class="p-container roundy_product_home status">
+			
+				<?php // @TODO: temp POC for event status - will be replaced with actual conditional checks for variables once back-end completed
+						// complete the conditionals….
+					$eventHasStatus = true;
+					$eventStatus = 'status-sa';
+					$eventStatusClass = "Stock Added";
+				?>
+				
+				<?php
+					if ($eventHasStatus) { ?>
+				<div class="p-container roundy_product_home status status-sa">
 					<em>Stock Added</em>
+				<?php
+				} else { ?>
+				<div class="p-container roundy_product_home">
+				<?php 
+				}
+				?>
+				
 						<!-- this is where the items count was -->
 						<?php
 							//check if top two area, show big splash
