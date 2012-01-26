@@ -122,7 +122,10 @@ class ReAuthorize extends \lithium\console\Command {
 							'auth' => array('$exists' => true),
 							'cancel' => array('$ne' => true),
 							'total' => array('$ne' => 0),
-							'$where' => 'this.total == this.authTotal'
+							'$where' => 'this.total == this.authTotal',
+							'cyberSourceProfileId' => array('$exists' => true),
+							'authTotal' => array('$exists' => true),
+							'processor' => 'CyberSource'
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -162,10 +165,9 @@ class ReAuthorize extends \lithium\console\Command {
 			#Check If Reauth Needed
 			$reAuth = $this->isReauth($order);
 			if($reAuth) {
-				if($order['processor'] == 'CyberSource') {
-					$report = $this->reAuthCyberSource($order, $report);
-				}
+				$report = $this->reAuthCyberSource($order, $report);
 			} else {
+				Logger::debug('Order Skipped');
 				$report['skipped'][] = array(
 					'error_message' => 'skipped',
 					'order_id' => $order['order_id'],
@@ -202,10 +204,6 @@ class ReAuthorize extends \lithium\console\Command {
 				$reAuth = false;
 			}
 		} else {
-			#SPECIAL CONDITION - DONT REAUTHORIZE VISA/MC Transaction
-			if($order['card_type'] != 'amex' && !$this->reauthVisaMC) {
-				$reAuth = false;
-			}
 			if($order['card_type'] != 'amex' && $this->reauthVisaMC) {
 				if(!empty($order['void_records'])) {
 					$limitDate = mktime(23, 59, 59, date("m"), date("d") - 1, date("Y"));
@@ -222,14 +220,16 @@ class ReAuthorize extends \lithium\console\Command {
 					$reAuth = false;
 				}
 			}
-			if(isset($order['authTotal']) && $order['authTotal'] != $order['total']) {
-				$reAuth = false;
-			}
 		}
 		if(!isset($order['cyberSourceProfileId'])) {
 			$reAuth = false;
 		}
-		Logger::debug('Eligible for Reauth: ' . $reAuth);
+		if(!empty($order['cancel'])) {
+			$reAuth = false;
+		}
+		if($reAuth) {
+			Logger::debug('Eligible for Reauth');
+		}
 		return $reAuth;
 	}
 				
@@ -255,17 +255,17 @@ class ReAuthorize extends \lithium\console\Command {
 			#Setup new AuthKey
 			$update = $ordersCollection->update(
 					array('_id' => $order['_id']),
-					array('$set' => array(
+					array(
+					'$set' => array(
 						'authKey' => $auth->key,
 						'auth' => $auth->export(),
 						'processor' => $auth->adapter,
 						'authTotal' => $order['total']
-					)), array( 'upsert' => true)
-			);
-			#Add to Auth Records Array
-			$update = $ordersCollection->update(
-					array('_id' => $order['_id']),
-					array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
+					),
+					'$push' => array(
+						'auth_records' => $newRecord
+					)), 
+					array('upsert' => true)
 			);
 			$report['updated'][] = array(
 				'error_message' => 'updated',
@@ -278,25 +278,23 @@ class ReAuthorize extends \lithium\console\Command {
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
 			Logger::debug($message);
+			$datasToSet['error_date'] = new MongoDate();
+			$datasToSet['auth_error'] = $error;
+			if($this->fullAmount) {
+				$datasToSet['processed'] = false;
+			}
+			#Record Errors in DB
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
-				array('$set' => array('error_date' => new MongoDate(),
-					'auth_error' => $error
-				)), array( 'upsert' => true)
+				array('$set' => $datasToSet),
+				array( 'upsert' => true)
 			);
-			if($this->fullAmount) {
-				$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$set' => array('processed' => false
-					)), array( 'upsert' => true)
-				);
-			}
 			$report['errors'][] = array(
-			'error_message' => $message,
-			'order_id' => $order['order_id'],
-			'authKey' => $order['authKey'],
-			'authKeyDeclined' => $auth->key,
-			'total' => $order['authTotal']
+				'error_message' => $message,
+				'order_id' => $order['order_id'],
+				'authKey' => $order['authKey'],
+				'authKeyDeclined' => $auth->key,
+				'total' => $order['authTotal']
 			);
 		}
 		Logger::debug('End of Order Process: ' . $order['order_id']);

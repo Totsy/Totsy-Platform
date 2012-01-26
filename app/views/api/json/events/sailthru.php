@@ -20,6 +20,7 @@ if (is_array($events)){
 		$evnt['categories'] = $event['groups']['categories'];
 		$evnt['ages'] = $event['groups']['ages'];
 		$evnt['items'] = $event['items'];
+		$evnt['tag'] = implode(',',array_merge($event['groups']['categories'],$event['groups']['ages']));
 		$out['events'][] = $evnt;
 	}
 }
