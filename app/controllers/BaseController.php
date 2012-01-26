@@ -27,6 +27,7 @@ class BaseController extends \lithium\action\Controller {
 		
 		if ($user && $this->request->is('mobile')) {
 		 	$this->_render['layout'] = 'mobile_main';
+		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
 		} else {
 			switch($_SERVER['HTTP_HOST']) {
@@ -88,6 +89,11 @@ class BaseController extends \lithium\action\Controller {
         }
 
 		$userInfo = Session::read('userLogin');
+		
+		if($userInfo['invited_by']=="mamasource" && Environment::is('production')) {
+			$this->redirect("http://mamasource.totsy.com/sales");
+		}
+		
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
 		
