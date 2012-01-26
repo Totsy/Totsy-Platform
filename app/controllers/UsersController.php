@@ -219,6 +219,9 @@ class UsersController extends BaseController {
 						$data['invitation_codes'] = array(static::randomString());
 					}
 					if ($saved = $user->save($data)) {
+				
+						Session::write('userLogin', $user , array('name' => 'default'));
+					
 						$mail_template = 'Welcome_Free_Shipping';
 						$params = array();
 
@@ -713,6 +716,8 @@ class UsersController extends BaseController {
 		$data['confirmemail'] = $fbuser['email'];
 
 		$data['password'] = static::randomString();
+		Session::delete('landing',array('name'=>'default'));
+		
 		$data['requires_set_password'] = true;
 		$data['terms'] = true;		    			
 		
