@@ -95,7 +95,8 @@ class EventsController extends BaseController {
 		return compact('event');
 	}
 
-	public function uploadcheck_clearance() {
+	//public function uploadcheck_clearance() {
+	public function uploadcheck() {
 	    $this->_render['layout'] = false;
 	    unset($branch);
 		//$this->_render['head'] = true;
@@ -104,12 +105,16 @@ class EventsController extends BaseController {
 	}
 
 	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
+	//protected function uploadcheck($fullarr2ay, $_id, $enabled = false) {
+	    $this->_render['layout'] = false;
 
-		$items_quantities[] = array();
-		$items_prices[] = array();
-		$items_skus[] = array();
-		$items_skus_used[] = array();
-		$items[] = array();
+		$items_quantities = array();
+		$items_ages = array();
+		$items_categories = array();
+		$items_prices = array();
+		$items_skus = array();
+		$items_skus_used = array();
+		$items = array();
 
 		$itemsCollection = Item::Collection();
 
@@ -118,11 +123,58 @@ class EventsController extends BaseController {
 
 		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
 		foreach($fullarray as $item_sku_quantity){
-			$current_sku = trim($item_sku_quantity[0]);
-			$items_skus[] = $current_sku;
-			$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
-			$items_prices[$current_sku] = trim($item_sku_quantity[2]);
+			//$current_sku = trim($item_sku_quantity[0]);
+			//$items_skus[] = $current_sku;
+			//$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
+			//$items_prices[$current_sku] = trim($item_sku_quantity[2]);
 		}
+
+
+		$highestRow = $fullarray[0];
+		$totalrows = count($fullarray);
+		$totalcols = count($highestRow);
+
+
+		$check_decimals = array("msrp", "sale_retail", "percentage_off", "percent_off", "orig_wholesale", "orig_whol", "sale_whol", "sale_wholesale", "imu");
+
+		for ($row = 0; $row <= $totalrows; ++ $row ) {
+			if($row>0&&$fullarray[$row][0]){
+				$current_sku = $fullarray[$row][0];
+				if($current_sku){
+					$items_skus[] = $current_sku;
+				}
+			}
+			for ($col = 0; $col < $totalcols; ++ $col) {
+				$val = $fullarray[$row][$col];
+
+				if ($row == 0) {
+					if(($val)||($val==0)){
+						$heading[] = $val;
+					}
+				} else {
+					if (isset($heading[$col])) {
+						if($heading[$col] === "quantity") {
+							if (!empty($val)) {
+								$items_quantities[$current_sku] = trim($val);
+							}
+						} else if($heading[$col] === "sale_retail") {
+							if (!empty($val)) {
+								$items_prices[$current_sku] = trim($val);
+							}
+						} else if(strstr($heading[$col], "age_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$items_ages[$current_sku][] = trim($val);
+							}
+						} else if(strstr($heading[$col], "category_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$items_categories[$current_sku][] = trim($val);
+							}
+						}
+					}
+				}
+			}
+		}
+
 
 		//mongo query, find all items with skus
 		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( '$in' => $items_skus))));
@@ -176,6 +228,11 @@ class EventsController extends BaseController {
 
 						//use index to update quantity
 						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
+
+						$oitem['ages'] = $items_ages[$sku_details];
+						$oitem['categories'] = $items_categories[$sku_details];
+
+
 
 						//set sales to 0 for all sizes
 						//$oitem['sale_details'][$sku_details_key]['sale_count'] = 0;
