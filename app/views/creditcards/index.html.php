@@ -46,7 +46,7 @@
  			break;
  			case 'mc': 
  				$type = "/img/cc_mastercard.gif"; 
-				$cc_name = "Mastercard";
+				$cc_name = "MasterCard";
  			break;
  		}
    	
