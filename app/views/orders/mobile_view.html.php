@@ -124,6 +124,11 @@
 </div>
 
 <!--- ECOMMERCE TRACKING -->
+<?php
+	$brandNew = ($order->date_created->sec > (time() - 10)) ? true : false;
+	$new = ($order->date_created->sec > (time() - 120)) ? true : false;
+
+?>
 <?php if ($brandNew): ?>
 	<script type="text/javascript">
 	  var _gaq = _gaq || [];
