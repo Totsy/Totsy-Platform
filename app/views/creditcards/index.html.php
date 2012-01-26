@@ -37,21 +37,21 @@
    	<?php
  		switch ($cyberSourceProfile[creditCard][type]) {
  			case 'amex': 
- 				$type = "cc_amex.gif"; 
+ 				$type = "/img/cc_amex.gif"; 
  				$cc_name = "American Express";
  			break;
  			case 'visa': 
- 				$type = "cc_visa.gif"; 
+ 				$type = "/img/cc_visa.gif"; 
  				$cc_name = "Visa";
  			break;
  			case 'mastercard': 
- 				$type = "cc_mastercard.gif"; 
-				$cc_name = "Mastercard";
+ 				$type = "/img/cc_mastercard.gif"; 
+				$cc_name = "MasterCard";
  			break;
  		}
    	
    	?>
-	<img src="/img/<?php echo $type;?>">   	
+	<img src="<?php echo $type;?>">   	
    	</td>
     <td width="67%">
 		<?php echo $cc_name?> ending in <strong><?php echo $cyberSourceProfile[creditCard][number];?></strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
