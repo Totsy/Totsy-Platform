@@ -208,6 +208,7 @@ class UsersController extends BaseController {
 				$user = User::create($data);
 				if ($user->validates()) {
 					$email = $data['email'];
+					$plaintext_password = $data['password'];
 					$data['password'] = sha1($data['password']);
 					$data['created_date'] = User::dates('now');
 					$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
@@ -229,6 +230,10 @@ class UsersController extends BaseController {
 						if (isset($user['clear_token'])) {
 							$mail_template = 'Welcome_auto_passgen';
 							$params['token'] = $user['clear_token'];
+						}
+						if (isset($user['requires_set_password'])) {
+							$mail_template = 'Welcome_auto_passgen';
+							$params['token'] = $plaintext_password;
 						}
 						Mailer::send($mail_template, $user->email,$params);
 
@@ -662,6 +667,7 @@ class UsersController extends BaseController {
 						$user->password = sha1($newPass);
 						$user->legacy = 0;
 						$user->reset_token = '0';
+						$user->requires_set_password = null;
 						unset($this->request->data['password']);
 						unset($this->request->data['new_password']);
 						unset($this->request->data['password_confirm']);
@@ -705,8 +711,7 @@ class UsersController extends BaseController {
 		
 		$data['email'] = $fbuser['email'];
 		$data['confirmemail'] = $fbuser['email'];
-		
-		//sha1 of current date and user's email
+
 		$data['password'] = static::randomString();
 		$data['requires_set_password'] = true;
 		$data['terms'] = true;		    			
