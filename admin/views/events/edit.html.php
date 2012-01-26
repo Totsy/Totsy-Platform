@@ -63,7 +63,7 @@ function object(){
 
 function checkspreadsheet(){
 	params = new object();
-	params.items_submit = $("#ItemsSubmit").val();
+	params.ItemsSubmit = $("#ItemsSubmit").val();
 
 	$.post('/events/uploadcheck_clearance', params, function(result) {
 		if(result.substring(0,7)=="success"){
@@ -368,7 +368,9 @@ div.xls_cell:hover{
 			<?php echo $this->form->submit('Update Event')?>
 			
 			<?php } else{ ?>
+
 			<input type="button" value="Update Event" onclick="checkspreadsheet();">
+
 			<?php } ?>
 			
 			<?php echo $this->form->end(); ?>
