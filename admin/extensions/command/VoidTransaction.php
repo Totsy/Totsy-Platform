@@ -70,8 +70,7 @@ class VoidTransaction extends \lithium\console\Command {
 		Logger::debug('Getting Orders to be Reauth');
 		$ordersCollection = Order::Collection();
 		$ordersCollection->ensureIndex(array(
-			'date_created' => 1,
-			'cc_payment' => 1
+			'date_created' => 1
 		));
 		#Limit to X days Old Authkey
 		$limitDate = mktime(23, 59, 59, date("m"), date("d") - $this->expirationVoid, date("Y"));
@@ -79,7 +78,6 @@ class VoidTransaction extends \lithium\console\Command {
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
-							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate)),
 							'auth' => array('$exists' => true),
 							'cancel' => array('$ne' => true),

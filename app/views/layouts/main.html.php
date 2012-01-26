@@ -22,6 +22,7 @@
 	
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
 	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
+	<script>$('html').addClass('js'); /* for js-enabled - avoid FOUC */</script>
 	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements support -->
 	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<?php echo $this->scripts(); ?>
@@ -32,28 +33,38 @@
 	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
-			$title = "Totsy index. Evenets.";
+			$title = 'Totsy Sales';
 			$tags = 'Sales';
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
 				$tags =  $request->params['args'][0];
 			}
-		} else  {
-			if (isset($event) && isset($item)) {
-				$edata = $event->data();
-				$idata = $item->data();
+		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
+			$title = $tags = $categories;
+		} else if (isset($item)) {
+			$itemData = $item->data();
+			$title = $tags = $itemData['description'];
 
-				if(isset($idata['departments'])) {
-					$title = $edata['name'] .' - '. $idata['description'];
-					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
-				}
+			if (count($itemData['departments'])) {
+				$tags .= ', ' . implode(', ', $itemData['departments']);
+			}
+			if (count($itemData['categories'])) {
+				$tags .= ', ' . implode(', ', $itemData['categories']);
+			}
+			if (count($itemData['ages'])) {
+				$tags .= ', ' . implode(', ', $itemData['ages']);
+			}
+		} else if (isset($event)) {
+			$eventData = $event->data();
+			$title = $tags = $eventData['name'];
 
-				unset($edata, $idata);
-			} else if (isset($event)){
-				$edata = $event->data();
-				$title = $tags = $edata['name'];
-				unset($edata, $idata);
+			if (count($eventData['departments'])) {
+				$tags .= ', ' . implode(', ', $eventData['departments']);
+			}
+			if (count($eventData['tags'])) {
+				$tags .= ', ' . implode(', ', $eventData['tags']);
 			}
 		}
+
 	?>
 	<?php if (isset($title) && isset($tags)){ ?>
 	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
@@ -69,7 +80,7 @@
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
 				
 		<div id="contentMain" class="container_16 group">
-			<noscript><div>Unfortunately, JavaScript is currently disabled or not supported by your browser. Please enable JavaScript for full functionality.</div></noscript>
+			<div id="noscript">Unfortunately, JavaScript is currently disabled or not supported by your browser. Please enable JavaScript for full functionality.</div>
 			<?php echo $this->content(); ?>
 		</div>
 		<!-- /#contentMain -->
@@ -162,10 +173,17 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 </script>
 
 <script type="text/javascript">
+	<?php // global functions here (although all js *really* should be externalized and view-specific… Magento Magento Magento we'll make it happen) ?>
 	$(document).ready(function() {
-		$("input:file, select").uniform();
+		$("input:file, select").not('.uniform-hidden').uniform().each(function(i,elt) {
+			// find any elements processed that were hidden, and hide the
+			// new container for the element created by uniform.js
+			if (this.style.display == 'none') {
+				this.parentNode.style.display = 'none';
+			}
+		});
 		$("#tabs").tabs();
-		
+
 		// back to top
 		$(function () {
 			$(window).scroll(function () {

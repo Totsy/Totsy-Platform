@@ -390,7 +390,8 @@ span.breadcrumbs span {
 }
 *:first-child+html .group {min-height:1px;} /* IE7 */
 
-#contentMain > noscript div {display:block; margin:1em 10px; padding:0.5em; background:#ececec; color:#333; font-size:14px; font-weight: bold; text-align: center;}
+div#noscript {display:block; margin:1em 10px; padding:0.5em; background:#ececec; color:#333; font-size:14px; font-weight: bold; text-align: center;}
+.js div#noscript {display:none;}
 
 /* #wrapper { width:960px; padding:1px 18px 0 18px; margin:0 auto; background:url(../img/cnt-bg.png) repeat-y #FFF } */
 
@@ -4753,7 +4754,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 }
 #events-wrap .viewAllEvents:after {
 	content: "";
-	position: absolute; top:45px; right:0px;
+	position: absolute; top:42px; right:0px;
 	display: block;
 	width:1px; height:45px;
 	-moz-box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
@@ -4879,3 +4880,9 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	.p-status-503 section {padding-right:55px;}
 }
+
+/* footer badges */
+#badges {padding:0; text-align: center;}
+#badges > div {display:inline-block; margin-left:5px;}
+#badges > div:first-child {margin-left:0;}
+#badges .truste {position: relative; top:-16px; margin-right:2px;}
