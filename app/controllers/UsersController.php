@@ -397,6 +397,14 @@ class UsersController extends BaseController {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
+				//redirect mamasource users on prod (in lew of mamasource.totsy.com not having been set up yet)				
+				$userArray = $user->data();
+				$invitedBy = $userArray['invited_by'];
+				
+				if( $invitedBy=="mamasource" && Environment::is('production') ) { 
+					$redirect = "https://mamasource.totsy.com/sales";
+				}
+			
 				if ($user->deactivate) {
 					return;
 				} else if($cookie['user_id'] == $user->_id){

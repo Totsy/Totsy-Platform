@@ -89,11 +89,7 @@ class BaseController extends \lithium\action\Controller {
         }
 
 		$userInfo = Session::read('userLogin');
-		
-		if($userInfo['invited_by']=="mamasource" && Environment::is('production')) {
-			$this->redirect("http://mamasource.totsy.com/sales");
-		}
-		
+				
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
 		
