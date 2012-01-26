@@ -188,17 +188,20 @@ if ($cyberSourceProfiles) {
 switch ($cyberSourceProfile[creditCard][type]) {
 	case 'visa': 
 		print "/img/cc_visa.gif"; 
+		$cc_name = "Visa";
 	break;
 	case 'mc': 
 		print "/img/cc_mastercard.gif"; 
+		$cc_name = "MasterCard";
 	break;
 	case 'amex': 
 		print "/img/cc_amex.gif"; 
+		$cc_name = "American Express";
 	break;
 }	?>">
 	</td>
 	<td align="left">
-		<?php echo ucfirst($cyberSourceProfile[creditCard][type]);?> ending in <?php echo $cyberSourceProfile[creditCard][number]; ?>
+		<?php echo ucfirst($cc_name);?> ending in <?php echo $cyberSourceProfile[creditCard][number]; ?>
 	</td>
 	<!-- <td>
 		<?php echo $cyberSourceProfile[billing][firstname]." ".$cyberSourceProfile[billing][lastname];?>
