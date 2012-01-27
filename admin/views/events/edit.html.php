@@ -185,14 +185,23 @@ div.xls_cell:hover{
 					<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
 					<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
 				</div>
-				<div id="event_status_upadte">
-					<h2 id="event_status_upadte">Event Status Update</h2>
-					<input type="radio" name="status_update" value="none" id="status_update" <?php if ($event->status_update == 'none') echo 'checked'; ?> > None <br>
-					<input type="radio" name="status_update" value="stock_added" id="status_update" <?php if ($event->status_update == 'stock_added') echo 'checked'; ?> > Stock Added <br>
-					<input type="radio" name="status_update" value="styles_added" id="status_update" <?php if ($event->status_update == 'styles_added') echo 'checked'; ?> > Styles Added <br>
-					<input type="radio" name="status_update" value="blowout" id="status_update" <?php if ($event->status_update == 'blowout') echo 'checked'; ?> > Blowout <br>
-					<input type="radio" name="status_update" value="charity" id="status_update" <?php if ($event->status_update == 'charity') echo 'checked'; ?> > Charity Eevent <br>
-					<input type="radio" name="status_update" value="sold_out" id="status_update" <?php if ($event->status_update == 'sold_out') echo 'checked'; ?> > Sold Out 
+				<div id="event_status_update">
+					<h2 id="event_status_update">Event Status Update</h2>
+					<input type="radio" name="status_update" value="none" id="status_no" <?php if ($event->status_update == 'none') echo 'checked'; ?> > <label for="status_no">None</label> <br>
+					<input type="radio" name="status_update" value="stock_added" id="status_sa" <?php if ($event->status_update == 'stock_added') echo 'checked'; ?> > <label for="status_sa">Stock Added</label> <br>
+					<input type="radio" name="status_update" value="styles_added" id="status_st" <?php if ($event->status_update == 'styles_added') echo 'checked'; ?> > <label for="status_st">Styles Added</label> <br>
+					<input type="radio" name="status_update" value="blowout" id="status_bl" <?php if ($event->status_update == 'blowout') echo 'checked'; ?> > <label for="status_bl">Blowout</label> <br>
+					<input type="radio" name="status_update" value="charity" id="status_ch" <?php if ($event->status_update == 'charity') echo 'checked'; ?> > <label for="status_ch">Charity Event</label> <br>
+					<input type="radio" name="status_update" value="sold_out" id="status_so" <?php if ($event->status_update == 'sold_out') echo 'checked'; ?> > <label for="status_so">Sold Out</label>
+					<script>
+						// @TODO: @DG - work in progress, POC - need to wrap up…
+						$('#status_bl').click(function(){
+						
+							alert('click!');
+							$('#clearance').click();
+						
+						});
+					</script> 
 				</div>
 		<div id="event_viewlive">
 			<h2 id="event_type">View Live Anyway</h2>
@@ -204,7 +213,7 @@ div.xls_cell:hover{
 		<div id="event_clearance">
 			<h2 id="event_type">Clearance</h2>
 			<input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance <br>
-			<input type="radio" name="clearance" value="0" id="clearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
+			<input type="radio" name="clearance" value="0" id="noclearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
 		</div>
 
 
