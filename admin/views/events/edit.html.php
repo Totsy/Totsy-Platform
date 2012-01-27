@@ -185,6 +185,15 @@ div.xls_cell:hover{
 					<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
 					<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
 				</div>
+				<div id="event_status_upadte">
+					<h2 id="event_status_upadte">Event Status Update</h2>
+					<input type="radio" name="status_update" value="none" id="status_update" <?php if ($event->status_update == 'none') echo 'checked'; ?> > None <br>
+					<input type="radio" name="status_update" value="stock_added" id="status_update" <?php if ($event->status_update == 'stock_added') echo 'checked'; ?> > Stock Added <br>
+					<input type="radio" name="status_update" value="styles_added" id="status_update" <?php if ($event->status_update == 'styles_added') echo 'checked'; ?> > Styles Added <br>
+					<input type="radio" name="status_update" value="blowout" id="status_update" <?php if ($event->status_update == 'blowout') echo 'checked'; ?> > Blowout <br>
+					<input type="radio" name="status_update" value="charity" id="status_update" <?php if ($event->status_update == 'charity') echo 'checked'; ?> > Charity Eevent <br>
+					<input type="radio" name="status_update" value="sold_out" id="status_update" <?php if ($event->status_update == 'sold_out') echo 'checked'; ?> > Sold Out 
+				</div>
 		<div id="event_viewlive">
 			<h2 id="event_type">View Live Anyway</h2>
 		 (allows direct url access to event even if otherwise disabled)<br>

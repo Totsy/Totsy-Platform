@@ -73,15 +73,37 @@
 			
 				<?php // @TODO: temp POC for event status - will be replaced with actual conditional checks for variables once back-end completed
 						// complete the conditionals….
-					$eventHasStatus = true;
+					if (!empty($event->status_update) && $event->status_update != 'none'){
+						$eventHasStatus = true;
+						$eventStatusCalss = 'status_'.$event->status_update;
+						
+						switch ($event->status_update){
+							case 'stock_added':
+								$eventStatus = "Stock Added";
+							break;
+							case 'styles_added':
+								$eventStatus = "Styles Added";
+							break;
+							case 'blowout':
+								$eventStatus = "Blowout";
+							break;
+							case 'charity':
+								$eventStatus = "Charity Event";
+							break;
+							case 'sold_out':
+								$eventStatus = "Sold Out";
+							break;
+						}
+					}
+					
 					$eventStatus = 'status-sa';
 					$eventStatusClass = "Stock Added";
 				?>
 				
 				<?php
 					if ($eventHasStatus) { ?>
-				<div class="p-container roundy_product_home status status-sa">
-					<em>Stock Added</em>
+				<div class="p-container roundy_product_home status <?php echo $eventStatusCalss; ?>">
+					<em><?php echo $eventStatus; ?></em>
 				<?php
 				} else { ?>
 				<div class="p-container roundy_product_home">
