@@ -1913,10 +1913,14 @@ h2:link .p-container .details strong {
 .status > em {
 	display: block;
 	position: absolute; top:0; right: 0;
-	width:89px; height:89px;
+	width:86px; height:86px;
 	text-indent: -999em;
 }
-.status-sa > em {background: url(../img/ribbon-evstat-sa.png) 0 0 no-repeat;}
+.status_stock_added > em {background: url(../img/ribbon-evstat-sa.png) 0 0 no-repeat;}
+.status_styles_added > em {background: rgba(250,0,0,0.5); text-indent:0; color:#000;}
+.status_blowout > em {background: rgba(0,250,0,0.5); text-indent:0; color:#000;}
+.status_charity > em {background: rgba(0,0,250,0.5); text-indent:0; color:#000;}
+.status_sold_out > em {background: url(../img/ribbon-evstat-so.png) 0 0 no-repeat;}
 
 
 .invite-column {
