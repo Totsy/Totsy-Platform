@@ -1,3 +1,5 @@
+<?php use lithium\storage\Session; ?>
+
 <!-- JS for cart timer. -->
 <script type="text/javascript" src="/js/cart-timer.js"></script>
 <!-- JS for cart timer for individual items. -->
@@ -41,29 +43,6 @@ var discountErrors = new Object();
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
 <script type="text/javascript" src="/js/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <link rel="stylesheet" type="text/css" href="/js/tipsy/src/stylesheets/tipsy.css" />
-
-<?php
-
-use lithium\storage\Session;
-
-//check DNS here :)
-if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
-	$is_mamapedia = true;
-} else {
-	$is_mamapedia = false;
-}
-
-//until DNS is created ;)
-$is_mamapedia = true;
-$img_path_prefix = "";
-
-if($is_mamapedia) {
-	$img_path_prefix = "/img/mamapedia";
-} else {
-	$img_path_prefix = "/img";
-}
-
-?>
 
 <?php  if(!empty($subTotal)): ?>
 <div class="cart-content" id="p-review">

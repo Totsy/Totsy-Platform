@@ -90,26 +90,6 @@ var addressForm = new Object();
     });
    
 </script>
-<?php
-
-//check DNS here :)
-if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
-	$is_mamapedia = true;
-} else {
-	$is_mamapedia = false;
-}
-
-//until DNS is created ;)
-$is_mamapedia = true;
-$img_path_prefix = "";
-
-if($is_mamapedia) {
-	$img_path_prefix = "/img/mamapedia";
-} else {
-	$img_path_prefix = "/img";
-}
-
-?>
 <?php  if(empty($cartEmpty)): ?>
 <div class="cart-content" style="height:700px">
 	<div class="grid_8 cart-header-left">
