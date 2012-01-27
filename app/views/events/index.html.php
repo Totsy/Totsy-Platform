@@ -75,26 +75,22 @@
 						// complete the conditionals….
 					if (!empty($event->status_update) && $event->status_update != 'none'){
 						$eventHasStatus = true;
-						$eventStatusCalss = 'status_';
+						$eventStatusCalss = 'status_'.$event->status_update;
+						
 						switch ($event->status_update){
 							case 'stock_added':
-								$eventStatusCalss .= $event->status_update;
 								$eventStatus = "Stock Added";
 							break;
 							case 'styles_added':
-								$eventStatusCalss .= $event->status_update;
 								$eventStatus = "Styles Added";
 							break;
 							case 'blowout':
-								$eventStatusCalss .= $event->status_update;
 								$eventStatus = "Blowout";
 							break;
 							case 'charity':
-								$eventStatusCalss .= $event->status_update;
 								$eventStatus = "Charity Event";
 							break;
 							case 'sold_out':
-								$eventStatusCalss .= $event->status_update;
 								$eventStatus = "Sold Out";
 							break;
 						}
@@ -106,8 +102,8 @@
 				
 				<?php
 					if ($eventHasStatus) { ?>
-				<div class="p-container roundy_product_home status status-sa">
-					<em>Stock Added</em>
+				<div class="p-container roundy_product_home status <?php echo $eventStatusCalss; ?>">
+					<em><?php echo $eventStatus; ?></em>
 				<?php
 				} else { ?>
 				<div class="p-container roundy_product_home">
