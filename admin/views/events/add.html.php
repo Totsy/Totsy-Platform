@@ -128,6 +128,15 @@ tinyMCE.init({
 		<input type="radio" name="tangible" value="1" id="tangible" checked> Tangible <br>
 		<input type="radio" name="tangible" value="0" id="tangible"> Non Tangible
 	</div>
+	<div id="event_status_update">
+		<h2 id="event_status_upadte">Event Status Update</h2>
+		<input type="radio" name="status_update" value="none" id="status_update"> None <br>
+		<input type="radio" name="status_update" value="stock_added" id="status_update"> Stock Added <br>
+		<input type="radio" name="status_update" value="styles_added" id="status_update"> Styles Added <br>
+		<input type="radio" name="status_update" value="blowout" id="status_update"> Blowout <br>
+		<input type="radio" name="status_update" value="charity" id="status_update"> Charity Eevent <br>
+		<input type="radio" name="status_update" value="sold_out" id="status_update"> Sold Out 
+	</div>
 	<div id="event_viewlive">
 		<h2 id="event_type">View Live Anyway</h2>
 		 (allows direct url access to event even if otherwise disabled)<br>
