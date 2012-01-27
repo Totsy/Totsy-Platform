@@ -180,6 +180,14 @@ class VoidTransaction extends \lithium\console\Command {
 			Logger::debug("Void failed for order id " . $order['order_id']);
 			$message  = "Void failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
+			$datasToSet['error_void_date'] = new MongoDate();
+			$datasToSet['error_void_message'] = $error;
+			#Record Errors in DB
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => $datasToSet),
+				array( 'upsert' => true)
+			);
 			$report['errors'][] = array(
 					'error_message' => $message,
 					'order_id' => $order['order_id'],
