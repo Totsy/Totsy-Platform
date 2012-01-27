@@ -71,9 +71,8 @@
 				<?php $y = 1; ?>
 			<?php endif ?>
 			
-				<?php // @TODO: temp POC for event status - will be replaced with actual conditional checks for variables once back-end completed
-						// complete the conditionals….
-						$eventHasStatus = false;
+				<?php 
+					$eventHasStatus = false;
 					if (!empty($event->status_update) && $event->status_update != 'none'){
 						$eventHasStatus = true;
 						$eventStatusClass = 'status_'.$event->status_update;
@@ -96,7 +95,6 @@
 							break;
 						}
 					}
-					
 				?>
 				
 				<?php
