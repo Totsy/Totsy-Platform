@@ -278,13 +278,13 @@ class UsersController extends BaseController {
 	public function login() {
 
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
-		$rememberHash = '';
-
+		$rememberHash = '';		
 
 		//redirect to the right email if the user is coming from an email
 		//the session writes this variable on the register() method
 		//it writes it THERE because that is the method currently serving our homepage
 		$this->autoLogin();
+		
 		if ($this->request->data) {
 
 			$email = trim(strtolower($this->request->data['email']));
@@ -392,23 +392,21 @@ class UsersController extends BaseController {
 				}
 			}
 		}
-
+				
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
 			if($user) {
-				//redirect mamasource users on prod (in lew of mamasource.totsy.com not having been set up yet)				
-				$userArray = $user->data();
-				$invitedBy = $userArray['invited_by'];
-				
-				if( $invitedBy=="mamasource" && Environment::is('production') ) { 
-					$redirect = "https://mamasource.totsy.com/sales";
-				}
+				//redirect mamasource users on prod (in lew of mamasource.totsy.com not having been set up yet)	
 			
 				if ($user->deactivate) {
 					return;
 				} else if($cookie['user_id'] == $user->_id){
 					Session::write('userLogin', $user->data(), array('name'=>'default'));
+					
+					$userInfo = Session::read('userLogin');
+					$invitedBy = $userInfo['invited_by'];
+							
 					User::log($ipaddress);
 					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
 						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));

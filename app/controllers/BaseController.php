@@ -22,6 +22,7 @@ class BaseController extends \lithium\action\Controller {
 		/* Merge $_classes of parent. */
 		$vars = get_class_vars('\lithium\action\Controller');
 		$this->_classes += $vars['_classes'];
+		$userInfo = Array();
 
 		parent::__construct($config);
 		
@@ -45,10 +46,30 @@ class BaseController extends \lithium\action\Controller {
 		    	    $this->freeShippingEligible($userInfo);
 		    	break;
 			}
+			
+			/*
+			 need to test this code on dev with another env that has the exact same code like an updated kkim.totsy.com. just the switch() above with this else
+			
+			$userInfo = Session::read('userLogin');		
+				
+				if($_SERVER['HTTP_HOST']=="kkim.totsy.com"){
+ 		    		Session::write('layout', 'mamapedia', array('name' => 'default'));
+		    		$img_path_prefix = "/img/mamapedia/";
+		        	$this->set(compact('img_path_prefix'));	
+		    	} else {
+		    		if((isset($userInfo) && $userInfo['invited_by']=="mamasource") && ){ 
+ 		    			header("Location: http://kkim.totsy.com/sales");	
+		    		} else {	 
+		    			Session::write('layout', 'main', array('name' => 'default'));
+		    	    	$img_path_prefix = "/img/";
+		    	    	$this->tenOffFiftyEligible($userInfo);
+		    	    	$this->freeShippingEligible($userInfo);
+		    	    }
+		    	} */
+			
 			$this->_render['layout'] = '/main';
 		}
-		$this->set(compact('img_path_prefix'));		
-	}
+	} 									
 
 	/** 
 		get cart subtotal for price
@@ -88,9 +109,9 @@ class BaseController extends \lithium\action\Controller {
             $this->set(compact('version'));
         }
 
-		$userInfo = Session::read('userLogin');
-				
-		$this->set(compact('userInfo'));
+		$userInfo = Session::read('userLogin');		
+		$this->set(compact('userInfo'));	
+			
 		$cartCount = Cart::itemCount();
 		
 		$cartSubTotal = $this->getCartSubTotal();
