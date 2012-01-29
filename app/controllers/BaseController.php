@@ -58,7 +58,7 @@ class BaseController extends \lithium\action\Controller {
 		        	$this->set(compact('img_path_prefix'));	
 		    	} else {
 		    		if((isset($userInfo) && $userInfo['invited_by']=="mamasource") && ){ 
- 		    			header("Location: http://kkim.totsy.com/sales");	
+ 		    			header("Location: http://kkim.totsy.com");	
 		    		} else {	 
 		    			Session::write('layout', 'main', array('name' => 'default'));
 		    	    	$img_path_prefix = "/img/";
