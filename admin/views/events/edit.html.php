@@ -194,15 +194,18 @@ div.xls_cell:hover{
 					<input type="radio" name="status_update" value="charity" id="status_ch" <?php if ($event->status_update == 'charity') echo 'checked'; ?> > <label for="status_ch">Charity Event</label> <br>
 					<input type="radio" name="status_update" value="sold_out" id="status_so" <?php if ($event->status_update == 'sold_out') echo 'checked'; ?> > <label for="status_so">Sold Out</label>
 					<script>
-						// @TODO: @DG - work in progress, POC - need to wrap up…
-						$(document).ready(function(){
+						// toggle checked status of clearance and blowout
+						$(document).ready(function() {
 						
-							// click toggle clearance and blowout
-							$('#status_bl').click(function(){
+							$('#status_bl').click(function() {
+								$(this).attr('checked','checked');
 								$('#clearance').click();
 							});
-							$('#noclearance').click(function(){
-								$('#status_no').click();
+							
+							$('#noclearance').click(function() {
+								if ($('#status_bl').attr('checked')) {
+									$('#status_no').click();
+								}
 							});
 						});
 					</script> 
