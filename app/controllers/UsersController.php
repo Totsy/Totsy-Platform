@@ -303,7 +303,7 @@ class UsersController extends BaseController {
 		
 		$this->autoLogin();
 		
-		if ($this->request->data || Session::read("userLogin")) {
+		if ($this->request->data || (isset($this->request->params['email']) && isset($this->request->params['pwd'])) {
 			
 			$landing = null;
 			
@@ -318,26 +318,23 @@ class UsersController extends BaseController {
 				$this->request->data['email'] = trim($this->request->data['email']);
 			} 
 			
-			//pull auth fields from session
-			if(Session::read("userLogin")){
+			//pull auth fields from URL
+			if((isset($this->request->query['email']) && isset($this->request->query['pwd'])){
 				$userInfo = Array();
-				$email = trim(strtolower($userInfo['email']));
-				$password = trim($userInfo['password']);
+				$email = trim(strtolower($this->request->params['email']));
+				$password = trim($this->request->params['pwd']);
 			}
 			
 			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
+			
 			//redirect for people coming from emails
 			if ( Session::read("eventFromEmailClick", array("name"=>"default"))) {
 				$redirect = "/sale/".Session::read("eventFromEmailClick", array("name"=>"default"));
 			} else {
 				$redirect = '/sales';
 			}	
-			
-			if (Session::read('layout', array('name'=>'default'))=="mamapedia" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
-				$landing = "http://kkim.totsy.com" . $landing;
-			} 		
-			
+						
 			if ($user->deactivated) {
 				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
 			} else if (strlen($password) > 0) {
@@ -384,7 +381,11 @@ class UsersController extends BaseController {
 						User::cleanSession();
 						/***/
 						
-						//kkim.totsy.com is a place holder for mamasource.totsy.com
+						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy
+						if ((isset($this->request->query['email']) && isset($this->request->query['pwd'] && $this->request->query['invited_by']=="mamasource") && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
+							$landing = "http://kkim.totsy.com/login/?email=".$user->email."&pwd=".$user->password."&invited_by=".$user->invited_by;
+						} 	
+						
 						return $this->redirect($landing);
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
