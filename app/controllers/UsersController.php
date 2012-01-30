@@ -297,9 +297,11 @@ class UsersController extends BaseController {
 		//for now just check if there's a userLogin key in the session
 		//next step will be to if this session exists in the session collection
 		
+		$userInfo = Session::check('userLogin');
+		
 		$this->autoLogin();
 		
-		if ($this->request->data || Session::read("userLogin")) {
+		if ( $this->request->data || (isset($this->request->query['email']) && isset($this->request->query['pwd'])) ) {
 			
 			$landing = null;
 			
@@ -315,14 +317,11 @@ class UsersController extends BaseController {
 				$this->request->data['email'] = trim($this->request->data['email']);
 			} 
 			
-			if (Session::read("userLogin")) {				
-				$userInfo = Session::read("userLogin");
-				
-				if($userInfo['invited_by']=="mamasource") {		
-					$email = $userInfo['email'];
-					$password = $userInfo["password"];					
-				}
-			}			
+			if (isset($this->request->query['email']) && isset($this->request->query['pwd'])) 	{					
+				$email = $this->request->query['email'];
+				$password = $this->request->query['pwd'];					
+			}
+						
 			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
 					

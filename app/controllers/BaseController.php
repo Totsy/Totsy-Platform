@@ -117,6 +117,11 @@ class BaseController extends \lithium\action\Controller {
 		$cartSubTotal = $this->getCartSubTotal();
 		
         User::setupCookie();
+        
+        if( $userInfo['invited_by']=="mamasource" ){
+        	$this->redirect("http://kkim.totsy.com/login/?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
+        }
+        
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
 
