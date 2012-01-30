@@ -450,15 +450,9 @@ class UsersController extends BaseController {
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));	
 						
-					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {	
-						print "this->request->url:". $this->request->url;
-						exit(); 
-											
+					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {	 
 						$this->redirect($this->request->url);
 					} else {
-						print "redirect var:". $this->request->url;
-						exit();
-						
 						$this->redirect($redirect);
 					}
 				} else {
