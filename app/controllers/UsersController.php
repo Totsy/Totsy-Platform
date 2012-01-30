@@ -103,7 +103,7 @@ class UsersController extends BaseController {
 		
 		if ($this->request->data && $user->validates() ) {
 			$email = $data['email'];
-			$data['password'] = $this->request->data['password'];
+			$data['password'] = sha1($this->request->data['password']);
 			$data['created_date'] = new MongoDate();
 			$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
 			$data['invited_by'] = $invite_code;
@@ -292,6 +292,15 @@ class UsersController extends BaseController {
 
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';		
+		
+		//check for the email and the session_id in the URL, if mamasource
+		//check if user is mamasource user
+		//session_id=1909sacdsacv7897897986798gxjilk, read from cookie and compare to PHP session_id()
+		
+		/*
+		if(Session::read("PHPSESSID", array("name"=>"cookie"))==session_id() && Session::read("layout", array("name"=>"default"))=="mamapedia"){
+			return $this->redirect("/sales", array("exit"=>"true"));
+		} */
 
 		//redirect to the right email if the user is coming from an email
 		//the session writes this variable on the register() method
@@ -418,7 +427,7 @@ class UsersController extends BaseController {
 					
 					$userInfo = Session::read('userLogin');
 					$invitedBy = $userInfo['invited_by'];
-							
+												
 					User::log($ipaddress);
 										
 					if(array_key_exists('redirect', $cookie) && $cookie['redirect'] ) {
