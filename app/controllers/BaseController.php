@@ -47,7 +47,7 @@ class BaseController extends \lithium\action\Controller {
 		    	    $this->freeShippingEligible($userInfo);
 		    	break;
 			}
-			*/
+			*
 			/* need to test this code on dev with another env that has the exact same code like an updated kkim.totsy.com. just the switch() above with this else */
 			
 			$userInfo = Session::read('userLogin');		

@@ -299,7 +299,7 @@ class UsersController extends BaseController {
 		
 		$this->autoLogin();
 		
-		if ($this->request->data || (isset($this->request->query['email']) && isset($this->request->query['pwd']))) {
+		if ($this->request->data || Session::read("userLogin")) {
 			
 			$landing = null;
 			
@@ -313,14 +313,6 @@ class UsersController extends BaseController {
 				$this->request->data['password'] = trim($this->request->data['password']);
 				$this->request->data['email'] = trim($this->request->data['email']);
 			} 
-			
-			//pull auth fields from URL
-			if(Session::read("userLogin")){
-				$userInfo = Array();
-				$userInfo = Session::read("userLogin");
-				$email = trim(strtolower($userInfo['email']));
-				$password = trim($userInfo['password']);
-			}
 			
 			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
@@ -381,7 +373,7 @@ class UsersController extends BaseController {
 						
 						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy
 						if ($user->invited_by=="mamasource" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
-							$landing = "http://kkim.totsy.com/login";
+							$landing = "http://kkim.totsy.com". $landing;
 						} 	
 						
 						return $this->redirect($landing);
@@ -409,6 +401,13 @@ class UsersController extends BaseController {
 	protected function autoLogin() {	
 		
 		$redirect = '/sales';
+		
+		//redirect users who have a session to kkim/mamasource
+		if (Session::read("userLogin") && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
+			$userInfo = Session::read("userLogin");
+			$this->redirect("http://kkim.totsy.com".$redirect, array("exit"=>true));
+		}
+		
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 
@@ -427,12 +426,12 @@ class UsersController extends BaseController {
 					$this->redirect('/register/facebook');
 				}
 			}
-		}			
-								
+		}
+		
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
-			if($user) {
+			if($user || $userInfo) {
 				if ($user->deactivate) {
 					return;
 				} else if($cookie['user_id'] == $user->_id){
@@ -447,7 +446,7 @@ class UsersController extends BaseController {
 						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
 						unset($cookie['redirect']);
 					}
-					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));	
+					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));						
 						
 					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {	 
 						$this->redirect($this->request->url);

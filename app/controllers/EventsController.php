@@ -174,9 +174,7 @@ class EventsController extends BaseController {
 	if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_index';
-		} else {
-		
-		}
+		} 
 	
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
 	}
