@@ -301,13 +301,12 @@ class UsersController extends BaseController {
 		
 		$this->autoLogin();
 		
-		if ( $this->request->data || (isset($this->request->query['email']) && isset($this->request->query['pwd'])) ) {
+		if ( $this->request->data || ($this->request->query['email'] && $this->request->query['pwd']) ) {
 						
 			$landing = null;
 			
 			$email = "";
 			$password = "";
-			$host = "";
 			
 			//pull auth fields from form
 			if($this->request->data){
@@ -317,7 +316,7 @@ class UsersController extends BaseController {
 				$this->request->data['email'] = trim($this->request->data['email']);
 			} 
 			
-			if (isset($this->request->query['email']) && isset($this->request->query['pwd'])) 	{					
+			if ($this->request->query['email'] && $this->request->query['pwd']) 	{					
 				$email = $this->request->query['email'];
 				$password = $this->request->query['pwd'];					
 			}
