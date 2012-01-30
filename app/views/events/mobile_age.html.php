@@ -1,4 +1,4 @@
-<?php if(!strcmp($_SERVER['REQUEST_URI'],'/age/all') == 0) { ?>
+<?php if(strcmp($_SERVER['REQUEST_URI'],'/age/all') == 0) { ?>
 <h3 style="font-size:14px;">Shop by Age</h3>
 <hr />
 <?php } else { ?>
