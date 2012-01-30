@@ -199,14 +199,10 @@ div.xls_cell:hover{
 						
 							// click toggle clearance and blowout
 							$('#status_bl').click(function(){
-								//alert('clearance!');
 								$('#clearance').click();
-								//$('label[for="clearance"]').css('background-color','yellow').delay(800).css('background-color','');
 							});
 							$('#noclearance').click(function(){
-								//alert('kill blowout');
 								$('#status_no').click();
-								//$('label[for="status_no"]').css('background-color','yellow').delay(800).css('background-color','');
 							});
 						});
 					</script> 
