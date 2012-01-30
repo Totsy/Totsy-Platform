@@ -55,10 +55,10 @@
 		<?php foreach ($openEvents as $event): ?>
 			<!-- Start product item -->
 			<?php if ($y == 0): ?>
-				<div class="grid_6">
+				<div class="event grid_6">
 			<?php endif ?>
 			<?php if ($y == 1): ?>
-				<div class="grid_6">
+				<div class="event grid_6">
 			<?php endif ?>
 	
 			<?php if (($y == 2) || ($y == 3)): ?>
@@ -99,13 +99,13 @@
 				
 				<?php
 					if (!empty($eventHasStatus)) { ?>
-				<div class="p-container roundy_product_home status <?php echo $eventStatusClass; ?>">
-					<em><?php echo $eventStatus; ?></em>
-				<?php
-				} else { ?>
-				<div class="p-container roundy_product_home">
-				<?php 
-				}
+						<div class="p-container roundy_product_home status <?php echo $eventStatusClass; ?>">
+							<em><?php echo $eventStatus; ?></em>
+					<?php
+					} else { ?>
+						<div class="p-container roundy_product_home">
+					<?php 
+					}
 				?>
 				
 						<!-- this is where the items count was -->
