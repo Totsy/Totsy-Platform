@@ -129,7 +129,8 @@ class Order extends Base {
 				$transaction = $order['authKey'];
 			}
 			$auth = $payments::void('default', $transaction, array(
-				'processor' => isset($order['processor']) ? $order['processor'] : null
+				'processor' => isset($order['processor']) ? $order['processor'] : null,
+				'orderID' => $order['order_id']
 			));
 
 			if ($auth->success()) {
@@ -193,7 +194,8 @@ class Order extends Base {
 					$order['authKey'],
 					floor($order['total'] * 100) / 100,
 					array(
-						'processor' => isset($order['processor']) ? $order['processor'] : null
+						'processor' => isset($order['processor']) ? $order['processor'] : null,
+						'orderID' => $order['order_id']
 					)
 				);
 			} else {
@@ -203,13 +205,14 @@ class Order extends Base {
 						$order['auth'],
 						floor($order['total'] * 100) / 100,
 						array(
-							'processor' => isset($order['processor']) ? $order['processor'] : null
+							'processor' => isset($order['processor']) ? $order['processor'] : null,
+							'orderID' => $order['order_id']
 						)
 					);
 				} else {
 					$cybersource = new CyberSource($payments::config('default'));
 					$profile = $cybersource->profile($order['cyberSourceProfileId']);
-					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile);
+					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile, array('orderID' => $order['order_id']));
 				}
 			}
 			if ($auth->success()) {

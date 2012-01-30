@@ -156,10 +156,11 @@ class ReCaptureOld extends \lithium\console\Command {
 													'email'     => $userInfos['email']
 		))));
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', ($order['total'] + $this->adjustment), $card);
+		$auth = Processor::authorize('default', ($order['total'] + $this->adjustment), $card, array('orderID' => $order['order_id']));
 		if ($auth->success()) {
 			Logger::debug('Authorize Complete: ' . $auth->key);
 			$customer = Processor::create('default', 'customer', array(
+				'id' => $order['order_id'],
 				'firstName' => $userInfos['firstname'],
 				'lastName' => $userInfos['lastname'],
 				'email' => $userInfos['email'],
@@ -214,7 +215,8 @@ class ReCaptureOld extends \lithium\console\Command {
 				$authKey,
 				floor($order['total'] * 100) / 100,
 				array(
-					'processor' => isset($order['processor']) ? $order['processor'] : null
+					'processor' => isset($order['processor']) ? $order['processor'] : null,
+					'orderID' => $order['order_id']
 				)
 		);
 		if ($auth_capture->success()) {
