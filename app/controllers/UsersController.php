@@ -293,10 +293,6 @@ class UsersController extends BaseController {
 		$message = $resetAuth = $legacyAuth = $nativeAuth = false;
 		$rememberHash = '';		
 		
-		//check for the email and the session_id in the URL, if mamasource
-		//check if user is mamasource user
-		//session_id=1909sacdsacv7897897986798gxjilk, read from cookie and compare to PHP session_id()
-		
 		//if there is a mamapedia session var, then this user has already been authenticated
 		//for now just check if there's a userLogin key in the session
 		//next step will be to if this session exists in the session collection
@@ -319,15 +315,16 @@ class UsersController extends BaseController {
 			} 
 			
 			//pull auth fields from URL
-			if(isset($this->request->query['email']) && isset($this->request->query['pwd'])){
+			if(Session::read("userLogin")){
 				$userInfo = Array();
-				$email = trim(strtolower($this->request->params['email']));
-				$password = trim($this->request->params['pwd']);
+				$userInfo = Session::read("userLogin");
+				$email = trim(strtolower($userInfo['email']));
+				$password = trim($userInfo['password']);
 			}
 			
 			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
-			
+					
 			//redirect for people coming from emails
 			if ( Session::read("eventFromEmailClick", array("name"=>"default"))) {
 				$redirect = "/sale/".Session::read("eventFromEmailClick", array("name"=>"default"));
@@ -338,7 +335,7 @@ class UsersController extends BaseController {
 			if ($user->deactivated) {
 				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
 			} else if (strlen($password) > 0) {
-				if($user || Session::read("userLogin")) {
+				if($user) {
 								
 					if (!empty($user->reset_token)) {
 						if (strlen($user->reset_token) > 1) {
@@ -353,6 +350,7 @@ class UsersController extends BaseController {
 					}
 					if ($resetAuth || $legacyAuth || $nativeAuth) {
 						$sessionWrite = $this->writeSession($user->data());
+						
 						$ipaddress = $this->request->env('REMOTE_ADDR');
 						User::log($ipaddress);
 						$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
@@ -382,8 +380,8 @@ class UsersController extends BaseController {
 						/***/
 						
 						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy
-						if (((isset($this->request->query['email']) && isset($this->request->query['pwd']) && $this->request->query['invited_by']=="mamasource")) && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
-							$landing = "http://kkim.totsy.com/login/?email=".$user->email."&pwd=".$user->password."&invited_by=".$user->invited_by;
+						if ($user->invited_by=="mamasource" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
+							$landing = "http://kkim.totsy.com/login";
 						} 	
 						
 						return $this->redirect($landing);
