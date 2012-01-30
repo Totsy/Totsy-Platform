@@ -56,17 +56,16 @@ class BaseController extends \lithium\action\Controller {
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
 		        $this->set(compact('img_path_prefix'));	
-		    } else {
+		    } else {/*
 		        if((isset($userInfo) && $userInfo['invited_by']=="mamasource")) {		    				
 			    	Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        	$img_path_prefix = "/img/mamapedia/";
 		        	$this->set(compact('img_path_prefix'));	
-		        } else {	 
+		        } else {*/	 
 		        	Session::write('layout', 'main', array('name' => 'default'));
 		        	$img_path_prefix = "/img/";
 		        	$this->tenOffFiftyEligible($userInfo);
 		        	$this->freeShippingEligible($userInfo);
-		        } 
 		    } 	
 			$this->_render['layout'] = '/main';
 		}
@@ -110,8 +109,6 @@ class BaseController extends \lithium\action\Controller {
             $this->set(compact('version'));
         }
         
-        print session_id();
-
 		$userInfo = Session::read('userLogin');		
 		$this->set(compact('userInfo'));	
 			
