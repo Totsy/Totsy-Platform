@@ -297,6 +297,8 @@ class UsersController extends BaseController {
 		//for now just check if there's a userLogin key in the session
 		//next step will be to if this session exists in the session collection
 		
+		print_r(Session::read("userLogin"));
+		
 		$this->autoLogin();
 		
 		if ($this->request->data || Session::read("userLogin")) {
@@ -371,11 +373,7 @@ class UsersController extends BaseController {
 						User::cleanSession();
 						/***/
 						
-						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy
-						if ($user->invited_by=="mamasource" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
-							$landing = "http://kkim.totsy.com". $landing;
-						} 	
-						
+						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy						
 						return $this->redirect($landing);
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';

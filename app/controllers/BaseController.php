@@ -52,23 +52,22 @@ class BaseController extends \lithium\action\Controller {
 			
 			$userInfo = Session::read('userLogin');		
 				
-			if($_SERVER['HTTP_HOST']=="kkim.totsy.com"){
+			if($_SERVER['HTTP_HOST']=="kkim.totsy.com") {
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
 		        $this->set(compact('img_path_prefix'));	
 		    } else {
-		        if((isset($userInfo) && $userInfo['invited_by']=="mamasource")) {		    				
+		        /*if((isset($userInfo) && $userInfo['invited_by']=="mamasource")) {		    				
 			    	Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        	$img_path_prefix = "/img/mamapedia/";
 		        	$this->set(compact('img_path_prefix'));	
-		        } else {	 
+		        } else {*/	 
 		        	Session::write('layout', 'main', array('name' => 'default'));
 		        	$img_path_prefix = "/img/";
 		        	$this->tenOffFiftyEligible($userInfo);
 		        	$this->freeShippingEligible($userInfo);
-		        } 
-		    } 
-		    	
+		        //} 
+		    } 	
 			$this->_render['layout'] = '/main';
 		}
 	} 									
