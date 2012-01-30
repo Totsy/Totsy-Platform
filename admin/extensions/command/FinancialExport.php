@@ -847,7 +847,8 @@ class FinancialExport extends Base  {
             );
             $obj = $this;
 
-            $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
+           //$To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
+            $To = "lhanson@totsy.com";
             $headers = "From: reports@totsy.com";
             echo "Exporting Files \n\r";
             $this->log("Exporting to Accounting Server...");
@@ -880,7 +881,9 @@ class FinancialExport extends Base  {
                         $this->log("Fail: File upload error.");
                 }
             }
+            
             $subject = "Accounting Auto Reporting Job - Report";
+
 
             if (!$reporting['success']) {
                 $message = "Automating reporting results - FAILED: \r\n";
