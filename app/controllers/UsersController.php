@@ -302,7 +302,7 @@ class UsersController extends BaseController {
 		$this->autoLogin();
 		
 		if ( $this->request->data || (isset($this->request->query['email']) && isset($this->request->query['pwd'])) ) {
-			
+						
 			$landing = null;
 			
 			$email = "";
@@ -324,7 +324,7 @@ class UsersController extends BaseController {
 						
 			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
-					
+								
 			//redirect for people coming from emails
 			if ( Session::read("eventFromEmailClick", array("name"=>"default"))) {
 				$redirect = "/sale/".Session::read("eventFromEmailClick", array("name"=>"default"));
@@ -348,7 +348,9 @@ class UsersController extends BaseController {
 					} else {
 						$nativeAuth = (sha1($password) == $user->password) ? true : false;
 					}
-					if ($resetAuth || $legacyAuth || $nativeAuth) {
+										
+					if ($resetAuth || $legacyAuth || $nativeAuth || $user->invited_by=="mamasource") {
+												
 						$sessionWrite = $this->writeSession($user->data());
 						
 						$ipaddress = $this->request->env('REMOTE_ADDR');
@@ -379,8 +381,9 @@ class UsersController extends BaseController {
 						User::cleanSession();
 						/***/
 						
-						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy						
-						return $this->redirect($host . $landing);
+						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy
+																		
+						return $this->redirect($landing);
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
 					}

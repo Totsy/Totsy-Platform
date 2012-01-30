@@ -52,7 +52,7 @@ class BaseController extends \lithium\action\Controller {
 			
 			$userInfo = Session::read('userLogin');	
 							
-			if($_SERVER['HTTP_HOST']=="kkim.totsy.com") {				
+			if ( $_SERVER['HTTP_HOST']=="evan.totsy.com" ) {				
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
 		        $this->set(compact('img_path_prefix'));	
@@ -119,8 +119,8 @@ class BaseController extends \lithium\action\Controller {
         User::setupCookie();
         
         if( $userInfo['invited_by']=="mamasource" ){
-        	$this->redirect("http://kkim.totsy.com/login/?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
-        }
+        	$this->redirect("http://kkim.totsy.com/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
+        } 
         
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
