@@ -77,6 +77,7 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		);
 		
 		$this->_VisaCustomer = Processor::create('test', 'customer', array(
+			'id' => 'ORDERID_TEST',
 			'firstName' => 'TomTest',
 			'lastName' => 'DevTest',
 			'email' => 'devtest@totsy.com',
@@ -99,6 +100,7 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		$this->_VisaCustomerId = $resultVisa->response->paySubscriptionCreateReply->subscriptionID;
 		
 		$this->_AmexCustomer = Processor::create('test', 'customer', array(
+			'id' => 'ORDERID_TEST',
 			'firstName' => 'TomTest',
 			'lastName' => 'DevTest',
 			'email' => 'devtest@totsy.com',
@@ -121,6 +123,7 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		$this->_AmexCustomerId = $resultAmex->response->paySubscriptionCreateReply->subscriptionID;
 	
 		$this->_MasterCardCustomer = Processor::create('test', 'customer', array(
+			'id' => 'ORDERID_TEST',
 			'firstName' => 'TomTest',
 			'lastName' => 'DevTest',
 			'email' => 'devtest@totsy.com',
