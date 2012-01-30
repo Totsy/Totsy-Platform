@@ -112,7 +112,9 @@ class ReCaptureOld extends \lithium\console\Command {
 						}
 					}
 					if(!empty($authKeyAndReport['authKey']) && empty($this->onlyReauth)) {
-						$reportCapture = $this->capture($authKeyAndReport['authKey'], $order);
+						#Get Last Version of the order
+						$order = $ordersCollection->findOne($conditions);
+						$reportCapture = $this->capture($order);
 						if(!empty($reportCapture)) {
 							$report[$reportCounter] = $reportCapture;
 							$reportCounter++;
@@ -176,16 +178,14 @@ class ReCaptureOld extends \lithium\console\Command {
 				)), array( 'upsert' => true)
 			);
 			$authKey = $auth->key;
-			if(!empty($this->onlyReauth)) {
-				$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$set' => array('authKey' => $auth->key,
-											  'auth' => $auth->export(),
-											  'authTotal' => $order['total'],
-											  'processor' => $auth->adapter
-						)), array( 'upsert' => true)
-				);
-			}
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => array('authKey' => $auth->key,
+									  'auth' => $auth->export(),
+									  'authTotal' => $order['total'],
+									  'processor' => $auth->adapter
+				)), array( 'upsert' => true)
+			);
 		} else {
 			#Record errors in DB
 			$error = implode('; ', $auth->errors);
@@ -206,13 +206,13 @@ class ReCaptureOld extends \lithium\console\Command {
 		return compact('authKey', 'reportAuthorize');
 	}
 	
-	public function capture($authKey = null, $order = null) {
+	public function capture($order = null) {
 		Logger::debug('Capture');
 		$ordersCollection = Order::Collection();
 		$report = null;
 		$auth_capture = Processor::capture(
 				'default',
-				$authKey,
+				$order['authKey'],
 				floor($order['total'] * 100) / 100,
 				array(
 					'processor' => isset($order['processor']) ? $order['processor'] : null,
@@ -241,7 +241,7 @@ class ReCaptureOld extends \lithium\console\Command {
 			$report[] = 'capture_succeeded';
 			$report[] = '';
 			$report[] = $order['order_id'];
-			$report[] = $authKey;
+			$report[] = $order['authKey'];
 			$report[] = $order['total'];
 			Logger::debug('Order Document Updated!');
 		} else {
