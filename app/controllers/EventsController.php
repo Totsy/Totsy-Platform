@@ -12,7 +12,7 @@ use app\models\Affiliate;
 
 
 class EventsController extends BaseController {
-
+// if you change this here also remember to change it in mobile and the app (it's hard coded)
 	private $_mapCategories = array (
 		'category' =>  array(
 			'all' => "All",
@@ -77,7 +77,7 @@ class EventsController extends BaseController {
 				$openEvents[$i]['eventItems'][] = $eachitem;
 			}
 		}
-		
+		//check if mobile or not
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_category';
