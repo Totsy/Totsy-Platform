@@ -151,10 +151,10 @@ class UsersController extends BaseController {
 				$mailTemplate = "";
 				
 				//pick from sailthru templates
-				if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
+				if (Session::read("layout", array("name"=>"default"))!!=="mamapedia") {
 					$mailTemplate = 'Welcome_Free_Shipping';	
 				} else {
-					$mailTemplate = 'Welcome_Free_Shipping';	
+					$mailTemplate = 'Welcome_Mamasource';	
 				}
 								
 				$mailer::send($mailTemplate, $user->email);
@@ -242,7 +242,7 @@ class UsersController extends BaseController {
 						if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
 							$mailTemplate = 'Welcome_Free_Shipping';
 						} else {
-							$mailTemplate = 'Welcome_Free_Shipping';
+							$mailTemplate = 'Welcome_Mamasource';
 						}
 							$params = array();
 						
@@ -417,12 +417,13 @@ class UsersController extends BaseController {
 		}			
 		
 		//if there is a mamapedia session var, then this user has already been authenticated
-		if (Session::read('layout', array('name'=>'default'))=="mamapedia" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
-						$host = "kkim.totsy.com";
-					} else {
-						$host = $_SERVER['HTTP_HOST'];
-					}		
-				
+		//for now just check if there's a userLogin key in the session
+		//next step will be to if this session exists in the session collection
+		if (Session::read("userLogin") && Session::read('layout', array('name'=>'default'))=="mamapedia" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
+			header("Location: kkim.totsy.com/sales");
+			exit();
+		} 
+						
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
@@ -443,10 +444,10 @@ class UsersController extends BaseController {
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));	
 						
-					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {
-						$this->redirect($host . $this->request->url);
+					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {							
+						$this->redirect($this->request->url);
 					} else {
-						$this->redirect($host . $redirect);
+						$this->redirect($redirect);
 					}
 				} else {
 					$cookie['autoLoginHash'] = null;
