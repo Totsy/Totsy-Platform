@@ -195,11 +195,19 @@ div.xls_cell:hover{
 					<input type="radio" name="status_update" value="sold_out" id="status_so" <?php if ($event->status_update == 'sold_out') echo 'checked'; ?> > <label for="status_so">Sold Out</label>
 					<script>
 						// @TODO: @DG - work in progress, POC - need to wrap up…
-						$('#status_bl').click(function(){
+						$(document).ready(function(){
 						
-							alert('click!');
-							$('#clearance').click();
-						
+							// click toggle clearance and blowout
+							$('#status_bl').click(function(){
+								//alert('clearance!');
+								$('#clearance').click();
+								//$('label[for="clearance"]').css('background-color','yellow').delay(800).css('background-color','');
+							});
+							$('#noclearance').click(function(){
+								//alert('kill blowout');
+								$('#status_no').click();
+								//$('label[for="status_no"]').css('background-color','yellow').delay(800).css('background-color','');
+							});
 						});
 					</script> 
 				</div>
@@ -212,8 +220,8 @@ div.xls_cell:hover{
 
 		<div id="event_clearance">
 			<h2 id="event_type">Clearance</h2>
-			<input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance <br>
-			<input type="radio" name="clearance" value="0" id="noclearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
+			<label for="clearance"><input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance</label> <br>
+			<label for="noclearance"><input type="radio" name="clearance" value="0" id="noclearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance</label>
 		</div>
 
 
