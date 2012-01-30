@@ -297,8 +297,6 @@ class UsersController extends BaseController {
 		//for now just check if there's a userLogin key in the session
 		//next step will be to if this session exists in the session collection
 		
-		print_r(Session::read("userLogin"));
-		
 		$this->autoLogin();
 		
 		if ($this->request->data || Session::read("userLogin")) {
@@ -315,6 +313,18 @@ class UsersController extends BaseController {
 				$this->request->data['password'] = trim($this->request->data['password']);
 				$this->request->data['email'] = trim($this->request->data['email']);
 			} 
+			
+			if (Session::read("userLogin")) {				
+				$userInfo = Session::read("userLogin");
+				
+				if($userInfo['invited_by']=="mamasource") {		
+					$email = $userInfo['email'];
+					$password = $userInfo["password"];					
+				}
+				$host = "http://kkim.totsy.com";	
+			} else {
+				$host = "http://evan.totsy.com";
+			}
 			
 			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
@@ -374,7 +384,7 @@ class UsersController extends BaseController {
 						/***/
 						
 						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy						
-						return $this->redirect($landing);
+						return $this->redirect($host . $landing);
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
 					}
@@ -403,7 +413,7 @@ class UsersController extends BaseController {
 		//redirect users who have a session to kkim/mamasource
 		if (Session::read("userLogin") && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
 			$userInfo = Session::read("userLogin");
-			$this->redirect("http://kkim.totsy.com".$redirect, array("exit"=>true));
+			$this->redirect("http://kkim.totsy.com/login", array("exit"=>true));
 		}
 		
 		$ipaddress = $this->request->env('REMOTE_ADDR');

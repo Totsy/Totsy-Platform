@@ -50,9 +50,14 @@ class BaseController extends \lithium\action\Controller {
 			*
 			/* need to test this code on dev with another env that has the exact same code like an updated kkim.totsy.com. just the switch() above with this else */
 			
-			$userInfo = Session::read('userLogin');		
+			$userInfo = Session::read('userLogin');	
 				
 			if($_SERVER['HTTP_HOST']=="kkim.totsy.com") {
+				
+				if(Session::read("userLogin")){
+					print_r(Session::read("userLogin"));	
+				}
+				
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
 		        $this->set(compact('img_path_prefix'));	
