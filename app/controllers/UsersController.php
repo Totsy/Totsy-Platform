@@ -303,7 +303,7 @@ class UsersController extends BaseController {
 		
 		$this->autoLogin();
 		
-		if ($this->request->data || (isset($this->request->params['email']) && isset($this->request->params['pwd'])) {
+		if ($this->request->data || (isset($this->request->query['email']) && isset($this->request->query['pwd']))) {
 			
 			$landing = null;
 			
@@ -319,7 +319,7 @@ class UsersController extends BaseController {
 			} 
 			
 			//pull auth fields from URL
-			if((isset($this->request->query['email']) && isset($this->request->query['pwd'])){
+			if(isset($this->request->query['email']) && isset($this->request->query['pwd'])){
 				$userInfo = Array();
 				$email = trim(strtolower($this->request->params['email']));
 				$password = trim($this->request->params['pwd']);
@@ -382,7 +382,7 @@ class UsersController extends BaseController {
 						/***/
 						
 						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy
-						if ((isset($this->request->query['email']) && isset($this->request->query['pwd'] && $this->request->query['invited_by']=="mamasource") && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
+						if (((isset($this->request->query['email']) && isset($this->request->query['pwd']) && $this->request->query['invited_by']=="mamasource")) && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
 							$landing = "http://kkim.totsy.com/login/?email=".$user->email."&pwd=".$user->password."&invited_by=".$user->invited_by;
 						} 	
 						
