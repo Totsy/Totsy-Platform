@@ -6,7 +6,6 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy</title>
-	
 	<meta name="description"
 	content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<meta id="view-lock" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -41,6 +40,11 @@
 </script>
 </head>
 <body>
+<script>
+if (!navigator.cookieEnabled) { 
+	document.write("<div style='margin:10px 0px; background:#f8f57d; padding:10px; border:4px solid #333; text-align:center;'>You do not have cookies enabled. <br />Please enable to continue.</div>");
+}
+</script>
 <div id="fb-root"></div>
 <div class="nav_head"></div>
 	<div class="mobile_ui">
@@ -95,5 +99,3 @@ function fblogin() {
 </script>
 </body>
 </html>
-
-
