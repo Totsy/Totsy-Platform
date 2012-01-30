@@ -297,36 +297,52 @@ class UsersController extends BaseController {
 		//check if user is mamasource user
 		//session_id=1909sacdsacv7897897986798gxjilk, read from cookie and compare to PHP session_id()
 		
-		/*
-		if(Session::read("PHPSESSID", array("name"=>"cookie"))==session_id() && Session::read("layout", array("name"=>"default"))=="mamapedia"){
-			return $this->redirect("/sales", array("exit"=>"true"));
-		} */
-
-		//redirect to the right email if the user is coming from an email
-		//the session writes this variable on the register() method
-		//it writes it THERE because that is the method currently serving our homepage
+		//if there is a mamapedia session var, then this user has already been authenticated
+		//for now just check if there's a userLogin key in the session
+		//next step will be to if this session exists in the session collection
+		
 		$this->autoLogin();
 		
-		if ($this->request->data) {
-
-			$email = trim(strtolower($this->request->data['email']));
-			$password = trim($this->request->data['password']);
-			$this->request->data['password'] = trim($this->request->data['password']);
-			$this->request->data['email'] = trim($this->request->data['email']);
-			//Grab User Record
+		if ($this->request->data || Session::read("userLogin")) {
+			
+			$landing = null;
+			
+			$email = "";
+			$password = "";
+			
+			//pull auth fields from form
+			if($this->request->data){
+				$email = trim(strtolower($this->request->data['email']));
+				$password = trim($this->request->data['password']);
+				$this->request->data['password'] = trim($this->request->data['password']);
+				$this->request->data['email'] = trim($this->request->data['email']);
+			} 
+			
+			//pull auth fields from session
+			if(Session::read("userLogin")){
+				$userInfo = Array();
+				$email = trim(strtolower($userInfo['email']));
+				$password = trim($userInfo['password']);
+			}
+			
+			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
 			//redirect for people coming from emails
 			if ( Session::read("eventFromEmailClick", array("name"=>"default"))) {
-				//$redirect = "/sale/schoolbags-for-kids";
 				$redirect = "/sale/".Session::read("eventFromEmailClick", array("name"=>"default"));
 			} else {
 				$redirect = '/sales';
-			}			
+			}	
+			
+			if (Session::read('layout', array('name'=>'default'))=="mamapedia" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
+				$landing = "http://kkim.totsy.com" . $landing;
+			} 		
 			
 			if ($user->deactivated) {
 				$message = '<div class="error_flash">Your account has been deactivated.  Please contact Customer Service at 888-247-9444 to reactivate your account</div>';
 			} else if (strlen($password) > 0) {
-				if($user){
+				if($user || Session::read("userLogin")) {
+								
 					if (!empty($user->reset_token)) {
 						if (strlen($user->reset_token) > 1) {
 							$resetAuth = (sha1($password) == $user->reset_token) ? true : false;
@@ -350,7 +366,6 @@ class UsersController extends BaseController {
 							unset($cookie['redirect']);
 						}
 
-						$landing = null;
 						if (Session::check('landing')){
 							$landing = Session::read('landing');
 							Session::delete('landing',array('name'=>'default'));
@@ -368,7 +383,8 @@ class UsersController extends BaseController {
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
 						/***/
-
+						
+						//kkim.totsy.com is a place holder for mamasource.totsy.com
 						return $this->redirect($landing);
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
@@ -379,8 +395,6 @@ class UsersController extends BaseController {
 			} else {
 				$message = '<div class="error_flash">Login Failed - Your Password Is Blank</div>';
 			}
-
-
 		}
 		//detect mobile and make the view switch
 		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
@@ -415,19 +429,7 @@ class UsersController extends BaseController {
 				}
 			}
 		}			
-		
-		//if there is a mamapedia session var, then this user has already been authenticated
-		//for now just check if there's a userLogin key in the session
-		//next step will be to if this session exists in the session collection
-		if (Session::read("userLogin") && Session::read('layout', array('name'=>'default'))=="mamapedia" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
-			
-			print_r(Session::read("userLogin"));
-			exit();
-		
-			header("Location: http://kkim.totsy.com/sales");
-			exit();
-		} 
-						
+								
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
@@ -448,9 +450,15 @@ class UsersController extends BaseController {
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));	
 						
-					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {							
+					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {	
+						print "this->request->url:". $this->request->url;
+						exit(); 
+											
 						$this->redirect($this->request->url);
 					} else {
+						print "redirect var:". $this->request->url;
+						exit();
+						
 						$this->redirect($redirect);
 					}
 				} else {
