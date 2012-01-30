@@ -31,6 +31,7 @@ class BaseController extends \lithium\action\Controller {
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
 		} else {
+		/*
 			switch($_SERVER['HTTP_HOST']) {
 		    	case "kkim.totsy.com":
 		    	case "evan.totsy.com": 
@@ -46,30 +47,29 @@ class BaseController extends \lithium\action\Controller {
 		    	    $this->freeShippingEligible($userInfo);
 		    	break;
 			}
-
+			*/
 			/* need to test this code on dev with another env that has the exact same code like an updated kkim.totsy.com. just the switch() above with this else */
-			/*
+			
 			$userInfo = Session::read('userLogin');		
 				
-				if($_SERVER['HTTP_HOST']=="kkim.totsy.com"){
- 		    		Session::write('layout', 'mamapedia', array('name' => 'default'));
-		    		$img_path_prefix = "/img/mamapedia/";
+			if($_SERVER['HTTP_HOST']=="kkim.totsy.com"){
+ 		        Session::write('layout', 'mamapedia', array('name' => 'default'));
+		        $img_path_prefix = "/img/mamapedia/";
+		        $this->set(compact('img_path_prefix'));	
+		    } else {
+		        if((isset($userInfo) && $userInfo['invited_by']=="mamasource")) {		    				
+			    	Session::write('layout', 'mamapedia', array('name' => 'default'));
+		        	$img_path_prefix = "/img/mamapedia/";
 		        	$this->set(compact('img_path_prefix'));	
-		    	} else {
-		    		if((isset($userInfo) && $userInfo['invited_by']=="mamasource")) {		    				
-						Session::write('layout', 'mamapedia', array('name' => 'default'));
-		    			$img_path_prefix = "/img/mamapedia/";
-		        		$this->set(compact('img_path_prefix'));	
-		        		
-		        		
-		    		} else {	 
-		    			Session::write('layout', 'main', array('name' => 'default'));
-		    	    	$img_path_prefix = "/img/";
-		    	    	$this->tenOffFiftyEligible($userInfo);
-		    	    	$this->freeShippingEligible($userInfo);
-		    	    } 
-		    	} 
-		    */	
+		        	$this->redirect("kkim.totsy.com/login");
+		        	
+		        } else {	 
+		        	Session::write('layout', 'main', array('name' => 'default'));
+		        	$img_path_prefix = "/img/";
+		        	$this->tenOffFiftyEligible($userInfo);
+		        	$this->freeShippingEligible($userInfo);
+		        } 
+		    } 
 		    	
 			$this->_render['layout'] = '/main';
 		}

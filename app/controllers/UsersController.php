@@ -414,7 +414,14 @@ class UsersController extends BaseController {
 					$this->redirect('/register/facebook');
 				}
 			}
-		}					
+		}			
+		
+		//if there is a mamapedia session var, then this user has already been authenticated
+		if (Session::read('layout', array('name'=>'default'))=="mamapedia" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
+						$host = "kkim.totsy.com";
+					} else {
+						$host = $_SERVER['HTTP_HOST'];
+					}		
 				
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
@@ -435,18 +442,11 @@ class UsersController extends BaseController {
 						unset($cookie['redirect']);
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));	
-					
-					/*
-					if(Session::read('layout', array('name'=>'default'))=="mamapedia"){
-						$host = "mamasource.totsy.com";
-					} else {
-						$host = $_SERVER['HTTP_HOST'];
-					}*/
 						
 					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {
-						$this->redirect($this->request->url);
+						$this->redirect($host . $this->request->url);
 					} else {
-						$this->redirect($redirect);
+						$this->redirect($host . $redirect);
 					}
 				} else {
 					$cookie['autoLoginHash'] = null;
