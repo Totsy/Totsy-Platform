@@ -666,7 +666,7 @@ class Cart extends Base {
 		$credit_amount = null;
 		$cartCredit = Credit::create();
 		if (array_key_exists('credit_amount', $data)) {
-			$credit_amount = $data['credit_amount'];
+			$credit_amount = abs($data['credit_amount']);
 		}
 		#Calculation of the subtotal with shipping and services discount
 		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
