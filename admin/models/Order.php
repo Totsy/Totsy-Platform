@@ -879,6 +879,29 @@ class Order extends Base {
 							    $conditions = array();
 							}
 							break;
+						case 'failed_reauth':
+							$type = 'failed_reauth';
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['payment_date'] = array('$exists' => false);
+							$conditions['cancel'] = array('$exists' => false);
+							$conditions['payment_captured'] = array('$exists' => false);
+							$conditions['auth_error'] = array('$exists' => true);
+							$conditions['error_date'] = array('$exists' => true);
+							$conditions['ship_records'] = array('$exists' => false);
+							$conditions['$where'] = 'this.total == this.authTotal';
+							break;
+						case 'failed_initial_auth':
+							$type = 'failed_initial_auth';
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['payment_date'] = array('$exists' => false);
+							$conditions['cancel'] = array('$exists' => false);
+							$conditions['payment_captured'] = array('$exists' => false);
+							$conditions['auth_error'] = array('$exists' => true);
+							$conditions['error_date'] = array('$exists' => true);
+							$conditions['ship_records'] = array('$exists' => false);
+							$conditions['$where'] = 'this.total != this.authTotal';
+							$conditions['$or'] = array(array('authTotal' => 1), array('authTotal' => 0));
+							break;
 						default:
 							break;
 					}
