@@ -420,7 +420,11 @@ class UsersController extends BaseController {
 		//for now just check if there's a userLogin key in the session
 		//next step will be to if this session exists in the session collection
 		if (Session::read("userLogin") && Session::read('layout', array('name'=>'default'))=="mamapedia" && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
-			header("Location: kkim.totsy.com/sales");
+			
+			print_r(Session::read("userLogin"));
+			exit();
+		
+			header("Location: http://kkim.totsy.com/sales");
 			exit();
 		} 
 						

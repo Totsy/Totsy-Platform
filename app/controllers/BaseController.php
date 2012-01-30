@@ -61,8 +61,6 @@ class BaseController extends \lithium\action\Controller {
 			    	Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        	$img_path_prefix = "/img/mamapedia/";
 		        	$this->set(compact('img_path_prefix'));	
-		        	$this->redirect("kkim.totsy.com/login");
-		        	
 		        } else {	 
 		        	Session::write('layout', 'main', array('name' => 'default'));
 		        	$img_path_prefix = "/img/";
