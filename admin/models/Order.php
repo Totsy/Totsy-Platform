@@ -673,6 +673,9 @@ class Order extends Base {
 		/**************CREDITS TREATMENT**************/
 		if($selected_order["credit_used"] != ('' || null)) {
 			$selected_order["credit_used"] = (float) - abs($selected_order["credit_used"]);
+			if($selected_order["original_credit_used"]) {
+				$selected_order["original_credit_used"] = (float) - abs($selected_order["original_credit_used"]);
+			}
 			if(empty($selected_order["user_total_credits"])){
 				if(strlen($selected_order["user_id"]) > 10){
 					$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
