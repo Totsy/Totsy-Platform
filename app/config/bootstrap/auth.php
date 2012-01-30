@@ -60,6 +60,11 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	// check if user already logged-in
 	if(Session::check('userLogin')) {
 		$logged_in = true;		
+		$userInfo = Session::check('userLogin'); 
+		
+		if($userInfo['invited_by']=="mamasource"){
+			return new Response(array('location' => 'http://kkim.totsy.com/login'));
+		}
 	}
 	
 	//for mamasource registered users logging into www.totsy.com

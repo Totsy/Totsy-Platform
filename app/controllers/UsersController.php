@@ -305,6 +305,7 @@ class UsersController extends BaseController {
 			
 			$email = "";
 			$password = "";
+			$host = "";
 			
 			//pull auth fields from form
 			if($this->request->data){
@@ -321,11 +322,7 @@ class UsersController extends BaseController {
 					$email = $userInfo['email'];
 					$password = $userInfo["password"];					
 				}
-				$host = "http://kkim.totsy.com";	
-			} else {
-				$host = "http://evan.totsy.com";
-			}
-			
+			}			
 			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
 					
@@ -408,14 +405,7 @@ class UsersController extends BaseController {
 
 	protected function autoLogin() {	
 		
-		$redirect = '/sales';
-		
-		//redirect users who have a session to kkim/mamasource
-		if (Session::read("userLogin") && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
-			$userInfo = Session::read("userLogin");
-			$this->redirect("http://kkim.totsy.com/login", array("exit"=>true));
-		}
-		
+		$redirect = '/sales';		
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 
