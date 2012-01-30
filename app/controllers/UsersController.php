@@ -151,7 +151,7 @@ class UsersController extends BaseController {
 				$mailTemplate = "";
 				
 				//pick from sailthru templates
-				if (Session::read("layout", array("name"=>"default"))!!=="mamapedia") {
+				if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
 					$mailTemplate = 'Welcome_Free_Shipping';	
 				} else {
 					$mailTemplate = 'Welcome_Mamasource';	
