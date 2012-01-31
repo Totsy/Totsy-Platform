@@ -379,10 +379,9 @@ class UsersController extends BaseController {
 						/**Remove Temporary Session Datas**/
 						User::cleanSession();
 						/***/
-						
-						//kkim.totsy.com is a place holder for mamasource.totsy.com. bypass the form and login to totsy
 																		
 						return $this->redirect($landing);
+						
 					} else {
 						$message = '<div class="error_flash">Login Failed - Please Try Again</div>';
 					}

@@ -120,7 +120,9 @@ class BaseController extends \lithium\action\Controller {
         
         $redirected = false;
         
-        if( $userInfo['invited_by']=="mamasource" && $redirected==false) {
+        if( $userInfo['invited_by']=="mamasource" && $redirected==false && $_SERVER['HTTP_HOST']!=="kkim.totsy.com") {
+        	//delete old session ID as to not confuse browser session
+        	setcookie("PHPSESSID","",time()-3600,"/");
         	$this->redirect("http://kkim.totsy.com/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
         	$redirected = true;
         } 
