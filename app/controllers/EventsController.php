@@ -55,9 +55,7 @@ class EventsController extends BaseController {
 		}
 
 		$itemCounts = array();
-
-		$eventCount = count($openEvents);		
-
+		$eventCount = count($openEvents);
 		$itemsCollection = Item::collection();
 
 		for($i=0; $i<$eventCount; $i++){
@@ -67,12 +65,18 @@ class EventsController extends BaseController {
 			$items = $itemsCollection->find(array(
 												'event' =>  array($eventId), 
 												'categories' => array('$in' => array($categories)), 
-												'enabled' => true
+												'enabled' => true,
+												'total_quantity' => array('$gt'=>0)
 												))
 									  ->limit(6);		
 			
-			//$items = Item::filter(array($eventId), null, $categories, null, 6);
-
+			// when event dosn't have enabled and not soled out items ..
+			// remove the events from a list
+			if ($items->count()==0){
+				unset($openEvents[$i]);
+				continue;
+			}
+			
 			foreach($items as $eachitem){
 				$openEvents[$i]['eventItems'][] = $eachitem;
 			}
@@ -82,6 +86,9 @@ class EventsController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_category';
 		}
+		
+		// re-count events num
+		$eventCount = count($openEvents);
 		
 		return compact('openEvents', 'items', 'categories', 'eventCount');
 	}
@@ -105,9 +112,7 @@ class EventsController extends BaseController {
 		}
 
 		$itemCounts = array();
-
-		$eventCount = count($openEvents);		
-
+		$eventCount = count($openEvents);
 		$itemsCollection = Item::collection();
 
 		for($i=0; $i<$eventCount; $i++){
@@ -118,15 +123,26 @@ class EventsController extends BaseController {
 			$items = $itemsCollection->find(array(
 												'event' =>  array($eventId), 
 												'ages' => array('$in' => array($ages)), 
-												'enabled' => true
+												'enabled' => true,
+												'total_quantity' => array('$gt'=>0)
 												))
 									  ->limit(6);		
+			
+			// when event dosn't have enabled and not soled out items ..
+			// remove the events from a list
+			if ($items->count()==0){
+				unset($openEvents[$i]);
+				continue;
+			}
 			
 			foreach($items as $eachitem){
 				$openEvents[$i]['eventItems'][] = $eachitem;
 			}
 		}
-
+		
+		// re-count events num
+		$eventCount = count($openEvents);
+		
 		//hack to make the ages appear on top of same view file		
 		$categories = $ages;
 		$this->_render['template'] = 'category';

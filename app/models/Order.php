@@ -98,6 +98,10 @@ class Order extends Base {
 				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
 			}
 			if (!$auth->success()) {
+				#Reverse Transaction that Failed
+				$payments::void('default', $auth, array(
+					'processor' => $auth->adapter
+				));
 				Session::write('cc_error', implode('; ', $auth->errors));
 				return false;
 			}
