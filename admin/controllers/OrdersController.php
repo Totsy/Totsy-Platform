@@ -131,7 +131,7 @@ class OrdersController extends BaseController {
 			if (!empty($rawOrders)) {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
-						FlashMessage::set(
+						FlashMessage::write(
 							"Results found for $searchType search of $search",
 							array('class' => 'pass')
 						);
@@ -140,7 +140,7 @@ class OrdersController extends BaseController {
 					}
 				}
 				if (empty($order)) {
-					FlashMessage::set(
+					FlashMessage::write(
 						"No results found for $searchType search of $search",
 						array('class' => 'warning')
 					);
@@ -308,7 +308,7 @@ class OrdersController extends BaseController {
 				extract($orderClass::saveCurrentOrder($datas, $items, $current_user["email"]));
 
 				if ($result == true) {
-					FlashMessage::set("Order items has been updated.", array('class' => 'pass'));
+					FlashMessage::write("Order items has been updated.", array('class' => 'pass'));
 				}
 
 				#Get Last Saved Order
@@ -444,9 +444,9 @@ class OrdersController extends BaseController {
 				array("_id" => new MongoId($id)),
 				array('$set' => array('shipping' => $datas))
 			);
-			FlashMessage::set("Shipping details has been updated.", array('class' => 'pass'));
+			FlashMessage::write("Shipping details has been updated.", array('class' => 'pass'));
 		} else {
-			FlashMessage::set(
+			FlashMessage::write(
 				"Some informations for the new shipping are missing",
 				array('class' => 'warning')
 			);
@@ -520,16 +520,16 @@ class OrdersController extends BaseController {
 										'card_number' => substr($datas['creditcard']['number'], -4) 
 					))
 				);
-				FlashMessage::set("Payment details has been updated.", array('class' => 'pass'));	
+				FlashMessage::write("Payment details has been updated.", array('class' => 'pass'));	
 			} else {
-				FlashMessage::set(
+				FlashMessage::write(
 					$errors,
 					array('class' => 'warning')
 				);
 			}
 
 		} else {
-			FlashMessage::set(
+			FlashMessage::write(
 				"Some informations for the new payments are missing",
 				array('class' => 'warning')
 			);
@@ -658,7 +658,7 @@ class OrdersController extends BaseController {
 					array('_id' => new MongoId($id)),
 					array('$set' => array('process-as-an-exception' => true)), array( 'upsert' => true)
 			);
-			FlashMessage::set("This Order is on the queue as Dotcom Exception", array('class' => 'pass'));	
+			FlashMessage::write("This Order is on the queue as Dotcom Exception", array('class' => 'pass'));	
 		}
 		if (!empty($datas["save"])){	
 			$order = $this->manage_items();
@@ -1021,9 +1021,9 @@ class OrdersController extends BaseController {
                 $class = 'pass';
                  $style = 'font-color:#000';
             }
-            FlashMessage::set("Results found." . $message ,	array('class' => $class));
+            FlashMessage::write("Results found." . $message ,	array('class' => $class));
         } else {
-            FlashMessage::set("No results found." . $message ,	array('class' => 'fail'));
+            FlashMessage::write("No results found." . $message ,	array('class' => 'fail'));
         }
 		return compact('payments','type');
 	}
