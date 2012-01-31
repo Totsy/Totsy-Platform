@@ -159,22 +159,22 @@ class ReCaptureTest extends \lithium\test\Unit {
 	
 	public function reCapture($customerId, $type, $card_number, $onlyReauthorization) {
 		$ordersCollection = Order::Collection();
+		#Create Temporary order
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($customerId);
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('default', 100, $profile);
+		$authorizeObject = Processor::authorize('default', 100, $profile, array('orderID' => $order->order_id));
 		$this->assertTrue($authorizeObject->success());
 		$captureObject = Processor::capture('default', $authorizeObject, 100,
-				array('processor' => $authorizeObject->adapter
+				array('processor' => $authorizeObject->adapter, 'orderID' => $order['order_id']
 		));
 		$this->assertTrue($captureObject->success());
 		#Temporary User Creation
 		$user = User::create(array('_id' => new MongoId()));
 		$user->save($this->_UserInfos);
-		#Temporary Order Creation
-		$order = Order::create(array('_id' => new MongoId()));
-		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
-		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));	
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));	
 		$order->save(array(
 				'total' => 100.00,
 				'card_type' => $type,

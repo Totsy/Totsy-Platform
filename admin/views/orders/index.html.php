@@ -147,6 +147,15 @@
 					<?php endif ?>
 					<td><?php echo date('M d, Y', $shipDate["$order[_id]"])?></td>
 					<td>
+						<?php 
+							if(!empty($order['auth_error'])) {
+								echo $order['auth_error'];
+							} else {
+								echo "No Message";
+							}
+						?>
+					</td>
+					<td>
 						<?php echo $this->html->link('View', array(
 						'Users::view',
 						'args'=>$order['user_id']),
