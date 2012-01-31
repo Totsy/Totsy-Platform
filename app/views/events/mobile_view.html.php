@@ -1,39 +1,20 @@
 <?php echo $this->html->script('jquery.countdown.min');?>
 <?php echo $this->html->style('jquery.countdown');?>
-
-<div class="item_intro_box">
-<?php if (!empty($event->images->event_image)) {
-	echo $this->html->image("/image/{$event->images->event_image}.jpg", array(
-		'title' => $event->name,
-		'width' => "278",
-	));
-
-	} else {
-	
-	echo $this->html->image('/img/no-image-small.jpeg', array(
-		'title' => "No Image Available",
-		'width' => "278",
-	));
-} ?>
-
-<div class="item_title_bar">
-<div class="item_title" style="float:left;"><?php echo $event->name; ?></div>
-<!-- <a href="#items" class="item_shop_btn" style="float:left; margin-left:5px;">Shop</a> -->
+<h2 style="font-size:12px;"><?php echo $event->name; ?></h2>
+<hr />
+<div data-role="collapsible">
+   <h3>Description</h3>
+   <p style="text-align:left!important;"><?php echo $event->blurb ?></p>
 </div>
-<div class="blurb">
-	<?php echo $event->blurb ?>
-</div>
-</div>
-<div id="listingCountdown" class="listingCountdown" style="text-align:center; margin:10px 0px;"></div>
+
+<div id="listingCountdown" class="listingCountdown" style="text-align:center; margin:10px 0px; padding:10px;"></div>
 
 <div style="clear:both;"></div>
 
 <div>
 <?php if(!empty($filters)): ?>
 <hr />
-				
-				
-		<div id='filterb'>
+<div id='filterb'>
 			<?php echo $this->form->create(null, array('id' => 'filterform')); ?>
 			<option value="">Sort By:</option>
 			<?php echo $this->form->select('filterby',$filters, array('onchange' => "filter()", 'id' => 'filterby', 'data-overlay-theme' => 'a', 'data-native-menu' => 'false', 'value' => array($departments => $departments))); ?>

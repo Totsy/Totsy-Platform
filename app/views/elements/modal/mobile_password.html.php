@@ -42,19 +42,16 @@ $('#password-prompt a.btn-submit').live('click', function(e) {
 	<div data-role="header"><h2>Enter your Password</h2></div>
 	<div data-role="content">
 <? if($user['requires_set_password']): ?>
-		<h3>You've made it this far - let's create a Totsy account!</h3>
+		<h3>Let's set a password for your Totsy account!</h3>
 <? else: ?>
-		<h3>You must enter your password to continue.</h3>
-<? endif; ?>
-<? if($user['requires_set_password']): ?>
-		<p>Registration only takes a moment.<br/>By proceeding you agree to the <a href="/pages/terms">terms and conditions</a>.</p>
+		<h3>Please confirm your Totsy password to purchase:</h3>
 <? endif; ?>
 		<form action="" method="post">
 <? if($user['requires_set_password']): ?>
-			<label for="email">Email Address:</label>
+			<label for="email">Your Email Address:</label>
 			<input type="text" id="email" name="email" value="<?= $user['email'] ?>" />
 <? endif; ?>
-			<label for="pwd">Password:</label>
+			<label for="pwd"><? if($user['requires_set_password']) echo 'Create Your ' ?>Password:</label>
 			<input type="password" id="pwd" name="pwd" placeholder="Enter Password" />
 			<a href="#" class="btn-submit" data-role="button"><?= $user['requires_set_password'] ? 'Create Account' : 'Continue' ?></a>
 		</form>

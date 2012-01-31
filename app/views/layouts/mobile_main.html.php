@@ -64,6 +64,7 @@
 			</div>
 		</div>
 <div class="clear"></div>
+
 <div data-role="navbar">
 	<ul>
 		<li><a href="#" onclick="window.location.href='/sales';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Date</a></li>
@@ -71,8 +72,10 @@
 		<li><a href="#" onclick="window.location.href='/category/all';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/categories/all') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Category</a></li>
 	</ul>
 </div><!-- /navbar -->		
+
 <div class="clear"></div>
 </div>
+
 <?php } else { ?>
 	<div class="nav_head"></div>
 	<div class="mobile_ui">

@@ -60,16 +60,16 @@ $('#password-prompt form').live('submit', function(e) {
 	clear: left;
 	width: 250px;
 	margin: 4px 8px 20px 0;
-	font-size: 12px;
+	font-size: 14px;
 	text-align: right;
-	color: #ccc;
+	color: #999;
 }
 
 #password-prompt input[type=text], 
 #password-prompt input[type=password] {
 	width: 200px;
 	float: left;
-	font-size: 14px;
+	font-size: 16px;
 	color: #666;
 }
 
@@ -82,19 +82,16 @@ $('#password-prompt form').live('submit', function(e) {
 </style>
 <div id="password-prompt" class="no-show">
 <? if($user['requires_set_password']): ?>
-	<h2>You've made it this far - let's create a Totsy account!</h2>
+	<h2>Let's set a password for your Totsy account!</h2>
 <? else: ?>
-	<h2>You must enter your password to continue.</h2>
-<? endif; ?>
-<? if($user['requires_set_password']): ?>
-	<p>Registration only takes a moment.<br/>By proceeding you agree to the <a href="/pages/terms">terms and conditions</a>.</p>
+	<h2>Please confirm your Totsy password to purchase:</h2>
 <? endif; ?>
 	<form action="" method="post">
 <? if($user['requires_set_password']): ?>
-		<label for="email">Email Address:</label>
+		<label for="email">Your Email Address:</label>
 		<input type="text" id="email" name="email" value="<?= $user['email'] ?>" />
 <? endif; ?>
-		<label for="pwd">Password:</label>
+		<label for="pwd"><? if($user['requires_set_password']) echo 'Create Your ' ?>Password:</label>
 		<input type="password" id="pwd" name="pwd" placeholder="Enter Password" />
 		<input type="submit" value="<?= $user['requires_set_password'] ? 'Create Account' : 'Continue' ?>" class="button" />
 	</form>

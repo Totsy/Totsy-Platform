@@ -49,7 +49,8 @@ class UsersController extends \admin\controllers\BaseController {
 			'Date',
 			'Reason',
 			'Description',
-			'Amount'),
+			'Amount',
+			'Applied By'),
 		'promo' => array(
 			'Date',
 			'Order Id',
@@ -86,6 +87,12 @@ class UsersController extends \admin\controllers\BaseController {
 							array('user_id' => $id),
 							array('customer_id' => $id)
 					))));
+				foreach($credits as $credit) {
+					if ($credit->admin_id) {
+						$appliedby = User::lookup($credit->admin_id);
+						$credit->admin_user = $appliedby->email;
+					}
+				}
 				$orders = Order::find('all', array('conditions' => array('user_id' => $id)));
 				$userData = $user->data();
 				if (array_key_exists('created_orig', $userData)) {

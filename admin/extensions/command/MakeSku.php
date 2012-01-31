@@ -71,12 +71,7 @@ class MakeSku extends \lithium\console\Command  {
 				}
 				$itemCollection->update(
 					array('_id' => $item['_id']),
-					array('$set' => array('sku_details' => $skulist)),
-					array('upsert' => true)
-				);
-				$itemCollection->update(
-					array('_id' => $item['_id']),
-					array('$set' => array('skus' => array_values($skulist))),
+					array('$set' => array('sku_details' => $skulist,'skus' => array_values($skulist) )),
 					array('upsert' => true)
 				);
 			}
