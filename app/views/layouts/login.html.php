@@ -15,21 +15,14 @@
 	<?php echo $this->html->style(array('base.css', '960.css', 'jquery_ui_custom/jquery.ui.all.css'), array('media' => 'screen')); ?>
 		
 	<script src="http://www.google.com/jsapi"></script>
-	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
-	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
+	<script> google.load("jquery", "1.6.1", {uncompressed:true});</script>
+	<script> google.load("jqueryui", "1.8.13", {uncompressed:true});</script>
     <!-- end jQuery / jQuery UI -->
             
     <?php echo $this->html->script(array('jquery.backstretch.min.js', 'jquery.uniform.min.js' )); ?>
     
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
-	
-	<script type="text/javascript">
-		function deleteFBCookie(name) {
-			document.cookie = name +'=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			//window.location = "http://evan.totsy.com/login";
-		} 
-	</script>
 	
 	<script type="text/javascript">
 		//this is used for swapping backgrounds on registration pages that pass in affiliate codes	

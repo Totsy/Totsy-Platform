@@ -38,18 +38,18 @@
 									</div>
 									<div id="normal" style="display:block">
 										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
-										The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
+											The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
 										</p>
-									<?php if($edit_mode): ?>
-									<p style="text-align:center;">
-<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>
-									<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
-									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
-									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
-									<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
-									<button id="generate_order_file" style="font-weight:bold;font-size:14px;">Generate Order File</button>
-									</p></div>
-								<?php endif ?>
+										<p style="text-align:center;">
+											<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>
+											<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
+											<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+											<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
+											<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
+											<button id="refresh_total" style="font-weight:bold;font-size:14px;">Refresh & Update Total</button>
+										</p>
+									</div>
+							
 									<?php /**/ ?>
 								  	<div id="full_order_tax_return_form" style="display:none">
 										<?php echo $this->form->create(null ,array( 'action'=>'taxreturn', 'id'=>'fullOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
@@ -335,7 +335,7 @@
 																	<?php echo $modification["author"]?>
 																</td>
 																<td style="padding:5px" title="date">
-																	<?php echo date('Y-M-d h:i:s', $modification["date"]["sec"])?>
+																	<?php echo date('Y-M-d h:i:s', $modification["date"])?>
 																</td>
 																<?php if(!empty($modification["comment"])) :?>
 																<td style="padding:5px" title="comment">
@@ -370,9 +370,7 @@
 												<td style="padding:5px; width:100px;"><strong>Price</strong></td>
 												<td style="padding:5px; width: 50px;"><strong>Qty</strong></td>
 												<td style="padding:5px; width:80px;"><strong>Subtotal</strong></td>
-												<?php if($edit_mode): ?>
 													<td style="padding:5px; width:30px;"><strong></strong></td>
-												<?php endif ?>
 											</tr>
 											<?php echo $this->form->create(null ,array('id'=>'itemsForm','enctype' => "multipart/form-data")); ?>
 											<?php $items = $order->items; ?>
@@ -427,7 +425,6 @@
 													$<?php echo number_format($item['sale_retail'],2); ?>
 												</td>
 												<td style="padding:5px;" title="quantity">
-												<?php if($edit_mode): ?>
 												<?php  
 													if(!empty($item['initial_quantity'])) {
 														$limit = $item['initial_quantity'];
@@ -444,9 +441,6 @@
 													<?php echo $this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
 													<?php echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
 													?>
-													<?php else :?>
-														<?php echo $item['quantity'] ?>
-													<?php endif ?>
 													<?php if ($return_q>0){?>
 													<?php echo $return_q; ?> return(s)
 													<?php }?>
@@ -454,7 +448,6 @@
 												<td title="subtotal" style="padding:5px; color:#009900;">
 													$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
 												</td>
-												<?php if($edit_mode): ?>
 												<td>
 													<div style="text-align:center;">
 														<?php if($item["cancel"] == true){ ?>
@@ -466,7 +459,6 @@
 														<?php }//endelse?>
 													</div>
 												</td>
-												<?php endif ?>
 											<?php endforeach ?>
 											</tr>
 
@@ -572,6 +564,9 @@
 	                                                                                                <?php echo $order->billing->address; ?> <?php echo $order->billing->address_2; ?><br />
 	                                                                                                <?php echo $order->billing->city; ?>, <?php echo $order->billing->state; ?>
 	                                                                                                <?php echo $order->billing->zip; ?>
+																									<?php if (!empty($order->billing->telephone)): ?>
+		                                                                                                <br><?php echo $order->billing->telephone; ?>
+																									<?php endif ?>
 													<hr /></div>
 												<div style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?php echo strtoupper($order->card_type)?> ending with <?php echo $order->card_number?></div>
 											</td>
@@ -594,7 +589,6 @@
 			<td style="padding:0px 0px 5px 0px;"><hr></td>
 		</tr>
 	</table>
-	<?php if($edit_mode): ?>
 	<?php if($itemscanceled == false): ?>
 	<?php echo $this->form->hidden("save", array('class' => 'inputbox', 'id' => "save")); ?>
 	Commment :
@@ -605,7 +599,6 @@
 	</p>
 	<?php endif ?>
 	<?php echo $this->form->end();?>
-	<?php endif ?>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
@@ -623,12 +616,6 @@ $(document).ready(function(){
 			$("#new_shipping").show("slow");
 		} else {
 			$("#new_shipping").slideUp();
-		}
-	});
-	$("#generate_order_file").click(function () {
-		if (confirm('Are you sure to send this order as exception to Dotcom ?')) {
-			$('input[name="process-as-an-exception"]').val("true");
-			$('#newOrderFileForm').submit();
 		}
 	});
 	$("#update_payment").click(function () {
@@ -702,6 +689,16 @@ function update_order() {
 		}
 	}
 };
+$(document).ready(function(){
+	$("#refresh_total").click(function () {
+		if (confirm('Are you sure to refresh and update the order total ?')) {
+			$('#save').val("false");
+  			$('#itemsForm').submit();
+  			$('#save').val("true");
+  			$('#itemsForm').submit();
+		}
+	});
+});
 function open_comment(val) {
 	// Create a regular expression to search all +s in the string
 	var lsRegExp = /\+/g;

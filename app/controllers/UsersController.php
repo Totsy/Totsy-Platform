@@ -152,29 +152,42 @@ class UsersController extends BaseController {
 					return $this->redirect($landing);
 					unset($landing);
 				} else {
-					return $this->redirect('/sales');
+					$this->redirect('/sales?req=invite');
 				}
 
 			}
 		}
-		
+
+		/*
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
 		} else {
 			//$this->_render['layout'] = 'login';
-		}
-		
+		}*/
+
 		if ($this->request->data && !$user->validates() ) {
-			$message = '<div class="error_flash">Error in registering your account</div>';
+			$message = '<div class="error_flash">Error in registering your account';
+			$errors  = $user->errors();
+
+			// append the error message to the output message when available
+			if (count($errors)) {
+				$firstError = current($errors);
+				$message .= ': ' . $firstError[0];
+			}
+
+			$message .= '</div>';
 		}
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
 		 	$this->_render['template'] = 'mobile_register';
-		} else {
-			//$this->_render['layout'] = 'login';
 		}
-		
+
+		/*
+		else {
+			//$this->_render['layout'] = 'login';
+		} */
+
 		return compact('message', 'user');
 	}
 
@@ -345,7 +358,6 @@ class UsersController extends BaseController {
 	}
 
 	protected function autoLogin() {
-
 		$redirect = '/sales';
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
@@ -353,7 +365,6 @@ class UsersController extends BaseController {
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 
 		extract($result);
-
 		$fbCancelFlag = false;
 
 		if (array_key_exists('fbcancel', $this->request->query)) {
@@ -361,10 +372,10 @@ class UsersController extends BaseController {
 		}
 
 		if (!$success) {
+
 			if (!empty($userfb)) {
-				$self = static::_object();
 				if(!$fbCancelFlag) {
-					return $this->redirect('/register/facebook');
+					$this->redirect('/register/facebook');
 				}
 			}
 		}
@@ -384,9 +395,9 @@ class UsersController extends BaseController {
 					}
 					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));
 					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {
-						return $this->redirect($this->request->url);
+						$this->redirect($this->request->url);
 					} else {
-						return $this->redirect($redirect);
+						$this->redirect($redirect);
 					}
 				} else {
 					$cookie['autoLoginHash'] = null;
@@ -409,7 +420,7 @@ class UsersController extends BaseController {
 			array('email' => $loginInfo['email']),
 			array('$unset' => array('autologinHash' => 1))
 			);
-		$success = Session::delete('userLogin');
+		$success = Session::delete('userLogin', array('name' => 'default'));
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 
 		unset($cookie['autoLoginHash']);
@@ -443,16 +454,13 @@ class UsersController extends BaseController {
 		$status = 'default';
 		$user = User::getUser();
 
-
 		$linked = (empty($user->facebook_info) ? false : true);
 		$connected = false;
 		if ($linked) {
 			$userId = $user->facebook_info->id;
 			$connected = true;
 			try {
-
 				$accessToken = FacebookProxy::getAccessToken();
-
 				$authCheck = FacebookProxy::api("/$userId?access_token=$accessToken");
 				$connected = (!empty($authCheck['email'])) ? true : false;
 			} catch (\Exception $e) {
@@ -553,7 +561,7 @@ class UsersController extends BaseController {
 			} else {
 				$message =  '<div class="error_flash">This email doesn\'t exist.</div>';
 			}
-			
+
 		}
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
@@ -576,16 +584,9 @@ class UsersController extends BaseController {
 			$code = $user->invitation_codes;
 		}
 		if ($this->request->data) {
-			$rawto = explode(',',$this->request->data['to']);
+			$to = $this->_parseEmail($this->request->data['to']);
 			$message = $this->request->data['message'];
-			foreach ($rawto as $key => $value) {
-				preg_match('/<(.*)>/', $value, $matches);
-				if ($matches) {
-					$to[] = $matches[1];
-				} else {
-					$to[] = trim($value);
-				}
-			}
+
 			foreach ($to as $email) {
 				$invitation = Invitation::create();
 				Invitation::add($invitation, $id, $code, $email);
@@ -601,6 +602,10 @@ class UsersController extends BaseController {
 			}
 			$flashMessage = '<div class="success_flash">Your invitations have been sent</div>';
 		}
+
+		if(substr_count($this->request->env('HTTP_REFERER'), "/sales?req=invite")>0) {
+			$this->redirect('/sales');
+		}
 		$open = Invitation::find('all', array(
 			'conditions' => array(
 				'user_id' => (string) $user->_id,
@@ -614,8 +619,8 @@ class UsersController extends BaseController {
 
 		$pixel = Affiliate::getPixels('invite', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
-			                                            array('invite' => $_SERVER['REQUEST_URI'])
-			                                            );
+		array('invite' => $_SERVER['REQUEST_URI'])
+		);
 		if($this->request->is('mobile')){
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_invite';
@@ -685,10 +690,11 @@ class UsersController extends BaseController {
 	public function fbregister() {
 		$message = null;
 		$user = null;
-		$fbuser = FacebookProxy::api(FacebookProxy::getUser());
+		$fbuser = FacebookProxy::api("/me");
 		$user = User::create();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
+
 			$user->email = $fbuser['email'];
 			$user->email_hash = md5($user->email);
 			$user->confirmemail = $fbuser['email'];
@@ -710,7 +716,7 @@ class UsersController extends BaseController {
 				$this->redirect($landing);
 				unset($landing);
 			} else {
-				$this->redirect('/sales');
+				$this->redirect('/sales?req=invite');
 			}
 		}
 
@@ -737,10 +743,10 @@ class UsersController extends BaseController {
 		$success = false;
 		$userfb = array();
 
+
 		if ($self->fbsession) {
 
 			$userfb = FacebookProxy::api($self->fbsession);
-
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
@@ -750,29 +756,29 @@ class UsersController extends BaseController {
 
 			if ($user) {
 
-			//$userfb = FacebookProxy::getUser();
-			$user->facebook_info = $userfb;
-			$user->save(null, array('validate' => false));
+				//$userfb = FacebookProxy::getUser();
+				$user->facebook_info = $userfb;
+				$user->save(null, array('validate' => false));
 
-			$sessionWrite = $self->writeSession($user->data());
+				$sessionWrite = $self->writeSession($user->data());
 
-			Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
+				Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 
-			User::log($ipaddress);
+				User::log($ipaddress);
 
-			$landing = null;
+				$landing = null;
 
-			if (Session::check('landing')){
-				$landing = Session::read('landing');
-			}
+				if (Session::check('landing')){
+					$landing = Session::read('landing');
+				}
 
-			if (!empty($landing)) {
-			    Session::delete('landing',array('name'=>'default'));
-			    $self->redirect($landing, array('exit' => true));
-			    unset($landing);
-			} else {
-			    $self->redirect("/sales", array('exit' => true));
-			}
+				if (!empty($landing)) {
+				    Session::delete('landing',array('name'=>'default'));
+				    $self->redirect($landing, array('exit' => true));
+				    unset($landing);
+				} else {
+				    $self->redirect("/sales", array('exit' => true));
+				}
 
 			}
 		}
@@ -786,6 +792,46 @@ class UsersController extends BaseController {
 			static::$_instances[$class] = new $class();
 		}
 		return static::$_instances[$class];
+	}
+	
+	private function _parseEmail (&$str){
+		/*
+		 * string "
+		* email@email.com\n email@email.com
+		* email@email.com\r\n email@email.com
+		* email@email.com\r\n\t email@email.com
+		* email@mail.com; email@email.com
+		* "Email" <email@email.com>, "Email" <email@mail.com>
+		* "Email" <email@email.com>; "Email" <email@mail.com>
+		* Email (email@email.com), Email (email@email.com)
+		* Email (email@email.com); Email (email@email.com)
+		* "
+		*/
+	
+		$r_email = preg_replace("/[\t]+/","",$str);
+		$r_email = preg_replace("/[\r\,\;]+/","\n",$r_email);
+		$r_email = preg_replace("/[\n]+/","\n",$r_email);
+		$r_email = preg_split("/[\n]/", $r_email);
+		$emails = array();
+	
+		if (empty($r_email)){
+			return false;
+		}
+		foreach ($r_email as $m){
+			$m = trim($m);
+			preg_match("/[\+\.\-_A-Za-z0-9]+?@[\.\-A-Za-z0-9]+?[\.A-Za-z0-9]{2,}/",$m,$e);
+			if (!empty($e)){
+				$emails = array_merge($emails,$e);
+			}
+		}
+		if (empty($emails)){
+			unset($log,$lc);
+			return false;
+		}
+	
+		unset($r_email,$e);
+		return $emails;
+	
 	}
 
 }

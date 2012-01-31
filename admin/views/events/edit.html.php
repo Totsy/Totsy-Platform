@@ -54,6 +54,74 @@ selectlist.css (line 1)
 
 </style>
 
+<script>
+
+
+function object(){
+	this.dinkers = "stinkers";
+}
+
+function checkspreadsheet(){
+	params = new object();
+	params.ItemsSubmit = $("#ItemsSubmit").val();
+
+	$.post('/events/uploadcheck', params, function(result) {
+		if(result.substring(0,7)=="success"){
+			//$("#items_errors").html(result);
+			$("#events_edit").submit();
+		}
+		else{
+			$("#items_errors").html(result);
+		}
+	});
+}
+
+</script>
+
+<style>
+
+
+div.xls_cell{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+}
+
+
+div.xls_cell_error{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+	background:#ff0000;
+	color:#ffffff;
+}
+
+div.xls_cell:hover{
+	background:#eeeeee;
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+}
+
+.xls_holder{
+	width:800px;
+	height:400px;
+	overflow:scroll;
+}
+
+.xls_holder_inner{
+	width:5000px;
+}
+
+</style>
+
 <?php echo $this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event - <?php echo $event->name?></h2>
@@ -93,7 +161,7 @@ selectlist.css (line 1)
 			    	<div id="short_description_characters_wrapper">
 			    		Total:
 			    		<span id="short_description_characters_counter">
-			    			<? if(isset($event->short)) {
+			    			<?php if(isset($event->short)) {
 			    			   		echo strlen($event->short);
 			    			   } else {
 			    			   		echo '0';
@@ -155,7 +223,7 @@ selectlist.css (line 1)
 
 				<table>					<?php echo $this->form->select('departments',$all_filters,array('multiple'=>'multiple')); ?>
 				</table>
-				
+
 				<div id="tags">
 					<?php echo $this->form->label('Tags'); ?>
 					<?php if ($event->tags): ?>
@@ -178,7 +246,7 @@ selectlist.css (line 1)
 					<?php echo $this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
 				</div>
 				<div id="shipDateOverride">
-					<?php echo $this->form->label('Estimated Ship Date'); ?>
+					<?php echo $this->form->label('Estimated Delivery Date'); ?>
 					<p>This date will override the calcualted ship date for orders.</p>
 					<?php echo $this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
@@ -284,8 +352,8 @@ selectlist.css (line 1)
 				<h3 id="">Upload Items</h3>
 	            <hr />
 				<p>Please select the default option for all items being uploaded:</p>
-					<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-					<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+					<input type="radio" name="enable_items" value="1" id="enable_items" checked> Enable All <br>
+					<input type="radio" name="enable_items" value="0" id="enable_items"> Disable All <br><br>
 				<p>Add "Final Sale" to the item description?:</p>
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
@@ -295,10 +363,17 @@ selectlist.css (line 1)
 					<?php echo $this->form->file('upload_file'); ?>
 					-->
 
-				<?php echo $this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
+				<?php echo $this->form->field('ItemsSubmit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
 
-
+			<?php if ($event->clearance == 1){ ?>
 			<?php echo $this->form->submit('Update Event')?>
+			
+			<?php } else{ ?>
+
+			<input type="button" value="Update Event" onclick="checkspreadsheet();">
+
+			<?php } ?>
+			
 			<?php echo $this->form->end(); ?>
 			</div>
 
@@ -335,11 +410,27 @@ selectlist.css (line 1)
 			<?php echo $this->form->end(); ?>
 
 			<br><br>
+
+<script>
+
+function deleteitems(){
+//item-delete
+	var answer = confirm("are you sure you want to delete all items? this cannot be undone!")
+	if (answer){
+		$("#item-delete").submit();
+	}
+
+}
+
+</script>
+
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
-				<?php echo $this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
+				<?php echo $this->form->create(null, array('url' => 'Items::removeItems', 'id' => 'item-delete', 'name' => 'item-delete')); ?>
 					<?php echo $this->form->hidden('event', array('value' => $event->_id)); ?>
-					<?php echo $this->form->submit('Delete All Items'); ?>
+					
+					<input type="button" onclick="deleteitems()" value="Delete All Items">
+					<?php //echo $this->form->submit('Delete All Items'); ?> 
 				<?php echo $this->form->end(); ?>
 		</div>
 
@@ -382,7 +473,7 @@ selectlist.css (line 1)
 		<div id="event_inventory">
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
-		
+
 	</div>
 </div>
 <script type="text/javascript">
@@ -404,12 +495,26 @@ $(document).ready(function() {
 $(document).ready(function(){
 
 tinyMCE.init({
-	// General options
-	mode : "exact",
-	elements: "Blurb,ShipMessage,"+allitemids,
-	theme : "simple",
-	editor_selector : "mceSimple"
+// General options
+mode : "exact",
+elements: "Blurb,ShipMessage,"+allitemids,
+theme : "advanced",
+plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,iespell,inlinepopups,preview,searchreplace,print,contextmenu,paste,directionality,noneditable,visualchars,nonbreaking,xhtmlxtras",
+editor_deselector : "mceNoEditor",
+// Theme options
+theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull",
 
+theme_advanced_buttons2: "styleselect,formatselect,fontselect,fontsizeselect",
+
+theme_advanced_buttons3 : "cut,copy,paste,pastetext,pasteword,|,bullist,numlist,|,indent,blockquote,|,anchor,code,|,forecolor,backcolor",
+/* theme_advanced_button3:
+theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,charmap,iespell,advhr",
+theme_advanced_buttons4 : "spellchecker,|,cite,abbr,acronym,del,ins,|,visualchars,nonbreaking,blockquote,pagebreak", */
+
+theme_advanced_toolbar_location : "top",
+theme_advanced_toolbar_align : "left",
+theme_advanced_statusbar_location : "bottom",
+theme_advanced_resizing : false,
 
 });
 
@@ -528,15 +633,15 @@ for ( i=1; i<6; i++ ) {
 		$('#Short').focusout(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
-		
+
 		//this loads the event/inventory iframe src when the tab is clicked
 		$("#inventoryLink").click(function(){
-			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");	
+			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");
 		});
-		
-		
-		
-		
+
+
+
+
 	});
 
 	function limitTextArea(text,info,limiter){

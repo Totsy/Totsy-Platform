@@ -136,6 +136,7 @@ class CartController extends BaseController {
 		}
 		#Get Total of The Cart after Discount
 		$total = round(floatval($vars['postDiscountTotal']),2);
+		
 		#Check if Services
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
@@ -145,9 +146,9 @@ class CartController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_view';
 		}
+
 		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'serviceAvailable');
 }
-
 	/**
 	 * The add method increments the quantity of one item.
 	 *
@@ -187,7 +188,7 @@ class CartController extends BaseController {
 
 			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
-			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
+			$avail = $item->details[$size] - Cart::reserved($itemId, $size);
 
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
@@ -245,6 +246,7 @@ class CartController extends BaseController {
 		}
 	}
 	
+
 
 	/**
 	* Method for sending all required cart data to Ajax driven cart popup.

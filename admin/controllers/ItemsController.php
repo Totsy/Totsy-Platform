@@ -17,27 +17,6 @@ use li3_flash_message\extensions\storage\FlashMessage;
 
 class ItemsController extends BaseController {
 
-	private $_mapCategories = array (
-		'category' =>  array(
-			'' => 'None',
-			'Girls Apparel' => 'Girls Apparel',
-			'Boys Apparel' => 'Boys Apparel',
-			'Shoes' => 'Shoes',
-			'Accessories' => 'Accessories',
-			'Toys and Books' => 'Toys and Books',
-			'Gear' => 'Gear',
-			'Home' => 'Home',
-			'Moms and Dads' => 'Moms and Dads'
-		),
-		'age' => array(
-			'' => 'None',
-			'Newborn' => 'Newborn',
-			'Infant 0-12 M' => 'Infant 0-12 M',
-			'Toddler 1-3 Y' => 'Toddler 1-3 Y',
-			'Preschool 4-5 Y' => 'Preschool 4-5 Y',
-			'School Age 5+' => 'School Age 5+'
-		)
-	);
 	
 	/**
 	 * Main display of item data
@@ -105,16 +84,17 @@ class ItemsController extends BaseController {
 		//Filter ages
 		if(!empty($item->ages)) {
 			$values = $item->ages->data();
+			
 			foreach ($values as $value) {
-				$age_filters[$value] = $value;
+				$age_filters[$value] = $key = array_search($value, $this->_mapCategories['age']); 
 			}
-		} 
+		}
 		
 		//Filter categories
 		if(!empty($item->categories)) {
 			$values = $item->categories->data();
 			foreach ($values as $value) {
-				$category_filters[$value] = $value;
+				$category_filters[$value] = $key = array_search($value, $this->_mapCategories['category']); 
 			}
 		}
 		
@@ -141,6 +121,28 @@ class ItemsController extends BaseController {
 					}
 				}
 				$data["departments"] = $departments;
+			}
+			
+			//parse ages
+			if(!empty($data["ages"])) {
+				$ages = array();
+				foreach($data["ages"] as $value) {
+					if(!empty($value)) {
+						$ages[] = $this->_mapCategories['age'][$value];
+					}
+				}
+				$data["ages"] = $ages;
+			}
+			
+			//parse categories
+			if(!empty($data["categories"])) {
+				$categories = array();
+				foreach($data["categories"] as $value) {
+					if(!empty($value)) {
+						$categories[] = $this->_mapCategories['category'][$value];
+					}
+				}
+				$data["categories"] = $categories;
 			}
 			
 			//check for new size

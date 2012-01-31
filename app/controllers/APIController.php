@@ -212,6 +212,21 @@ class APIController extends  \lithium\action\Controller {
 		$items = array();
 		foreach ($openEvents as $event){
 			$ev = $event->data();
+			
+			if (is_object($ev['start_date'])){
+				$ev['start_date'] = array( 'sec' => $ev['start_date']->sec );
+			}
+			if (!is_array($ev['start_date'])){
+				$ev['start_date'] = array( 'sec' => $ev['start_date']);
+			}
+			
+			if (is_object($ev['end_date'])){
+				$ev['end_date'] = array( 'sec' => $ev['end_date']->sec );
+			}
+			if (!is_array($ev['end_date'])){
+				$ev['end_date'] = array( 'sec' => $ev['end_date'] );
+			}
+			
 			if ( !array_key_exists('items', $ev) || ( is_array($ev['items']) && count($ev['items'])==0)) continue;
 			
 			$mItems  = array();
@@ -285,6 +300,20 @@ class APIController extends  \lithium\action\Controller {
 			
 			$data =  $event->data();
 			
+			if (is_object($data['start_date'])){
+				$data['start_date'] = array( 'sec' => $data['start_date']->sec );
+			}
+			if (!is_array($data['start_date'])){
+				$data['start_date'] = array( 'sec' => $data['start_date']);
+			}
+
+			if (is_object($data['end_date'])){
+				$data['end_date'] = array( 'sec' => $data['end_date']->sec );
+			}
+			if (!is_array($data['end_date'])){
+				$data['end_date'] = array( 'sec' => $data['end_date'] );
+			}
+		
 			if ($data['end_date']['sec'] <= strtotime(date('d-m-Y 23:59:59',strtotime('+1 day',$start_date))) && 
 				$data['end_date']['sec'] > strtotime(date('d-m-Y 23:59:59',$start_date)) ){
 				$closing[] = $data;
@@ -296,10 +325,20 @@ class APIController extends  \lithium\action\Controller {
 			$data['available_items'] = false;
 			$data['maxDiscount'] = 0;
 			$data['vendor'] = '';
+			$data['groups'] = array(
+				'categories' => array(),
+				'ages' => array()
+			);
 			
 			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
 			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
-			 
+
+			if (!array_key_exists('splash_small_image',$data)) {
+				$data['event_image_small'] = $base_url.'img/no-image-small.jpeg';
+			}
+			else { $data['event_image_small'] = $base_url.'image/'.$data['splash_small_image'].'.jpg';
+			}
+			
 			if ( isset($data['items']) && count($data['items'])>0){
 
 				$mItems  = array();
@@ -333,11 +372,22 @@ class APIController extends  \lithium\action\Controller {
 					
 					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
+					
+					if (!empty($it['ages'])){ 
+						$data['groups']['ages'] = array_merge($data['groups']['ages'],$it['ages']); 
+					}
+					if (!empty($it['categories'])){
+						$data['groups']['categories'] = array_merge($data['groups']['categories'],$it['categories']);
+					}
 				}
 				
 			}
+			
+			$data['groups']['ages'] = array_unique( $data['groups']['ages'] );
+			$data['groups']['categories'] = array_unique($data['groups']['categories']);
 			$events[] = $data;
 		}
+		
 		$pendingEvents = Event::pending();
 		$pending = array();
 		foreach ($pendingEvents as $pendingEvent){
@@ -403,10 +453,20 @@ class APIController extends  \lithium\action\Controller {
 			$data['available_items'] = false;
 			$data['maxDiscount'] = 0;
 			$data['vendor'] = '';
+			$data['groups'] = array(
+				'categories' => array(),
+				'ages' => array()
+			);
 			
 			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
 			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
-			 
+			
+			if (!array_key_exists('splash_small_image',$data)) {
+				$data['event_image_small'] = $base_url.'img/no-image-small.jpeg';
+			}
+			else { $data['event_image_small'] = $base_url.'image/'.$data['splash_small_image'].'.jpg';
+			}
+			
 			if ( isset($data['items']) && count($data['items'])>0){
 
 				$mItems  = array();
@@ -440,9 +500,14 @@ class APIController extends  \lithium\action\Controller {
 					
 					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
+					
+					$data['groups']['ages'] = array_merge($data['groups']['ages'],$it['ages']);
+					$data['groups']['categories'] = array_merge($data['groups']['categories'],$it['categories']);
 				}
 				
 			}
+			$data['groups']['ages'] = array_unique( $data['groups']['ages'] );
+			$data['groups']['categories'] = array_unique($data['groups']['categories']);
 			$events[] = $data;
 		}
 		

@@ -85,7 +85,7 @@
 		</select>
 
 		<br /><br />
-		<select id="child" name="type" style="width:350px;">
+		<select id="child" name="type" style="width:350px; display:none;">
 		<!-- orders -->
 			<?php if ($orders): ?>
 				<option value="">Choose Your Order Number</option>
@@ -210,10 +210,10 @@ function makeSublist(parent,child,isSubselectOptional,childVal)
         });
         
         if (getSize) {
-          $("#hidden-div").show();
+          $("#uniform-child").hide();
           $("input[type=Submit]").attr("disabled","disabled");
         } else {
-          $("#hidden-div").hide();
+          $("#uniform-child").show().children('select').show();
           $("input[type=Submit]").removeAttr("disabled");
         };
       }

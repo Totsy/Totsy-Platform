@@ -8,8 +8,6 @@
 	h5 {font-size:12px; margin:0px;}
 </style>
 
-<?php $this->title("Meet the Moms"); ?>
-
 	<h2>Meet The Moms</h2>
     <hr />
     <p>Meet Totsy's Mom Committee, our hand-picked group of mompreneurs, bloggers and website divas from across the country. Led by Totsy's Chief Mom, the Mom Committee is working for you, at your service to provide expertise, advice, trends, and more. You'll see the committee members in lots of places including our blog and social media platforms. And check them out on all their own fun sites!</p>

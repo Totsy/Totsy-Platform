@@ -11,6 +11,7 @@ use app\models\Event;
 use app\models\Affiliate;
 use app\models\Promotion;
 use app\models\CreditCard;
+use app\models\Order;
 use app\models\Promocode;
 use app\models\OrderShipped;
 use app\models\Service;
@@ -32,6 +33,7 @@ class OrdersController extends BaseController {
 	protected $_classes = array(
 		'tax'       => 'app\extensions\AvaTax',
 		'order'     => 'app\models\Order',
+		'creditCard' => 'app\models\CreditCard',
 		'affiliate' => 'app\models\Affiliate'
 	);
 
@@ -332,12 +334,19 @@ class OrdersController extends BaseController {
 	public function review() {
 		$taxClass   = $this->_classes['tax'];
 		$orderClass = $this->_classes['order'];
-
+		$creditCardClass = $this->_classes['creditCard'];
+		
+		if (Session::check('cc_infos') || Session::check('CyberSourceProfile')) {
+			$payment_info = true;
+		} else {
+			$payment_info = false;
+		}
+		
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
 			return $this->redirect(array('Orders::shipping'));
 		}
-		if (!Session::check('billing') || !Session::check('cc_infos')) {
+		if (!Session::check('billing') || !$payment_info) {				
 			return $this->redirect(array('Orders::payment'));
 		}
 		#Check Expires
@@ -372,8 +381,6 @@ class OrdersController extends BaseController {
 
 		$i = 0;
 		foreach ($cart as $cartValue) {
-
-
 			#Get Last Expiration Date
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
@@ -421,7 +428,22 @@ class OrdersController extends BaseController {
 		#Calculate Order Total
 		$total = round(floatval($vars['postDiscountTotal']), 2);
 		#Read Credit Card Informations
-		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
+		if (Session::check('cc_infos')) {
+			$creditCard = $creditCardClass::decrypt((string)$user['_id']);
+		} else if (Session::check('CyberSourceProfile')) {
+			$user = Session::read('userLogin');
+			$userInfos = User::lookup($user['_id']);
+		
+			$creditCard_profileId = Session::read('CyberSourceProfile');
+			
+			foreach($userInfos['cyberSourceProfiles'] as $cyberSourceProfile) {
+				if($cyberSourceProfile['profileID'] == $creditCard_profileId) {
+					$selectedCyberSourceProfile = $cyberSourceProfile->data();
+				}
+			}					
+			
+			$creditCard = $selectedCyberSourceProfile[creditCard];
+		}
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal',
@@ -450,6 +472,7 @@ class OrdersController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_review';
 		}
+		
 		return $vars + compact(
 			'cartEmpty',
 			'order',
@@ -470,8 +493,9 @@ class OrdersController extends BaseController {
 	 * - There is a jquery check for the credit card number
 	 * @return compact
 	 */
-	public function payment() {
+	public function payment() {		
 		$orderClass = $this->_classes['order'];
+		$creditCardClass = $this->_classes['creditCard'];
 
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
@@ -493,6 +517,8 @@ class OrdersController extends BaseController {
 			'event_name',
 			'event'
 		);
+		
+		
 		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
@@ -502,67 +528,114 @@ class OrdersController extends BaseController {
 		$payment = null;
 		$checked = false;
 		$card = array();
-		$selected = array();
 		$addresses_ddwn = array();
-
 
 		#Get billing address from shipping one in session
 		$shipping = json_encode(Session::read('shipping'));
+
 		#Get Billing Address from Session
 		if (Session::read('billing')) {
 			$payment = Address::create(Session::read('billing'));
 		}
+
+		#Get CyberSourceProfiles recorded for this user
+		$userInfos = User::lookup($user['_id']);
+		$cyberSourceProfiles = array();
+		if($userInfos['cyberSourceProfiles']) {
+			$cyberSourceProfiles = $userInfos['cyberSourceProfiles'];
+		}
+		
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
+												
 			#Check If the User want to save the current address
-			if(!empty($datas['opt_save'])) {
+			if($datas['paymentInfosSave']) {
 				$save = true;
-				unset($datas['opt_save']);
 			}
-			if (!empty($datas['address_id'])) {
-				$address = Address::first(array(
-					'conditions' => array('_id' => new MongoId($datas['address_id'])
-				)));
-			}
-			#Get Credit Card Infos
-			if(!empty($datas['card_number'])) {
-				#Get Only the card informations
-				foreach($datas as $key => $value) {
-					$card_array = explode("_", $key);
-					if ($card_array[0] == 'card') {
-						$card[$card_array[1]] = $value;
+			//if the user selected a saved credit card, than prepopulate the relevant fields to go to the order review page
+
+			if ($datas['savedCreditCard'] && !$save) {
+				$creditCard_profileId = $datas['savedCreditCard'];
+
+				foreach($userInfos['cyberSourceProfiles'] as $cyberSourceProfile) {
+					if($cyberSourceProfile['profileID'] == $creditCard_profileId) {
+						Session::write('CyberSourceProfile', $creditCard_profileId);
+						$selectedCyberSourceProfile = $cyberSourceProfile->data();
+						Session::write('billing', $selectedCyberSourceProfile['billing']);
 					}
-				}
-			}
-			$cc_infos = CreditCard::create($card);
-			#Check credits cards informations
-			if($cc_infos->validates()) {
-				#Encrypt CC Infos with mcrypt
-				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
-				
-				
+				}				
+												
 				$cc_passed = true;
+				$billing_passed = true;
 				#Remove Credit Card Errors
 				Session::delete('cc_error');
-			}
-			#In case of normal submit (no ajax one with the checkbox)
-			if(empty($datas['opt_shipping_select']) && empty($datas['address_id'])) {
-				#Get Only address informations
-				foreach($datas as $key => $data) {
-					if (strlen(strstr($key,'card')) == 0 && strlen(strstr($key,'opt')) == 0) {
-						$address_post[$key] = $data;
+			} else { 	
+				if($save) {
+					$creditCard[type] = $datas['card_type'];
+					$creditCard[number] = $datas['card_number'];
+					$creditCard[year] = $datas['card_year'];
+					$creditCard[month] = $datas['card_month'];
+					$creditCard[code] = $datas['card_code'];
+	
+					$vars['billingAddr']['firstname'] = $datas[firstname];
+					$vars['billingAddr']['lastname'] = $datas[lastname];
+					$vars['billingAddr']['address'] = $datas[address];
+					$vars['billingAddr']['address2'] = $datas[address2];
+					$vars['billingAddr']['city'] = $datas[city];
+					$vars['billingAddr']['state'] = $datas[state];
+					$vars['billingAddr']['zip'] = $datas[zip];
+					$vars['user'] = $user;
+					$vars['creditCard'] = $creditCard;
+					$vars['savedByUser'] = true;
+				
+				 	$creditCardClass::add($vars);
+				}
+	
+				if (!empty($datas['address_id'])) {
+					$address = Address::first(array(
+						'conditions' => array('_id' => new MongoId($datas['address_id'])
+					)));
+				}
+				#Get Credit Card Infos
+				if(!empty($datas['card_number'])) {
+					#Get Only the card informations
+					foreach($datas as $key => $value) {
+						$card_array = explode("_", $key);
+						if ($card_array[0] == 'card') {
+							$card[$card_array[1]] = $value;
+						}
 					}
 				}
-				$address = Address::create($address_post);
-				#Check addresses informations
-				if ($address->validates()) {
-					Session::write('billing', $address->data());
-					$billing_passed = true;
-					if (!empty($save)) {
-						$address->user_id = $user['_id'];
-						$address->type = 'Billing';
-						$address->save();
+				$cc_infos = $creditCardClass::create($card);
+				#Check credits cards informations
+				if($cc_infos->validates()) {
+					#Encrypt CC Infos with mcrypt
+					Session::write('cc_infos', $creditCardClass::encrypt($cc_infos, (string)$user['_id'], true));
+					$cc_passed = true;
+					#Remove Credit Card Errors
+					Session::delete('cc_error');
+				}
+				
+				#In case of normal submit (no ajax one with the checkbox)
+				if(empty($datas['opt_shipping_select']) && empty($datas['address_id'])) {
+					#Get Only address informations
+					foreach($datas as $key => $data) {
+						if (strlen(strstr($key,'card')) == 0 && strlen(strstr($key,'opt')) == 0) {
+							$address_post[$key] = $data;
+						}
+					}
+					$address = Address::create($address_post);
+					#Check addresses informations
+					if ($address->validates()) {
+						Session::write('billing', $address->data());
+						$billing_passed = true;
+						if (!empty($save)) {
+							$address->user_id = $user['_id'];
+							$address->type = 'Billing';
+							unset($address->paymentInfosSave); //remove the payment info saved flag on the billing address storage.
+							$address->save();
+						}
 					}
 				}
 			}
@@ -572,12 +645,18 @@ class OrdersController extends BaseController {
 			}
 			$data_add = array();
 			if (!empty($address)) {
-				$data_add = $address->data();
+				if(is_array($address)) {
+					$data_add = $addres;
+				} else {
+					$data_add = $address->data();
+				}
 			}
 			$payment = Address::create(array_merge($data_add,$card));
 			#Init datas
 			$payment->shipping_select = '0';
-		}
+		} //END OF POST / REQUEST DATA
+		
+		
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Billing')
@@ -589,10 +668,10 @@ class OrdersController extends BaseController {
 				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id']))) {
 					$address = $value;
 				}
-				#Get selected ddwn address
-				if((string)$value['_id'] == $address['_id']) {
-					$selected = (string) $value['_id'];
+				foreach($value as $key => $addressInfo) {
+					$billingAddresses[(string)$value['_id']][$key] = $addressInfo;
 				}
+				
 				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
@@ -611,7 +690,7 @@ class OrdersController extends BaseController {
 		$cartEmpty = ($cart->data()) ? false : true;
 		if (Session::check('cc_error')){
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
-				$card = $orderClass::creditCardDecrypt((string)$user['_id']);
+				$card = $creditCardClass::decrypt((string)$user['_id']);
 				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
@@ -633,17 +712,31 @@ class OrdersController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_payment';
 		}
-		return compact('address',
+		
+		
+		$saved_by_user = 0;
+		foreach($cyberSourceProfiles as $cyberSourceProfile) {
+			if ($cyberSourceProfile[savedByUser]) {
+				$saved_by_user++;
+			}
+		}
+		if ($saved_by_user == 0) {
+			$cyberSourceProfiles = array();			
+		}
+		
+		return compact(
+			'billingAddresses',
+			'address',
 			'addresses_ddwn',
-			'selected',
 			'cartEmpty',
 			'payment',
 			'shipping',
 			'shipDate',
-			'cartExpirationDate'
+			'cartExpirationDate',
+			'cyberSourceProfiles'
 		);
 	}
-
+	
 	/**
 	 * Group all the items in an order by their corresponding event.
 	 *

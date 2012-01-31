@@ -5,7 +5,7 @@
 	var item_id = "<?php echo $item->_id?>";
 </script>
 
-<?php echo $this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
+<?php echo $this->html->script(array('cart-timer.js?v='.filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-timer.js'), 'cart-items-timer.js?v='. filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-items-timer.js'), 'cart-popup.js?v=' . filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-popup.js')));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?php echo $this->view()->render( array('element' => 'popupCartItems') ); ?>
@@ -182,7 +182,8 @@
 			<?php endif ?>
 		</div>
 	</div>
-	<div style="padding: 10px 0px; text-align: center ! important; position: absolute; top: 253px; right: 153px;">
+	<div class="clear"></div>
+	<div class="grid_3" style="padding-left:11px;">
 	    <?php echo $spinback_fb; ?>
 	</div>
 </div>
@@ -285,4 +286,3 @@ c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponen
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>
-

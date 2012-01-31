@@ -1,3 +1,7 @@
+<?php
+	// @DG-2012.01.18 - this is the current/original woopsies/maintenance page… 
+	// replaced with separate 500 (error) and 503 (maintenance) pages, which now live in /webroot/error
+?>
 <!doctype html>
 <html>
 <head>

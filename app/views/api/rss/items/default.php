@@ -36,8 +36,24 @@
 			<description/>
 <?php } ?>
 			<guid isPermaLink="false"><?php echo $item['_id']?></guid>
+<?php if (count($item['categories'])>0){
+			foreach ($item['categories'] as $c){ ?>
+			<category><?php echo $c; ?></category><?php		
+			}
+} ?>
+			<tns:brand><?php echo htmlspecialchars($item['vendor']); ?></tns:brand>
+			<tns:event id="<?php echo $item['event']['0']; ?>" />
 			<tns:instock><?php echo $item['total_quantity']>0?true:false;?></tns:instock>
 			<tns:discount><?php echo floor($item['percent_off']); ?></tns:discount>
+			<tns:ages><?php
+			if (count($item['ages'])>0){
+				foreach ($item['ages'] as $age){
+				?>
+				<tns:age><?php echo $age; ?></tns:age>
+				<?php 
+				}
+			} ?>
+			</tns:ages>
 			<ev:startdate><?php echo date('c',$item['start_date']['sec']); ?></ev:startdate>
 			<ev:enddate><?php echo date('c',$item['end_date']['sec']); ?></ev:enddate>
 			<ev:type>sale</ev:type>

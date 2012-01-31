@@ -20,10 +20,8 @@
 						<div class="tc login-inner register-inner">
 
 							<div id='logo'>
-                            <h1>
                               <a href="/login/?fbcancel=true" title="Totsy.com">
                                 Totsy</a>
-                              </h1>
                             </div>
 							
 							<div id="intro-copy">
@@ -85,7 +83,7 @@
 											'class' => 'required'
 											));
 										?>
-										<?php echo $this->form->text('email', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->text('email', array('class' => 'inputbox', 'value'=> $fbuser['email'])); ?>
 										<?php echo $this->form->error('email'); ?>
 									</div>
 									<div class="form-row">
@@ -94,7 +92,7 @@
 											'class' => 'required'
 											));
 										?>
-										<?php echo $this->form->text('confirmemail', array('class' => 'inputbox')); ?>
+										<?php echo $this->form->text('confirmemail', array('class' => 'inputbox','value'=> $fbuser['email'])); ?>
 										<?php echo $this->form->error('confirmemail'); ?>
 										<?php echo $this->form->error('emailcheck'); ?>
 									</div>

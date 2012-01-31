@@ -25,11 +25,33 @@ class BaseController extends \lithium\action\Controller {
 
 		parent::__construct($config);
 		if ($user && $this->request->is('mobile')) {
-		 		$this->_render['layout'] = 'mobile_main';
-			} else {
-				$this->_render['layout'] = 'main';
-			}
+			$this->_render['layout'] = 'mobile_main';
+		} else {
+			$this->_render['layout'] = 'main';
+		}
 	}
+
+
+	/** 
+		get cart subtotal for price
+	*/
+	public function getCartSubTotal () {
+
+	     $subTotal = 0;
+	
+		foreach(Cart::active() as $cartItem) {
+			$currentSec = is_object($cartItem->expires) ? $cartItem->expires->sec : $cartItem->expires;
+			if ($cartData['cartExpirationDate'] < $currentSec) {
+				$cartData['cartExpirationDate'] = $currentSec;
+			}
+	
+			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
+			$i++;
+		}
+
+		return $subTotal;
+	}
+
 
 	/**
 	 * Get the userinfo for the rest of the site from the session.
@@ -41,26 +63,34 @@ class BaseController extends \lithium\action\Controller {
             $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
             $this->set(compact('branch'));
         }
+        if(Environment::is('production')){
+            $version = "<!-- Current version: " . $this->currentVersion() . " -->";
+            $this->set(compact('version'));
+        }
+
 		$userInfo = Session::read('userLogin');
 		$this->set(compact('userInfo'));
 		$cartCount = Cart::itemCount();
+		
+		$cartSubTotal = $this->getCartSubTotal();
+		
         User::setupCookie();
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
-	    
-		/**
-		 * Setup all the necessary facebook stuff
-		 */
-		
+
 		/**
 		 * Setup all the necessary facebook stuff
 		 */
 
-		$this->fbsession = $fbsession = FacebookProxy::getUser();		
-		$fbconfig = FacebookProxy::config(); 
+		/**
+		 * Setup all the necessary facebook stuff
+		 */
+
+		$this->fbsession = $fbsession = FacebookProxy::getUser();
+		$fbconfig = FacebookProxy::config();
 
 		if ($this->fbsession) {
-			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));
 		} else {
 			$fblogout = "/logout";
 		}
@@ -74,8 +104,8 @@ class BaseController extends \lithium\action\Controller {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/			    
-			    if ($user->deactivated == true) {			    
+			    **/
+			    if ($user->deactivated == true) {
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
 					//FacebookProxy::setSession(null);
@@ -84,7 +114,7 @@ class BaseController extends \lithium\action\Controller {
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
 		}
-		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
+		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout', 'cartSubTotal'));
 		$this->freeShippingEligible($userInfo);
 		$this->tenOffFiftyEligible($userInfo);
 		/**
@@ -140,7 +170,7 @@ class BaseController extends \lithium\action\Controller {
 		$this->set(compact('pixel'));
 
 
-			
+
 	}
 
 	/**
@@ -244,6 +274,18 @@ class BaseController extends \lithium\action\Controller {
 
 		return array_pop($head);
 	}
+	/**
+	* Displays what git version is deployed
+	**/
+	public function currentVersion() {
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/refs/heads/master"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
+	}
 
 	/**
 	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
@@ -260,6 +302,7 @@ class BaseController extends \lithium\action\Controller {
 			Session::delete('cc_infos');
 		}
 	}
+		
 }
 
 ?>

@@ -1,4 +1,3 @@
-<?php $this->title("Careers"); ?>
 <h2>Careers</h2>
 <hr />
 <iframe src="https://jobs-totsy.icims.com/jobs/intro" frameborder="0" width="100%" height="725"></iframe>
