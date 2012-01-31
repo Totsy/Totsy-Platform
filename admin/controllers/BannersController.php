@@ -71,12 +71,12 @@ class BannersController extends \lithium\action\Controller {
 				var_dump($success = $banner->save($bannerDatas));
 				if ($success) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
-					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
+					FlashMessage::write("Your banner has been saved.", array('class' => 'pass'));
 					$this->redirect('Banners::view');
 				}
 				$banner->end_date = $this->request->data['end_date'];
 			} else {
-				FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
+				FlashMessage::write("You must fill all the requested informations", array('class' => 'warning'));
 			}
 		}
 		return compact('banner');
@@ -127,11 +127,11 @@ class BannersController extends \lithium\action\Controller {
 				//Create and save the new banner
 				if ($banner->save()) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
-					FlashMessage::set("Your banner has been saved.", array('class' => 'pass'));
+					FlashMessage::write("Your banner has been saved.", array('class' => 'pass'));
 					$this->redirect('Banners::view');
 				}
             }else {
-                FlashMessage::set("You must fill all the requested informations", array('class' => 'warning'));
+                FlashMessage::write("You must fill all the requested informations", array('class' => 'warning'));
             }
 		}
 		return compact('banner');
