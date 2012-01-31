@@ -121,6 +121,7 @@ class BaseController extends \lithium\action\Controller {
         $redirected = false;
         
         if( $userInfo['invited_by']=="mamasource" && $redirected==false) {
+			setcookie("PHPSESSID","",time()-3600,"/"); // delete session cookie 
         	$this->redirect("http://kkim.totsy.com/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
         	$redirected = true;
         } 
