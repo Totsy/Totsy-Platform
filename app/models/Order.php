@@ -55,15 +55,32 @@ class Order extends Base {
 	 */
 	public static function process($data, $cart, $vars, $avatax) {
 		$payments = static::$_classes['payments'];
-		$usersCollection = User::Collection();
-		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($vars['user']['_id'])));
+		$userInfos = User::lookup($vars['user']['_id']);
 		$order = static::create(array('_id' => new MongoId()));
-		#Read Credit Card Informations
-		$creditCard = $vars['creditCard'];
-		$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
-		#Create Address Array
-		if (!$cyberSourceProfile) {
-			$address = array(
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		if ($cart) {
+			#Get CreditCard
+			$creditCard = $vars['creditCard'];
+			#Switch Soft Authorized Amount Transaction depending of Credit Card Type
+			if($creditCard['type'] == 'visa') {
+				$authTotalAmount = 0;
+			} else {
+				$authTotalAmount = 1;
+			}
+			#If User has a CyberSource Profile, Use Token
+			$auth = null;
+			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
+			if(!empty($cyberSourceProfile)) {
+				$cybersource = new CyberSource($payments::config('default'));
+				$profile = $cybersource->profile($cyberSourceProfile['profileID']);
+				if($profile instanceof Customer) {
+					$auth = $payments::authorize('default', $authTotalAmount, $profile, array('orderID' => $order->order_id));
+				}
+			}
+			#In Case No CyberSourceProfile has been found
+			if(empty($auth)) {
+				#Read Credit Card Informations
+				$address = array(
 					'firstName' =>  $vars['billingAddr']['firstname'],
 					'lastName' => $vars['billingAddr']['lastname'],
 					'address' => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
@@ -72,40 +89,13 @@ class Order extends Base {
 					'zip' => $vars['billingAddr']['zip'],
 					'country' => $vars['billingAddr']['country'] ?: 'US',
 					'email' =>  $vars['user']['email'] 
-			);
-			#Create Payment Object that contains Payment Informations
-			$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
-				'billing' => $payments::create('default', 'address', $address)
-				)
-			);
-		}
-		
-		if ($cart) {
-			$inc = 0;
-			foreach ($cart as $item) {
-				$item['line_number'] = $inc;
-				$item['status'] = 'Order Placed';
-				$items[] = $item;
-				++$inc;
-			}
-			#Switch Authorized Amount Transaction depending of CC Type
-			if($creditCard['type'] == 'visa') {
-				$authTotalAmount = 0;
-			} else {
-				$authTotalAmount = 1;
-			}
-
-			#If User has a CyberSource Profile, Use Token
-			if(empty($cyberSourceProfile)) {
-				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
-			} else {
-				$cybersource = new CyberSource($payments::config('default'));
-				$profile = $cybersource->profile($cyberSourceProfile['profileID']);
-				if($profile instanceof Customer) {
-					$auth = $payments::authorize('default', $authTotalAmount, $profile);
-				} else {
-					$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
-				}
+				);
+				#Create Payment Object that contains Payment Informations
+				$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
+					'billing' => $payments::create('default', 'address', $address)
+					)
+				);
+				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
 			}
 			if (!$auth->success()) {
 				#Reverse Transaction that Failed
@@ -131,11 +121,16 @@ class Order extends Base {
 	 */
 	public static function recordOrder($vars, $cart, $order, $avatax, TransactionResponse $auth, $items, $authTotalAmount, $creditCard) {
 		$tax = static::$_classes['tax'];
-		$payments = static::$_classes['payments'];
-		$usersCollection = User::Collection();
 		$user = Session::read('userLogin');
 		$service = Session::read('services', array('name' => 'default'));
-		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		#Update Items Status
+		$inc = 0;
+		foreach ($cart as $item) {
+			$item['line_number'] = $inc;
+			$item['status'] = 'Order Placed';
+			$items[] = $item;
+			++$inc;
+		}
 		#Save Credits Used
 		if ($vars['cartCredit']->credit_amount) {
 			User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
@@ -207,6 +202,7 @@ class Order extends Base {
 		}
 		if(empty($cyberSourceProfile)) {
 			$vars['savedByUser'] = false;
+			$vars['order_id'] = $order->order_id;
 			$cyberSourceProfile = CreditCard::add($vars);
 		}
 		$order->cyberSourceProfileId = $cyberSourceProfile['profileID'];
@@ -229,6 +225,7 @@ class Order extends Base {
 				'overSizeHandling' => $vars['overShippingCost'],
 				'handlingDiscount' => $vars['shippingCostDiscount'],
 				'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
+				'email' => $user['email'],
 				'user_id' => (string) $user['_id'],
 				'tax' => (float) $avatax['tax'],
 				'card_type' => $creditCard['type'],
