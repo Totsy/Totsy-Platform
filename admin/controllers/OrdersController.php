@@ -586,6 +586,8 @@ class OrdersController extends BaseController {
 						'auth' => $auth->export(),
 						'processor' => $auth->adapter,
 						'authTotal' => $order['total']
+					), '$unset' => array(
+						'auth_error' => 1
 					)), array( 'upsert' => true)
 			);
 			#Add to Auth Records Array
