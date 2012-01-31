@@ -12,9 +12,10 @@ use app\models\Affiliate;
 
 
 class EventsController extends BaseController {
-
+// if you change this here also remember to change it in mobile and the app (it's hard coded)
 	private $_mapCategories = array (
 		'category' =>  array(
+			'all' => "All",
 			'girls-apparel' => "Girls Apparel",
 			'boys-apparel' => "Boys Apparel",
 			'shoes' => "Shoes",
@@ -25,6 +26,7 @@ class EventsController extends BaseController {
 			'moms-dads' => "Moms and Dads"
 		),
 		'age' => array(
+			'all' => 'All',
 			'newborn' => 'Newborn 0-6M',
 			'infant' => 'Infant 6-24M',
 			'toddler' => 'Toddler 1-3 Y',
@@ -75,6 +77,11 @@ class EventsController extends BaseController {
 				$openEvents[$i]['eventItems'][] = $eachitem;
 			}
 		}
+		//check if mobile or not
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_category';
+		}
 		
 		return compact('openEvents', 'items', 'categories', 'eventCount');
 	}
@@ -123,7 +130,10 @@ class EventsController extends BaseController {
 		//hack to make the ages appear on top of same view file		
 		$categories = $ages;
 		$this->_render['template'] = 'category';
-	
+		if($this->request->is('mobile')){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_age';
+		}
 		return compact('openEvents', 'items', 'categories', 'eventCount');
 	}
 
@@ -174,7 +184,6 @@ class EventsController extends BaseController {
 	if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_index';
-		} 
 	
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
 	}
