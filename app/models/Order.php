@@ -99,7 +99,7 @@ class Order extends Base {
 			}
 			if (!$auth->success()) {
 				#Reverse Transaction that Failed
-				$payments::void('default', $auth-, array(
+				$payments::void('default', $auth, array(
 					'processor' => $auth->adapter
 				));
 				Session::write('cc_error', implode('; ', $auth->errors));
