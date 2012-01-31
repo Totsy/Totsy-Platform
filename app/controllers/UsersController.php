@@ -378,9 +378,11 @@ class UsersController extends BaseController {
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-		
+
 		//autogenerate password here, just fbregister($data) instead, bypassing that form	
-		if (!$success) {
+		if ($success) {
+			$this->redirect('Events::index');
+		} else {
 			if (!empty($userfb)) {
 				if (!$fbCancelFlag) {
 					$this->fbregister();
@@ -780,6 +782,7 @@ class UsersController extends BaseController {
 				//$userfb = FacebookProxy::getUser();
 				$user->facebook_info = $userfb;
 				$user->save(null, array('validate' => false));
+				$success = true;
 
 				$sessionWrite = $self->writeSession($user->data());
 

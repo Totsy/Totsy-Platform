@@ -42,9 +42,9 @@ $('#password-prompt a.btn-submit').live('click', function(e) {
 	<div data-role="header"><h2>Enter your Password</h2></div>
 	<div data-role="content">
 <? if($user['requires_set_password']): ?>
-		<h3>You've made it this far - let's create a Totsy account!</h3>
+		<h3>Let's set a password for your Totsy account!</h3>
 <? else: ?>
-		<h3>You must enter your password to continue.</h3>
+		<h3>Please confirm your Totsy password to purchase:</h3>
 <? endif; ?>
 		<form action="" method="post">
 <? if($user['requires_set_password']): ?>
