@@ -543,7 +543,8 @@ class OrdersController extends BaseController {
 		#Cancel Previous Transaction	
 		if($order['card_type'] != 'amex' && !empty($order['authTotal'])) {
 			$auth = Processor::void('default', $order['auth'], array(
-				'processor' => isset($order['processor']) ? $order['processor'] : null
+				'processor' => isset($order['processor']) ? $order['processor'] : null,
+				'orderID' => $order['order_id']
 			));
 		}
 		$userInfos = User::lookup($order['user_id']);
@@ -561,7 +562,7 @@ class OrdersController extends BaseController {
 
 		))));
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', $order['total'], $card);
+		$auth = Processor::authorize('default', $order['total'], $card, array('orderID' => $order['order_id']));
 		if($auth->success()) {
 			$customer = Processor::create('default', 'customer', array(
 				'firstName' => $userInfos['firstname'],
