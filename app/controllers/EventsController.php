@@ -187,6 +187,7 @@ class EventsController extends BaseController {
 	
 		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
 	}
+	}
 
 	public function view() {
 		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
