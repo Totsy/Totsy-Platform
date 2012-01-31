@@ -165,18 +165,18 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 
 	public function reAuthorize($customerId, $type, $card_number, $total, $authTotal, $fullAmount = false, $voidTransaction = false, $delay = 0) {
 		$ordersCollection = Order::Collection();
+		#Create Temporary order
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($customerId);
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('default', $authTotal, $profile);
+		$authorizeObject = Processor::authorize('default', $authTotal, $profile, array('orderID' => $order->order_id));
 		$this->assertTrue($authorizeObject->success());		
 		#Temporary User Creation
 		$user = User::create(array('_id' => new MongoId()));
 		$user->save($this->_UserInfos);
-		#Temporary Order Creation
-		$order = Order::create(array('_id' => new MongoId()));
 		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
-		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		$order->save(array(
 				'total' => $total,
 				'card_type' => $type,

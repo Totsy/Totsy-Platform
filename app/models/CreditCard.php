@@ -148,9 +148,14 @@ class CreditCard extends \lithium\data\Model {
 					'country' => $vars['billingAddr']['country'] ?: 'US',
 					'email' =>  $vars['user']['email'] 
 			);
-
+			if($vars['order_id']) {
+				$order_id = $vars['order_id'];
+			} else {
+				$order_id = null;
+			}
 			#Create A User Profile with CC Infos Through Auth.Net
 			$customer = $payments::create('default', 'customer', array(
+				'id' => $order_id,
 				'firstName' => $userInfos['firstname'],
 				'lastName' => $userInfos['lastname'],
 				'email' => $userInfos['email'],

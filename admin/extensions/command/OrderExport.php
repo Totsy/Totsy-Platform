@@ -391,6 +391,9 @@ class OrderExport extends Base {
 							$orderFile[$inc]['Country'] = '';
 							$orderFile[$inc]['OrderNum'] = $order['order_id'];
 							$orderFile[$inc]['SKU'] = $sku;
+							if (empty($sku)) {
+								$orderFile[$inc]['SKU'] = Item::sku($orderItem['vendor'], $orderItem['vendor_style'], $item['size'], $item['color']);
+							}
 							$orderFile[$inc]['Qty'] = $item['quantity'];
 							$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 							$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -647,6 +650,9 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
 									$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
 									$purchaseOrder[$inc]['SKU'] = $eventItem['sku_details'][$item['size']];
+									if (empty($eventItem['sku_details'][$item['size']])) {
+										$purchaseOrder[$inc]['SKU'] = Item::sku($eventItem['vendor'], $eventItem['vendor_style'], $item['size'], $item['color']);
+									}
 									if (empty($purchaseOrder[$inc]['Qty'])) {
 										$purchaseOrder[$inc]['Qty'] = $item['quantity'];
 									} else {
