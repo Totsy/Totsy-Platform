@@ -1,7 +1,5 @@
-<?php 
-use lithium\net\http\Router; 
-use lithium\storage\Session;
-?>
+<?php use lithium\net\http\Router; ?>
+
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:og="http://ogp.me/ns#"
@@ -9,43 +7,23 @@ use lithium\storage\Session;
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy, the private sale site for Moms</title>
-	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
+	<meta property="fb:app_id" content="181445585225391"/>
 	<meta property="og:site_name" content="Totsy"/>
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	
-<?php
-
-$baseCSSPath = "";
-$jQueryAllPath = "";
+	<?=$this->html->style(array('mamapedia/base.css', '960.css', 'jquery_ui_custom/jquery.ui.all.mamapedia.css'), array('media' => 'screen')); ?>
 	
-	if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
-			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
-			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
-		} else {
-			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
-			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
-		}
-?>
-	
-	<?php echo $this->html->style(array($baseCSSPath, '960.css', $jQueryAllPath), array('media' => 'screen')); ?>
-		
 	<script src="http://www.google.com/jsapi"></script>
-	<script> google.load("jquery", "1.6.1", {uncompressed:true});</script>
-	<script> google.load("jqueryui", "1.8.13", {uncompressed:true});</script>
+	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
+	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
     <!-- end jQuery / jQuery UI -->
             
-    <?php echo $this->html->script(array('jquery.backstretch.min.js', 'jquery.uniform.min.js' )); ?>
+    <?=$this->html->script(array('jquery.backstretch.min.js', 'jquery.uniform.min.js' )); ?>
     
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
-	
 	<script type="text/javascript">
-		//this is used for swapping backgrounds on registration pages that pass in affiliate codes	
-		var affBgroundImage = "";
-	</script>
-	
-		<script type="text/javascript">	
 
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
@@ -86,41 +64,26 @@ $jQueryAllPath = "";
 	<script type="text/javascript">
 
 	    jQuery(document).ready(function($){
-	    	if(affBgroundImage!=="") {
-				$.backstretch(affBgroundImage);
-			} else {
-	    		$.backstretch("<?php echo $imgDirectory . $image;?>");
-			}
+	    	$.backstretch("<?=$imgDirectory . $image;?>");
 	    });
 
 	</script>
-	
-	<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
-	
 	<script>
-		var fbLogout = "<?php echo $logout; ?>";	
-	
-      	window.fbAsyncInit = function() {
-        	FB.init({
-        	  appId   : <?php echo $fbconfig['appId']; ?>,
-        	  session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
-        	  oauth	  : true, 
-        	  status  : true, // check login status
-        	  cookie  : true, // enable cookies to allow the server to access the session
-        	  oauth   : true, 
-        	  xfbml   : true // parse XFBML
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId   : <?php echo $fbconfig['appId']; ?>,
+          session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
+          status  : true, // check login status
+          oauth   : true, 
+          cookie  : true, // enable cookies to allow the server to access the session
+          xfbml   : true // parse XFBML
         });
 
         // whenever the user logs in, we refresh the page
         FB.Event.subscribe('auth.login', function() {
           window.location.reload();
         });
-        
-         FB.Event.subscribe('auth.logout', function() {
-          window.location.reload();
-        });
-        
-       };
+      };
 
       (function() {
         var e = document.createElement('script');
@@ -129,5 +92,5 @@ $jQueryAllPath = "";
         document.getElementById('fb-root').appendChild(e);
       }());
     </script>
-    </body>
+  </body>
 </html>

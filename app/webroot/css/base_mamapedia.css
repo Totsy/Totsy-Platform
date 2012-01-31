@@ -54,7 +54,7 @@ body {
 }
 
 a:link,a:visited {
-	color:#ed1c25;
+	color:#de6076;
 	text-decoration:none;
 }
 
@@ -84,7 +84,7 @@ ol {
 
 h1,h2,h3,h4,h5 {
 	font-weight:normal;
-	color:#ed1c25;
+	color:#de6076;
 	line-height:normal;
 }
 
@@ -185,7 +185,7 @@ hr.no-show {
 }
 
 .red {
-	color:#ed1c25;
+	color:#de6076;
 }
 
 .no-show {
@@ -388,6 +388,9 @@ span.breadcrumbs span {
 	background-image:url(../img/caps.png);
 }
 
+div#noscript {display:block; margin:1em 10px; padding:0.5em; background:#ececec; color:#333; font-size:14px; font-weight: bold; text-align: center;}
+.js div#noscript {display:none;}
+
 #topper {
 	background-position:left top;
 }
@@ -407,9 +410,6 @@ span.breadcrumbs span {
 	visibility: hidden;
 }
 *:first-child+html .group {min-height:1px;} /* IE7 */
-
-div#noscript {display:block; margin:1em 10px; padding:0.5em; background:#ececec; color:#333; font-size:14px; font-weight: bold; text-align: center;}
-.js div#noscript {display:none;}
 
 /* #wrapper { width:960px; padding:1px 18px 0 18px; margin:0 auto; background:url(../img/cnt-bg.png) repeat-y #FFF } */
 
@@ -448,7 +448,7 @@ div#noscript {display:block; margin:1em 10px; padding:0.5em; background:#ececec;
 }
 
 #welcome strong {
-	color:#ed1c25;
+	color:#de6076;
 }
 
 a#cs {
@@ -620,7 +620,7 @@ li.item5 a:hover,li.item5.over a,li.active.item5 a {
 
 #main-nav li ul a:hover,#main-nav li ul li.active a:link,#main-nav li ul li.active a:visited {
 	background:#FFF;
-	color:#ed1c25;
+	color:#de6076;
 	text-decoration:none;
 }
 
@@ -649,11 +649,11 @@ li.item5 a:hover,li.item5.over a,li.active.item5 a {
 }
 
 #left ul.menu a:hover {
-	color:#ed1c25;
+	color:#de6076;
 }
 
 #left ul.menu li.active a:link,#left ul.menu li.active a:visited {
-	color:#ed1c25;
+	color:#de6076;
 	font-weight:bold;
 }
 
@@ -775,20 +775,14 @@ li.item5 a:hover,li.item5.over a,li.active.item5 a {
 .v-bottom {
 	vertical-align:bottom;
 }
-section > header {margin:0 5px;}
+
 h2.page-title {
-	margin:0 0 20px 0;
+	margin:0 0 0px 5px;
 	font-weight:normal;
 	font-size:20px;
 	text-align:left !important;
 }
-.fullwidth > section > header h2 {
-	margin-bottom:6px; padding-bottom:6px;
-	border-bottom:1px solid #ddd;
-}
-#events-wrap > header h2 {
-	border: none;
-}
+
 #page p {
 	margin-bottom:10px;
 }
@@ -1021,7 +1015,7 @@ ul.content-list {
 .ui-tabs .ui-tabs-panel {
 	display:block;
 	padding:10px 0px;
-	border-top:2px solid #ed1c25;
+	border-top:2px solid #de6076;
 }
 
 .ui-tabs .ui-tabs-hide {
@@ -1065,7 +1059,7 @@ ul.content-list {
 }
 
 .ui-state-default a,.ui-state-default a:link,.ui-state-default a:visited {
-	background:url(../img/tab-bg-gray.gif) right top no-repeat;
+	/*background:url(../img/tab-bg-gray.gif) right top no-repeat; */
 	color:#FFF;
 	text-decoration:none;
 }
@@ -1074,13 +1068,13 @@ ul.content-list {
 }
 
 .ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active {
-	background:url(../img/tab-bg-red.gif) left top no-repeat #ed1c25;
+	background:url(../img/tab-bg-red.gif) left top no-repeat #de6076;
 	color:#FFF;
 	padding:0 0 0 4px;
 }
 
 .ui-state-active a,.ui-widget-content .ui-state-active a,.ui-widget-header .ui-state-active a {
-	background:url(../img/tab-bg-red.gif) right top no-repeat;
+	/*background:url(../img/tab-bg-red.gif) right top no-repeat; */
 	color:#FFF;
 }
 
@@ -1501,7 +1495,7 @@ input.inputbox,textarea.inputbox {
 .listingCountdown {
 	font-size:20px;
 	float:right;
-	color:#ed1c25;
+	color:#de6076;
 }
 
 textarea {
@@ -1531,7 +1525,7 @@ textarea {
 }
 
 .logo-bot {
-	background:url(../img/logo.png) 98% 98% no-repeat #FFF;
+	background:url(../img/mamapedia/logo.png) 98% 98% no-repeat #FFF;
 }
 
 button.btn {
@@ -1559,7 +1553,7 @@ label.radio {
 }
 
 .flex-btn {
-	background:#ed1c25;
+	background:#de6076;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
 	border-radius:5px;
@@ -1573,7 +1567,7 @@ label.radio {
 }
 
 .flex-btn1 {
-	background:#ed1c25;
+	background:#de6076;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
 	border-radius:5px;
@@ -1588,7 +1582,7 @@ label.radio {
 }
 
 .flex-btn-2 {
-	background:#ed1c25;
+	background:#de6076;
 	-moz-border-radius:5px;
 	-webkit-border-radius:5px;
 	border-radius:5px;
@@ -1673,7 +1667,7 @@ a:link.flex-btn-2,a:visited.flex-btn-2 {
 }
 
 div.current {
-	border-top:4px solid #ed1c25;
+	border-top:4px solid #de6076;
 	padding:20px 0;
 }
 
@@ -1698,7 +1692,7 @@ div.current {
 }
 
 .tabs dt:hover,.tabs dt.open {
-	background:#ed1c25;
+	background:#de6076;
 }
 
 .send-left {
@@ -1865,7 +1859,7 @@ a.sm-twitter-md {
 
 .p-container h2:hover {
 	text-decoration:none;
-	color:#ed1c25;
+	color:#de6076;
 }
 
 h2:link .p-container .details strong {
@@ -1879,7 +1873,7 @@ h2:link .p-container .details strong {
 	font-size:20px;
 
 	
-/* color:#ed1c25; */
+/* color:#de6076; */
 	color:#009900;
 }
 
@@ -2411,7 +2405,7 @@ padding-left:1px
 
 .cart-remove {
 	padding:10px;
-	color:#ed1c25;
+	color:#de6076;
 }
 
 a:link.delete,a:visited.delete {
@@ -2470,7 +2464,7 @@ ol#order-details h4 {
 
 .shipping-detail {
 	background:#CCC;
-	color:#ed1c25;
+	color:#de6076;
 	padding:10px;
 	margin-top:10px;
 	font-size:12px;
@@ -2581,13 +2575,14 @@ body.login {
 	height:100%;
 }
 
-#featured-brands-box {
+#featured-brands-box{
 border:1px #eeeeee solid; 
 height:330px; 
 width:300px; 
-margin-top:83px;
+margin-top:61px;
 margin-left:20px;
 }
+
 
 #fullscreen {
 	position:relative;
@@ -2819,7 +2814,7 @@ body.login .login-sig {
 }
 
 label.required span {
-	color:#ed1c25;
+	color:#de6076;
 	font-weight:bold;
 }
 
@@ -3292,8 +3287,8 @@ body.login .our365-login #intro-copy {
 	-webkit-border-radius:6px;
 	-moz-border-radius:6px;
 	border-radius:6px;
-	border:1px solid #eb132c;
-	background:#eb132c;
+	border:1px solid #de6076;
+	background:#de6076;
 	text-align:center;
 	padding:5px;
 	color:#fff;
@@ -3599,7 +3594,7 @@ a.nivo-prevNav {
 #global_site_msg {
 	font-size:14px;
 	padding:5px;
-	background:#ed1c25;
+	background:#de6076;
 	color:#fff;
 	border-bottom:1px solid #ccc;
 	text-align:center;
@@ -3618,8 +3613,8 @@ a.nivo-prevNav {
 /************ Button ************/
 .button {
 	/*display:inline-block;*/
-	background:#ed1c25!important;
-	border:1px solid #ed1c25!important;
+	background:#de6076!important;
+	border:1px solid #de6076!important;
 	padding:5px 8px!important;
 	color:#fff!important;
 	font-size:12px!important;
@@ -3635,9 +3630,9 @@ a.nivo-prevNav {
 .button_border {
 	/*display:inline-block;*/
 	background:#fff!important;
-	border:1px solid #ed1c25!important;
+	border:1px solid #de6076!important;
 	padding:5px 8px!important;
-	color:#ed1c25!important;
+	color:#de6076!important;
 	font-size:12px!important;
 	cursor:pointer;
 	-webkit-appearance: none;
@@ -3786,7 +3781,7 @@ div.splash-details {
 	background:url(../img/gray-80-bg.png) repeat scroll 0 0 transparent;
 	padding:5px 10px 4px;
 	display:block;
-	color:#eb132c;
+	color:#de6076;
 	font-size:14px;
 	font-weight:bold;
 	position:absolute;
@@ -3852,19 +3847,19 @@ ul#navlist {
 #navlist a:link,#navlist a:visited {
 	background-color:#fff;
 	border-radius:6px 6px 6px 6px;
-	color:#EB132C;
+	color:#de6076;
 	margin:0 2px;
 	text-decoration:none;
 }
 
 #navlist a:hover {
 	color:#fff;
-	background:#EB132C;
+	background:#de6076;
 	text-decoration:none;
 }
 
 #navlist li ul li a {
-	color:#EB132C!important;
+	color:#de6076!important;
 	background:none!important;
 	font-size:12px!important;
 	left:2px;
@@ -3876,7 +3871,7 @@ ul#navlist {
 }
 
 #navlist li ul li a:hover {
-	background:#EB132C!important;
+	background:#de6076!important;
 	color:#fff!important;
 	font-size:12px!important;
 }
@@ -4229,13 +4224,13 @@ ul#navlist {
 
 #navlist a:link,#navlist a:visited {
 	border-radius:6px 6px 6px 6px;
-	color:#EB132C;
+	color:#de6076;
 	margin:0 2px;
 	text-decoration:none;
 }
 
 #navlist li a.active,#navlist a:hover {
-	background-color:#EB132C;
+	background-color:#de6076;
 	border-radius:6px 6px 6px 6px;
 	-moz-border-radius:6px 6px 6px 6px;
 	-webkit-border-radius:6px 6px 6px 6px;
@@ -4246,12 +4241,12 @@ ul#navlist {
 
 #navlist a:hover {
 	color:#fff;
-	background:#EB132C;
+	background:#de6076;
 	text-decoration:none;
 }
 
 #navlist li ul li a {
-	color:#EB132C!important;
+	color:#de6076!important;
 	background:none!important;
 	font-size:12px!important;
 	left:2px;
@@ -4263,7 +4258,7 @@ ul#navlist {
 }
 
 #navlist li ul li a:hover {
-	background:#EB132C!important;
+	background:#de6076!important;
 	color:#fff!important;
 	font-size:12px!important;
 }
@@ -4400,7 +4395,7 @@ Text Align > left / right
 	-moz-border-radius:40px; 
 	-webkit-border-radius:40px; 
 	border-radius:40px; 
-	background:#EB132C; 
+	background:#de6076; 
 	color:#fff; 
 	padding:3px; 
 	width:18px; 
@@ -4412,12 +4407,12 @@ Text Align > left / right
 }
 
 #promos_and_credit input[type='submit'] { 
-	background:#ED1C25 none !important;
+	background:#de6076 none !important;
 	color: #FFF !important;
 }
 
 #promos_and_credit input[type='submit']:focus {
-	background:#ED1C25 none !important;
+	background:#de6076 none !important;
 	color: #FFF !important;
 }
 
@@ -4453,36 +4448,41 @@ Text Align > left / right
 */
 #totsy {
 	position: relative;
-	margin:43px auto 30px;
+	margin:100px auto 30px;
 	overflow: visible;
 }
 #totsy > header {
-	position:relative; z-index: 100;
-	margin:-54px 0 30px; padding-top:26px;
+	position:relative; 
+	z-index: 100;
+	margin:-54px 0 30px; 
+	padding-top:26px;
 	width:100%;
 }
 #logo {
 	float:left;
-	margin:0 25px 0 14px;
-	width:125px;
-	height:77px;
+	margin:-68px 25px 0 14px;
+	width:100%;
+	height:47px;
 }
 #logo a {
 	display: block;
 	width:100%; height: 100%;
-	background: url(../img/logo-125x77.png) 0 0 no-repeat;
+	background: url(../img/mamapedia/logo.png) 0 0 no-repeat;
 	text-indent: -999em;
 }
 #totsy > header nav {
 	float: right;
-	margin-right:7px; padding:9px 0 0;
-	width:789px;
+	margin-right:7px; 
+	min-height: 70px;
+	padding:9px 0px 0px 0px;
+	width:950px;
 	font-size:12px;
 }
 #totsy > header #invite {
 	position:absolute;
 	top:0;
 	width:100%;
+	margin: -54px 0px 0px 0px;
 }
 #totsy > header > #invite a {
 	display: block;
@@ -4491,7 +4491,6 @@ Text Align > left / right
 	padding:0 12px;
 	background: #ececec;
 	border:#ccc;
-	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 	-webkit-box-shadow: 2px 1px 6px rgba(0,0,0,0.35);
 	-moz-box-shadow: 2px 1px 6px rgba(0,0,0,0.35);
@@ -4500,7 +4499,6 @@ Text Align > left / right
 	font-size:13px;
 	text-align: center;
 	text-transform: uppercase;
-	white-space: nowrap;
 }
 #totsy > header > #invite a:hover {
 	text-decoration: none;
@@ -4518,17 +4516,16 @@ Text Align > left / right
 nav > ul > li {
 	position: relative; z-index: 100;
 	float:left;
-	margin-left:15px; padding:0 0 6px;
+	margin-right:15px; padding:0 0 6px;
 	background: #fff;
 	border:1px solid #ccc;
 	-webkit-border-radius:0 0 10px 10px;
 	-moz-border-radius:0 0 10px 10px;
 	border-radius:0 0 10px 10px;
 }
-*:first-child+html nav > ul > li {margin-left:10px;} /* IE7 */
-nav > ul > li:first-child {margin-left:0;}
+*:first-child+html nav > ul > li {margin-right:10px;} /* IE7 */
 nav > ul > li,
-#totsy > header #userUtils {box-shadow: 4px 3px 6px rgba(0,0,0,0.10); min-height:45px; }
+#totsy > header #userUtils {box-shadow: 4px 3px 6px rgba(0,0,0,0.10);}
 nav > ul > li:after,
 #totsy > header #userUtils:after {
 	content: "";
@@ -4555,7 +4552,7 @@ nav > ul li.haschild > a:hover {padding-top:19px}
 nav > ul > li > a em {
 	display:block;
 	padding-left:33px;
-	background-image: url(../img/icons-nav.png);
+	background-image: url(../img/mamapedia/icons-nav.png);
 	background-repeat: no-repeat;
 	font-weight: bold;
 }
@@ -4637,22 +4634,14 @@ nav .haschild li a:hover {
 }
 #userUtils #userinfo {
 	margin-bottom:5px;
-	float: right;
-}
-#userUtils #userinfo strong {
-	display: inline-block;
-	float: left;
-	max-width:120px; overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+	text-align: right;
 }
 #userUtils #userinfo em {
-	margin-left:8px; 
+	margin-left:10px; 
 	white-space: nowrap;
 }
-#userUtils #usercart {clear:right; float: right;}
-*:first-child+html #userUtils #usercart {width:220px;}
-#userUtils .icon { /* @TODO - abstract out all .icon stylesâ€¦ need design consistency / standards */
+#userUtils #usercart {float: right;}
+#userUtils .icon { /* @TODO - abstract out all .icon stylesÉ need design consistency / standards */
 	padding-left:23px;
 }
 #userUtils .cart {
@@ -4662,10 +4651,10 @@ nav .haschild li a:hover {
 	color: #707070;
 }
 #userUtils .cart em,
-#userUtils .cart strong {color:#ED1C25;}
+#userUtils .cart strong {color:#de6076;}
 #userUtils .cart *:hover {text-decoration:underline;}
 #userUtils .cart strong {font-size:14px; font-weight: bold;}
-#userUtils .btn { /* @TODO - abstract out all .btn stylesâ€¦ need design consistency / standards */
+#userUtils .btn { /* @TODO - abstract out all .btn stylesÉ need design consistency / standards */
 	padding:1px 10px 0;
 	background: url(../img/btn-glass.png) 0 50.5% repeat-x;
 	border:1px solid rgba(0,0,0,0);
@@ -4675,7 +4664,7 @@ nav .haschild li a:hover {
 	-moz-box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
 	box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
 	font:bold 10px/0 Helvetica, Arial, sans-serif;
-	text-transform: uppercase; 
+	text-transform: uppercase;
 
 }
 #userUtils .cart:hover,
@@ -4706,31 +4695,27 @@ nav .haschild li a:hover {
 */
 h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #events-wrap .event {
-	margin:40px 5px 0; padding:9px 8px;
+	margin:0 5px 40px; padding:9px 8px;
 	border:1px solid #ccc;
 	border-radius:0px 0px 10px 10px;
 }
-#events-wrap header + .event {margin-top:0;}
 #events-wrap .eventDetails {
 	margin-bottom:27px;
 }
+
 /*
 #events-wrap .eventDetails > div {
 	float:left;
 	width:126px;
-}
-*/
+}*/
+
 #events-wrap .eventDetails > h3 {
-/* 	float: right; */
+	/*float: right;*/
 	margin-bottom:12px;
-/* 	width:796px; */
-	width:100%;
+	/*width:796px;*/
 	color:#636466;
 	font-size: 16px;
 }
-#events-wrap .eventDetails > h3 a:link,
-#events-wrap .eventDetails > h3 a:visited { color:#636466;}
-#events-wrap .eventDetails > h3 a:hover { color:#ED1C25;}
 #events-wrap .eventDetails > h3 em {
 	display: inline-block;
 	color:rgba(99,100,102,0.7);
@@ -4738,6 +4723,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	text-indent:30px;
 }
 #events-wrap .eventDetails > h3 em strong {font-size:14px; font-style: italic; font-weight: normal;}
+
 #events-wrap .eventDetails > p {
 /*
 	margin-left:137px;
@@ -4747,6 +4733,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	color:#636466;
 	font-size: 12px; line-height:1.2;
 }
+
 #events-wrap .items {margin-bottom:8px;} 
 #events-wrap .item {
 	position: relative;
@@ -4781,7 +4768,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 }
 #events-wrap .viewAllEvents:after {
 	content: "";
-	position: absolute; top:42px; right:0px;
+	position: absolute; top:45px; right:0px;
 	display: block;
 	width:1px; height:45px;
 	-moz-box-shadow: 1px 0px 4px rgba(0,0,0,0.55);
@@ -4790,11 +4777,6 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 }
 #events-wrap .viewAllEvents a {display: block; line-height: 0;}
 #events-wrap .event > footer {text-align: right;}
-
-/* no events */
-#noevents {
-	font-size:14px;
-}
 
 /* prevent image from breaking out of layout */
 /* - @DG thought: consider putting max-width on container, and setting image to width:100% */
@@ -4878,7 +4860,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	background: url(../img/status-500-title.gif) 0 0 no-repeat;
 }
 .p-status-500 #totsy > header em {
-	position: absolute; top:0; left:-7px; /* offsetting the extra whitespace left in logo imageâ€¦ */
+	position: absolute; top:0; left:-7px; /* offsetting the extra whitespace left in logo image… */
 }
 .p-status-500 section {width:485px;}
 

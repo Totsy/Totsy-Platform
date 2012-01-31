@@ -1,4 +1,7 @@
-<?php use lithium\net\http\Router; ?>
+<?php 
+use lithium\net\http\Router; 
+use lithium\storage\Session;
+?>
 <?php $request = $this->request(); ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -10,11 +13,22 @@
 	</title>
 	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
-	
-	<?php echo '<link rel="stylesheet" type="text/css" href="/css/base.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/base.css') . '" />'; ?>
-	<?php echo '<link rel="stylesheet" type="text/css" href="/css/960.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/960.css') . '" />'; ?>
-	<?php echo '<link rel="stylesheet" type="text/css" href="/css/jquery_ui_custom/jquery.ui.all.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/jquery_ui_custom/jquery.ui.all.css') . '" />'; ?>
+	<?php 
+		$baseCSSPath = "";
+		$jQueryAllPath = "";
+		
+		//pick CSS for Mamasource vs Totsy based on session variable
+		if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
+			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
+			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
+		} else {
+			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
+			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
+		}
 
+	 echo $this->html->style(Array( $baseCSSPath , "/css/960.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/960.css"), $jQueryAllPath));
+	 
+	 ?>
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
@@ -33,6 +47,7 @@
 	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
+
 			$title = 'Totsy Sales';
 			$tags = 'Sales';
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
@@ -73,7 +88,6 @@
 
 </head>
 <body class="app">
-
 	<?php if(isset($branch)) { echo $branch; } ?>
 	<div id="totsy" class="container_16 roundy glow">
 		
@@ -96,7 +110,6 @@
 		<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
 	</div>
 	<!-- end footer icons -->
-
 	<div id='toTop'>^ Top</div>
 
 <?php 
@@ -119,7 +132,6 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
 
-<!-- @TODO: externalize scripts where applicable -->
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
@@ -139,13 +151,15 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 ?>
 <?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 <script type="text/javascript">
-	var fbCookie = 'fbsr_<?php echo $appId; ?>';	
+	var fbCookie = 'fbsr_<?php echo $appId; ?>';
+	var mobilefbCookie = 'fbm_<?php echo $appId; ?>';
 	var logoutURL = '<?php echo $logout; ?>';
 	
 		function deleteFBCookies() {
 		    //all posible FB cookies
 		    try {
 		    	document.cookie = fbCookie + '=; domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+				document.cookie = mobilefbCookie + '=; base_domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
 		    	document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
 		    	document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';

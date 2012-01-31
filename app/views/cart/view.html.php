@@ -1,3 +1,4 @@
+<?php use lithium\storage\Session; ?>
 <!-- JS for cart timer. -->
 <script type="text/javascript" src="/js/cart-timer.js"></script>
 <!-- JS for cart timer for individual items. -->
@@ -42,15 +43,16 @@ var discountErrors = new Object();
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
 
 <?php  if(!empty($subTotal)): ?>
+
 <div class="cart-content">
 	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Shopping Cart</span>
-				<span class="cart-step-status"><img src="/img/cart_steps1.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps1.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
 			</h2>
 		</div>
 	</div>
@@ -166,6 +168,9 @@ var discountErrors = new Object();
 
 		<div class="grid_16" style="width:935px; padding-top:30px;">
 		<div class="cart-codes">
+				
+				<!-- no promocodes for Mama users begin -->
+				<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
@@ -178,6 +183,9 @@ var discountErrors = new Object();
 				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
 				    <?php endif ?>
 				</div>
+				<?php endif ?>
+				<!-- no promocodes for Mama users ending -->
+				
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
 				    <div id="promo" style="display:none">
@@ -188,6 +196,7 @@ var discountErrors = new Object();
 				    </div>
 				</div>
 			</div>
+			
 			<div class="cart-subtotal-content">
 				<div class="subtotal" >
 				   <span style="float:left;">Subtotal:</span>
