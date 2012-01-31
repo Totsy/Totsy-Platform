@@ -518,7 +518,6 @@ class OrdersController extends BaseController {
 			'event'
 		);
 		
-		
 		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas

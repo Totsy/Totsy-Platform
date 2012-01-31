@@ -174,7 +174,8 @@ class VoidTransaction extends \lithium\console\Command {
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 		#Cancel Previous Transaction
 		$auth = Processor::void('default', $order['auth'], array(
-			'processor' => isset($order['processor']) ? $order['processor'] : null
+			'processor' => isset($order['processor']) ? $order['processor'] : null,
+			'orderID' => $order['order_id']
 		));
 		if(!$auth->success()) {
 			Logger::debug("Void failed for order id " . $order['order_id']);
