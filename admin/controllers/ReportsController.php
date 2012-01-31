@@ -157,7 +157,7 @@ class ReportsController extends BaseController {
 			$max_date = $this->request->data['max_date'];
 			$result = array();
 			if (empty($name)) {
-			    FlashMessage::set("Affiliate Code Required" ,	array('class' => 'fail'));
+			    FlashMessage::write("Affiliate Code Required" ,	array('class' => 'fail'));
 			    return compact('search', 'results', 'searchType', 'criteria');
 			}
 			if((bool)$subaff){
@@ -167,7 +167,7 @@ class ReportsController extends BaseController {
 			}
 
 			if (empty($min_date) || empty($max_date)) {
-			    FlashMessage::set("Missing Min and/or max date" ,	array('class' => 'fail'));
+			    FlashMessage::write("Missing Min and/or max date" ,	array('class' => 'fail'));
 			    return compact('search', 'results', 'searchType', 'criteria');
 			}
             //Conditions with date converted to the right timezone
@@ -581,12 +581,12 @@ class ReportsController extends BaseController {
 				$total = $total['retval'][0];
 				$collection->remove($conditions);
 				if (!empty($summary)) {
-					FlashMessage::set('Results Found', array('class' => 'pass'));
+					FlashMessage::write('Results Found', array('class' => 'pass'));
 				} else {
-					FlashMessage::set('No Results Found', array('class' => 'warning'));
+					FlashMessage::write('No Results Found', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+				FlashMessage::write('Please enter in a valid search date', array('class' => 'warning'));
 			}
 		}
 		return compact('details', 'summary', 'dates', 'total');
@@ -654,12 +654,12 @@ class ReportsController extends BaseController {
 				$total = $total['retval'][0];
 				$collection->remove($conditions);
 				if (!empty($results)) {
-					FlashMessage::set('Results Found', array('class' => 'pass'));
+					FlashMessage::write('Results Found', array('class' => 'pass'));
 				} else {
-					FlashMessage::set('No Results Found', array('class' => 'warning'));
+					FlashMessage::write('No Results Found', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+				FlashMessage::write('Please enter in a valid search date', array('class' => 'warning'));
 			}
 		}
 		return compact('results', 'dates', 'total');
@@ -757,12 +757,12 @@ class ReportsController extends BaseController {
 				$total = (!empty($total['retval'][0])) ? $total['retval'][0] : null;
 				$collection->remove($conditions);
 				if (!empty($summary)) {
-					FlashMessage::set('Results Found', array('class' => 'pass'));
+					FlashMessage::write('Results Found', array('class' => 'pass'));
 				} else {
-					FlashMessage::set('No Results Found', array('class' => 'warning'));
+					FlashMessage::write('No Results Found', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::set('Please enter in a valid search date', array('class' => 'warning'));
+				FlashMessage::write('Please enter in a valid search date', array('class' => 'warning'));
 			}
 		}
 		return compact('details', 'summary', 'dates', 'total', 'data');
