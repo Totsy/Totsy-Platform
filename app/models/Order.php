@@ -59,6 +59,8 @@ class Order extends Base {
 		$order = static::create(array('_id' => new MongoId()));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		if ($cart) {
+			#Get CreditCard
+			$creditCard = $vars['creditCard'];
 			#Switch Soft Authorized Amount Transaction depending of Credit Card Type
 			if($creditCard['type'] == 'visa') {
 				$authTotalAmount = 0;
@@ -78,7 +80,6 @@ class Order extends Base {
 			#In Case No CyberSourceProfile has been found
 			if(empty($auth)) {
 				#Read Credit Card Informations
-				$creditCard = $vars['creditCard'];
 				$address = array(
 					'firstName' =>  $vars['billingAddr']['firstname'],
 					'lastName' => $vars['billingAddr']['lastname'],
