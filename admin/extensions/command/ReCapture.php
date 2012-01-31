@@ -41,13 +41,6 @@ class ReCapture extends \lithium\console\Command {
 	public $ordersIdFile = "capture_errors.csv";
 	
 	/**
-	 * Adjustment of the total that is authorized
-	 *
-	 * @var string
-	 */
-	public $adjustment = 0.00;
-	
-	/**
 	 * Creating new auth during recapture process
 	 *
 	 * @var string
@@ -60,14 +53,7 @@ class ReCapture extends \lithium\console\Command {
 	 * @var string
 	 */
 	public $onlyReauth = false;
-	
-	/**
-	 * Decrypt Credit Card with the Old Encrypt Method
-	 *
-	 * @var string
-	 */
-	public $oldWayToDecrypt = false;
-	
+
 	/**
 	 * Instances
 	 */
@@ -141,7 +127,7 @@ class ReCapture extends \lithium\console\Command {
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', ($order['total'] + $this->adjustment), $profile);
+		$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
 		if ($auth->success()) {
 			Logger::debug('Authorize Complete: ' . $auth->key);
 			$authKey = $auth->key;
@@ -184,7 +170,8 @@ class ReCapture extends \lithium\console\Command {
 				$authKey,
 				floor($order['total'] * 100) / 100,
 				array(
-					'processor' => isset($order['processor']) ? $order['processor'] : null
+					'processor' => isset($order['processor']) ? $order['processor'] : null,
+					'orderID' => $order['order_id']
 				)
 		);
 		if ($auth_capture->success()) {
