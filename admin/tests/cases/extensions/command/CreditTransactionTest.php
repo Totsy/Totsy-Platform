@@ -127,9 +127,9 @@ class CreditTransactionTest extends \lithium\test\Unit {
 	public function CreditOneTransaction($customer, $card, $type, $card_number) {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('default', $this->_amountOfTransaction, $customer);
+		$authorizeObject = Processor::authorize('test', $this->_amountOfTransaction, $customer);
 		$this->assertTrue($authorizeObject->success());
-		$captureObject = Processor::capture('default', $authorizeObject, $this->_amountOfTransaction,
+		$captureObject = Processor::capture('test', $authorizeObject, $this->_amountOfTransaction,
 				array('processor' => $authorizeObject->adapter
 		));
 		$this->assertTrue($captureObject->success());

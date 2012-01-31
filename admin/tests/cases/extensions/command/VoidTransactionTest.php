@@ -167,10 +167,10 @@ class VoidTransactionTest extends \lithium\test\Unit {
 		#Create Temporary order
 		$order = Order::create(array('_id' => new MongoId()));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
-		$cybersource = new CyberSource(Processor::config('default'));
+		$cybersource = new CyberSource(Processor::config('test'));
 		$profile = $cybersource->profile($customerId);
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('default', $authTotal, $profile, array('orderID' => $order->order_id));
+		$authorizeObject = Processor::authorize('test', $authTotal, $profile, array('orderID' => $order->order_id));
 		$this->assertTrue($authorizeObject->success());		
 		#Temporary User Creation
 		$user = User::create(array('_id' => new MongoId()));

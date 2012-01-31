@@ -125,8 +125,7 @@ class ReAuthorize extends \lithium\console\Command {
 							'$where' => 'this.total == this.authTotal',
 							'cyberSourceProfileId' => array('$exists' => true),
 							'authTotal' => array('$exists' => true),
-							'processor' => 'CyberSource',
-							'auth_error' => array('$exists' => false)
+							'processor' => 'CyberSource'
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -198,6 +197,15 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 		} else {
 			$reAuth = true;
+		}
+		if($order['error_date']) {
+			if(!$lastDate) {
+				$reAuth = false;
+			} else {
+				if($lastDate->sec < $order['error_date']->sec) {
+					$reAuth = false;
+				}
+			}
 		}
 		#If The Order has been already full authorize and Order send to Dotcom. Don't reauth
 		if(!empty($this->fullAmount)) {
