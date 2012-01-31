@@ -30,7 +30,8 @@ class OrdersController extends BaseController {
 
 	protected $_classes = array(
 		'tax'   => 'admin\extensions\AvaTax',
-		'order' => 'admin\models\Order'
+		'order' => 'admin\models\Order',
+		'processedorder'  => 'admin\models\ProcessedOrder'
 	);
 
 	/**
@@ -47,6 +48,7 @@ class OrdersController extends BaseController {
 		'Order Cost',
 		'Tracking Info',
 		'Estimated Delivery Date',
+		'Errors/Message',
 		'Customer Profile'
 	);
 
@@ -129,7 +131,7 @@ class OrdersController extends BaseController {
 			if (!empty($rawOrders)) {
 				if (get_class($rawOrders) == 'MongoCursor') {
 					foreach ($rawOrders as $order) {
-						FlashMessage::write(
+						FlashMessage::set(
 							"Results found for $searchType search of $search",
 							array('class' => 'pass')
 						);
@@ -138,7 +140,7 @@ class OrdersController extends BaseController {
 					}
 				}
 				if (empty($order)) {
-					FlashMessage::write(
+					FlashMessage::set(
 						"No results found for $searchType search of $search",
 						array('class' => 'warning')
 					);
@@ -306,7 +308,7 @@ class OrdersController extends BaseController {
 				extract($orderClass::saveCurrentOrder($datas, $items, $current_user["email"]));
 
 				if ($result == true) {
-					FlashMessage::write("Order items has been updated.", array('class' => 'pass'));
+					FlashMessage::set("Order items has been updated.", array('class' => 'pass'));
 				}
 
 				#Get Last Saved Order
@@ -442,9 +444,9 @@ class OrdersController extends BaseController {
 				array("_id" => new MongoId($id)),
 				array('$set' => array('shipping' => $datas))
 			);
-			FlashMessage::write("Shipping details has been updated.", array('class' => 'pass'));
+			FlashMessage::set("Shipping details has been updated.", array('class' => 'pass'));
 		} else {
-			FlashMessage::write(
+			FlashMessage::set(
 				"Some informations for the new shipping are missing",
 				array('class' => 'warning')
 			);
@@ -518,16 +520,16 @@ class OrdersController extends BaseController {
 										'card_number' => substr($datas['creditcard']['number'], -4) 
 					))
 				);
-				FlashMessage::write("Payment details has been updated.", array('class' => 'pass'));	
+				FlashMessage::set("Payment details has been updated.", array('class' => 'pass'));	
 			} else {
-				FlashMessage::write(
+				FlashMessage::set(
 					$errors,
 					array('class' => 'warning')
 				);
 			}
 
 		} else {
-			FlashMessage::write(
+			FlashMessage::set(
 				"Some informations for the new payments are missing",
 				array('class' => 'warning')
 			);
@@ -586,6 +588,8 @@ class OrdersController extends BaseController {
 						'auth' => $auth->export(),
 						'processor' => $auth->adapter,
 						'authTotal' => $order['total']
+					), '$unset' => array(
+						'auth_error' => 1
 					)), array( 'upsert' => true)
 			);
 			#Add to Auth Records Array
@@ -615,9 +619,11 @@ class OrdersController extends BaseController {
 	*/
 	public function view($id = null) {
 		$orderClass = $this->_classes['order'];
+		$processedOrderClass = $this->_classes['processedorder'];
 
 		$userCollection = User::collection();
 		$ordersCollection = $orderClass::Collection();
+		$processedOrderColl = $processedOrderClass::Collection();
 
 		// update the shipping address by adding the new one and pushing the old one.
 		if ($this->request->data) {
@@ -628,6 +634,7 @@ class OrdersController extends BaseController {
 
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+			
 			if(strlen($order_temp["user_id"]) > 10){
 				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
 			} else {
@@ -651,7 +658,7 @@ class OrdersController extends BaseController {
 					array('_id' => new MongoId($id)),
 					array('$set' => array('process-as-an-exception' => true)), array( 'upsert' => true)
 			);
-			FlashMessage::write("This Order is on the queue as Dotcom Exception", array('class' => 'pass'));	
+			FlashMessage::set("This Order is on the queue as Dotcom Exception", array('class' => 'pass'));	
 		}
 		if (!empty($datas["save"])){	
 			$order = $this->manage_items();
@@ -669,6 +676,9 @@ class OrdersController extends BaseController {
 		if ($id) {
 			$itemscanceled = true;
 			$order_current = $orderClass::find('first', array('conditions' => array('_id' => $id)));
+			//Check if the order was processed and sent to Dotcom
+			$processed_count = $processedOrderColl->count(array('OrderNum' => $order_current['order_id']));
+
 
 			if (empty($order)) {
 				$order = $order_current;
@@ -708,7 +718,7 @@ class OrdersController extends BaseController {
 		}
 
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service');
+		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count');
 	}
 
 	/**
@@ -1011,9 +1021,9 @@ class OrdersController extends BaseController {
                 $class = 'pass';
                  $style = 'font-color:#000';
             }
-            FlashMessage::write("Results found." . $message ,	array('class' => $class));
+            FlashMessage::set("Results found." . $message ,	array('class' => $class));
         } else {
-            FlashMessage::write("No results found." . $message ,	array('class' => 'fail'));
+            FlashMessage::set("No results found." . $message ,	array('class' => 'fail'));
         }
 		return compact('payments','type');
 	}

@@ -881,6 +881,7 @@ class FinancialExport extends Base  {
                         $this->log("Fail: File upload error.");
                 }
             }
+            
             $subject = "Accounting Auto Reporting Job - Report";
 
             if (!$reporting['success']) {
