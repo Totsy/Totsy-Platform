@@ -185,8 +185,8 @@ class ReAuthorize extends \lithium\console\Command {
 		#Limit to X days Old Authkey
 		$limitDate = mktime(23, 59, 59, date("m"), date("d") - $this->expiration, date("Y"));
 		#Check If There were already ReAuthorization Records
+		$lastDate = $order['date_created'];
 		if(!empty($order['auth_records'])) {
-			$lastDate = $order['date_created'];
 			foreach($order['auth_records'] as $record) {
 				if($lastDate->sec < $record['date_saved']->sec) {
 					$lastDate = $record['date_saved'];
@@ -198,14 +198,11 @@ class ReAuthorize extends \lithium\console\Command {
 		} else {
 			$reAuth = true;
 		}
-		if($order['error_date']) {
-			if(!$lastDate) {
+		#Don't Reauthorize if the last Auth is an error
+		if(!empty($order['error_date'])) {
+			if($lastDate->sec < $order['error_date']->sec) {
 				$reAuth = false;
-			} else {
-				if($lastDate->sec < $order['error_date']->sec) {
-					$reAuth = false;
-				}
-			}
+			}	
 		}
 		#If The Order has been already full authorize and Order send to Dotcom. Don't reauth
 		if(!empty($this->fullAmount)) {

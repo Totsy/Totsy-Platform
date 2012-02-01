@@ -161,9 +161,17 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		$this->reAuthorize($this->_VisaCustomerId, 'visa', '1111', 100.00, 100.00, false, true, 24);
 		#Test Reauthorize processed during CronJob with fullAuth and MasterCard + DELAY
 		$this->reAuthorize($this->_MasterCardCustomerId, 'mc', '4444', 100.00, 100.00, false, true, 24);
+		#Test Reauthorize processed during CronJob with fullAuth and Visa + Error date + Auth Later than Error
+		$this->reAuthorize($this->_VisaCustomerId, 'visa', '1111', 100.00, 100.00, false, true, 24, true, true);
+		#Test Reauthorize processed during CronJob with fullAuth and MasterCard + Error date + Auth Later than Error
+		$this->reAuthorize($this->_MasterCardCustomerId, 'mc', '4444', 100.00, 100.00, false, true, 24, true, true);
+		#Test Reauthorize processed during CronJob with fullAuth and Visa + Error date + Auth Earlier than Error
+		$this->reAuthorize($this->_VisaCustomerId, 'visa', '1111', 100.00, 100.00, false, true, 24, true, false);
+		#Test Reauthorize processed during CronJob with fullAuth and MasterCard + Error date + Auth Earlier than Error
+		$this->reAuthorize($this->_MasterCardCustomerId, 'mc', '4444', 100.00, 100.00, false, true, 24, true, false);
 	}
 
-	public function reAuthorize($customerId, $type, $card_number, $total, $authTotal, $fullAmount = false, $voidTransaction = false, $delay = 0) {
+	public function reAuthorize($customerId, $type, $card_number, $total, $authTotal, $fullAmount = false, $voidTransaction = false, $delay = 0, $error = false, $auth_record_later = false) {
 		$ordersCollection = Order::Collection();
 		#Create Temporary order
 		$order = Order::create(array('_id' => new MongoId()));
@@ -177,6 +185,18 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		$user = User::create(array('_id' => new MongoId()));
 		$user->save($this->_UserInfos);
 		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
+		if($error) {
+			$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - 30, date("Y")));
+			if($auth_record_later) { 
+				$auth_records[0]['date_saved'] = new MongoDate(mktime(date("H"), date("i"), date("s"), date("m"),  date("d") - ($this->_ReAuthLimitDate + 1), date("Y")));
+			} else {
+				$auth_records[0]['date_saved'] = new MongoDate(mktime(date("H"), date("i"), date("s"), date("m"),  date("d") - ($this->_ReAuthLimitDate + 3), date("Y")));
+			}
+			$order->auth_records = $auth_records;
+			$order->error_date = new MongoDate(mktime(date("H"), date("i"), date("s"), date("m"), date("d") - ($this->_ReAuthLimitDate + 2) , date("Y")));
+		} else {
+			$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d") - $this->_ReAuthLimitDate, date("Y")));
+		}
 		$order->save(array(
 				'total' => $total,
 				'card_type' => $type,
@@ -219,26 +239,36 @@ class ReAuthorizeTest extends \lithium\test\Unit {
 		#Get Order Modified
 		$order_test = $ordersCollection->findOne(array("_id" => $order->_id));
 		#Testing Modifications
-		if(!$fullAmount && ($total != $authTotal) && $voidTransaction) {
-			$this->assertTrue($order_test['authKey'] == $order->authKey);
-			$this->assertTrue($order_test['authTotal'] != $total);
-			$this->assertTrue(empty($order_test['auth_records']));
-		} else if(!$fullAmount && $total == $authTotal && $voidTransaction && empty($delay)) {
-			$this->assertTrue($order_test['authKey'] != $order->authKey);
-			$this->assertTrue($order_test['authTotal'] == $total);
-			$this->assertTrue(empty($order_test['auth_records']));
-		} else if (!$fullAmount && $total == $authTotal && $voidTransaction && $delay) {
-			$this->assertTrue($order_test['authKey'] != $order->authKey);
-			$this->assertTrue($order_test['authTotal'] == $total);
-			$this->assertTrue(!empty($order_test['auth_records']));
-		} else if (!$fullAmount && $total == $authTotal && !$voidTransaction) {
-			$this->assertTrue($order_test['authKey'] == $order->authKey);
-			$this->assertTrue($order_test['authTotal'] != $total);
-			$this->assertTrue(empty($order_test['auth_records']));
-		} else if($fullAmount) {
-			$this->assertTrue($order_test['authKey'] != $order->authKey);
-			$this->assertTrue($order_test['authTotal'] == $total);
-			$this->assertTrue(!empty($order_test['auth_records']));
+		if($error) {
+			if($auth_record_later) {
+				$this->assertTrue($order_test['authKey'] != $order->authKey);
+				$this->assertTrue($order_test['authTotal'] == $total);
+				$this->assertTrue(!empty($order_test['auth_records'][1]));
+			} else {
+				$this->assertTrue(empty($order_test['auth_records'][1]));
+			}
+		} else { 
+			if(!$fullAmount && ($total != $authTotal) && $voidTransaction) {
+				$this->assertTrue($order_test['authKey'] == $order->authKey);
+				$this->assertTrue($order_test['authTotal'] != $total);
+				$this->assertTrue(empty($order_test['auth_records']));
+			} else if(!$fullAmount && $total == $authTotal && $voidTransaction && empty($delay)) {
+				$this->assertTrue($order_test['authKey'] != $order->authKey);
+				$this->assertTrue($order_test['authTotal'] == $total);
+				$this->assertTrue(empty($order_test['auth_records']));
+			} else if (!$fullAmount && $total == $authTotal && $voidTransaction && $delay) {
+				$this->assertTrue($order_test['authKey'] != $order->authKey);
+				$this->assertTrue($order_test['authTotal'] == $total);
+				$this->assertTrue(!empty($order_test['auth_records']));
+			} else if (!$fullAmount && $total == $authTotal && !$voidTransaction) {
+				$this->assertTrue($order_test['authKey'] == $order->authKey);
+				$this->assertTrue($order_test['authTotal'] != $total);
+				$this->assertTrue(empty($order_test['auth_records']));
+			} else if($fullAmount) {
+				$this->assertTrue($order_test['authKey'] != $order->authKey);
+				$this->assertTrue($order_test['authTotal'] == $total);
+				$this->assertTrue(!empty($order_test['auth_records']));
+			}
 		}
 		#Delete Temporary Documents
 		User::remove(array("_id" => $user->_id));
