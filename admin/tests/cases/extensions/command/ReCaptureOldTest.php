@@ -98,9 +98,9 @@ class ReCaptureOldTest extends \lithium\test\Unit {
 		$order = Order::create(array('_id' => new MongoId()));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('default', 100, $this->_Amexcustomer, array('orderID' => $order->order_id));
+		$authorizeObject = Processor::authorize('test', 100, $this->_Amexcustomer, array('orderID' => $order->order_id));
 		$this->assertTrue($authorizeObject->success());
-		$captureObject = Processor::capture('default', $authorizeObject, 100,
+		$captureObject = Processor::capture('test', $authorizeObject, 100,
 				array('processor' => $authorizeObject->adapter, 'orderID' => $order['order_id']
 		));
 		$this->assertTrue($captureObject->success());
@@ -151,7 +151,7 @@ class ReCaptureOldTest extends \lithium\test\Unit {
 		$order = Order::create(array('_id' => new MongoId()));
 		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('default', 100, $this->_Amexcustomer, array('orderID' => $order->order_id));
+		$authorizeObject = Processor::authorize('test', 100, $this->_Amexcustomer, array('orderID' => $order->order_id));
 		$this->assertTrue($authorizeObject->success());
 		#Temporary User Creation
 		$user = User::create(array('_id' => new MongoId()));
