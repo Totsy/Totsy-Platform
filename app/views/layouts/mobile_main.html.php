@@ -47,6 +47,17 @@
 </script>
 </head>
 <body>
+<script>
+if (!navigator.cookieEnabled) {
+	document.write("<div style='margin:10px 0px; background:#f8f57d; padding:10px; border:4px solid #333; text-align:center;'>You do not have cookies enabled. <br />Please enable to continue.</div>");
+}
+</script>
+<script>
+if (!navigator.cookieEnabled) { 
+	 var txt=document.getElementById("no_cookies")
+  		 document.write("<div style='margin:10px 0px; background:#f8f57d; padding:10px; border:4px solid #333; text-align:center;'>You do not have cookies enabled. Please enable to continue.</div>");
+}
+</script>
 <?php if (!empty($userInfo)){ ?>
 <div data-role="header" style="-moz-box-shadow: 0px 0px 4px 0px #666;
 -webkit-box-shadow: 0px 0px 4px 0px #666; box-shadow:0px 0px 4px 0px #666;"> 

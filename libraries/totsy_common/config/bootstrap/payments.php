@@ -14,6 +14,9 @@ $adapterFilters = array(
 			case 'credit':
 				return true;
 				break;
+			case 'profile':
+				return true;
+				break;
 		}
 		if (isset($options['processor']) && $options['processor'] == 'CyberSource') {
 			return true;
