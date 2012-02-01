@@ -37,6 +37,13 @@ Connections::add('default', array(
 		'database' => 'totsy',
 		'host' => 'localhost'
 	),
+	
+	'staging' => array(
+		'type' =>  'MongoDb',
+		'database' => 'totsy',
+		'host' => 'db1-dc1.totsystaging.com',
+		'adapter' => 'admin\extensions\adapter\data\source\MongoDb'
+	),
 
 	'local' => array(
 		'type' =>  'MongoDb',

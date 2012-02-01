@@ -119,6 +119,7 @@ $(document).ready(function(){
     }
 </style>
 
+
 <!--- Sorting of primary/secondary event item images --->
 <script>
 $(function() {
@@ -142,8 +143,76 @@ $(function() {
 	});
 });
 </script>
-<?=$this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 
+<script>
+
+
+function object(){
+	this.dinkers = "stinkers";
+}
+
+function checkspreadsheet(){
+	params = new object();
+	params.ItemsSubmit = $("#ItemsSubmit").val();
+
+	$.post('/events/uploadcheck', params, function(result) {
+		if(result.substring(0,7)=="success"){
+			//$("#items_errors").html(result);
+			$("#events_edit").submit();
+		}
+		else{
+			$("#items_errors").html(result);
+		}
+	});
+}
+
+</script>
+
+<style>
+
+
+div.xls_cell{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+}
+
+
+div.xls_cell_error{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+	background:#ff0000;
+	color:#ffffff;
+}
+
+div.xls_cell:hover{
+	background:#eeeeee;
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+}
+
+.xls_holder{
+	width:800px;
+	height:400px;
+	overflow:scroll;
+}
+
+.xls_holder_inner{
+	width:5000px;
+}
+
+</style>
+
+<?php echo $this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 
 <div class="grid_16">
 	<h2>Editing Event <em><?=$event->name; ?></em></h2>
@@ -325,9 +394,10 @@ $(function() {
 			<div style="width:300px; height:400px; float:left">
 				<h3 id="">Upload Items</h3>
 	            <hr />
-				<p>Please select default option for all items uploaded:</p>
-					<input type="radio" name="enable_items" value="1" id="enable_items"> Enable All <br>
-					<input type="radio" name="enable_items" value="0" id="enable_items" checked> Disable All <br><br>
+
+				<p>Please select the default option for all items being uploaded:</p>
+					<input type="radio" name="enable_items" value="1" id="enable_items" checked> Enable All <br>
+					<input type="radio" name="enable_items" value="0" id="enable_items"> Disable All <br><br>
 				<p>Add "Final Sale" to the item description?:</p>
 					<input type="radio" name="enable_finalsale" value="1" id="enable_finalsale" checked>Yes <br>
 					<input type="radio" name="enable_finalsale" value="0" id="enable_finalsale">No<br><br>
@@ -335,9 +405,19 @@ $(function() {
 					<?php echo $this->form->label('Upload Event (Excel Files): '); ?>
 					<?php echo $this->form->file('upload_file'); ?>
 					-->
-				<?=$this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
-			<?=$this->form->submit('Update Event')?>
-			<?=$this->form->end(); ?>
+
+				<?php echo $this->form->field('ItemsSubmit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
+
+			<?php if ($event->clearance == 1){ ?>
+			<?php echo $this->form->submit('Update Event')?>
+			
+			<?php } else{ ?>
+
+			<input type="button" value="Update Event" onclick="checkspreadsheet();">
+
+			<?php } ?>
+			
+			<?php echo $this->form->end(); ?>
 			</div>
 <br><br>
 			<div id="items_errors" name="items_errors" style="float:right; width:500px; height:400px;overflow:scroll;"></div>
@@ -369,12 +449,29 @@ $(function() {
 			<?=$this->form->end(); ?>
 			<br><br>
 			<br><br>
+
+<script>
+
+function deleteitems(){
+//item-delete
+	var answer = confirm("are you sure you want to delete all items? this cannot be undone!")
+	if (answer){
+		$("#item-delete").submit();
+	}
+
+}
+
+</script>
+
 			<h2 id="">Delete Items</h2>
-				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!</strong></p>
-				<?=$this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
-					<?=$this->form->hidden('event', array('value' => $event->_id)); ?>
-					<?=$this->form->submit('Delete All Items'); ?>
-				<?=$this->form->end(); ?>
+
+				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
+				<?php echo $this->form->create(null, array('url' => 'Items::removeItems', 'id' => 'item-delete', 'name' => 'item-delete')); ?>
+					<?php echo $this->form->hidden('event', array('value' => $event->_id)); ?>
+					
+					<input type="button" onclick="deleteitems()" value="Delete All Items">
+					<?php //echo $this->form->submit('Delete All Items'); ?> 
+				<?php echo $this->form->end(); ?>
 		</div>
 
 		<div id="event_history">
@@ -590,7 +687,7 @@ for ( i=1; i<6; i++ ) {
 	$(document).ready(function(){
 		$("#duplicate").dynamicForm("#plus", "#minus", {limit:15, createColor: 'yellow', removeColor: 'red'});
 		});
-		</script>
+</script>
 
 <script type="text/javascript" charset="utf-8">
 	$(function() {

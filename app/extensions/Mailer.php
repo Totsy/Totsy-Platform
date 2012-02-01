@@ -23,8 +23,6 @@ class Mailer {
 	}
 
 	public static function purchase($email,array $items = array(), array $args = array()){
-		// Remove Sailthru until it can be done asynchronously
-		/*
 		$data = array(
             'email' => $email,
             'items' => $items
@@ -35,8 +33,6 @@ class Mailer {
 		if (isset($_COOKIE['sailthru_bid'])) $data['message_id'] = $_COOKIE['sailthru_bid'];
 
 		return Sailthru::apiPost('purchase',$data);
-		*/
-		return true;
 	}
 
 	//This function takes an email (subscribed user) from our system and posts it to Unsubcentral's API under the list subscribed

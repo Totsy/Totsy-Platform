@@ -196,6 +196,7 @@ class BannersController extends BaseController {
                 $images[$key]["newPage"] = false;
             }
 		}
+		
 		return $images;
 	}
 

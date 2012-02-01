@@ -201,14 +201,14 @@ class Event extends \lithium\data\Model {
 	}
 
 
-	public static function check_spreadsheet($array){
+	public static function check_spreadsheet($array, $mapCategories){
 
 		//arrays for datatypes to check uniqueness
 		$output = "";
 		$check_vendor_style = array();
 
 		//arrays of header names to check stuff
-		$check_required = array("vendor", "vendor_style", "description", "quantity", "department_1");
+		$check_required = array("vendor", "vendor_style", "description", "quantity");
 		$check_badchars = array("vendor", "vendor_style", "age", "category", "sub-category", "color", "no size");
 		$check_decimals = array("msrp", "sale_retail", "percentage_off", "percent_off", "orig_wholesale", "orig_whol", "sale_whol", "sale_wholesale", "imu");
 		$check_departments = array("Girls", "Boys", "Momsdads");
@@ -237,6 +237,17 @@ class Event extends \lithium\data\Model {
 							$thiserror = "$heading[$col] (required) is blank for row #$row";
 						}
 						else{
+							if((strstr($heading[$col], "category_"))&&(!empty($val))) {
+								if(!in_array($val, $mapCategories['category'])){
+									$thiserror = "$heading[$col] has an illegal category in row #$row";
+								}
+							}
+							if((strstr($heading[$col], "age_"))&&(!empty($val))) {
+								if(!in_array($val, $mapCategories['age'])){
+									$thiserror = "$heading[$col] has an illegal age in row #$row";
+								}
+							}
+							/*
 							if ((in_array($heading[$col], $check_badchars))&&(!empty($val))) {
 								if((strpos($val, "&"))&&(!strpos($val, "\&"))){
 									$thiserror = "$heading[$col] has an illegal character in row #$row";
@@ -261,6 +272,7 @@ class Event extends \lithium\data\Model {
 									$thiserror = "$heading[$col] has a - in row #$row";
 								}
 							}
+							*/
 						}
 					}
 				}

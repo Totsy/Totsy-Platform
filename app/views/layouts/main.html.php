@@ -4,24 +4,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
- 	<title>
-		<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
-		<?php echo $this->title() ? '- Totsy' : ''; ?>
+	<title>
+	<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
+	<?php echo $this->title() ? '- Totsy' : ''; ?>
 	</title>
-
+	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
-
+	
 	<?php echo '<link rel="stylesheet" type="text/css" href="/css/base.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/base.css') . '" />'; ?>
-   <?php echo '<link rel="stylesheet" type="text/css" href="/css/960.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/960.css') . '" />'; ?>
-   <?php echo '<link rel="stylesheet" type="text/css" href="/css/jquery_ui_custom/jquery.ui.all.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/jquery_ui_custom/jquery.ui.all.css') . '" />'; ?>
-  
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/960.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/960.css') . '" />'; ?>
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/jquery_ui_custom/jquery.ui.all.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/jquery_ui_custom/jquery.ui.all.css') . '" />'; ?>
+
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
-
+	
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
-   <?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
+	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
+	<script>$('html').addClass('js'); /* for js-enabled - avoid FOUC */</script>
+	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements support -->
+	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<?php echo $this->scripts(); ?>
 	<meta http-equiv="Expires" content="<?php echo date('D, d M Y h:i T', strtotime('tomorrow')); ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
@@ -30,28 +33,38 @@
 	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
-			$title = "Totsy index. Evenets.";
+			$title = 'Totsy Sales';
 			$tags = 'Sales';
 			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
 				$tags =  $request->params['args'][0];
 			}
-		} else  {
-			if (isset($event) && isset($item)) {
-				$edata = $event->data();
-				$idata = $item->data();
+		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
+			$title = $tags = $categories;
+		} else if (isset($item)) {
+			$itemData = $item->data();
+			$title = $tags = $itemData['description'];
 
-				if(isset($idata['departments'])) {
-					$title = $edata['name'] .' - '. $idata['description'];
-					$tags = $edata['name'].', '.implode(', ',$idata['departments']).', '.$idata['category'];
-				}
+			if (count($itemData['departments'])) {
+				$tags .= ', ' . implode(', ', $itemData['departments']);
+			}
+			if (count($itemData['categories'])) {
+				$tags .= ', ' . implode(', ', $itemData['categories']);
+			}
+			if (count($itemData['ages'])) {
+				$tags .= ', ' . implode(', ', $itemData['ages']);
+			}
+		} else if (isset($event)) {
+			$eventData = $event->data();
+			$title = $tags = $eventData['name'];
 
-				unset($edata, $idata);
-			} else if (isset($event)){
-				$edata = $event->data();
-				$title = $tags = $edata['name'];
-				unset($edata, $idata);
+			if (count($eventData['departments'])) {
+				$tags .= ', ' . implode(', ', $eventData['departments']);
+			}
+			if (count($eventData['tags'])) {
+				$tags .= ', ' . implode(', ', $eventData['tags']);
 			}
 		}
+
 	?>
 	<?php if (isset($title) && isset($tags)){ ?>
 	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
@@ -60,52 +73,73 @@
 
 </head>
 <body class="app">
-<?php if(isset($branch)) { echo $branch; } ?>
-<div class="container_16 roundy glow">
-	<div class="grid_3 alpha" style="margin:5px 0px 0px 5px;">
-		<?php echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
+<style>
+	#global_site_msg select { background:#fff!important;}
+	#global_site_msg span { background:#fff!important;}
+	#global_site_msg .selector { background:#fff!important;}
+</style>
+	<?php if(isset($branch)) { ?> 
+	<div id='global_site_msg'>
+	<div style="font-size:16px; margin:0px 0px 0px 300px; width:230px; float:left; padding:7px 0px 0px 0px;">	<?php echo $branch; ?></div>
+	<div style="margin:0px auto; width:230px; float:left;">
+		<select name="jumpMenu" id="jumpMenu">
+			<option>Choose Developer Box</option>
+			<option value="http://eric.totsy.com">eric.totsy.com</option>
+			<option value="http://evan.totsy.com">evan.totsy.com</option>
+			<option value="http://chris.totsy.com">chris.totsy.com</option>
+			<option value="http://david.totsy.com">david.totsy.com</option>
+			<option value="http://deepen.totsy.com">deepen.totsy.com</option>
+			<option value="http://froggygeek.totsy.com">froggygeek.totsy.com</option>
+			<option value="http://gene.totsy.com">gene.totsy.com</option>
+			<option value="http://hara.totsy.com">hara.totsy.com</option>
+			<option value="http://jonathan.totsy.com">jonathan.totsy.com</option>
+			<option value="http://josh.totsy.com">josh.totsy.com</option>
+			<option value="http://kkim.totsy.com">kkim.totsy.com</option>
+			<option value="http://lawren.totsy.com">lawren.totsy.com</option>
+			<option value="http://micah.totsy.com">micah.totsy.com</option>
+			<option value="http://release.totsy.com">release.totsy.com</option>
+			<option value="http://rockmongo.totsy.com">rockmongo.totsy.com</option>
+			<option value="http://slavik.totsy.com">slavik.totsy.com</option>
+			<option value="http://tharsan.totsy.com">tharsan.totsy.com</option>
+			<option value="http://tom.totsy.com">tom.totsy.com</option>
+			<option value="http://track.totsy.com">track.totsy.com</option>
+			<option value="http://www.totsy.com">www.totsy.com</option>
+		</select>
 	</div>
-	<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
-
-		<div class="menu_main_global">
-		<?php if (!(empty($userInfo))): ?>
-		<ul class="nav main" id="navlist">
-			<li><a href="/sales" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0 || $_SERVER['REQUEST_URI'] == '/') {
-			echo 'class="active"';
-			} ?>>All Sales</a></li>
-			<li><a href="/sales/girls" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) {
-			echo 'class="active"';
-			} ?>>Girls</a></li>
-			<li><a href="/sales/boys" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0)  {
-			echo 'class="active"';
-			} ?>>Boys</a></li>
-			<li><a href="/sales/momsdads" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) {
-			echo 'class="active"';
-			} ?>>Moms &amp; Dads</a></li>
-		</ul>
-		<?php endif ?>
+	<script type="text/javascript">
+    $(function (){  
+        $("#jumpMenu").change(function(e) {
+            window.location.href = $(this).val();
+        });
+    });
+	</script>
+	<div class="clear"></div>
 	</div>
-	<!-- end header nav -->
+	<?php } ?> 
+	<div id="totsy" class="container_16 roundy glow">
+		
+		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
+				
+		<div id="contentMain" class="container_16 group">
+			<div id="noscript">Unfortunately, JavaScript is currently disabled or not supported by your browser. Please enable JavaScript for full functionality.</div>
+			<?php echo $this->content(); ?>
+		</div>
+		<!-- /#contentMain -->
 
-	<div class="container_16">
-		<?php echo $this->content(); ?>
-	</div>
-	<!-- main content -->
-</div>
+	</div><!-- /#totsy -->
 
-<!-- end container_16 -->
-
-	<div id="footer" class="container_16">
+	<div id="footer" class="container_16 group">
 		<?php echo $this->view()->render(array('element' => 'footerNav'), array('userInfo' => $userInfo)); ?>
 	</div>
 	<!-- end footer nav -->
 
-	<div class="container_16 clear" style="margin-top:50px;">
+	<div class="container_16 group">
 		<?php echo $this->view()->render(array('element' => 'footerIcons')); ?>
 	</div>
 	<!-- end footer icons -->
 
 	<div id='toTop'>^ Top</div>
+
 <?php 
 if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) { 
 ?>
@@ -125,6 +159,8 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 <? } ?>
 	<!--affiliate pixels-->
 	<?php echo $pixel; ?>
+
+<!-- @TODO: externalize scripts where applicable -->
 <script type="text/javascript">
 	$.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 	  var _gaq = _gaq || [];
@@ -173,35 +209,39 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 		}	
 </script>
 
-	<script language="javascript"> 
+<script language="javascript"> 
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
-	</script>
-	
-	<script type="text/javascript">
-		// end uniform inputs
-		$(document).ready(function() {
-			$("input:file, select").uniform();
-			$("#tabs").tabs();
+</script>
+
+<script type="text/javascript">
+	<?php // global functions here (although all js *really* should be externalized and view-specific… Magento Magento Magento we'll make it happen) ?>
+	$(document).ready(function() {
+		$("input:file, select").not('.uniform-hidden').uniform().each(function(i,elt) {
+			// find any elements processed that were hidden, and hide the
+			// new container for the element created by uniform.js
+			if (this.style.display == 'none') {
+				this.parentNode.style.display = 'none';
+			}
 		});
+		$("#tabs").tabs();
 
-			$(function () {
-				$(window).scroll(function () {
-					if ($(this).scrollTop() != 0) {
-						$('#toTop').fadeIn();
-					} else {
-						$('#toTop').fadeOut();
-					}
-				});
-				$('#toTop').click(function () {
-					$('body,html').animate({
-						scrollTop: 0
-					},
-					800);
-				});
+		// back to top
+		$(function () {
+			$(window).scroll(function () {
+				if ($(this).scrollTop() != 0) {
+					$('#toTop').fadeIn();
+				} else {
+					$('#toTop').fadeOut();
+				}
 			});
-		// end back to top
-
-	// end tabs
+			$('#toTop').click(function () {
+				$('body,html').animate({
+					scrollTop: 0
+				},
+				800);
+			});
+		});
+	});
 </script>
 
 <!-- Sailthru Horizon -->

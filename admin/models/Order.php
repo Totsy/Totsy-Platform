@@ -129,7 +129,8 @@ class Order extends Base {
 				$transaction = $order['authKey'];
 			}
 			$auth = $payments::void('default', $transaction, array(
-				'processor' => isset($order['processor']) ? $order['processor'] : null
+				'processor' => isset($order['processor']) ? $order['processor'] : null,
+				'orderID' => $order['order_id']
 			));
 
 			if ($auth->success()) {
@@ -193,7 +194,8 @@ class Order extends Base {
 					$order['authKey'],
 					floor($order['total'] * 100) / 100,
 					array(
-						'processor' => isset($order['processor']) ? $order['processor'] : null
+						'processor' => isset($order['processor']) ? $order['processor'] : null,
+						'orderID' => $order['order_id']
 					)
 				);
 			} else {
@@ -203,13 +205,14 @@ class Order extends Base {
 						$order['auth'],
 						floor($order['total'] * 100) / 100,
 						array(
-							'processor' => isset($order['processor']) ? $order['processor'] : null
+							'processor' => isset($order['processor']) ? $order['processor'] : null,
+							'orderID' => $order['order_id']
 						)
 					);
 				} else {
 					$cybersource = new CyberSource($payments::config('default'));
 					$profile = $cybersource->profile($order['cyberSourceProfileId']);
-					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile);
+					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile, array('orderID' => $order['order_id']));
 				}
 			}
 			if ($auth->success()) {
@@ -636,10 +639,13 @@ class Order extends Base {
 				}
 			} else {
 				if ($promocode['type'] == 'percentage') {
-					$selected_order["promo_discount"] = - ($subTotal * $promocode['discount_amount']);
+					$selected_order["promo_discount"] =+ ($subTotal * $promocode['discount_amount']);
 					$datas_order["promo_discount"] = $selected_order["promo_discount"];
 				}
-				$preAfterDiscount = $subTotal + $selected_order["promo_discount"];
+				$preAfterDiscount = $subTotal - $selected_order["promo_discount"];
+				if($preAfterDiscount < 0) {
+					$preAfterDiscount = 0;
+				}
 				if ($promocode['type'] == 'free_shipping') {
 					$datas_order["handlingDiscount"] = $selected_order["handling"];
 					$datas_order["overSizeHandlingDiscount"] = $selected_order["overSizeHandling"];
@@ -667,6 +673,9 @@ class Order extends Base {
 		/**************CREDITS TREATMENT**************/
 		if($selected_order["credit_used"] != ('' || null)) {
 			$selected_order["credit_used"] = (float) - abs($selected_order["credit_used"]);
+			if($selected_order["original_credit_used"]) {
+				$selected_order["original_credit_used"] = (float) - abs($selected_order["original_credit_used"]);
+			}
 			if(empty($selected_order["user_total_credits"])){
 				if(strlen($selected_order["user_id"]) > 10){
 					$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
@@ -876,6 +885,29 @@ class Order extends Base {
 							    $conditions = array();
 							}
 							break;
+						case 'failed_reauth':
+							$type = 'failed_reauth';
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['payment_date'] = array('$exists' => false);
+							$conditions['cancel'] = array('$exists' => false);
+							$conditions['payment_captured'] = array('$exists' => false);
+							$conditions['auth_error'] = array('$exists' => true);
+							$conditions['error_date'] = array('$exists' => true);
+							$conditions['ship_records'] = array('$exists' => false);
+							$conditions['$where'] = 'this.total == this.authTotal';
+							break;
+						case 'failed_initial_auth':
+							$type = 'failed_initial_auth';
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['payment_date'] = array('$exists' => false);
+							$conditions['cancel'] = array('$exists' => false);
+							$conditions['payment_captured'] = array('$exists' => false);
+							$conditions['auth_error'] = array('$exists' => true);
+							$conditions['error_date'] = array('$exists' => true);
+							$conditions['ship_records'] = array('$exists' => false);
+							$conditions['$where'] = 'this.total != this.authTotal';
+							$conditions['$or'] = array(array('authTotal' => 1), array('authTotal' => 0));
+							break;
 						default:
 							break;
 					}
@@ -903,7 +935,6 @@ class Order extends Base {
 	* @params (string) $orderId : short id of the order
 	* @return boolean
 	**/
-
 	public static function failedCaptureCheck($orderId = null) {
 	    $failed = false;
 	    $coll = static::collection();
@@ -915,7 +946,7 @@ class Order extends Base {
 	     return $failed;
 	}
 	
-	public static function getCCinfos($order = null) {
+		public static function getCCinfos($order = null) {
 		$creditCard = null;
 		if(!empty($order['cc_payment'])) {
 			$cc_encrypt = $order['cc_payment'];
@@ -943,6 +974,25 @@ class Order extends Base {
 			$cc_encrypt[$k] = base64_encode($crypt_info);
 		}
 		return $cc_encrypt;
+	}
+	
+	/**
+	 * Decrypt all credits card processed with Auth.Net
+	 */
+	public static function getCCinfosByTheOldWay($order) {
+		$creditCard = null;
+		if(!empty($order['cc_payment'])) {
+			$cc_encrypt = $order['cc_payment'];
+			$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
+			$iv =  base64_decode($order['cc_payment']['vi']);
+			$key = md5($order['user_id']);
+			unset($cc_encrypt['vi']);
+			foreach  ($cc_encrypt as $k => $cc_info) {
+				$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key.sha1($k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
+				$creditCard[$k] = $crypt_info;
+			}
+		}
+		return $creditCard;
 	}
 }
 

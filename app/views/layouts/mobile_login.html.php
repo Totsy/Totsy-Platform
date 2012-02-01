@@ -6,7 +6,6 @@
 <head>
 	<?php echo $this->html->charset();?>
 	<title>Totsy</title>
-	
 	<meta name="description"
 	content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	<meta id="view-lock" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -26,22 +25,22 @@
 	
 	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
 	<?php echo $this->scripts(); ?>
+<script type="text/javascript">
 
-	<script type="text/javascript">
-	
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-675412-20']);
-	  _gaq.push(['_trackPageview']);
-	
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-	
-	</script>
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-675412-20']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body>
+<div id="fb-root"></div>
 <div class="nav_head"></div>
 	<div class="mobile_ui">
 	<div class="logo">
@@ -52,5 +51,46 @@
 	</div>
 	<p class="legal">&copy;2012 Totsy, Inc. All rights reserved.</p>
 </div>
+	<script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId   : <?php echo $fbconfig['appId']; ?>,
+          session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
+          oauth	  : true, 
+          status  : true, // check login status
+          cookie  : true, // enable cookies to allow the server to access the session
+          xfbml   : true // parse XFBML
+        });
+
+        // whenever the user logs in, we refresh the page
+        FB.Event.subscribe('auth.login', function() {
+          window.location.reload();
+        });
+        
+        /*
+        FB.Event.subscribe('auth.logout', function(response) {
+		    window.location.href='/logout';
+ 		});
+ 		*/
+        
+      };
+
+      (function() {
+        var e = document.createElement('script');
+        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+        e.async = true;
+        document.getElementById('fb-root').appendChild(e);
+      }());
+    </script>
+<script>
+//your fb login function
+function fblogin() {
+	FB.login(function(response) {
+		if (response.authResponse) {
+			window.location.reload();    
+  		}	
+	}, 		 {scope:'email'});
+}
+</script>
 </body>
 </html>

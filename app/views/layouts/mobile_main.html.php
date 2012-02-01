@@ -9,7 +9,7 @@
 	<title>
 		<?php echo $this->title() ?: 'Totsy'; ?>
 	</title>
-	<meta property="fb:app_id" content="181445585225391"/>
+	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
@@ -32,20 +32,19 @@
 	
 	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
 	<?php echo $this->scripts(); ?>
-	
-	<script type="text/javascript">
-	
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-675412-20']);
-	  _gaq.push(['_trackPageview']);
-	
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-	
-	</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-675412-20']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body>
 <?php if (!empty($userInfo)){ ?>
@@ -66,10 +65,9 @@
 <div class="clear"></div>
 <div data-role="navbar">
 	<ul>
-		<li><a href="#" onclick="window.location.href='/sales';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0) { echo 'class="ui-btn-active"'; } ?>>All</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/girls';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) { echo 'class="ui-btn-active"'; } ?>>Girls</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/boys';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0) { echo 'class="ui-btn-active"'; } ?>>Boys</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/momsdads';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) { echo 'class="ui-btn-active"'; } ?>>Parents</a></li>
+		<li><a href="#" onclick="window.location.href='/sales';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Date</a></li>
+		<li><a href="#" onclick="window.location.href='/age/all';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/age/all') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Age</a></li>
+		<li><a href="#" onclick="window.location.href='/category/all';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/categories/all') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Category</a></li>
 	</ul>
 </div><!-- /navbar -->		
 <div class="clear"></div>
@@ -83,7 +81,7 @@
 	</div>	
 	</div>
 <?php } ?>
-	<div data-role="content">
+	<div data-role="content" data-role="page" class="type-interior">
 	<?php echo $this->content(); ?>
 	</div>
 	<div class="clear"></div>
@@ -95,6 +93,40 @@ $.mobile.fixedToolbars
 
 $.base = '<?php echo rtrim(Router::match("/", $this->_request)); ?>';
 </script>
-
+<?php
+use li3_facebook\extension\FacebookProxy;
+$fbconfig = FacebookProxy::config();
+$appId = $fbconfig['appId'];
+?>
+<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
+<script type="text/javascript">
+var fbCookie = 'fbsr_<?php echo $appId; ?>';
+var mobilefbCookie = 'fbm_<?php echo $appId; ?>';
+var logoutURL = '<?php echo $logout; ?>';
+function deleteFBCookies() {
+//all posible FB cookies
+try {
+document.cookie = fbCookie + '=; domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+document.cookie = mobilefbCookie + '=; base_domain=.totsy.com; expires=Thu, 01-Jan-70 00:00:01 GMT; path=/';
+document.cookie = 'datr=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'locale=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'lu=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'reg_fb_gate=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'reg_fb_ref=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'lsd=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'L=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'act=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+document.cookie = 'openid_p=; expires=Thu, 01-Jan-70 00:00:01 GMT;path=/';
+return true;
+} catch(err) {
+return false;
+}
+}
+function goToLogout() {
+if (deleteFBCookies()==true) {
+window.location = logoutURL;
+}
+}
+</script>
 </body>
 </html>

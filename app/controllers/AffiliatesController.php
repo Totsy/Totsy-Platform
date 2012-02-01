@@ -178,19 +178,16 @@ class AffiliatesController extends BaseController {
 			        $data['firstname'] = $userfb['first_name'];
 			        $data['lastname'] = $userfb['last_name'];
 				}
-				switch ($affiliate) {
-                    case 'our365':
-                    case 'our365widget':
-                     //   $this->_render['template'] = 'our365';
-                        break;
-                    case 'keyade':
-                      //  $this->_render['template'] = 'keyade';
-                        if(count($params['args'] > 1)){
-                            $data['keyade_user_id'] = $params['args'][1];
-                        } else {
-                            $data['keyade_user_id'] = 0;
-                        }
-                }
+
+				if (preg_match('/^keyade/i', $affiliate)) {
+				    if (array_key_exists('clickId', $gdata)){
+				        $data['keyade_user_id'] = $gdata['clickId'];
+				    } else if(count($params['args'] > 1) && is_numeric($params['args'][1])){
+                        $data['keyade_user_id'] = $params['args'][1];
+                    } else {
+                        $data['keyade_user_id'] = 0;
+                    }
+				}
 				extract(UsersController::registration($data));
 				if ($saved) {
 					$message = $saved;

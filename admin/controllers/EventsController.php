@@ -96,30 +96,86 @@ class EventsController extends BaseController {
 		return compact('event');
 	}
 
-	public function uploadcheck_clearance() {
+	//public function uploadcheck_clearance() {
+	public function uploadcheck() {
+	    $this->_render['layout'] = false;
+	    unset($branch);
+		//$this->_render['head'] = true;
+		$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
+		return Event::check_spreadsheet($fullarray, $this->_mapCategories);
+	}
+
+	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
+	//protected function uploadcheck($fullarr2ay, $_id, $enabled = false) {
 	    $this->_render['layout'] = false;
 
-	}
-	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
-
-		$items_quantities[] = array();
-		$items_prices[] = array();
-		$items_skus[] = array();
-		$items_skus_used[] = array();
-		$items[] = array();
+		$items_quantities = array();
+		$items_ages = array();
+		$items_categories = array();
+		$items_prices = array();
+		$items_skus = array();
+		$items_skus_used = array();
+		$items = array();
 
 		$itemsCollection = Item::Collection();
 
 		//convert textarea content into an array
-		//$fullarray = Event::convert_spreadsheet($_POST['items_submit']);
+		//$fullarray = Event::convert_spreadsheet($_POST['ItemsSubmit']);
 
 		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
 		foreach($fullarray as $item_sku_quantity){
-			$current_sku = trim($item_sku_quantity[0]);
-			$items_skus[] = $current_sku;
-			$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
-			$items_prices[$current_sku] = trim($item_sku_quantity[2]);
+			//$current_sku = trim($item_sku_quantity[0]);
+			//$items_skus[] = $current_sku;
+			//$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
+			//$items_prices[$current_sku] = trim($item_sku_quantity[2]);
 		}
+
+
+		$highestRow = $fullarray[0];
+		$totalrows = count($fullarray);
+		$totalcols = count($highestRow);
+
+
+		$check_decimals = array("msrp", "sale_retail", "percentage_off", "percent_off", "orig_wholesale", "orig_whol", "sale_whol", "sale_wholesale", "imu");
+
+		for ($row = 0; $row <= $totalrows; ++ $row ) {
+			if($row>0&&$fullarray[$row][0]){
+				$current_sku = $fullarray[$row][0];
+				if($current_sku){
+					$items_skus[] = $current_sku;
+				}
+			}
+			for ($col = 0; $col < $totalcols; ++ $col) {
+				$val = $fullarray[$row][$col];
+
+				if ($row == 0) {
+					if(($val)||($val==0)){
+						$heading[] = $val;
+					}
+				} else {
+					if (isset($heading[$col])) {
+						if($heading[$col] === "quantity") {
+							if (!empty($val)) {
+								$items_quantities[$current_sku] = trim($val);
+							}
+						} else if($heading[$col] === "sale_retail") {
+							if (!empty($val)) {
+								$items_prices[$current_sku] = trim($val);
+							}
+						} else if(strstr($heading[$col], "age_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$items_ages[$current_sku][] = trim($val);
+							}
+						} else if(strstr($heading[$col], "category_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$items_categories[$current_sku][] = trim($val);
+							}
+						}
+					}
+				}
+			}
+		}
+
 
 		//mongo query, find all items with skus
 		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( '$in' => $items_skus))));
@@ -172,6 +228,10 @@ class EventsController extends BaseController {
 
 						//use index to update quantity
 						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
+
+						$oitem['ages'] = $items_ages[$sku_details];
+						$oitem['categories'] = $items_categories[$sku_details];
+
 						//set sales to 0 for all sizes
 						//$oitem['sale_details'][$sku_details_key]['sale_count'] = 0;
 						//use index to get new price
@@ -320,10 +380,10 @@ class EventsController extends BaseController {
 			));
 
 		//process new items
-		if(!empty($this->request->data['items_submit'])) {
+		if(!empty($this->request->data['ItemsSubmit'])) {
 			$enableItems = $this->request->data['enable_items'];
 
-			$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
+			$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
 			if($event->clearance){
 				$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
 			}
@@ -402,8 +462,7 @@ class EventsController extends BaseController {
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
-				compact('items'),
-				compact('images'),
+				compact('items', 'images', 'departments'),
 				array('url' => $url)
 			);
 

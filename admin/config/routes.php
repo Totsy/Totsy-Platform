@@ -76,9 +76,11 @@ Router::connect('/files/associate/{:scope:(all|pending|orphaned)}/{:on:[a-z0-9\-
 Router::connect('/files/associate/{:id:[0-9a-f]{24}}', 'Files::associate');
 Router::connect('/files/upload/{:args}', 'Files::upload');
 
-/**
- * ...and connect the rest of 'Pages' controller's urls.
- */
+Router::connect('promocodes/massPromocodes/{:parent_id:[a-z0-9]+}',array(
+    'Promocodes::massPromocodes',
+    'type' => 'csv'
+));
+
 Router::connect('/pages/{:args}', 'Pages::view');
 
 /**

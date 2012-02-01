@@ -10,7 +10,7 @@
 			<li><a href="#" onclick="window.location.href='/orders';return false;">My Orders</a></li>
 
 			<li><a href="#" onclick="window.location.href='/users/invite';return false;">Invite Friends, Get $15</a></li>
-			<li><a href="#" onclick="window.location.href='/logout';return false;">Sign Out</a></li>
+			<li><a href="#"  onclick="goToLogout();">Sign Out</a></li>
 			
 		</ul>
 		<?php } else { ?>

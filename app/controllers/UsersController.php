@@ -167,7 +167,16 @@ class UsersController extends BaseController {
 		}*/
 
 		if ($this->request->data && !$user->validates() ) {
-			$message = '<div class="error_flash">Error in registering your account</div>';
+			$message = '<div class="error_flash">Error in registering your account';
+			$errors  = $user->errors();
+
+			// append the error message to the output message when available
+			if (count($errors)) {
+				$firstError = current($errors);
+				$message .= ': ' . $firstError[0];
+			}
+
+			$message .= '</div>';
 		}
 		if($this->request->is('mobile')){
 		 	$this->_render['layout'] = 'mobile_login';
@@ -411,7 +420,7 @@ class UsersController extends BaseController {
 			array('email' => $loginInfo['email']),
 			array('$unset' => array('autologinHash' => 1))
 			);
-		$success = Session::delete('userLogin');
+		$success = Session::delete('userLogin', array('name' => 'default'));
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
 
 		unset($cookie['autoLoginHash']);
@@ -575,16 +584,9 @@ class UsersController extends BaseController {
 			$code = $user->invitation_codes;
 		}
 		if ($this->request->data) {
-			$rawto = explode(',',$this->request->data['to']);
+			$to = $this->_parseEmail($this->request->data['to']);
 			$message = $this->request->data['message'];
-			foreach ($rawto as $key => $value) {
-				preg_match('/<(.*)>/', $value, $matches);
-				if ($matches) {
-					$to[] = $matches[1];
-				} else {
-					$to[] = trim($value);
-				}
-			}
+
 			foreach ($to as $email) {
 				$invitation = Invitation::create();
 				Invitation::add($invitation, $id, $code, $email);
@@ -600,7 +602,7 @@ class UsersController extends BaseController {
 			}
 			$flashMessage = '<div class="success_flash">Your invitations have been sent</div>';
 		}
-		
+
 		if(substr_count($this->request->env('HTTP_REFERER'), "/sales?req=invite")>0) {
 			$this->redirect('/sales');
 		}
@@ -614,7 +616,7 @@ class UsersController extends BaseController {
 				'user_id' => (string) $user->_id,
 				'status' => 'Accepted')
 		));
-		
+
 		$pixel = Affiliate::getPixels('invite', 'spinback');
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 		array('invite' => $_SERVER['REQUEST_URI'])
@@ -790,6 +792,46 @@ class UsersController extends BaseController {
 			static::$_instances[$class] = new $class();
 		}
 		return static::$_instances[$class];
+	}
+	
+	private function _parseEmail (&$str){
+		/*
+		 * string "
+		* email@email.com\n email@email.com
+		* email@email.com\r\n email@email.com
+		* email@email.com\r\n\t email@email.com
+		* email@mail.com; email@email.com
+		* "Email" <email@email.com>, "Email" <email@mail.com>
+		* "Email" <email@email.com>; "Email" <email@mail.com>
+		* Email (email@email.com), Email (email@email.com)
+		* Email (email@email.com); Email (email@email.com)
+		* "
+		*/
+	
+		$r_email = preg_replace("/[\t]+/","",$str);
+		$r_email = preg_replace("/[\r\,\;]+/","\n",$r_email);
+		$r_email = preg_replace("/[\n]+/","\n",$r_email);
+		$r_email = preg_split("/[\n]/", $r_email);
+		$emails = array();
+	
+		if (empty($r_email)){
+			return false;
+		}
+		foreach ($r_email as $m){
+			$m = trim($m);
+			preg_match("/[\+\.\-_A-Za-z0-9]+?@[\.\-A-Za-z0-9]+?[\.A-Za-z0-9]{2,}/",$m,$e);
+			if (!empty($e)){
+				$emails = array_merge($emails,$e);
+			}
+		}
+		if (empty($emails)){
+			unset($log,$lc);
+			return false;
+		}
+	
+		unset($r_email,$e);
+		return $emails;
+	
 	}
 
 }
