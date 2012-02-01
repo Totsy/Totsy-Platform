@@ -104,31 +104,22 @@ class EventsController extends BaseController {
 		return Event::check_spreadsheet($fullarray, $this->_mapCategories);
 	}
 
-	public function regenerateskus() {
+	public function regeneratesku($_id = null) {
 	    $this->_render['layout'] = false;
 
-		//event id
-		$alleventids = array($_id);
-		
-		//switch for full regen
-		
-		
-		//query items by event
-		//$event = Event::find($_id);
-
-
-		$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
+		$eventItems = Item::find('all', array('conditions' => array('event' => $_id),
 				'order' => array('created_date' => 'ASC')
 			));
 
 		foreach($eventItems as $item){
-			echo $item['_id'] . "<br>";			
-		
+			if(count($item['details'])!=count($item['sku_details'])){
+				//Item->addskus($item['_id']);
+				echo "<font color=ff0000>sizes and skus are NOT CORRECT</font><br>";
+			}
+			else{
+				echo "sizes and skus are correct<br>";
+			}
 		}
-
-
-
-
 	}
 
 	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
