@@ -125,6 +125,30 @@ class Item extends Base {
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
 
+	public static function addskus($_id){
+		//query single item
+		$item = Item::find('first', array('conditions' => array('_id' => $id)));
+	
+		//new sku array
+		$sku_details = array();
+	
+		//loop through sizes and create skus
+		foreach($item['details'] as $size){
+			$newsku = Item::sku($item['vendor'], $item['vendor_style'], $size, $item['color']);
+			echo $newsku . "<br>";
+		}
+		
+		//unset
+		unset($item['sku_details']);
+		
+		//set skus
+		$item['sku_details'] = $sku_details;
+		
+		$item->save();
+		
+		return true;
+	}
+
 	public static function calculateProductGross($items) {
 		if (empty($items)) return 0;
 
