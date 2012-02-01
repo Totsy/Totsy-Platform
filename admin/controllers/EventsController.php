@@ -113,11 +113,11 @@ class EventsController extends BaseController {
 	public function generatesku($_id = null) {
 	    $this->_render['layout'] = false;
 		$this->_render['template'] = 'regeneratesku';
-		return Item::generateskusbyevent($_id); 
+		return Item::generateskusbyevent($_id);
 	}
 
+	
 	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
-	//protected function uploadcheck($fullarr2ay, $_id, $enabled = false) {
 	    $this->_render['layout'] = false;
 
 		$items_quantities = array();
