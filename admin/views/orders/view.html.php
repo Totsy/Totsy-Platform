@@ -56,6 +56,9 @@
 										</div><br />
 									</div>
 									<div id="normal" style="display:block">
+										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:black;">
+											<b>Order ID</b> : <?php echo $order['order_id'] ?> / <b>AuthKey :</b> <?php echo $order['authKey'] ?>
+										</p>
 										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 											The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
 										</p>
@@ -669,10 +672,10 @@ $(document).ready(function(){
 			$("#normal").slideUp();
 		}
 	});
-	$("#cancel_button").click(function () {
-		if ($("#confirm_cancel_div").is(":hidden")) {
-			$("#confirm_cancel_div").show("slow");
-			$("#normal").slideUp();
+	$("#capture_button").click(function () {
+		if (confirm('Are you sure to capture this order ?')) {
+			$('#capture_action').val(true);
+			$('#captureForm').submit();
 		}
 	});
 	$('#full_order_tax_return_button').click(function(){

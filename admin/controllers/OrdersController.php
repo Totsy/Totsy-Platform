@@ -604,6 +604,47 @@ class OrdersController extends BaseController {
 		return $message;
 	}
 	
+	public function capture($id) {
+		$orderClass = $this->_classes['order'];
+		$ordersCollection = $orderClass::Collection();
+		$order = $ordersCollection->findOne(array("_id" => new MongoId($id)));
+		if($order['auth'] && $order['processor']) {
+			$auth_capture = Processor::capture(
+				'default',
+				$order['auth'],
+				floor($order['total'] * 100) / 100,
+				array(
+					'processor' => isset($order['processor']) ? $order['processor'] : null,
+					'orderID' => $order['order_id']
+				)
+			);
+			if ($auth_capture->success()) {
+				$update = $ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$set' => array('authKey' => $auth_capture->key,
+										  'auth' => $auth_capture->export(),
+										  'authTotal' => $order['total'],
+										  'processor' => $auth_capture->adapter,
+										  'payment_date' => new MongoDate(),
+       									  'auth_confirmation' => $auth_capture->key
+					)), array( 'upsert' => true)
+				);
+				#Unset Old Errors fields
+				$update = $ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$unset' => array('error_date' => 1,
+											'auth_error' => 1)
+					)
+				);
+				$message  = "Capture Successfully Processed for order id `{$order['order_id']}`:";
+			} else {
+				$message  = "Capture failed for order id `{$order['order_id']}`:";
+				$message .= $error = implode('; ', $auth_capture->errors);
+			}
+		}
+		return $message;
+	}
+			
 	/**
 	* The view method renders the order confirmation page that is sent to the customer
 	* after they have placed their order
@@ -668,8 +709,7 @@ class OrdersController extends BaseController {
 			$this->updateShipping($id);
 		}
 		if ($id && empty($datas["save"]) && !empty($datas["capture_action"])) {
-			$orderToCapture = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($id))));
-			$result = Order::process($orderToCapture);
+			$result = $this->capture($id);
 		}
 		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["billing"])) {
 			$this->updatePayment($id);
