@@ -125,7 +125,8 @@ class ReAuthorize extends \lithium\console\Command {
 							'$where' => 'this.total == this.authTotal',
 							'cyberSourceProfileId' => array('$exists' => true),
 							'authTotal' => array('$exists' => true),
-							'processor' => 'CyberSource'
+							'processor' => 'CyberSource',
+							'auth_error' => array('$exists' => false)
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -242,14 +243,15 @@ class ReAuthorize extends \lithium\console\Command {
 		#Cancel Previous Transaction
 		if($order['card_type'] != 'amex' && (!empty($order['authTotal'])) && $this->fullAmount) {
 			$auth = Processor::void('default', $order['auth'], array(
-				'processor' => isset($order['processor']) ? $order['processor'] : null
+				'processor' => isset($order['processor']) ? $order['processor'] : null,
+				'orderID' => $order['order_id']
 			));
 		}
 		Logger::debug("Getting CyberSource Profile");
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
 		Logger::debug("Authorizing...");
-		$auth = Processor::authorize('default', $order['total'], $profile);
+		$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
 		if($auth->success()) {
 			Logger::debug("Authorization Succeeded");
 			#Setup new AuthKey
@@ -275,6 +277,11 @@ class ReAuthorize extends \lithium\console\Command {
 				'total' => $order['total']
 			);
 		} else {
+			#Reverse Transaction that Failed
+			Processor::void('default', $auth, array(
+				'processor' => $auth->adapter,
+				'orderID' => $order['order_id']
+			));
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
 			Logger::debug($message);

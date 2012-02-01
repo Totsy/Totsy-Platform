@@ -518,7 +518,6 @@ class OrdersController extends BaseController {
 			'event'
 		);
 		
-		
 		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
@@ -689,6 +688,7 @@ class OrdersController extends BaseController {
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
 		if (Session::check('cc_error')){
+			$creditCardError = true;
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
 				$card = $creditCardClass::decrypt((string)$user['_id']);
 				$data_add = Session::read('billing');
@@ -733,7 +733,8 @@ class OrdersController extends BaseController {
 			'shipping',
 			'shipDate',
 			'cartExpirationDate',
-			'cyberSourceProfiles'
+			'cyberSourceProfiles',
+			'creditCardError'
 		);
 	}
 	

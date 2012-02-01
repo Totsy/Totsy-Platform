@@ -65,10 +65,9 @@
 <div class="clear"></div>
 <div data-role="navbar">
 	<ul>
-		<li><a href="#" onclick="window.location.href='/sales';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0) { echo 'class="ui-btn-active"'; } ?>>All</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/girls';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) { echo 'class="ui-btn-active"'; } ?>>Girls</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/boys';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0) { echo 'class="ui-btn-active"'; } ?>>Boys</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/momsdads';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) { echo 'class="ui-btn-active"'; } ?>>Parents</a></li>
+		<li><a href="#" onclick="window.location.href='/sales';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Date</a></li>
+		<li><a href="#" onclick="window.location.href='/age/all';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/age/all') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Age</a></li>
+		<li><a href="#" onclick="window.location.href='/category/all';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/categories/all') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Category</a></li>
 	</ul>
 </div><!-- /navbar -->		
 <div class="clear"></div>
@@ -82,7 +81,7 @@
 	</div>	
 	</div>
 <?php } ?>
-	<div data-role="content">
+	<div data-role="content" data-role="page" class="type-interior">
 	<?php echo $this->content(); ?>
 	</div>
 	<div class="clear"></div>
