@@ -520,7 +520,7 @@ class OrdersController extends BaseController {
 										'card_number' => substr($datas['creditcard']['number'], -4) 
 					))
 				);
-				FlashMessage::write("Payment details has been updated.", array('class' => 'pass'));	
+				FlashMessage::write("Payment details has been updated.", array('class' => 'pass'));
 			} else {
 				FlashMessage::write(
 					$errors,
@@ -600,6 +600,7 @@ class OrdersController extends BaseController {
 	
 	public function capture($id) {
 		$orderClass = $this->_classes['order'];
+		$current_user = Session::read('userLogin');
 		$ordersCollection = $orderClass::Collection();
 		$order = $ordersCollection->findOne(array("_id" => new MongoId($id)));
 		if($order['auth'] && $order['processor']) {
@@ -613,6 +614,15 @@ class OrdersController extends BaseController {
 				)
 			);
 			if ($auth_capture->success()) {
+				$modification_datas["author"] = $current_user["email"];
+				$modification_datas["date"] = new MongoDate(strtotime('now'));
+				$modification_datas["type"] = "capture";
+				// We push the modifications datas with the old shipping.
+				$ordersCollection->update(
+					array("_id" => new MongoId($id)),
+					array('$push' => array('modifications' => $modification_datas)),
+					array('upsert' => true)
+				);
 				$update = $ordersCollection->update(
 					array('_id' => $order['_id']),
 					array('$set' => array('authKey' => $auth_capture->key,
@@ -630,13 +640,16 @@ class OrdersController extends BaseController {
 											'auth_error' => 1)
 					)
 				);
-				$message  = "Capture Successfully Processed for order id `{$order['order_id']}`:";
+				FlashMessage::write("Capture Successfully Processed for order id `{$order['order_id']}`:", array('class' => 'pass'));
 			} else {
 				$message  = "Capture failed for order id `{$order['order_id']}`:";
 				$message .= $error = implode('; ', $auth_capture->errors);
+				FlashMessage::write(
+					$message,
+					array('class' => 'warning')
+				);
 			}
 		}
-		return $message;
 	}
 			
 	/**
@@ -703,7 +716,7 @@ class OrdersController extends BaseController {
 			$this->updateShipping($id);
 		}
 		if ($id && empty($datas["save"]) && !empty($datas["capture_action"])) {
-			$result = $this->capture($id);
+			$this->capture($id);
 		}
 		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["billing"])) {
 			$this->updatePayment($id);

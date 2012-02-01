@@ -66,8 +66,8 @@
 											<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>
 											<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
 											<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
-										<?php if(empty($order['payment_date'])) : ?>
-											<button id="capture_button" style="font-weight:bold;font-size:14px;">Capture</button>
+										<?php if(empty($order['payment_date']) && empty($order['cancel']) && ($order['authTotal'] == $order['total'])) : ?>
+											<button id="capture_button" style="font-weight:bold;font-size:14px;">Capture Full Order Amount</button>
 										<?php endif; ?>
 											<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
 											<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
