@@ -203,6 +203,7 @@ class Order extends Base {
 		if(empty($cyberSourceProfile)) {
 			$vars['savedByUser'] = false;
 			$vars['order_id'] = $order->order_id;
+			$vars['auth'] = $auth;
 			$cyberSourceProfile = CreditCard::add($vars);
 		}
 		$order->cyberSourceProfileId = $cyberSourceProfile['profileID'];

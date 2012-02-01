@@ -2,6 +2,11 @@
 
 namespace admin\models;
 
+use MongoRegex;
+use MongoDate;
+use MongoId;
+use Mongo;
+
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
  * access to the Item MongoDB collection. This collection contains all product items.
@@ -125,6 +130,7 @@ class Item extends Base {
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
 
+
 	public static function calculateProductGross($items) {
 		if (empty($items)) return 0;
 
@@ -139,6 +145,54 @@ class Item extends Base {
 
 		return $gross;
 	}
+
+	public static function addskus($_id){
+		//query single item
+		$item = Item::find('first', array('conditions' => array('_id' => $_id)));
+
+		//new sku array
+		$skus = array();
+		$sku_details = array();
+	
+		//loop through sizes and create skus
+		foreach($item['details'] as $size => $quantity){
+			$newsku = Item::sku($item['vendor'], $item['vendor_style'], $size, $item['color']);
+			$skus[] = $newsku;
+			$sku_details[$size] = $newsku;
+		}
+
+	    $itemCollection = Item::connection()->connection->items;
+		return $itemCollection->update(
+			array('_id' => $_id),
+			array('$set' => array('sku_details' => $sku_details,'skus' => array_values($skus) )),
+			array('upsert' => true)
+		);
+	}
+
+	
+	public static function generateskusbyevent($_id, $check = false){
+		//query items by eventid
+		$eventItems = Item::find('all', array('conditions' => array('event' => $_id),
+				'order' => array('created_date' => 'ASC')
+			));
+
+		//loop through items
+		foreach($eventItems as $item){
+			//check for existing skus?
+			if($check){
+				if(count($item['details'])!=count($item['skus'])){
+					$addsku .= Item::addskus($item['_id']);
+				}
+			}
+			//just replace all skus
+			else{
+				$addsku .= Item::addskus($item['_id']);
+			}
+		}
+		return $addsku;
+	}
+
+
 }
 
 ?>
