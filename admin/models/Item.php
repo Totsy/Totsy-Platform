@@ -2,6 +2,11 @@
 
 namespace admin\models;
 
+use MongoRegex;
+use MongoDate;
+use MongoId;
+use Mongo;
+
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
  * access to the Item MongoDB collection. This collection contains all product items.
@@ -128,7 +133,7 @@ class Item extends Base {
 	public static function addskus($_id){
 		//query single item
 		$item = Item::find('first', array('conditions' => array('_id' => $id)));
-	
+
 		//new sku array
 		$sku_details = array();
 	
@@ -144,8 +149,28 @@ class Item extends Base {
 		//set skus
 		$item['sku_details'] = $sku_details;
 		
-		$item->save();
-		
+		return Item::save($item);
+	}
+	
+	public static function generateskusbyevent($_id, $check = false){
+		//query items by eventid
+		$eventItems = Item::find('all', array('conditions' => array('event' => $event_id),
+				'order' => array('created_date' => 'ASC')
+			));
+
+		//loop through items
+		foreach($eventItems as $item){
+			//check for existing skus?
+			if($check){
+				if(count($item['details'])!=count($item['sku_details'])){
+					Item::addskus($item['_id']);
+				}
+			}
+			//just replace all skus
+			else{
+				Item::addskus($item['_id']);
+			}
+		}
 		return true;
 	}
 
