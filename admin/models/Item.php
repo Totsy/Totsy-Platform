@@ -132,24 +132,34 @@ class Item extends Base {
 
 	public static function addskus($_id){
 		//query single item
-		$item = Item::find('first', array('conditions' => array('_id' => $id)));
+		$item = static::collection()->findOne(array('_id' => $_id));
 
 		//new sku array
+		$skus = array();
 		$sku_details = array();
+		
+		//convert item array to object?
+		foreach($item as $key => $value){
+			$saveitem->$key = $value;
+		}
 	
 		//loop through sizes and create skus
 		foreach($item['details'] as $size){
 			$newsku = Item::sku($item['vendor'], $item['vendor_style'], $size, $item['color']);
-			echo $newsku . "<br>";
+			$skus[] = $newsku;
+			$sku_details[$size] = $newsku;
+			$yoink .= $newsku . "
+			
+			";
 		}
-		
-		//unset
-		unset($item['sku_details']);
-		
-		//set skus
+
+		$item['skus'] = $skus;
 		$item['sku_details'] = $sku_details;
+
+		$saveitem->skus = $skus;
+		$saveitem->sku_details = $sku_details;
 		
-		return Item::save($item);
+		return static::save($saveitem);
 	}
 	
 	public static function generateskusbyevent($_id, $check = false){
@@ -162,16 +172,16 @@ class Item extends Base {
 		foreach($eventItems as $item){
 			//check for existing skus?
 			if($check){
-				if(count($item['details'])!=count($item['sku_details'])){
-					Item::addskus($item['_id']);
+				if(count($item['details'])!=count($item['skus'])){
+					$addsku .= Item::addskus($item['_id']);
 				}
 			}
 			//just replace all skus
 			else{
-				Item::addskus($item['_id']);
+				$addsku .= Item::addskus($item['_id']);
 			}
 		}
-		return true;
+		return $addsku;
 	}
 
 	public static function calculateProductGross($items) {
