@@ -90,6 +90,9 @@ class EventsController extends BaseController {
 		// re-count events num
 		$eventCount = count($openEvents);
 		
+		// re-count events num
+		$eventCount = count($openEvents);
+		
 		return compact('openEvents', 'items', 'categories', 'eventCount');
 	}
 
