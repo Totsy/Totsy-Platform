@@ -130,41 +130,49 @@ class Item extends Base {
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
 
+
+	public static function calculateProductGross($items) {
+		if (empty($items)) return 0;
+
+		$gross = 0;
+		foreach($items as $item) {
+			$cancel = array_key_exists('cancel' , $item) && !$item['cancel'];
+			$cancel = $cancel || !array_key_exists('cancel' , $item);
+			if ($cancel) {
+				$gross += $item['quantity'] * $item['sale_retail'];
+			}
+		}
+
+		return $gross;
+	}
+
 	public static function addskus($_id){
 		//query single item
-		$item = static::collection()->findOne(array('_id' => $_id));
+		$item = Item::find('first', array('conditions' => array('_id' => $_id)));
 
 		//new sku array
 		$skus = array();
 		$sku_details = array();
-		
-		//convert item array to object?
-		foreach($item as $key => $value){
-			$saveitem->$key = $value;
-		}
 	
 		//loop through sizes and create skus
-		foreach($item['details'] as $size){
+		foreach($item['details'] as $size => $quantity){
 			$newsku = Item::sku($item['vendor'], $item['vendor_style'], $size, $item['color']);
 			$skus[] = $newsku;
 			$sku_details[$size] = $newsku;
-			$yoink .= $newsku . "
-			
-			";
 		}
 
-		$item['skus'] = $skus;
-		$item['sku_details'] = $sku_details;
-
-		$saveitem->skus = $skus;
-		$saveitem->sku_details = $sku_details;
-		
-		return static::save($saveitem);
+	    $itemCollection = Item::connection()->connection->items;
+		return $itemCollection->update(
+			array('_id' => $_id),
+			array('$set' => array('sku_details' => $sku_details,'skus' => array_values($skus) )),
+			array('upsert' => true)
+		);
 	}
+
 	
 	public static function generateskusbyevent($_id, $check = false){
 		//query items by eventid
-		$eventItems = Item::find('all', array('conditions' => array('event' => $event_id),
+		$eventItems = Item::find('all', array('conditions' => array('event' => $_id),
 				'order' => array('created_date' => 'ASC')
 			));
 
@@ -184,20 +192,7 @@ class Item extends Base {
 		return $addsku;
 	}
 
-	public static function calculateProductGross($items) {
-		if (empty($items)) return 0;
 
-		$gross = 0;
-		foreach($items as $item) {
-			$cancel = array_key_exists('cancel' , $item) && !$item['cancel'];
-			$cancel = $cancel || !array_key_exists('cancel' , $item);
-			if ($cancel) {
-				$gross += $item['quantity'] * $item['sale_retail'];
-			}
-		}
-
-		return $gross;
-	}
 }
 
 ?>
