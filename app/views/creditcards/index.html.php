@@ -48,6 +48,10 @@
  				$type = "/img/cc_mastercard.gif"; 
 				$cc_name = "MasterCard";
  			break;
+ 			case 'mc': 
+ 				$type = "/img/cc_mastercard.gif"; 
+				$cc_name = "MasterCard";
+ 			break;
  		}
    	
    	?>

@@ -566,13 +566,7 @@ class OrdersController extends BaseController {
 		#Create a new Transaction and Get a new Authorization Key
 		$auth = Processor::authorize('default', $order['total'], $card, array('orderID' => $order['order_id']));
 		if($auth->success()) {
-			$customer = Processor::create('default', 'customer', array(
-				'firstName' => $userInfos['firstname'],
-				'lastName' => $userInfos['lastname'],
-				'email' => $userInfos['email'],
-				'payment' => $card
-			));
-			$result = $customer->save();
+			$result = Processor::profile('default', $auth, array('orderID' => $order['order_id']));
 			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
