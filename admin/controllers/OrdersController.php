@@ -30,7 +30,8 @@ class OrdersController extends BaseController {
 
 	protected $_classes = array(
 		'tax'   => 'admin\extensions\AvaTax',
-		'order' => 'admin\models\Order'
+		'order' => 'admin\models\Order',
+		'processedorder'  => 'admin\models\ProcessedOrder'
 	);
 
 	/**
@@ -47,6 +48,7 @@ class OrdersController extends BaseController {
 		'Order Cost',
 		'Tracking Info',
 		'Estimated Delivery Date',
+		'Errors/Message',
 		'Customer Profile'
 	);
 
@@ -611,9 +613,11 @@ class OrdersController extends BaseController {
 	*/
 	public function view($id = null) {
 		$orderClass = $this->_classes['order'];
+		$processedOrderClass = $this->_classes['processedorder'];
 
 		$userCollection = User::collection();
 		$ordersCollection = $orderClass::Collection();
+		$processedOrderColl = $processedOrderClass::Collection();
 
 		// update the shipping address by adding the new one and pushing the old one.
 		if ($this->request->data) {
@@ -624,6 +628,7 @@ class OrdersController extends BaseController {
 
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+			
 			if(strlen($order_temp["user_id"]) > 10){
 				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
 			} else {
@@ -665,6 +670,9 @@ class OrdersController extends BaseController {
 		if ($id) {
 			$itemscanceled = true;
 			$order_current = $orderClass::find('first', array('conditions' => array('_id' => $id)));
+			//Check if the order was processed and sent to Dotcom
+			$processed_count = $processedOrderColl->count(array('OrderNum' => $order_current['order_id']));
+
 
 			if (empty($order)) {
 				$order = $order_current;
@@ -704,7 +712,7 @@ class OrdersController extends BaseController {
 		}
 
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service');
+		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count');
 	}
 
 	/**

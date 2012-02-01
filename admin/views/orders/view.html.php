@@ -11,6 +11,25 @@
 		td{font-family:Arial,sans-serif;color:#888888;font-size:14px;line-height:18px}
 		img{border:none}
 	</style>
+
+	<div id="order_notice" style="width:100%;background-color:#DBD7D9;">
+		<h4>Order Notices:</h4>
+		<ul>
+			<?php 
+				if ($processed_count > 0) {
+					echo "<li>Order has been processed and sent to DotCom</li>";
+				} else {
+					if ($order->auth_error) {
+						echo "<li><strong>$order->auth_error</strong></li>";
+						echo "<li><strong>Order has not been processed and sent to DotCom</strong></li>";
+					} else {
+						echo "No Notices";
+					}
+				}
+			?>
+		</ul>
+	</div>
+	<hr/>
 		<table cellspacing="0" cellpadding="0" border="0" width="695">
 			<tr>
 				<td colspan="4">
