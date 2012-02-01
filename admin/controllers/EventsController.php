@@ -104,6 +104,33 @@ class EventsController extends BaseController {
 		return Event::check_spreadsheet($fullarray, $this->_mapCategories);
 	}
 
+	public function regenerateskus() {
+	    $this->_render['layout'] = false;
+
+		//event id
+		$alleventids = array($_id);
+		
+		//switch for full regen
+		
+		
+		//query items by event
+		//$event = Event::find($_id);
+
+
+		$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
+				'order' => array('created_date' => 'ASC')
+			));
+
+		foreach($eventItems as $item){
+			echo $item['_id'] . "<br>";			
+		
+		}
+
+
+
+
+	}
+
 	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
 	//protected function uploadcheck($fullarr2ay, $_id, $enabled = false) {
 	    $this->_render['layout'] = false;
