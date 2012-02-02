@@ -150,15 +150,26 @@ class UsersController extends BaseController {
 				
 				$mailTemplate = "";
 				
+				//a flag for separating users invited by mamasource
+				//mamasource users get their own branded email
+				$invitedFlag = false;	
+				
 				//pick from sailthru templates
 				if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
-					$mailTemplate = 'Welcome_Free_Shipping';	
+					$mailTemplate = 'Welcome_Free_Shipping';
+					$invitedFlag = true;	
 				} else {
-					$mailTemplate = 'Welcome_Mamasource';	
+					$mailTemplate = 'Welcome_Mamasource_1-31';	
 				}
 								
 				$mailer::send($mailTemplate, $user->email);
-				$mailer::addToMailingList($data['email']);
+				
+				if($invitedFlag==true){
+					$mailer::addToMailingList($data['email'], array("lists"=>array("mamasource"=>1)));
+				} else {
+					$mailer::addToMailingList($data['email']);
+				}
+				
 				$mailer::addToSuppressionList($data['email']);
 								
 				$ipaddress = $this->request->env('REMOTE_ADDR');
@@ -242,7 +253,7 @@ class UsersController extends BaseController {
 						if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
 							$mailTemplate = 'Welcome_Free_Shipping';
 						} else {
-							$mailTemplate = 'Welcome_Mamasource';
+							$mailTemplate = 'Welcome_Mamasource_1-31';
 						}
 							$params = array();
 						
@@ -649,8 +660,19 @@ class UsersController extends BaseController {
 					'domain' => 'http://'.$this->request->env("HTTP_HOST"),
 					'invitation_codes' => $code
 				);
-				$mailer = $this->_classes['mailer'];
-				$mailer::send('Friend_Invite', $email, $args);
+				
+			$mailer = $this->_classes['mailer'];
+			
+			$friendInviteTmpl = "";
+				
+			if(Session::read('layout', array('name' => 'default'))!=='mamapedia') {
+				$friendInviteTmpl = "Friend_Invite";
+			}else {
+				$friendInviteTmpl = "Friend_Invite_Mamasource_1-31";
+			}
+			
+			$mailer::send($friendInviteTmpl, $email, $args);
+
 			}
 			$flashMessage = '<div class="success_flash">Your invitations have been sent</div>';
 		}
@@ -673,10 +695,12 @@ class UsersController extends BaseController {
 		$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 		array('invite' => $_SERVER['REQUEST_URI'])
 		);
+		
 		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_invite';
 		}
+		
 		return compact('user','open', 'accepted', 'flashMessage', 'spinback_fb');
 	}
 
