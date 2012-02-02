@@ -165,7 +165,7 @@ class UsersController extends BaseController {
 				$mailer::send($mailTemplate, $user->email);
 				
 				if($invitedFlag==true){
-					$mailer::addToMailingList($data['email'], array("lists"=>array("mamasource"=>1)));
+					$mailer::addToMailingList($data['email'], array("lists"=>array("Mamasource"=>1)));
 				} else {
 					$mailer::addToMailingList($data['email']);
 				}
