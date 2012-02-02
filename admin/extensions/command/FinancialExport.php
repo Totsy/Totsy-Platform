@@ -719,7 +719,7 @@ class FinancialExport extends Base  {
 					    $tmp[] = $auth_record;
 					}
 					$order['auth_records'] = $tmp;
-				} else if(!empty($order['payment_date'])){
+				} else if(!empty($order['payment_date']) && !($order['payment_date'] !== 'none')){
 					$order['auth_records'][] = array(
 							'authKey' => $order['authKey'],
 							'date_saved' => date("m/d/Y h:i:s A", $order['payment_date']->sec)
