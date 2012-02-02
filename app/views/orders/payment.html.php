@@ -406,15 +406,13 @@ function replace_address() {
 };
 
 function pickBillingAddress(selectedAddressIndex) {
-		
-		$.each( billingAddresses[selectedAddressIndex], function (k, v) {
-    	if( $("#" + k + "").length > 0 ) {
-    		$("#" + k + "").val(v);
-    		
+	$.each( billingAddresses[selectedAddressIndex], function (k, v) {
+    	if(k!=="user_id" && k!=="type" && k!=="_id" && k!=="addresses") {
     		if(k=="state") {
 				$("#" + k + 'option:selected').next('option').attr('selected', 'selected');
-				$("#" + k + "").change();	
-  			} 
+  			} else {
+    			$("#" + k + "").val(v);
+    		}
     	}    	
 	});	
 };
@@ -444,7 +442,7 @@ function isValidCard(cardNumber) {
 		}
 	}
 
-	for(i = 0; i < cardNumber.length; i++){
+	for(i = 0; i < cardNumber.length; i++) {
 		sum = sum + ccard[i];
 	}
 

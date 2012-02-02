@@ -91,13 +91,13 @@
 			<?php foreach ($recent as $data): ?>
 				<?php $i++?>
 					<tr>
-						<td><?=date('m-d-Y', $data['processed_date']->sec)?></td>
+					<td><?=date('m-d-Y', $data['processed_date']->sec)?></td>
+						<td><?=$data["_id"];?></td>
 						<?php if (!empty($data['summary']['order']['count'])): ?>
 							<td><?=$data['summary']['order']['count']?></td>
 						<?php else: ?>
 							<td>0</td>
 						<?php endif ?>
-						<td><?=$data["_id"];?></td>
 						<?php if (!empty($data['summary']['order']['lines'])): ?>
 							<td><?=$data['summary']['order']['lines']?></td>
 						<?php else: ?>

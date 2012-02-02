@@ -236,6 +236,7 @@ class UsersController extends BaseController {
 				
 				if ($user->validates()) {
 					$email = $data['email'];
+					$plaintext_password = $data['password'];
 					$data['password'] = sha1($data['password']);
 					$data['created_date'] = User::dates('now');
 					$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
@@ -435,11 +436,13 @@ class UsersController extends BaseController {
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-		
-		if (!$success) {
+		//autogenerate password here, just fbregister($data) instead, bypassing that form	
+		if ($success) {
+			$this->redirect('Events::index');
+		} else {
 			if (!empty($userfb)) {
-				if(!$fbCancelFlag) {
-					$this->redirect('/register/facebook');
+				if (!$fbCancelFlag) {
+					$this->fbregister();
 				}
 			}
 		}
@@ -744,12 +747,13 @@ class UsersController extends BaseController {
 						$user->password = sha1($newPass);
 						$user->legacy = 0;
 						$user->reset_token = '0';
+						$user->requires_set_password = null;
 						unset($this->request->data['password']);
 						unset($this->request->data['new_password']);
 						unset($this->request->data['password_confirm']);
 						if ($user->save($this->request->data, array('validate' => false))) {
 							$info = Session::read('userLogin');
-							Session::write('userLogin', $info, array('name'=>'default'));
+							Session::write('userLogin', $user, array('name'=>'default'));
 						}
 					} else {
 						$status = 'shortpass';
@@ -770,44 +774,54 @@ class UsersController extends BaseController {
 	 * Register with a facebook account
 	 * @return compact
 	 */
+	 	 
+	//for the new FB registration flow, pass data (email, first name, last name and fb info to this function: the fbregisterform is no longer used and linking will happen in the background)  
 	public function fbregister() {
 		$message = null;
 		$user = null;
 		$fbuser = FacebookProxy::api("/me");
 		$user = User::create();
+		$data =Array();
 
 		if ( !preg_match( '/@proxymail\.facebook\.com/', $fbuser['email'] )) {
-
 			$user->email = $fbuser['email'];
 			$user->email_hash = md5($user->email);
 			$user->confirmemail = $fbuser['email'];
 		}
-		$this->_render['layout'] = 'login';
-		if ($this->request->data) {
-			$data = $this->request->data;
-			$data['facebook_info'] = $fbuser;
-			$data['firstname'] = $fbuser['first_name'];
-			$data['lastname'] = $fbuser['last_name'];
-		 
-		 	if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
+		
+		$data['email'] = $fbuser['email'];
+		$data['confirmemail'] = $fbuser['email'];
+
+		$data['password'] = static::randomString();
+		Session::delete('landing',array('name'=>'default'));
+		
+		$data['requires_set_password'] = true;
+		$data['terms'] = true;		    			
+		
+		$data['facebook_info'] = $fbuser;
+		$data['firstname'] = $fbuser['first_name'];
+		$data['lastname'] = $fbuser['last_name'];
+		
+		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
         		$affiliate = new AffiliatesController(array('request' => $this->request));
         		//this will call Users::registration
         		$affiliate->register("mamasource");
         	} else {
 				static::registration($data);
 			}
-			
-			$landing = null;
-			if (Session::check('landing')){
-				$landing = Session::read('landing');
-			}
-			if (!empty($landing)){
-				Session::delete('landing',array('name'=>'default'));
-				return $this->redirect($landing, array("exit"=>true));
-				unset($landing);
-			} else {
-				return $this->redirect('/sales?req=invite', array("exit"=>true));
-			}
+		    				
+		$landing = null;
+		
+		if (Session::check('landing')) {
+		    $landing = Session::read('landing');
+		}
+		
+		if (!empty($landing)) {
+		    Session::delete('landing',array('name'=>'default'));
+		    $this->redirect($landing);
+		    unset($landing);
+		} else {
+		    $this->redirect('/sales?req=invite');
 		}
 
 		return compact('message', 'user', 'fbuser');
@@ -848,6 +862,7 @@ class UsersController extends BaseController {
 				//$userfb = FacebookProxy::getUser();
 				$user->facebook_info = $userfb;
 				$user->save(null, array('validate' => false));
+				$success = true;
 
 				$sessionWrite = $self->writeSession($user->data());
 
@@ -862,11 +877,11 @@ class UsersController extends BaseController {
 				}
 												
 				if (!empty($landing)) {
-				    Session::delete('landing', array('name'=>'default'));    
-				   	$self->redirect($landing, array("exit"=>true));
+				    Session::delete('landing',array('name'=>'default'));
+				    $self->redirect($landing);
 				    unset($landing);
 				} else {
-				    $self->redirect("/sales", array("exit"=>true));
+				    $self->redirect("/sales");
 				}
 			}
 		}
@@ -921,6 +936,44 @@ class UsersController extends BaseController {
 	
 	}
 
+	/**
+	 * Verify a user's password, and return the result as JSON.
+	 * When the user hasn't created their own password yet (e.g. connected via
+	 * Facebook Connect), the provided password will be made their own.
+	 */
+	public function passwordVerify() {
+		$redirectUrl = $this->request->data['redirect_url'];
+		$password    = $this->request->data['pwd'];
+		$email       = $this->request->data['email'];
+		$user        = User::getUser(null, $this->sessionKey);
+		$errors      = array();
+
+		if ($user->requires_set_password) {
+			if (strlen($password) < 5) {
+				$errors[] = 'Your new password must contain at least five (5) characters.';
+				$result = false;
+			} else {
+				$user->email = $email;
+				$user->password = sha1($password);
+				$user->legacy = 0;
+				$user->requires_set_password = null;
+				$user->reset_token = '0';
+				if ($user->save(null, array('validate' => false))) {
+					Session::write('userLogin', $user, array('name'=>'default'));
+				}
+
+				$result = true;
+			}
+
+		} else {
+			$result = ($user->legacy == 1)
+				? $this->authIllogic($password, $user)
+				: (sha1($password) == $user->password);
+		}
+
+		echo json_encode(array('result' => $result, 'errors' => $errors));
+		$this->_render['head'] = true;
+	}
 }
 
 ?>

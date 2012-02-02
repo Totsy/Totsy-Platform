@@ -1,16 +1,50 @@
 <?php $this->title($event->name); ?>
 <?php echo $this->html->script('jquery.countdown.min');?>
 <?php echo $this->html->style('jquery.countdown');?>
-<div class="grid_16">
+<div class="grid_16 eventHeader">
+	<h2 class="page-title gray"><span class="red">
+	<div id="listingCountdown" class="listingCountdown" style="float:right;"></div>
+	<a href="/sales" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?> 
+	</h2>
+	<div style="clear:both;"></div>
+	<hr/>
+	<div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
 
-		<h2 class="page-title gray"><span class="red">
-		<div id="listingCountdown" class="listingCountdown" style="float:right;"></div>
-		<a href="/sales" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?> 
-		</h2>
-		<div style="clear:both;"></div>
-		<hr/>
-<div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
-				<div class="grid_3 alpha omega" style="line-height:0px!important;">
+				<?php // check event status
+					$eventHasStatus = false;
+					if (!empty($event->status_update) && $event->status_update != 'none'){
+						$eventHasStatus = true;
+						$eventStatusClass = 'status_'.$event->status_update;
+						
+						switch ($event->status_update){
+							case 'stock_added':
+								$eventStatus = "Stock Added";
+							break;
+							case 'styles_added':
+								$eventStatus = "Styles Added";
+							break;
+							case 'blowout':
+								$eventStatus = "Blowout";
+							break;
+							case 'charity':
+								$eventStatus = "Charity Event";
+							break;
+							case 'sold_out':
+								$eventStatus = "Sold Out";
+							break;
+						}
+					}
+				?>
+				<?php // add event status classnames if status exists
+					if (!empty($eventHasStatus)) { ?>
+						<div class="grid_3 alpha omega status <?php echo $eventStatusClass; ?>" style="line-height:0px!important;">
+							<em><?php echo $eventStatus; ?></em>
+				<?php
+					} else { ?>
+						<div class="grid_3 alpha omega" style="line-height:0px!important;">
+					<?php 
+					}
+				?>
 					<!-- Display Event Image -->
 					<?php
 						if (!empty($event->images->event_image)) {
