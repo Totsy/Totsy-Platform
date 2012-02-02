@@ -862,6 +862,7 @@ class Order extends Base {
 							} else {
 							    $conditions = array();
 							}
+							$conditions['auth_confirmation'] = array('$ne' => -1);
 							break;
 						case 'expired':
 							$type = 'expired';
@@ -884,6 +885,8 @@ class Order extends Base {
 							} else {
 							    $conditions = array();
 							}
+							$conditions['cancel'] = array('$exists' => false);
+							$conditions['payment_captured'] = array('$exists' => false);
 							break;
 						case 'failed_reauth':
 							$type = 'failed_reauth';
