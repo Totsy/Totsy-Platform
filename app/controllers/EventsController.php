@@ -197,12 +197,12 @@ class EventsController extends BaseController {
 			}
 		}
 		
-	if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_index';
+		}
 	
-		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');
-	}
+		return compact('openEvents', 'pendingEvents', 'itemCounts', 'banner', 'departments');	
 	}
 
 	public function view() {

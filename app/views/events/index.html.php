@@ -51,8 +51,7 @@
 	<section id="openEvents" class="group">
 		<header>
 			<h2 class="page-title gray">Today's Sales</h2>
-		</header>
-	
+		</header>	
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
