@@ -194,6 +194,10 @@ switch ($cyberSourceProfile[creditCard][type]) {
 		print "/img/cc_mastercard.gif"; 
 		$cc_name = "MasterCard";
 	break;
+	case 'mc': 
+		print "/img/cc_mastercard.gif"; 
+		$cc_name = "MasterCard";
+	break;
 	case 'amex': 
 		print "/img/cc_amex.gif"; 
 		$cc_name = "American Express";

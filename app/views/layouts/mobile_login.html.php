@@ -40,6 +40,11 @@
 </script>
 </head>
 <body>
+<script>
+if (!navigator.cookieEnabled) { 
+	document.write("<div style='margin:10px 0px; background:#f8f57d; padding:10px; border:4px solid #333; text-align:center;'>You do not have cookies enabled. <br />Please enable to continue.</div>");
+}
+</script>
 <div id="fb-root"></div>
 <div class="nav_head"></div>
 	<div class="mobile_ui">
