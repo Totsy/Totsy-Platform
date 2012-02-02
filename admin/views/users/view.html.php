@@ -120,8 +120,8 @@
 					$<?php echo $this->form->text('amount', array('size' => 6)); ?>
 				</p>
 				<p>
-					<?php echo $this->form->label('Description:'); ?>
-					<?php echo $this->form->textarea('description'); ?>
+					<?php echo $this->form->label('Description:'); ?><br/>
+					<?php echo $this->form->textarea('description', array('rows' => 10, 'cols' => 40)); ?>
 				</p>
 					<?php echo $this->form->hidden('user_id', array('value' => $user->_id)); ?>
 					<?php echo $this->form->submit('Apply'); ?>
@@ -177,6 +177,16 @@
 								<?php else: ?>
 								$<?php echo number_format($credit->credit_amount, 2);?>
 								<?php endif ?>
+							</td>
+							<td>
+								<?php 
+									if($credit->admin_user) {
+										echo $credit->admin_user;
+									} else {
+										echo "Site Purchase";
+									}
+
+								?>
 							</td>
 						</tr>
 					<?php endforeach ?>

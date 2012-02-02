@@ -185,8 +185,8 @@ class ReAuthorize extends \lithium\console\Command {
 		#Limit to X days Old Authkey
 		$limitDate = mktime(23, 59, 59, date("m"), date("d") - $this->expiration, date("Y"));
 		#Check If There were already ReAuthorization Records
+		$lastDate = $order['date_created'];
 		if(!empty($order['auth_records'])) {
-			$lastDate = $order['date_created'];
 			foreach($order['auth_records'] as $record) {
 				if($lastDate->sec < $record['date_saved']->sec) {
 					$lastDate = $record['date_saved'];
@@ -197,6 +197,12 @@ class ReAuthorize extends \lithium\console\Command {
 			}
 		} else {
 			$reAuth = true;
+		}
+		#Don't Reauthorize if the last Auth is an error
+		if(!empty($order['error_date'])) {
+			if($lastDate->sec < $order['error_date']->sec) {
+				$reAuth = false;
+			}	
 		}
 		#If The Order has been already full authorize and Order send to Dotcom. Don't reauth
 		if(!empty($this->fullAmount)) {
@@ -242,14 +248,15 @@ class ReAuthorize extends \lithium\console\Command {
 		#Cancel Previous Transaction
 		if($order['card_type'] != 'amex' && (!empty($order['authTotal'])) && $this->fullAmount) {
 			$auth = Processor::void('default', $order['auth'], array(
-				'processor' => isset($order['processor']) ? $order['processor'] : null
+				'processor' => isset($order['processor']) ? $order['processor'] : null,
+				'orderID' => $order['order_id']
 			));
 		}
 		Logger::debug("Getting CyberSource Profile");
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
 		Logger::debug("Authorizing...");
-		$auth = Processor::authorize('default', $order['total'], $profile);
+		$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
 		if($auth->success()) {
 			Logger::debug("Authorization Succeeded");
 			#Setup new AuthKey
@@ -275,6 +282,11 @@ class ReAuthorize extends \lithium\console\Command {
 				'total' => $order['total']
 			);
 		} else {
+			#Reverse Transaction that Failed
+			Processor::void('default', $auth, array(
+				'processor' => $auth->adapter,
+				'orderID' => $order['order_id']
+			));
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
 			Logger::debug($message);

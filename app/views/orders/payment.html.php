@@ -196,6 +196,10 @@ switch ($cyberSourceProfile[creditCard][type]) {
 		print "/img/cc_mastercard.gif"; 
 		$cc_name = "MasterCard";
 	break;
+	case 'mc': 
+		print "/img/cc_mastercard.gif"; 
+		$cc_name = "MasterCard";
+	break;
 	case 'amex': 
 		print "/img/cc_amex.gif"; 
 		$cc_name = "American Express";
@@ -229,10 +233,19 @@ endforeach;
 }
 ?> 
 
-				
+				<?php 
+					$display = 'block'; 
+					if ($cyberSourceProfiles) { 
+						if (sizeof($cyberSourceProfiles->data() ) > 0) {
+							if(!$creditCardError) {
+									$display = 'none'; 
+							}
+						} 
+					}
+				?>
 				<hr />
 				
-				<div id="credit_card_form" style="display: <?php if ($cyberSourceProfiles) { if (sizeof($cyberSourceProfiles->data()) > 0) { print 'none'; } } else { print 'block'; } ?>;">				
+				<div id="credit_card_form" style="display: <?php echo $display; ?>;">				
 				<span class="cart-select">
 				<?php echo $this->form->error('cc_error'); ?>
 				<?php echo $this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
@@ -283,7 +296,7 @@ endforeach;
 				</div>
 				<br />
 				<br />
-				<div id="billing_address_form" style="display: <?php if ($cyberSourceProfiles) { if ( sizeof($cyberSourceProfiles->data() ) > 0) { print 'none'; } } else { print 'block'; } ?>;">				
+				<div id="billing_address_form" style="display: <?php echo $display ?>;">				
 				<h3>Billing Address</h3>
 				<hr />
 				<?php 

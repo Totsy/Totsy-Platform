@@ -88,7 +88,50 @@ use lithium\storage\Session;
 
 </head>
 <body class="app">
-	<?php if(isset($branch)) { echo $branch; } ?>
+
+<style>
+	#global_site_msg select { background:#fff!important;}
+	#global_site_msg span { background:#fff!important;}
+	#global_site_msg .selector { background:#fff!important;}
+</style>
+	<?php if(isset($branch)) { ?> 
+	<div id='global_site_msg'>
+	<div style="font-size:16px; margin:0px 0px 0px 300px; width:230px; float:left; padding:7px 0px 0px 0px;">	<?php echo $branch; ?></div>
+	<div style="margin:0px auto; width:230px; float:left;">
+		<select name="jumpMenu" id="jumpMenu">
+			<option>Choose Developer Box</option>
+			<option value="http://eric.totsy.com">eric.totsy.com</option>
+			<option value="http://evan.totsy.com">evan.totsy.com</option>
+			<option value="http://chris.totsy.com">chris.totsy.com</option>
+			<option value="http://david.totsy.com">david.totsy.com</option>
+			<option value="http://deepen.totsy.com">deepen.totsy.com</option>
+			<option value="http://froggygeek.totsy.com">froggygeek.totsy.com</option>
+			<option value="http://gene.totsy.com">gene.totsy.com</option>
+			<option value="http://hara.totsy.com">hara.totsy.com</option>
+			<option value="http://jonathan.totsy.com">jonathan.totsy.com</option>
+			<option value="http://josh.totsy.com">josh.totsy.com</option>
+			<option value="http://kkim.totsy.com">kkim.totsy.com</option>
+			<option value="http://lawren.totsy.com">lawren.totsy.com</option>
+			<option value="http://micah.totsy.com">micah.totsy.com</option>
+			<option value="http://release.totsy.com">release.totsy.com</option>
+			<option value="http://rockmongo.totsy.com">rockmongo.totsy.com</option>
+			<option value="http://slavik.totsy.com">slavik.totsy.com</option>
+			<option value="http://tharsan.totsy.com">tharsan.totsy.com</option>
+			<option value="http://tom.totsy.com">tom.totsy.com</option>
+			<option value="http://track.totsy.com">track.totsy.com</option>
+			<option value="http://www.totsy.com">www.totsy.com</option>
+		</select>
+	</div>
+	<script type="text/javascript">
+    $(function (){  
+        $("#jumpMenu").change(function(e) {
+            window.location.href = $(this).val();
+        });
+    });
+	</script>
+	<div class="clear"></div>
+	</div>
+	<?php } ?> 
 	<div id="totsy" class="container_16 roundy glow">
 		
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>

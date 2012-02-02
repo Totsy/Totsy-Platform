@@ -31,41 +31,27 @@ class BaseController extends \lithium\action\Controller {
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
 		} else {
-		/*
-			switch($_SERVER['HTTP_HOST']) {
-		    	case "kkim.totsy.com":
-		    	case "evan.totsy.com": 
-		    	case "mamasource.totsy.com":
-		    	    Session::write('layout', 'mamapedia', array('name' => 'default'));
-		    	    $img_path_prefix = "/img/mamapedia/";
-		    	    $this->set(compact('img_path_prefix'));
-		    	break;
-		    	default:
-		    	    Session::write('layout', 'main', array('name' => 'default'));
-		    	    $img_path_prefix = "/img/";
-		    	    $this->tenOffFiftyEligible($userInfo);
-		    	    $this->freeShippingEligible($userInfo);
-		    	break;
-			}
-			*
-			/* need to test this code on dev with another env that has the exact same code like an updated kkim.totsy.com. just the switch() above with this else */
-			
 			$userInfo = Session::read('userLogin');	
-							
-			if ( $_SERVER['HTTP_HOST']=="kkim.totsy.com" ) {				
+			
+        	//this changes depending on whether we're on prod or not
+        	//if something's funny or not working on kkim, just update it with master
+        	$mamasourceSubDomain = "";
+			
+ 			if(!Environment::is('production')){	
+				$mamasourceSubDomain = "kkim.totsy.com";
+ 			} else {
+				$mamasourceSubDomain = "mamasource.totsy.com";
+ 			}
+ 									
+			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain) {				
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
-		        $this->set(compact('img_path_prefix'));	
-		    } else {/*
-		        if((isset($userInfo) && $userInfo['invited_by']=="mamasource")) {		    				
-			    	Session::write('layout', 'mamapedia', array('name' => 'default'));
-		        	$img_path_prefix = "/img/mamapedia/";
-		        	$this->set(compact('img_path_prefix'));	
-		        } else {*/	 
-		        	Session::write('layout', 'main', array('name' => 'default'));
-		        	$img_path_prefix = "/img/";
-		        	$this->tenOffFiftyEligible($userInfo);
-		        	$this->freeShippingEligible($userInfo);
+		        $this->set(compact('img_path_prefix'));
+		    } else { 
+		        Session::write('layout', 'main', array('name' => 'default'));
+		        $img_path_prefix = "/img/";
+		        $this->tenOffFiftyEligible($userInfo);
+		        $this->freeShippingEligible($userInfo);
 		    } 	
 			$this->_render['layout'] = '/main';
 		}
@@ -98,9 +84,9 @@ class BaseController extends \lithium\action\Controller {
 	protected function _init() {
 	
 		parent::_init();
-		
-	    if(!Environment::is('production')) {
-            $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
+
+	     if(!Environment::is('production')){
+            $branch = "Current branch: " . $this->currentBranch();
             $this->set(compact('branch'));
         }
 
@@ -120,15 +106,24 @@ class BaseController extends \lithium\action\Controller {
         
         $redirected = false;
         
+        //this changes depending on whether we're on prod or not
+        //if something's funny or not working on kkim, just update it with master
+		$mamasourceSubDomain = "";
+		       
+        if(!Environment::is('production')){	
+			$mamasourceSubDomain = "kkim.totsy.com";
+ 		} else {
+			$mamasourceSubDomain = "mamasource.totsy.com";
+ 		}
+        
         if( $userInfo['invited_by']=="mamasource" && $redirected==false) {
 			setcookie("PHPSESSID","",time()-3600,"/"); // delete session cookie 
-        	$this->redirect("http://kkim.totsy.com/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
+        	$this->redirect("http://" . $mamasourceSubDomain . "/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
         	$redirected = true;
         } 
         
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
-
 
 		/**
 		 * Setup all the necessary facebook stuff

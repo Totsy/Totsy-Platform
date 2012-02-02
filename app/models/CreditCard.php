@@ -123,7 +123,13 @@ class CreditCard extends \lithium\data\Model {
 		} else {
 			$save = false;
 		}
-
+		#If Transaction Get Order ID
+		if($vars['order_id']) {
+			$order_id = $vars['order_id'];
+		} else {
+			$order_id = null;
+		}
+		
 		$cyberSourceProfileDuplicate = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);	
 		if ($cyberSourceProfileDuplicate) {
 			#Check if SavedByUser
@@ -136,7 +142,7 @@ class CreditCard extends \lithium\data\Model {
 				}
 			}
 			return "duplicate";
-		} else {	
+		} else {
 			#Create Address Array
 			$address = array(
 					'firstName' =>  $vars['billingAddr']['firstname'],
@@ -148,16 +154,22 @@ class CreditCard extends \lithium\data\Model {
 					'country' => $vars['billingAddr']['country'] ?: 'US',
 					'email' =>  $vars['user']['email'] 
 			);
-
-			#Create A User Profile with CC Infos Through Auth.Net
-			$customer = $payments::create('default', 'customer', array(
-				'firstName' => $userInfos['firstname'],
-				'lastName' => $userInfos['lastname'],
-				'email' => $userInfos['email'],
-				'billing' => $payments::create('default', 'address', $address),
-				'payment' => $payments::create('default', 'creditCard', $creditCard)
-			));
-			$result = $customer->save();
+			#Check if a soft Auth has been made and use it to save CyberSourceProfile
+			if($vars['auth']) {
+				$result = $payments::profile('default', $vars['auth'], array('orderID' => $order_id));
+			} else {		
+				#Create A User Profile with CC Infos Through Auth.Net
+				$customer = $payments::create('default', 'customer', array(
+					'id' => $order_id,
+					'firstName' => $userInfos['firstname'],
+					'lastName' => $userInfos['lastname'],
+					'email' => $userInfos['email'],
+					'billing' => $payments::create('default', 'address', $address),
+					'payment' => $payments::create('default', 'creditCard', $creditCard)
+				));
+				$result = $customer->save();
+			}
+			#If Profile Well Saved, Record in DB all the information
 			if($result->success) {
 				$newCyberSourceProfile['profileID'] = $result->response->paySubscriptionCreateReply->subscriptionID;
 				$newCyberSourceProfile['creditCard']['number'] = substr($creditCard['number'], -4);

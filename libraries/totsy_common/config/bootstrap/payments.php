@@ -14,6 +14,9 @@ $adapterFilters = array(
 			case 'credit':
 				return true;
 				break;
+			case 'profile':
+				return true;
+				break;
 		}
 		if (isset($options['processor']) && $options['processor'] == 'CyberSource') {
 			return true;
@@ -88,20 +91,20 @@ Processor::config(array(
 	'default' => array(
 		'production' => $cybersourceProduction,
 		'test' => $cybersourceTest,
-		'staging' => $cybersourceTest,
+		'staging' => $cybersourceProduction,
 		'development' => $cybersourceTest,
 		'local' => $cybersourceTest
 	),
 	'authorizenet' => array(
 		'production' => $authorizenetProduction,
 		'test' => $authorizenetTest,
-		'staging' => $authorizenetTest,
+		'staging' => $authorizenetProduction,
 		'development' => $authorizenetTest,
 		'local' => $authorizenetTest
 	),
 	'local' => $cybersourceTest,
 	'test' => $cybersourceTest,
-	'staging' => $cybersourceTest
+	'staging' => $cybersourceProduction
 ));
 
 ?>

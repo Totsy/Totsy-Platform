@@ -675,7 +675,7 @@ class Cart extends Base {
 		$credit_amount = null;
 		$cartCredit = Credit::create();
 		if (array_key_exists('credit_amount', $data)) {
-			$credit_amount = $data['credit_amount'];
+			$credit_amount = abs($data['credit_amount']);
 		}
 		
 		/*

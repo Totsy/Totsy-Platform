@@ -30,7 +30,8 @@ class OrdersController extends BaseController {
 
 	protected $_classes = array(
 		'tax'   => 'admin\extensions\AvaTax',
-		'order' => 'admin\models\Order'
+		'order' => 'admin\models\Order',
+		'processedorder'  => 'admin\models\ProcessedOrder'
 	);
 
 	/**
@@ -47,6 +48,7 @@ class OrdersController extends BaseController {
 		'Order Cost',
 		'Tracking Info',
 		'Estimated Delivery Date',
+		'Errors/Message',
 		'Customer Profile'
 	);
 
@@ -543,7 +545,8 @@ class OrdersController extends BaseController {
 		#Cancel Previous Transaction	
 		if($order['card_type'] != 'amex' && !empty($order['authTotal'])) {
 			$auth = Processor::void('default', $order['auth'], array(
-				'processor' => isset($order['processor']) ? $order['processor'] : null
+				'processor' => isset($order['processor']) ? $order['processor'] : null,
+				'orderID' => $order['order_id']
 			));
 		}
 		$userInfos = User::lookup($order['user_id']);
@@ -561,15 +564,9 @@ class OrdersController extends BaseController {
 
 		))));
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', $order['total'], $card);
+		$auth = Processor::authorize('default', $order['total'], $card, array('orderID' => $order['order_id']));
 		if($auth->success()) {
-			$customer = Processor::create('default', 'customer', array(
-				'firstName' => $userInfos['firstname'],
-				'lastName' => $userInfos['lastname'],
-				'email' => $userInfos['email'],
-				'payment' => $card
-			));
-			$result = $customer->save();
+			$result = Processor::profile('default', $auth, array('orderID' => $order['order_id']));
 			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
@@ -585,6 +582,8 @@ class OrdersController extends BaseController {
 						'auth' => $auth->export(),
 						'processor' => $auth->adapter,
 						'authTotal' => $order['total']
+					), '$unset' => array(
+						'auth_error' => 1
 					)), array( 'upsert' => true)
 			);
 			#Add to Auth Records Array
@@ -614,9 +613,11 @@ class OrdersController extends BaseController {
 	*/
 	public function view($id = null) {
 		$orderClass = $this->_classes['order'];
+		$processedOrderClass = $this->_classes['processedorder'];
 
 		$userCollection = User::collection();
 		$ordersCollection = $orderClass::Collection();
+		$processedOrderColl = $processedOrderClass::Collection();
 
 		// update the shipping address by adding the new one and pushing the old one.
 		if ($this->request->data) {
@@ -627,6 +628,7 @@ class OrdersController extends BaseController {
 
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+			
 			if(strlen($order_temp["user_id"]) > 10){
 				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
 			} else {
@@ -668,6 +670,9 @@ class OrdersController extends BaseController {
 		if ($id) {
 			$itemscanceled = true;
 			$order_current = $orderClass::find('first', array('conditions' => array('_id' => $id)));
+			//Check if the order was processed and sent to Dotcom
+			$processed_count = $processedOrderColl->count(array('OrderNum' => $order_current['order_id']));
+
 
 			if (empty($order)) {
 				$order = $order_current;
@@ -707,7 +712,7 @@ class OrdersController extends BaseController {
 		}
 
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service');
+		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count');
 	}
 
 	/**
