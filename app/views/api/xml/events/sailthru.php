@@ -34,6 +34,7 @@
 			} 
 			?>
 			</ages>
+			<tns:tag><?php echo implode(',',$event['groups']['ages']); ?></tns:tag>
 			<tns:items>
 <?php   if (!empty($event['items'])){
 			foreach($event['items'] as $item) { ?>

@@ -496,6 +496,11 @@ function deleteitems(){
 				?>
 		</div>
 		<div id="event_inventory">
+			<h2>Event Inventory</h2>
+			Actions - 
+			<a href="#" id="generateskulink" name="generateskulink">Generate SKUS (replaces all skus)</a> |
+			<a href="#" id="regenerateskulink" name="regenerateskulink">ReGenerate SKUS (replaces only incomplete/blank skus)</a> |
+
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
 
@@ -506,6 +511,27 @@ $(document).ready(function() {
 
 	//create tabs
 	$("#tabs").tabs();
+
+	//generate skus link
+	$('#generateskulink').click(function() {
+		var eventid = '<?php echo $event->_id; ?>';
+
+		$.post('/events/generatesku/'+eventid, function(result) {
+			$("#inventoryIframe").attr('src', "/events/inventory/"+eventid);
+		});
+
+    });
+
+	//regenerate skus link
+	$('#regenerateskulink').click(function() {
+		var eventid = '<?php echo $event->_id; ?>';
+
+		$.post('/events/regeneratesku/'+eventid, function(result) {
+			$("#inventoryIframe").attr('src', "/events/inventory/"+eventid);
+		});
+    });
+
+
 });
 </script>
 <script type="text/javascript">
