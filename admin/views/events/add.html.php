@@ -88,6 +88,32 @@ tinyMCE.init({
 		$('#Short').focusout(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
+
+		$('#eventForm').submit(function() {
+			var eventName  = document.getElementById('Name').value,
+				eventCount = 0;
+
+			$.ajax({
+				url: 'find',
+				dataType: 'json',
+				data: {
+					name: eventName
+				},
+				async: false,
+				success: function(data, status) {
+					if ('success' == status) {
+						eventCount = data.total;
+					}
+				}
+			});
+
+			if (eventCount > 0) {
+			 	alert("An event with the name '" + eventName + "' already exists. Please use another event name.");
+			 	return false;
+			 }
+
+			return true;
+		});
 	});
 
 	function limitTextArea(text,info,limiter){
@@ -101,6 +127,7 @@ tinyMCE.init({
 			return true;
 		}
 	}
+
 </script>
 <div class="grid_16">
 	<h2 id="page-heading">Add an Event</h2>
@@ -111,7 +138,7 @@ tinyMCE.init({
 	</p>
 </div>
 <h2 id="event_description">Event Description</h2>
-<?php echo $this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+<?php echo $this->form->create(null, array('enctype' => "multipart/form-data", 'id' => 'eventForm')); ?>
     <?php echo $this->form->field('name', array('class' => 'general'));?>
     <?php echo $this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
     <div style="width:450px;">
