@@ -249,11 +249,13 @@ class UsersController extends BaseController {
 					if ($saved = $user->save($data)) {
 						
 						$mailTemplate = "";
+						$invitedFlag = false;
 						
 						if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
 							$mailTemplate = 'Welcome_Free_Shipping';
 						} else {
 							$mailTemplate = 'Welcome_Mamasource_1-31';
+							$invitedFlag = true;	
 						}
 							$params = array();
 						
@@ -266,7 +268,7 @@ class UsersController extends BaseController {
 								$mailTemplate = 'Welcome_auto_passgen';
 								$params['token'] = $user['clear_token'];
 							}
-							
+														
 							Mailer::send($mailTemplate, $user->email,$params);
 							
 							$args = array();
@@ -282,7 +284,12 @@ class UsersController extends BaseController {
 							    unset($affiliate_cusror);
 							}
 							
-							Mailer::addToMailingList($data['email'],$args);
+							if($invitedFlag==true){
+								Mailer::addToMailingList($data['email'], array("lists"=>array("Mamasource"=>1)));
+							} else {
+								Mailer::addToMailingList($data['email'],$args);
+							}
+							
 							Mailer::addToSuppressionList($data['email']);
 						
 					}
