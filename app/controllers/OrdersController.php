@@ -82,7 +82,7 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
-		}if($this->request->is('mobile')){
+		}if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_index';
 		}
@@ -187,7 +187,7 @@ class OrdersController extends BaseController {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_view';
 		}
@@ -306,8 +306,9 @@ class OrdersController extends BaseController {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
+						
 		$cartEmpty = ($cart->data()) ? false : true;
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_shipping';
 		}
@@ -411,7 +412,9 @@ class OrdersController extends BaseController {
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
+						
 		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
+				
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
@@ -421,10 +424,12 @@ class OrdersController extends BaseController {
 		}
 		#Get Services
 		$services = $vars['services'];
+		
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shippingCost + $overShippingCost;
 		}
+				
 		#Calculate Order Total
 		$total = round(floatval($vars['postDiscountTotal']), 2);
 		#Read Credit Card Informations
@@ -449,6 +454,7 @@ class OrdersController extends BaseController {
 			'user', 'cart', 'total', 'subTotal',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount','creditCard'
 		);
+		
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 
 			/* Process this order and run it through the payment processor. */
@@ -468,7 +474,7 @@ class OrdersController extends BaseController {
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_review';
 		}
@@ -708,7 +714,7 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_payment';
 		}

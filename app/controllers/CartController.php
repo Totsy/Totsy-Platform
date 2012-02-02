@@ -88,7 +88,6 @@ class CartController extends BaseController {
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
 
-
 			#Get Event End Date
 			$cartItemEventEndDates[$i] = is_object($events[0]->end_date) ? $events[0]->end_date->sec : $events[0]->end_date;
 			$item->event_url = $events[0]->url;
@@ -134,6 +133,7 @@ class CartController extends BaseController {
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
 			$shipping_discount = $shipping;
 		}
+		
 		#Get Total of The Cart after Discount
 		$total = round(floatval($vars['postDiscountTotal']),2);
 		
@@ -142,7 +142,7 @@ class CartController extends BaseController {
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}		
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_view';
 		}
@@ -208,6 +208,7 @@ class CartController extends BaseController {
 						$cartItem->save();
 						//calculate savings
 						$item[(string) $item['_id']] = $cartItem->quantity;
+
 						Cart::updateSavings($item,'add');
 					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="faq">Why?</a>';
@@ -297,9 +298,11 @@ class CartController extends BaseController {
 			$cartData['eventURL'] = "sale";
 		}
 
+
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date
+
 		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
 		//$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart

@@ -16,6 +16,7 @@
 var addressForm = new Object();
 </script>
 <?php
+	use lithium\storage\Session;
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
@@ -95,10 +96,10 @@ var addressForm = new Object();
 		<div style="float:left">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Shipping Information</span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps2.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?php echo $img_path_prefix; ?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?php echo $img_path_prefix; ?>/cart_steps2.png"></span>
+				<span class="cart-step-status"><img src="<?php echo $img_path_prefix; ?>/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?php echo $img_path_prefix; ?>/cart_steps_remaining.png"></span>
 			</h2>
 			<?php if (!empty($error)) { ?>
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>

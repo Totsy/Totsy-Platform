@@ -15,11 +15,11 @@ class Mailer {
 		Sailthru::send($template, $email, $vars, $options, $schedule_time);
 	}
 
-	public static function addToMailingList ($email,array $args = array()){
+	public static function addToMailingList ($email,array $args = array(), $list=array("registered"=>1)){
 		Sailthru::setEmail(
              $email,
              $args,
-             array('registered' => 1)
+             $list
         );
 	}
 
