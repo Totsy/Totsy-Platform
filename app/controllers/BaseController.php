@@ -116,7 +116,7 @@ class BaseController extends \lithium\action\Controller {
 			$mamasourceSubDomain = "mamasource.totsy.com";
  		}
         
-        if( $userInfo['invited_by']=="mamasource" && $redirected==false) {
+        if( $userInfo['invited_by']=="mamasource" && $redirected==false && $_SERVER['HTTP_HOST']!==$mamasourceSubDomain ) {
 			setcookie("PHPSESSID","",time()-3600,"/"); // delete session cookie 
         	$this->redirect("http://" . $mamasourceSubDomain . "/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
         	$redirected = true;
