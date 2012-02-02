@@ -125,17 +125,11 @@ class QueueController extends BaseController {
 		foreach($queue as $data) {
 		    $data['created_date'] = date('m-d-Y', $data['created_date']);
 		    $data['percent'] =  number_format($data['percent'], 1);
-            $data['purchase_orders'] = 0;
-            $data['order_count'] = 0;
-            $data['line_count'] = 0;
-            $data['orders'] = 0;
-
 		    /**
 		    * PO event count
 		    **/
 		    if (array_key_exists('purchase_orders', $data) && $data['purchase_orders']) {
-		        if(!(array_key_exists('approx_info', $data)) &&
-		            !(array_key_exists('purchase_orders', $data['approx_info']))) {
+		        if(!(array_key_exists('approx_info', $data)) || !(array_key_exists('purchase_orders', $data['approx_info']))) {
                     $data['purchase_orders'] = count($data['purchase_orders']);
                     Queue::update(array('$set' => array('approx_info' => array(
                         'purchase_orders' => array(
@@ -144,11 +138,16 @@ class QueueController extends BaseController {
 		        } else {
 		            $data['purchase_orders'] = $data['approx_info']['purchase_orders']['purchase_count'];
 		        }
+		    } else {
+			    $data['purchase_orders'] = 0;
+	            $data['order_count'] = 0;
+	            $data['line_count'] = 0;
 		    }
+
 		    /**
 		    * Order event count
 		    **/
-		    if(!(array_key_exists('approx_info', $data)) && !(array_key_exists('order', $data['approx_info']))) {
+		    if(!(array_key_exists('approx_info', $data)) || !(array_key_exists('order', $data['approx_info']))) {
                    if (array_key_exists('orders', $data) && $data['orders']) {
                         $conditions = array(
                             'items.event_id' => array('$in' => $data['orders']),
@@ -194,6 +193,10 @@ class QueueController extends BaseController {
                                 'line_count' =>  $data['line_count'],
                                 'order_count' => $data['order_count']
                         )))), array('_id' => $data['_id']));
+                    } else {
+                    	$data['orders'] = 0;
+                    	$data['order_count'] = 0;
+	            		$data['line_count'] = 0;
                     }
 		        } else {
 		            $data['orders'] = $data['approx_info']['order']['orders'];
