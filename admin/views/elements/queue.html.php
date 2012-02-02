@@ -63,11 +63,11 @@ function updateCurrentQueue() {
                     body.append(table);
                 }
                 if (index == 0 ) {
-                    table += "<td colspan=\"5\"><center>Nothing in the queue!</center></td>";
+                    table += "<td colspan=\"7\"><center>Nothing in the queue!</center></td>";
                      body.append(table);
                 }
             } else {
-                table += "<td colspan=\"5\"><center>Nothing in the queue!</center></td>";
+                table += "<td colspan=\"7\"><center>Nothing in the queue!</center></td>";
                 body.append(table);
             }
         }

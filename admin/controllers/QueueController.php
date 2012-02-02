@@ -131,7 +131,7 @@ class QueueController extends BaseController {
 		    if (array_key_exists('purchase_orders', $data) && $data['purchase_orders']) {
 		        if(!(array_key_exists('approx_info', $data)) || !(array_key_exists('purchase_orders', $data['approx_info']))) {
                     $data['purchase_orders'] = count($data['purchase_orders']);
-                    Queue::update(array('$set' => array('approx_info' => array(
+                    Queue::update(array('$addToSet' => array('approx_info' => array(
                         'purchase_orders' => array(
                             'purchase_count' =>  $data['purchase_orders']
                     )))), array('_id' => $data['_id']));
@@ -187,7 +187,7 @@ class QueueController extends BaseController {
                         $data['orders'] = count($data['orders']);
                         $data['order_count'] = $order_count - $item_count;
                         $data['line_count'] = $line_count;
-                        Queue::update(array('$set' => array('approx_info' => array(
+                        Queue::update(array('$addToSet' => array('approx_info' => array(
                             'order' => array(
                                 'orders' =>  $data['orders'],
                                 'line_count' =>  $data['line_count'],
