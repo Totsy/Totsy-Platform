@@ -9,12 +9,33 @@ use admin\models\User;
 use admin\models\Item;
 use li3_payments\payments\TransactionResponse;
 use li3_payments\exceptions\TransactionException;
+use li3_payments\payments\Processor;
+use li3_payments\extensions\adapter\payment\CyberSource;
 use MongoId;
 use MongoDate;
+use lithium\analysis\Logger;
 
 class OrderTest extends \lithium\test\Unit {
 
 	public $user;
+	
+	protected $_AmexCustomer = null;
+	
+	protected $_AmexCustomerId = null;
+	
+	protected $_AmexCard = null;
+	
+	protected $_VisaCustomer = null;
+	
+	protected $_VisaCustomerId = null;
+	
+	protected $_VisaCard = null;
+	
+	protected $_MasterCardCustomer = null;
+	
+	protected $_MasterCardCustomerId = null;
+	
+	protected $_MasterCard = null;
 
 	protected $_backup = array();
 
@@ -30,6 +51,105 @@ class OrderTest extends \lithium\test\Unit {
 		$this->user->save($data, array('validate' => false));
 
 		$this->_delete[] = $this->user;
+		
+			$this->_AmexCard = array( 
+			'type' => 'amex',
+			'number' => '378282246310005',
+			'month' => 4,
+			'year' => 2014,
+			'code' => 123 
+		);
+		$this->_VisaCard = array( 
+			'type' => 'visa',
+			'number' => '4111111111111111',
+			'month' => 4,
+			'year' => 2014,
+			'code' => 123 
+		);
+		$this->_MasterCard = array( 
+			'type' => 'mc',
+			'number' => '5555555555554444',
+			'month' => 2,
+			'year' => 2016,
+			'code' => 177 
+		);
+		$this->_billingAddress = array(
+				'firstname' => 'Tomfsfdsd',
+				'lastname' => 'Royerdfsfsdf',
+				'address' => '143 roebling street',
+				'address2' => 'apt1',
+				'city' => 'Brooklyn',
+				'state' => 'NY',
+				'zip' => '11211',
+				'country' => 'US',
+				'email' => 'gsdgfdfgdsfg@sdfsdfsd.com'
+		);
+		
+		$this->_VisaCustomer = Processor::create('test', 'customer', array(
+			'firstName' => 'TomTest',
+			'lastName' => 'DevTest',
+			'email' => 'devtest@totsy.com',
+			'payment' => Processor::create('test', 'creditCard', $this->_VisaCard),
+			'billing' => Processor::create('test', 'address', array(
+				'firstName' => 'Tomfsfdsd',
+				'lastName' => 'Royerdfsfsdf',
+				'address' => '100 test street',
+				'address2' => 'APT1',
+				'city' => 'Brooklyn',
+				'state' => 'NY',
+				'zip' => '11211',
+				'country' => 'US',
+				'email' => 'devtest@totsy.com'
+			))
+		));
+		
+		$resultVisa = $this->_VisaCustomer->save();
+		
+		$this->_VisaCustomerId = $resultVisa->response->paySubscriptionCreateReply->subscriptionID;
+		
+		$this->_AmexCustomer = Processor::create('test', 'customer', array(
+			'firstName' => 'TomTest',
+			'lastName' => 'DevTest',
+			'email' => 'devtest@totsy.com',
+			'payment' => Processor::create('test', 'creditCard', $this->_AmexCard),
+			'billing' => Processor::create('test', 'address', array(
+				'firstName' => 'Tomfsfdsd',
+				'lastName' => 'Royerdfsfsdf',
+				'address' => '100 test street',
+				'address2' => 'APT1',
+				'city' => 'Brooklyn',
+				'state' => 'NY',
+				'zip' => '11211',
+				'country' => 'US',
+				'email' => 'devtest@totsy.com'
+			))
+		));
+		
+		$resultAmex = $this->_AmexCustomer->save();
+		
+		$this->_AmexCustomerId = $resultAmex->response->paySubscriptionCreateReply->subscriptionID;
+	
+		$this->_MasterCardCustomer = Processor::create('test', 'customer', array(
+			'firstName' => 'TomTest',
+			'lastName' => 'DevTest',
+			'email' => 'devtest@totsy.com',
+			'payment' => Processor::create('test', 'creditCard', $this->_MasterCard),
+			'billing' => Processor::create('test', 'address', array(
+				'firstName' => 'Tomfsfdsd',
+				'lastName' => 'Royerdfsfsdf',
+				'address' => '100 test street',
+				'address2' => 'APT1',
+				'city' => 'Brooklyn',
+				'state' => 'NY',
+				'zip' => '11211',
+				'country' => 'US',
+				'email' => 'devtest@totsy.com'
+			))
+		));
+		
+		$resultMasterCard = $this->_MasterCardCustomer->save();
+		
+		$this->_MasterCardCustomerId = $resultMasterCard->response->paySubscriptionCreateReply->subscriptionID;
 	}
 
 	public function tearDown() {
@@ -42,6 +162,66 @@ class OrderTest extends \lithium\test\Unit {
 	public function testDates() {
 		$result = OrderMock::dates('now');
 		$this->assertTrue(is_a($result, 'MongoDate'));
+	}
+
+	public function testProcessFunctionality() {
+		#Test Process with Amex
+		$this->Process($this->_AmexCustomerId, 'amex', '0005', 100, 100);
+		#Test Process with Visa
+		$this->Process($this->_VisaCustomerId, 'visa', '1111', 100, 100);
+		#Test Process with MasterCard
+		$this->Process($this->_MasterCardCustomerId, 'mc', '4444', 100, 100);
+		#Test Process with Amex and SoftAuth
+		$this->Process($this->_AmexCustomerId, 'amex', '0005', 100, 1);
+		#Test Process with Visa and SoftAuth
+		$this->Process($this->_VisaCustomerId, 'visa', '1111', 100, 0);
+		#Test Process with MasterCard and SoftAuth
+		$this->Process($this->_MasterCardCustomerId, 'mc', '4444', 100, 1);
+	}
+	
+	public function Process($customerId, $type, $card_number, $total, $authTotal) {
+		Logger::debug('Process Method Test');
+		Logger::debug('Credit Card Type: ' . $type);
+		Logger::debug('Total : ' . $total);
+		Logger::debug('AuthTotal : ' . $authTotal);
+		$ordersCollection = Order::Collection();
+		#Create Temporary order
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$cybersource = new CyberSource(Processor::config('test'));
+		$profile = $cybersource->profile($customerId);
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', $authTotal, $profile, array('orderID' => $order->order_id));
+		$this->assertTrue($authorizeObject->success());
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));	
+		$order->save(array(
+				'total' => $total,
+				'card_type' => $type,
+				'card_number' => $card_number,
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'cyberSourceProfileId' => $customerId,
+				'authTotal' => $authTotal,
+				'billing' => $this->_billingAddress
+		));
+
+		$result = Order::process($order);		
+
+		$orderModified = $ordersCollection->findOne(array('_id' => $order->_id));
+		if($authTotal == $total) {
+			$this->assertTrue($result);
+			$this->assertFalse(empty($orderModified['payment_date']));
+			$this->assertNull($orderModified['auth_error']);
+			$this->assertFalse($orderModified['auth_confirmation'] == -1);
+		} else {
+			$this->assertFalse($result);
+			$this->assertFalse(isset($orderModified['payment_date']));
+			$this->assertFalse(empty($orderModified['auth_error']));
+			$this->assertTrue($orderModified['auth_confirmation'] == -1);
+		}
+		Order::remove(array("_id" => $order->_id));
+		Logger::debug('End Process Method Test');
 	}
 
 	public function testLookup() {
@@ -80,16 +260,27 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testVoidWithTotalPositive() {
-		$data = array(
-			'total' => 1.23,
-			'authKey' => '090909099909',
-			'auth' => array(
-				'key' => '090909099909',
-				'type' => 'authorize'
-			)
-		);
-		$order = OrderMock::create($data);
-		$order->save();
+		$ordersCollection = Order::Collection();
+		#Create Temporary order
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$cybersource = new CyberSource(Processor::config('test'));
+		$profile = $cybersource->profile($customerId);
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', 100, $profile, array('orderID' => $order->order_id));
+		$this->assertTrue($authorizeObject->success());
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));	
+		$order->save(array(
+				'total' => 100,
+				'card_type' => $type,
+				'card_number' => $card_number,
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'cyberSourceProfileId' => $customerId,
+				'authTotal' => 100,
+				'billing' => $this->_billingAddress
+		));
 
 		$result = OrderMock::void($order->data());
 		$this->assertTrue($result);
@@ -118,16 +309,30 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testVoidFailingWithTotalZero() {
-		$data = array(
-			'total' => 0,
-			'authKey' => '090909099909',
-			'auth' => array(
-				'key' => '090909099909',
-				'type' => 'authorize'
-			)
-		);
-		$order = OrderMock::create($data);
-		$order->save();
+		$ordersCollection = Order::Collection();
+		#Create Temporary order
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$cybersource = new CyberSource(Processor::config('test'));
+		$profile = $cybersource->profile($customerId);
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', 0, $profile, array('orderID' => $order->order_id));
+		$this->assertTrue($authorizeObject->success());
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));	
+		$order->save(array(
+				'total' => 0,
+				'card_type' => $type,
+				'card_number' => $card_number,
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'cyberSourceProfileId' => $customerId,
+				'authTotal' => 0,
+				'billing' => $this->_billingAddress
+		));
+
+		$result = OrderMock::void($order->data());
+		$this->assertTrue($result);
 
 		$result = OrderMock::void($order->data());
 		$this->assertFalse($result);
@@ -150,78 +355,6 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue($result);
 
 		$result = ProcessorMock::$void;
-		$this->assertFalse($result);
-
-		$order->delete();
-	}
-
-	public function testProcess() {
-		$data = array(
-			'total' => 1.23,
-			'authKey' => '090909099909',
-			'auth' => array(
-				'key' => '090909099909',
-				'type' => 'authorize'
-			)
-		);
-		$order = OrderMock::create($data);
-		$result = $order->save();
-		$this->assertTrue($result);
-
-		$result = OrderMock::process($order);
-		$this->assertTrue($result);
-
-		$order = OrderMock::first(array(
-			'conditions' => array('_id' => $order->_id)
-		));
-
-		$result = $order->payment_date;
-		$this->assertTrue($result);
-
-		$result = $order->auth_error;
-		$this->assertFalse($result);
-
-		$expected = 'transaction id';
-		$result = $order->auth_confirmation;
-		$this->assertEqual($expected, $result);
-
-		$expected = array('key' => '090909099909', 'type' => 'authorize');
-		$result = ProcessorMock::$capture[1];
-		$this->assertEqual($expected, $result);
-
-		$order->delete();
-	}
-
-	public function testProcessFailingWithTotalZero() {
-		$data = array(
-			'total' => 0,
-			'authKey' => '090909099909',
-			'auth' => array(
-				'key' => '090909099909',
-				'type' => 'authorize'
-			)
-		);
-		$order = OrderMock::create($data);
-		$order->save();
-
-		$result = OrderMock::process($order->data());
-		$this->assertFalse($result);
-
-		$order = OrderMock::first((string) $order->_id);
-
-		$expected = '090909099909';
-		$result = $order->authKey;
-		$this->assertEqual($expected, $result);
-
-		$expected = "Can't capture because total is zero.";
-		$result = $order->auth_error;
-		$this->assertEqual($expected, $result);
-
-		$result = $order->auth_confirmation;
-		$expected = -1;
-		$this->assertEqual($expected, $result);
-
-		$result = ProcessorMock::$capture;
 		$this->assertFalse($result);
 
 		$order->delete();
