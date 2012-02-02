@@ -719,7 +719,12 @@ class FinancialExport extends Base  {
 					    $tmp[] = $auth_record;
 					}
 					$order['auth_records'] = $tmp;
-				} else {
+				} else if(!empty($order['payment_date']) && !($order['payment_date'] !== 'none')){
+					$order['auth_records'][] = array(
+							'authKey' => $order['authKey'],
+							'date_saved' => date("m/d/Y h:i:s A", $order['payment_date']->sec)
+						);
+				}else {
 					$order['auth_records'] = array(
 						array(
 							'authKey' => $order['authKey'],
@@ -857,6 +862,7 @@ class FinancialExport extends Base  {
 
             if (is_dir($source)) {
                 $cmd = "scp -F ~/.ssh/config {$source}*.xml accounting.totsy.com:/C/$directory";
+                #This grabs the output when the command has run
                 $proc = proc_open($cmd, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
                 fwrite($pipes[0], $input); fclose($pipes[0]);
                 $stdout = stream_get_contents($pipes[1]);fclose($pipes[1]);
