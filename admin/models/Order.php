@@ -129,7 +129,8 @@ class Order extends Base {
 				$transaction = $order['authKey'];
 			}
 			$auth = $payments::void('default', $transaction, array(
-				'processor' => isset($order['processor']) ? $order['processor'] : null
+				'processor' => isset($order['processor']) ? $order['processor'] : null,
+				'orderID' => $order['order_id']
 			));
 
 			if ($auth->success()) {
@@ -193,7 +194,8 @@ class Order extends Base {
 					$order['authKey'],
 					floor($order['total'] * 100) / 100,
 					array(
-						'processor' => isset($order['processor']) ? $order['processor'] : null
+						'processor' => isset($order['processor']) ? $order['processor'] : null,
+						'orderID' => $order['order_id']
 					)
 				);
 			} else {
@@ -203,13 +205,14 @@ class Order extends Base {
 						$order['auth'],
 						floor($order['total'] * 100) / 100,
 						array(
-							'processor' => isset($order['processor']) ? $order['processor'] : null
+							'processor' => isset($order['processor']) ? $order['processor'] : null,
+							'orderID' => $order['order_id']
 						)
 					);
 				} else {
 					$cybersource = new CyberSource($payments::config('default'));
 					$profile = $cybersource->profile($order['cyberSourceProfileId']);
-					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile);
+					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile, array('orderID' => $order['order_id']));
 				}
 			}
 			if ($auth->success()) {
@@ -670,6 +673,9 @@ class Order extends Base {
 		/**************CREDITS TREATMENT**************/
 		if($selected_order["credit_used"] != ('' || null)) {
 			$selected_order["credit_used"] = (float) - abs($selected_order["credit_used"]);
+			if($selected_order["original_credit_used"]) {
+				$selected_order["original_credit_used"] = (float) - abs($selected_order["original_credit_used"]);
+			}
 			if(empty($selected_order["user_total_credits"])){
 				if(strlen($selected_order["user_id"]) > 10){
 					$user_ord = $userCollection->findOne(array("_id" => new MongoId($selected_order["user_id"])));
@@ -879,6 +885,29 @@ class Order extends Base {
 							    $conditions = array();
 							}
 							break;
+						case 'failed_reauth':
+							$type = 'failed_reauth';
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['payment_date'] = array('$exists' => false);
+							$conditions['cancel'] = array('$exists' => false);
+							$conditions['payment_captured'] = array('$exists' => false);
+							$conditions['auth_error'] = array('$exists' => true);
+							$conditions['error_date'] = array('$exists' => true);
+							$conditions['ship_records'] = array('$exists' => false);
+							$conditions['$where'] = 'this.total == this.authTotal';
+							break;
+						case 'failed_initial_auth':
+							$type = 'failed_initial_auth';
+							$conditions['auth_confirmation'] = array('$exists' => false);
+							$conditions['payment_date'] = array('$exists' => false);
+							$conditions['cancel'] = array('$exists' => false);
+							$conditions['payment_captured'] = array('$exists' => false);
+							$conditions['auth_error'] = array('$exists' => true);
+							$conditions['error_date'] = array('$exists' => true);
+							$conditions['ship_records'] = array('$exists' => false);
+							$conditions['$where'] = 'this.total != this.authTotal';
+							$conditions['$or'] = array(array('authTotal' => 1), array('authTotal' => 0));
+							break;
 						default:
 							break;
 					}
@@ -906,7 +935,6 @@ class Order extends Base {
 	* @params (string) $orderId : short id of the order
 	* @return boolean
 	**/
-
 	public static function failedCaptureCheck($orderId = null) {
 	    $failed = false;
 	    $coll = static::collection();
@@ -918,7 +946,7 @@ class Order extends Base {
 	     return $failed;
 	}
 	
-	public static function getCCinfos($order = null) {
+		public static function getCCinfos($order = null) {
 		$creditCard = null;
 		if(!empty($order['cc_payment'])) {
 			$cc_encrypt = $order['cc_payment'];

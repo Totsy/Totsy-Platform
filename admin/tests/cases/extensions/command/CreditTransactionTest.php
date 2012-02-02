@@ -11,10 +11,6 @@ use li3_payments\payments\Processor;
 
 class CreditTransactionTest extends \lithium\test\Unit {
 	
-	protected $_Amexcustomer = null;
-	
-	protected $_AmexCard = null;
-	
 	protected $_billingAddress = null;
 	
 	protected $fileTestName = "credit_test.csv";
@@ -131,17 +127,15 @@ class CreditTransactionTest extends \lithium\test\Unit {
 	public function CreditOneTransaction($customer, $card, $type, $card_number) {
 		$ordersCollection = Order::Collection();
 		#Create Transaction initial Transaction in CyberSource
-		$authorizeObject = Processor::authorize('default', $this->_amountOfTransaction, $customer);
+		$authorizeObject = Processor::authorize('test', $this->_amountOfTransaction, $customer);
 		$this->assertTrue($authorizeObject->success());
-		$captureObject = Processor::capture('default', $authorizeObject, $this->_amountOfTransaction,
+		$captureObject = Processor::capture('test', $authorizeObject, $this->_amountOfTransaction,
 				array('processor' => $authorizeObject->adapter
 		));
 		$this->assertTrue($captureObject->success());
 		#Temporary User Creation
 		$user = User::create(array('_id' => new MongoId()));
 		$user->save($this->_UserInfos);
-		#Encrypt Specificied Credit Card
-		$cc_encrypt = Order::creditCardEncrypt($card, (string) $user->_id);
 		#Temporary Order Creation
 		$order = Order::create(array('_id' => new MongoId()));
 		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));
@@ -154,7 +148,6 @@ class CreditTransactionTest extends \lithium\test\Unit {
 				'auth' => $captureObject->export(),
 				'processor' => $captureObject->adapter,
 				'authTotal' => $this->_amountOfTransaction,
-				'cc_payment' => $cc_encrypt,
 				'user_id' => (string) $user->_id,
 				'billing' => $this->_billingAddress
 		));

@@ -70,8 +70,7 @@ class VoidTransaction extends \lithium\console\Command {
 		Logger::debug('Getting Orders to be Reauth');
 		$ordersCollection = Order::Collection();
 		$ordersCollection->ensureIndex(array(
-			'date_created' => 1,
-			'cc_payment' => 1
+			'date_created' => 1
 		));
 		#Limit to X days Old Authkey
 		$limitDate = mktime(23, 59, 59, date("m"), date("d") - $this->expirationVoid, date("Y"));
@@ -79,7 +78,6 @@ class VoidTransaction extends \lithium\console\Command {
 		$conditions = array('void_confirm' => array('$exists' => false),
 							'auth_confirmation' => array('$exists' => false),
 							'authKey' => array('$exists' => true),
-							'cc_payment' => array('$exists' => true),
 							'date_created' => array('$lte' => new MongoDate($limitDate)),
 							'auth' => array('$exists' => true),
 							'cancel' => array('$ne' => true),
@@ -176,12 +174,21 @@ class VoidTransaction extends \lithium\console\Command {
 		$newRecord = array('authKey' => $order['authKey'], 'date_saved' => new MongoDate());
 		#Cancel Previous Transaction
 		$auth = Processor::void('default', $order['auth'], array(
-			'processor' => isset($order['processor']) ? $order['processor'] : null
+			'processor' => isset($order['processor']) ? $order['processor'] : null,
+			'orderID' => $order['order_id']
 		));
 		if(!$auth->success()) {
 			Logger::debug("Void failed for order id " . $order['order_id']);
 			$message  = "Void failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
+			$datasToSet['error_void_date'] = new MongoDate();
+			$datasToSet['error_void_message'] = $error;
+			#Record Errors in DB
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => $datasToSet),
+				array( 'upsert' => true)
+			);
 			$report['errors'][] = array(
 					'error_message' => $message,
 					'order_id' => $order['order_id'],

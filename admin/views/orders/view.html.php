@@ -11,6 +11,25 @@
 		td{font-family:Arial,sans-serif;color:#888888;font-size:14px;line-height:18px}
 		img{border:none}
 	</style>
+
+	<div id="order_notice" style="width:100%;background-color:#DBD7D9;">
+		<h4>Order Notices:</h4>
+		<ul>
+			<?php 
+				if ($processed_count > 0) {
+					echo "<li>Order has been processed and sent to DotCom</li>";
+				} else {
+					if ($order->auth_error) {
+						echo "<li><strong>$order->auth_error</strong></li>";
+						echo "<li><strong>Order has not been processed and sent to DotCom</strong></li>";
+					} else {
+						echo "No Notices";
+					}
+				}
+			?>
+		</ul>
+	</div>
+	<hr/>
 		<table cellspacing="0" cellpadding="0" border="0" width="695">
 			<tr>
 				<td colspan="4">
@@ -559,6 +578,9 @@
 	                                                                                                <?php echo $order->billing->address; ?> <?php echo $order->billing->address_2; ?><br />
 	                                                                                                <?php echo $order->billing->city; ?>, <?php echo $order->billing->state; ?>
 	                                                                                                <?php echo $order->billing->zip; ?>
+																									<?php if (!empty($order->billing->telephone)): ?>
+		                                                                                                <br><?php echo $order->billing->telephone; ?>
+																									<?php endif ?>
 													<hr /></div>
 												<div style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?php echo strtoupper($order->card_type)?> ending with <?php echo $order->card_number?></div>
 											</td>

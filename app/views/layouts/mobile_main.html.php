@@ -1,29 +1,6 @@
 <?php use lithium\net\http\Router; ?>
 <?php $request = $this->request(); ?>
 <!doctype html>
-<?php
-  // Copyright 2010 Google Inc. All Rights Reserved.
-  function googleAnalyticsGetImageUrl() {
-    $GA_ACCOUNT = "MO-675412-20";
-    $GA_PIXEL = "/ga.php";
-    $url = "";
-    $url .= $GA_PIXEL . "?";
-    $url .= "utmac=" . $GA_ACCOUNT;
-    $url .= "&utmn=" . rand(0, 0x7fffffff);
-    $referer = $_SERVER["HTTP_REFERER"];
-    $query = $_SERVER["QUERY_STRING"];
-    $path = $_SERVER["REQUEST_URI"];
-    if (empty($referer)) {
-      $referer = "-";
-    }
-    $url .= "&utmr=" . urlencode($referer);
-    if (!empty($path)) {
-      $url .= "&utmp=" . urlencode($path);
-    }
-    $url .= "&guid=ON";
-    return str_replace("&", "&amp;", $url);
-  }
-?>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:og="http://ogp.me/ns#"
       xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -55,8 +32,32 @@
 	
 	<?php echo $this->html->script('jquery.countdown.min.js?v=007'); ?>
 	<?php echo $this->scripts(); ?>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-675412-20']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body>
+<script>
+if (!navigator.cookieEnabled) {
+	document.write("<div style='margin:10px 0px; background:#f8f57d; padding:10px; border:4px solid #333; text-align:center;'>You do not have cookies enabled. <br />Please enable to continue.</div>");
+}
+</script>
+<script>
+if (!navigator.cookieEnabled) { 
+	 var txt=document.getElementById("no_cookies")
+  		 document.write("<div style='margin:10px 0px; background:#f8f57d; padding:10px; border:4px solid #333; text-align:center;'>You do not have cookies enabled. Please enable to continue.</div>");
+}
+</script>
 <?php if (!empty($userInfo)){ ?>
 <div data-role="header" style="-moz-box-shadow: 0px 0px 4px 0px #666;
 -webkit-box-shadow: 0px 0px 4px 0px #666; box-shadow:0px 0px 4px 0px #666;"> 
@@ -75,10 +76,9 @@
 <div class="clear"></div>
 <div data-role="navbar">
 	<ul>
-		<li><a href="#" onclick="window.location.href='/sales';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0) { echo 'class="ui-btn-active"'; } ?>>All</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/girls';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/girls') == 0) { echo 'class="ui-btn-active"'; } ?>>Girls</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/boys';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/boys') == 0) { echo 'class="ui-btn-active"'; } ?>>Boys</a></li>
-		<li><a href="#" onclick="window.location.href='/sales/momsdads';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales/momsdads') == 0) { echo 'class="ui-btn-active"'; } ?>>Parents</a></li>
+		<li><a href="#" onclick="window.location.href='/sales';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/sales') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Date</a></li>
+		<li><a href="#" onclick="window.location.href='/age/all';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/age/all') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Age</a></li>
+		<li><a href="#" onclick="window.location.href='/category/all';return false;" <?php if(strcmp($_SERVER['REQUEST_URI'],'/categories/all') == 0) { echo 'class="ui-btn-active"'; } ?>>Shop<br />by Category</a></li>
 	</ul>
 </div><!-- /navbar -->		
 <div class="clear"></div>
@@ -92,7 +92,7 @@
 	</div>	
 	</div>
 <?php } ?>
-	<div data-role="content">
+	<div data-role="content" data-role="page" class="type-interior">
 	<?php echo $this->content(); ?>
 	</div>
 	<div class="clear"></div>
@@ -139,8 +139,5 @@ window.location = logoutURL;
 }
 }
 </script>
-<?php
-  $googleAnalyticsImageUrl = googleAnalyticsGetImageUrl();
-  echo '<img src="' . $googleAnalyticsImageUrl . '" />';?>
 </body>
 </html>

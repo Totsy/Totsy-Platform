@@ -13,6 +13,10 @@ if (is_array($items)){
 		$itm['bigimage'] = $item['base_url'].'/image/'.$item['zoom_image'].'.jpg';
 		$itm['smallimage'] = $item['base_url'].'/image/'.$item['primary_image'].'.jpg';
 		$itm['instock'] = $item['total_quantity']>0?true:false;
+		$itm['vendor'] = $item['vendor'];
+		$itm['event'] = $item['event'][0];
+		$itm['categories'] = $item['categories'];
+		$itm['ages'] = $item['ages'];		
 		$out['products'][] = $itm;
 	}
 } 

@@ -9,6 +9,7 @@ use app\extensions\Mailer;
 use app\models\User;
 use app\models\Base;
 use app\models\FeatureToggles;
+use app\models\CreditCard;
 
 use li3_payments\payments\TransactionResponse;
 use li3_payments\extensions\adapter\payment\CyberSource;
@@ -54,59 +55,57 @@ class Order extends Base {
 	 */
 	public static function process($data, $cart, $vars, $avatax) {
 		$payments = static::$_classes['payments'];
-		$usersCollection = User::Collection();
-		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($vars['user']['_id'])));
+		$userInfos = User::lookup($vars['user']['_id']);
 		$order = static::create(array('_id' => new MongoId()));
-		#Read Credit Card Informations
-		$creditCard = $vars['creditCard'];
-		#Create Address Array
-		$address = array(
-				'firstName' =>  $vars['billingAddr']['firstname'],
-				'lastName' => $vars['billingAddr']['lastname'],
-				'address' => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
-				'city' => $vars['billingAddr']['city'],
-				'state' => $vars['billingAddr']['state'],
-				'zip' => $vars['billingAddr']['zip'],
-				'country' => $vars['billingAddr']['country'] ?: 'US',
-				'email' =>  $vars['user']['email'] 
-		);
-		#Create Payment Object that contains Payment Informations
-		$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
-			'billing' => $payments::create('default', 'address', $address)
-			)
-		);
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
 		if ($cart) {
-			$inc = 0;
-			foreach ($cart as $item) {
-				$item['line_number'] = $inc;
-				$item['status'] = 'Order Placed';
-				$items[] = $item;
-				++$inc;
-			}
-			#Switch Authorized Amount Transaction depending of CC Type
+			#Get CreditCard
+			$creditCard = $vars['creditCard'];
+			#Switch Soft Authorized Amount Transaction depending of Credit Card Type
 			if($creditCard['type'] == 'visa') {
 				$authTotalAmount = 0;
 			} else {
 				$authTotalAmount = 1;
 			}
-			$profileID = User::hasCyberSourceProfile($userInfos, $creditCard['number']);
 			#If User has a CyberSource Profile, Use Token
-			if(empty($profileID)) {
-				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
-			} else {
+			$auth = null;
+			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
+			if(!empty($cyberSourceProfile)) {
 				$cybersource = new CyberSource($payments::config('default'));
-				$profile = $cybersource->profile($profileID);
+				$profile = $cybersource->profile($cyberSourceProfile['profileID']);
 				if($profile instanceof Customer) {
-					$auth = $payments::authorize('default', $authTotalAmount, $profile);
-				} else {
-					$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos);
+					$auth = $payments::authorize('default', $authTotalAmount, $profile, array('orderID' => $order->order_id));
 				}
 			}
+			#In Case No CyberSourceProfile has been found
+			if(empty($auth)) {
+				#Read Credit Card Informations
+				$address = array(
+					'firstName' =>  $vars['billingAddr']['firstname'],
+					'lastName' => $vars['billingAddr']['lastname'],
+					'address' => trim($vars['billingAddr']['address'] . ' ' . $vars['billingAddr']['address2']),
+					'city' => $vars['billingAddr']['city'],
+					'state' => $vars['billingAddr']['state'],
+					'zip' => $vars['billingAddr']['zip'],
+					'country' => $vars['billingAddr']['country'] ?: 'US',
+					'email' =>  $vars['user']['email'] 
+				);
+				#Create Payment Object that contains Payment Informations
+				$paymentInfos = $payments::create('default', 'creditCard', $creditCard + array(
+					'billing' => $payments::create('default', 'address', $address)
+					)
+				);
+				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
+			}
 			if (!$auth->success()) {
+				#Reverse Transaction that Failed
+				$payments::void('default', $auth, array(
+					'processor' => $auth->adapter
+				));
 				Session::write('cc_error', implode('; ', $auth->errors));
 				return false;
 			}
-			return static::recordOrder($vars, $cart, $order, $avatax, $auth, $items, $authTotalAmount, $creditCard, $address);
+			return static::recordOrder($vars, $cart, $order, $avatax, $auth, $items, $authTotalAmount, $creditCard);
 		} else {
 			$order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
@@ -120,13 +119,18 @@ class Order extends Base {
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $cart, $order, $avatax, TransactionResponse $auth, $items, $authTotalAmount, $creditCard, $address) {
+	public static function recordOrder($vars, $cart, $order, $avatax, TransactionResponse $auth, $items, $authTotalAmount, $creditCard) {
 		$tax = static::$_classes['tax'];
-		$payments = static::$_classes['payments'];
-		$usersCollection = User::Collection();
 		$user = Session::read('userLogin');
 		$service = Session::read('services', array('name' => 'default'));
-		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		#Update Items Status
+		$inc = 0;
+		foreach ($cart as $item) {
+			$item['line_number'] = $inc;
+			$item['status'] = 'Order Placed';
+			$items[] = $item;
+			++$inc;
+		}
 		#Save Credits Used
 		if ($vars['cartCredit']->credit_amount) {
 			User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
@@ -153,7 +157,8 @@ class Order extends Base {
 			#If FreeShipping put Handling/OverSizeHandling to Zero
 			if($vars['cartPromo']->type == 'free_shipping') {
 				$vars['shippingCostDiscount'] = $vars['shippingCost'];
-				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];			}
+				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
+			}
 			#Update Order Information with PromoCode
 			$order->promo_code = $vars['cartPromo']->code;
 			$order->promo_type = $vars['cartPromo']->type;
@@ -188,39 +193,20 @@ class Order extends Base {
 		$shippingMethod = 'ups';
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
-		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
-		#Get Credits Card Informations Encrypted and Store It
-		$storing_cc_encrypted = FeatureToggles::getValue('storing_credit_card_encrypted');
-		if(!empty($storing_cc_encrypted)) {
-			$cc_encrypt = Session::read('cc_infos');
-			$cc_encrypt['vi'] = Session::read('vi');
-			unset($cc_encrypt['valid']);
-			$order->cc_payment = $cc_encrypt;
-		}
+		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];	
 		#Check in which case to store profile with token in Cybersource 
-		$userInfos = $usersCollection->findOne(array('_id' => new MongoId($user['_id'])));
-		$profileID = User::hasCyberSourceProfile($userInfos, $creditCard['number']);
-		if(empty($profileID)) {
-			#Create A User Profile with CC Infos Through Auth.Net
-			$customer = $payments::create('default', 'customer', array(
-				'firstName' => $userInfos['firstname'],
-				'lastName' => $userInfos['lastname'],
-				'email' => $userInfos['email'],
-				'billing' => $payments::create('default', 'address', $address),
-				'payment' => $payments::create('default', 'creditCard', $creditCard)
-			));
-			$result = $customer->save();
-			if($result->success) {
-				$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
-				$update = $usersCollection->update(
-					array('_id' => new MongoId($user['_id'])),
-					array('$push' => array('cyberSourceProfiles' => $profileID)), array( 'upsert' => true)
-				);
-			}
+		$userInfos = User::lookup($user['_id']);
+		#Get current credit cards to compare to this card
+		if($userInfos['cyberSourceProfiles']) {
+			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
 		}
-		if(!empty($profileID)) {
-			$order->cyberSourceProfileId = $profileID;
+		if(empty($cyberSourceProfile)) {
+			$vars['savedByUser'] = false;
+			$vars['order_id'] = $order->order_id;
+			$vars['auth'] = $auth;
+			$cyberSourceProfile = CreditCard::add($vars);
 		}
+		$order->cyberSourceProfileId = $cyberSourceProfile['profileID'];
 		$cart = Cart::active();
 		#Save Order Infos
 		$shipDate = Cart::shipDate($cart);
@@ -240,6 +226,7 @@ class Order extends Base {
 				'overSizeHandling' => $vars['overShippingCost'],
 				'handlingDiscount' => $vars['shippingCostDiscount'],
 				'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
+				'email' => $user['email'],
 				'user_id' => (string) $user['_id'],
 				'tax' => (float) $avatax['tax'],
 				'card_type' => $creditCard['type'],
@@ -283,36 +270,6 @@ class Order extends Base {
 		return $order;
 	}
 
-	/**
-	 * Decrypt credit card informations stored in the Session
-	 */
-	public static function creditCardDecrypt($user_id) {
-		$cc_encrypt = Session::read('cc_infos');
-
-		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
- 		$iv =  base64_decode(Session::read('vi'));
-		foreach	($cc_encrypt as $k => $cc_info) {
-			$crypt_info = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), base64_decode($cc_info), MCRYPT_MODE_CFB, $iv);
-			$card[$k] = $crypt_info;
-		}
-		return $card;
-	}
-
-	/**
-	 * Encrypt all credits card informations with MCRYPT and store it in the Session
-	 */
-	public static function creditCardEncrypt($cc_infos, $user_id,$save_iv_in_session = false) {
-		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB);
-		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		if ($save_iv_in_session == true) {
-			Session::write('vi',base64_encode($iv));
-		}
-		foreach	($cc_infos as $k => $cc_info) {
-			$crypt_info = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($user_id . $k), $cc_info, MCRYPT_MODE_CFB, $iv);
-			$cc_encrypt[$k] = base64_encode($crypt_info);
-		}
-		return $cc_encrypt;
-	}
 }
 
 ?>

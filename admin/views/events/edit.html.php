@@ -54,6 +54,74 @@ selectlist.css (line 1)
 
 </style>
 
+<script>
+
+
+function object(){
+	this.dinkers = "stinkers";
+}
+
+function checkspreadsheet(){
+	params = new object();
+	params.ItemsSubmit = $("#ItemsSubmit").val();
+
+	$.post('/events/uploadcheck', params, function(result) {
+		if(result.substring(0,7)=="success"){
+			//$("#items_errors").html(result);
+			$("#events_edit").submit();
+		}
+		else{
+			$("#items_errors").html(result);
+		}
+	});
+}
+
+</script>
+
+<style>
+
+
+div.xls_cell{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+}
+
+
+div.xls_cell_error{
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+	overflow:hidden;
+	border:1px solid #000000;
+	background:#ff0000;
+	color:#ffffff;
+}
+
+div.xls_cell:hover{
+	background:#eeeeee;
+	width:100px; 
+	height: 20px; 
+	display:block; 
+	float:left;
+}
+
+.xls_holder{
+	width:800px;
+	height:400px;
+	overflow:scroll;
+}
+
+.xls_holder_inner{
+	width:5000px;
+}
+
+</style>
+
 <?php echo $this->form->create(null, array('id' => "events_edit", 'enctype' => "multipart/form-data")); ?>
 <div class="grid_16">
 	<h2>Editing Event - <?php echo $event->name?></h2>
@@ -295,10 +363,17 @@ selectlist.css (line 1)
 					<?php echo $this->form->file('upload_file'); ?>
 					-->
 
-				<?php echo $this->form->field('items_submit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
+				<?php echo $this->form->field('ItemsSubmit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
 
-
+			<?php if ($event->clearance == 1){ ?>
 			<?php echo $this->form->submit('Update Event')?>
+			
+			<?php } else{ ?>
+
+			<input type="button" value="Update Event" onclick="checkspreadsheet();">
+
+			<?php } ?>
+			
 			<?php echo $this->form->end(); ?>
 			</div>
 
@@ -335,11 +410,27 @@ selectlist.css (line 1)
 			<?php echo $this->form->end(); ?>
 
 			<br><br>
+
+<script>
+
+function deleteitems(){
+//item-delete
+	var answer = confirm("are you sure you want to delete all items? this cannot be undone!")
+	if (answer){
+		$("#item-delete").submit();
+	}
+
+}
+
+</script>
+
 			<h2 id="">Delete Items</h2>
 				<p>Click the button below to delete all items from this event. <strong>WARNING - This action cannot be undone. All items associated with this event will be deleted!!!!!!<strong></p>
-				<?php echo $this->form->create(null, array('url' => 'Items::removeItems', 'name' => 'item-delete')); ?>
+				<?php echo $this->form->create(null, array('url' => 'Items::removeItems', 'id' => 'item-delete', 'name' => 'item-delete')); ?>
 					<?php echo $this->form->hidden('event', array('value' => $event->_id)); ?>
-					<?php echo $this->form->submit('Delete All Items'); ?>
+					
+					<input type="button" onclick="deleteitems()" value="Delete All Items">
+					<?php //echo $this->form->submit('Delete All Items'); ?> 
 				<?php echo $this->form->end(); ?>
 		</div>
 
@@ -380,6 +471,11 @@ selectlist.css (line 1)
 				?>
 		</div>
 		<div id="event_inventory">
+			<h2>Event Inventory</h2>
+			Actions - 
+			<a href="#" id="generateskulink" name="generateskulink">Generate SKUS (replaces all skus)</a> |
+			<a href="#" id="regenerateskulink" name="regenerateskulink">ReGenerate SKUS (replaces only incomplete/blank skus)</a> |
+
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
 		</div>
 
@@ -390,6 +486,27 @@ $(document).ready(function() {
 
 	//create tabs
 	$("#tabs").tabs();
+
+	//generate skus link
+	$('#generateskulink').click(function() {
+		var eventid = '<?php echo $event->_id; ?>';
+
+		$.post('/events/generatesku/'+eventid, function(result) {
+			$("#inventoryIframe").attr('src', "/events/inventory/"+eventid);
+		});
+
+    });
+
+	//regenerate skus link
+	$('#regenerateskulink').click(function() {
+		var eventid = '<?php echo $event->_id; ?>';
+
+		$.post('/events/regeneratesku/'+eventid, function(result) {
+			$("#inventoryIframe").attr('src', "/events/inventory/"+eventid);
+		});
+    });
+
+
 });
 </script>
 <script type="text/javascript">

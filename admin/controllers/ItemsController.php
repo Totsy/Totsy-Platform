@@ -17,26 +17,6 @@ use li3_flash_message\extensions\storage\FlashMessage;
 
 class ItemsController extends BaseController {
 
-	private $_mapCategories = array (
-		'category' =>  array(
-			'girls-apparel' => "Girls Apparel",
-			'boys-apparel' => "Boys Apparel",
-			'shoes' => "Shoes",
-			'accessories' =>"Accessories",
-			'toys-books' => "Toys and Books",
-			'gear' => "Gear",
-			'home' => "Home",
-			'moms-dads' => "Moms and Dads"
-		),
-		'age' => array(
-			'newborn' => 'Newborn 0-6M',
-			'infant' => 'Infant 6-24M',
-			'toddler' => 'Toddler 1-3 Y',
-			'preschool' => 'Preschool 3-4Y',
-			'school' => 'School Age 5+',
-			'adult' => 'Adult'
-		)
-	);
 	
 	/**
 	 * Main display of item data
@@ -265,12 +245,12 @@ class ItemsController extends BaseController {
 			$event = Event::find('first', array('conditions' => array('_id' => $id)));
 			if ($event->views <= 0){
 				if ((!empty($event->items)) && Item::remove(array('event' => $id)) && Event::removeItems($id)) {
-					FlashMessage::write('Items Removed', array('class' => 'pass'));
+					//FlashMessage::write('Items Removed', array('class' => 'pass'));
 				} else {
-					FlashMessage::write('Remove Failed', array('class' => 'warning'));
+				//	FlashMessage::write('Remove Failed', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::write('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
+			//	FlashMessage::write('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
 			}
 			$this->redirect(array('Events::edit','args' => array($id)));
 		}
