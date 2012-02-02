@@ -376,8 +376,11 @@ class ReportsController extends BaseController {
 			)));
 			foreach ($orders as $orderId => $cartId) {
 				$conditions = array(
-					'_id' => substr($orderId, 0, 24),
-					'items._id' => $cartId
+					'_id' => new MongoId(substr($orderId, 0, 24)),
+					'$or' => array(
+						array('items._id' => new MongoId($cartId)),
+						array('items._id' =>$cartId)
+					)
 				);
 				$order = $this->getOrders('first', $conditions);
 				$user = User::find('first', array('conditions' => array('_id' => $order['user_id'])));
@@ -401,7 +404,7 @@ class ReportsController extends BaseController {
 						$orderFile[$inc]['OrderNum'] = $order['order_id'];
 						$orderFile[$inc]['OldSKU'] = $this->oldsku($orderItem->vendor_style, $item['size']);
 						$orderFile[$inc]['SKU'] = $orderItem->sku_details[$item['size']];
-						$orderFile[$inc]['Qty'] = $item['quantity'];
+						$orderFile[$inc]['Qty'] = $item['quantity']; 
 						$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 						$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
 						$orderFile[$inc]['Customer PO #'] = '';
@@ -431,7 +434,7 @@ class ReportsController extends BaseController {
 		$orders = Order::find($search, array(
 			'conditions' => $conditions
 		));
-		return $orders->data();
+		return $orders;
 	}
 
     public function googleAnalytics() {
