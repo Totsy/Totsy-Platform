@@ -44,10 +44,10 @@ $('#password-prompt form').live('submit', function(e) {
 }
 
 #password-prompt h2 {
-	font-size: 24px;
+	font-size: 21px;
 	font-weight: normal;
 	color: #333;
-	margin-bottom: 16px;
+	margin: 8px auto 36px;
 }
 
 #password-prompt p {
@@ -58,9 +58,10 @@ $('#password-prompt form').live('submit', function(e) {
 #password-prompt label {
 	float: left;
 	clear: left;
-	width: 250px;
+	width: 200px;
 	margin: 4px 8px 20px 0;
 	font-size: 14px;
+	font-weight: bold;
 	text-align: right;
 	color: #999;
 }
@@ -75,8 +76,9 @@ $('#password-prompt form').live('submit', function(e) {
 
 #password-prompt input[type=submit] {
 	clear: left;
+	float: left;
 	display: block;
-	margin-left: 250px;
+	margin: 10px 0 0 200px;
 }
 
 </style>
