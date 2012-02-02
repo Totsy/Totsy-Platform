@@ -185,6 +185,31 @@ div.xls_cell:hover{
 					<input type="radio" name="tangible" value="1" id="tangible" <?php if ($event->tangible == 1) echo 'checked'; ?> > Tangible <br>
 					<input type="radio" name="tangible" value="0" id="tangible" <?php if ($event->tangible == 0) echo 'checked'; ?> > Non Tangible
 				</div>
+				<div id="event_status_update">
+					<h2 id="event_status_update">Event Status Update</h2>
+					<input type="radio" name="status_update" value="none" id="status_no" <?php if ($event->status_update == 'none') echo 'checked'; ?> > <label for="status_no">None</label> <br>
+					<input type="radio" name="status_update" value="stock_added" id="status_sa" <?php if ($event->status_update == 'stock_added') echo 'checked'; ?> > <label for="status_sa">Stock Added</label> <br>
+					<input type="radio" name="status_update" value="styles_added" id="status_st" <?php if ($event->status_update == 'styles_added') echo 'checked'; ?> > <label for="status_st">Styles Added</label> <br>
+					<input type="radio" name="status_update" value="blowout" id="status_bl" <?php if ($event->status_update == 'blowout') echo 'checked'; ?> > <label for="status_bl">Blowout</label> <br>
+					<input type="radio" name="status_update" value="charity" id="status_ch" <?php if ($event->status_update == 'charity') echo 'checked'; ?> > <label for="status_ch">Charity Event</label> <br>
+					<input type="radio" name="status_update" value="sold_out" id="status_so" <?php if ($event->status_update == 'sold_out') echo 'checked'; ?> > <label for="status_so">Sold Out</label>
+					<script>
+						// toggle checked status of clearance and blowout
+						$(document).ready(function() {
+						
+							$('#status_bl').click(function() {
+								$(this).attr('checked','checked');
+								$('#clearance').click();
+							});
+							
+							$('#noclearance').click(function() {
+								if ($('#status_bl').attr('checked')) {
+									$('#status_no').click();
+								}
+							});
+						});
+					</script> 
+				</div>
 		<div id="event_viewlive">
 			<h2 id="event_type">View Live Anyway</h2>
 		 (allows direct url access to event even if otherwise disabled)<br>
@@ -194,8 +219,8 @@ div.xls_cell:hover{
 
 		<div id="event_clearance">
 			<h2 id="event_type">Clearance</h2>
-			<input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance <br>
-			<input type="radio" name="clearance" value="0" id="clearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance
+			<label for="clearance"><input type="radio" name="clearance" value="1" id="clearance" <?php if ($event->clearance == 1) echo 'checked'; ?>> Clearance</label> <br>
+			<label for="noclearance"><input type="radio" name="clearance" value="0" id="noclearance" <?php if ($event->clearance == 0) echo 'checked'; ?>> Not Clearance</label>
 		</div>
 
 
