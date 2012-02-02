@@ -240,7 +240,7 @@ $<?php echo number_format($savings,2)?>
 <hr />
 
 	<a href="#" data-inline="true" onclick="window.location.href='/sale/<?php echo $returnUrl; ?>';return false;" style="font-size:11px;">Continue Shopping</a>
-	<a href="#" data-role="button" data-inline="true" onclick="window.location.href='/checkout/shipping';return false;" style="float:right;">Checkout</a>
+	<a href="#password-prompt" data-role="button" data-inline="true" data-rel="dialog" onclick="$('#password-prompt form').attr('action', '/checkout/shipping');" style="float:right;">Checkout</a>
 
 <?php echo $this->form->end(); ?>
 
@@ -265,7 +265,12 @@ $<?php echo number_format($savings,2)?>
 
 <p></p>
 <?php echo $this->view()->render(array('element' => 'mobile_headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout)); ?>
-
+<?php /* Exceedingly difficult and cumbersome to locate unclosed <div> tags, so
+			this will have to do.
+	   */
+?>
+</div>
+</div>
 <script type="text/javascript" charset="utf-8">
 
 	//SUBMIT THE ITEM WHICH IS DELETED
