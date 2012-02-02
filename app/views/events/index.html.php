@@ -100,7 +100,7 @@
 				<?php
 					if (!empty($eventHasStatus)) { ?>
 						<div class="p-container roundy_product_home status <?php echo $eventStatusClass; ?>">
-							<em><?php echo $eventStatus; ?></em>
+<!-- 							<em><?php echo $eventStatus; ?></em> -->
 					<?php
 					} else { ?>
 						<div class="p-container roundy_product_home">
@@ -130,7 +130,18 @@
 							}
 						?>
 						<?php if ($x <= 1): ?>
-							<?php echo $this->html->link(
+						
+							<a href="<?php echo "sale/$url"?>" title="<?php echo $event->name; ?>">
+								<?php if (!empty($eventHasStatus)) { ?>
+								<em><?php echo $eventStatus; ?></em>
+								<?php 
+								}?>
+								<img src="<?php echo $productImage; ?>" width="349" height="403" alt="<?php echo $event->name; ?>" style="margin:0px 0px -6px 0px;" />
+							</a>
+							
+							<?php // @DG removed, built as html above to work in the 'em' tag
+/*
+							echo $this->html->link(
 								$this->html->image("$productImage", array(
 								'title' => $event->name,
 								'alt' => $event->name,
@@ -138,15 +149,28 @@
 								'height' => '403',
 						'style' => 'margin:0px 0px -6px 0px;'
 								)), "sale/$url", array('escape'=> false));
+*/
 							?>
 						<?php else: ?>
-							<?php echo $this->html->link(
+						
+							<a href="<?php echo "sale/$url"?>" title="<?php echo $event->name; ?>">
+								<?php if (!empty($eventHasStatus)) { ?>
+								<em><?php echo $eventStatus; ?></em>
+								<?php 
+								}?>
+								<img src="<?php echo $productImage; ?>" width="228" height="263" alt="<?php echo $event->name; ?>" />
+							</a>
+						
+							<?php // @DG removed, built as html above to work in the 'em' tag
+/*
+							echo $this->html->link(
 								$this->html->image("$productImage", array(
 								'title' => $event->name,
 								'alt' => $event->name,
 								'width' => '228',
 								'height' => '263'
 							)), "sale/$url", array('escape'=> false));
+*/
 							 ?>
 						<?php endif ?>
 				
