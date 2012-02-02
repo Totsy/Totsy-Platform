@@ -115,7 +115,7 @@ class Order extends Base {
 
 		if ($order['total'] == 0 || !is_numeric($order['authKey'])) {
 			$data['void_confirm'] = -1;
-			$error = "Can't capture because total is zero.";
+			$error = "Can't void because total is zero.";
 		} else if ($order['card_type'] == 'amex') {
 			$data['void_confirm'] = -1;
 			$error = "Can't void because the card type is Amex.";
@@ -178,44 +178,26 @@ class Order extends Base {
 		$order = is_object($order) ? $order->data() : $order;
 		$orderId = new MongoId($order['_id']);
 		$error = null;
-		$data = array(
-			'payment_date' => new MongoDate()
-		);
+		$data = array();
 
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
 
-		if ($order['total'] == 0 || !is_numeric($order['authKey'])) {
-			$data['auth_confirmation'] = -1;
-			$error = "Can't capture because total is zero.";
+		if ($order['total'] == 0) {
+			$data['auth_confirmation'] = $order['authKey'];
+			$data['payment_date'] = new MongoDate();
+			Logger::error("Can't capture because total is zero.");
 		} else {
-			if(empty($order['auth'])) {
-				$auth = $payments::capture(
-					'default',
-					$order['authKey'],
-					floor($order['total'] * 100) / 100,
-					array(
-						'processor' => isset($order['processor']) ? $order['processor'] : null,
-						'orderID' => $order['order_id']
-					)
-				);
-			} else {
-				if(empty($order['cyberSourceProfileId'])) {
-					$auth = $payments::capture(
-						'default',
-						$order['auth'],
-						floor($order['total'] * 100) / 100,
-						array(
-							'processor' => isset($order['processor']) ? $order['processor'] : null,
-							'orderID' => $order['order_id']
-						)
-					);
-				} else {
-					$cybersource = new CyberSource($payments::config('default'));
-					$profile = $cybersource->profile($order['cyberSourceProfileId']);
-					$auth = $cybersource->capture($order['auth'], (floor($order['total'] * 100) / 100), $profile, array('orderID' => $order['order_id']));
-				}
-			}
+			$auth = $payments::capture(
+				'default',
+				$order['authKey'],
+				floor($order['total'] * 100) / 100,
+				array(
+					'processor' => isset($order['processor']) ? $order['processor'] : null,
+					'orderID' => $order['order_id']
+				)
+			);
 			if ($auth->success()) {
+				Logger::info("Order Succesfully Captured");
 				$data['auth_confirmation'] = $auth->key;
 				$data['payment_date'] = new MongoDate();
 			} elseif ($auth->errors) {
@@ -224,14 +206,14 @@ class Order extends Base {
 
 				$message  = "Processing of payment for order id `{$order['_id']}` failed:";
 				$message .= $error = implode('; ', $auth->errors);
-				Logger::error($message);
+				Logger::info($message);
 			} else {
 				$data['auth_confirmation'] = -1;
 				$data['error_date'] = new MongoDate();
 				$error = 'Unknown error.';
 
 				$message = "Processing of payment for order id `{$order['_id']}` failed.";
-				Logger::error($message);
+				Logger::info($message);
 			}
 		}
 		$update = static::update(
