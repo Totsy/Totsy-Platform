@@ -38,7 +38,7 @@ class PagesController extends BaseController {
 		    }
 
 		}
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->render(array('template' => 'mobile_'.$path[0]));
 		} else {
