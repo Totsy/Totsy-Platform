@@ -48,7 +48,7 @@ abbr,acronym {
 body {
 	font-family:Helvetica, Arial, sans-serif;
 	color:#707070;
-	background:#e0e0e0;
+	background: /* #e0e0e0 */ #dcedfa!important;
 	font-size:12px;
 	line-height:19px;
 }
@@ -1916,6 +1916,27 @@ h2:link .p-container .details strong {
 	float:right;
 	padding:10px 12px;
 }
+
+/* event status */
+#contentMain .eventHeader .status {width:156px;}
+.status > a {display: block; width: 100%; height: 100%;}
+.status em {
+	display: block;
+	position: absolute; top:0; right: 0;
+	text-indent: -999em;
+}
+.event .status em {width:86px; height:86px;}
+.eventHeader .status em {width:73px; height: 73px;}
+.event .status_stock_added em {background: url(../img/ribbon_es_stock_86x86.png) 0 0 no-repeat;}
+.event .status_styles_added em {background: url(../img/ribbon_es_style_86x86.png) 0 0 no-repeat;}
+.event .status_blowout em {background: url(../img/ribbon_es_blow_86x86.png) 0 0 no-repeat;}
+.event .status_charity em {background: url(../img/ribbon_es_char_86x86.png) 0 0 no-repeat;}
+.event .status_sold_out em {background: url(../img/ribbon_es_sold_86x86.png) 0 0 no-repeat;}
+.eventHeader .status_stock_added em {background: url(../img/ribbon_es_stock_73x73.png) 0 0 no-repeat;}
+.eventHeader .status_styles_added em {background: url(../img/ribbon_es_style_73x73.png) 0 0 no-repeat;}
+.eventHeader .status_blowout em {background: url(../img/ribbon_es_blow_73x73.png) 0 0 no-repeat;}
+.eventHeader .status_charity em {background: url(../img/ribbon_es_char_73x73.png) 0 0 no-repeat;}
+.eventHeader .status_sold_out em {background: url(../img/ribbon_es_sold_73x73.png) 0 0 no-repeat;}
 
 .invite-column {
 	width:180px;

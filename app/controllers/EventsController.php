@@ -86,6 +86,9 @@ class EventsController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_category';
 		}
+
+		// re-count events num
+		$eventCount = count($openEvents);
 		
 		// re-count events num
 		$eventCount = count($openEvents);
