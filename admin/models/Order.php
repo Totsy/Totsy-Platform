@@ -197,6 +197,7 @@ class Order extends Base {
 				)
 			);
 			if ($auth->success()) {
+				Logger::info("Order Succesfully Captured");
 				$data['auth_confirmation'] = $auth->key;
 				$data['payment_date'] = new MongoDate();
 			} elseif ($auth->errors) {
@@ -205,14 +206,14 @@ class Order extends Base {
 
 				$message  = "Processing of payment for order id `{$order['_id']}` failed:";
 				$message .= $error = implode('; ', $auth->errors);
-				Logger::error($message);
+				Logger::info($message);
 			} else {
 				$data['auth_confirmation'] = -1;
 				$data['error_date'] = new MongoDate();
 				$error = 'Unknown error.';
 
 				$message = "Processing of payment for order id `{$order['_id']}` failed.";
-				Logger::error($message);
+				Logger::info($message);
 			}
 		}
 		$update = static::update(
