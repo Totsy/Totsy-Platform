@@ -575,6 +575,27 @@ class EventsController extends BaseController {
 		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
 
+	/**
+	 * Locate an existing event by some criteria. Currently supported
+	 * criteria (via querystring parameters) include:
+	 *  'name'
+	 *
+	 * @return void
+	 */
+	public function find() {
+		$collEvents = Event::collection();
+		$events     = $collEvents->find(array(
+			'name' => $this->request->query['name']
+		));
+
+		$results = array();
+		foreach($events as $evt) {
+			$results[] = $evt;
+		}
+
+		echo json_encode(array('total' => count($results), 'results' => $results));
+		$this->_render['head'] = true;
+	}
 
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.

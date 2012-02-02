@@ -36,6 +36,18 @@ var discountErrors = new Object();
 	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#promocode_tooltip').tipsy({gravity: 'nw'}); // nw | n | ne | w | e | sw | s | se
+
+	$('.btn-checkout').click(function(e) {
+		e.preventDefault();
+
+		$( "#password-prompt").find('form').attr('action', this.href).end()
+			.dialog({
+				modal: true,
+				width: 600,
+				height: 300
+			}
+		);
+	});
 });
 
 </script>
@@ -67,7 +79,7 @@ var discountErrors = new Object();
 	<hr/>
 	     <div class="cart-button fr" style="margin:10px 0px 20px 0px;">
 		      <?php echo $this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?php echo $this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?php echo $this->html->link('Checkout', 'Orders::shipping', array('class' => 'button btn-checkout', 'style'=>'float:left')); ?>
 		     <div class="clear"></div>
 		 </div>
 <?php endif ?>
@@ -282,7 +294,7 @@ var discountErrors = new Object();
 
 <div class="cart-button fr cart-nav-buttons">
 		      <?php echo $this->html->link('Continue Shopping', "sale/$returnUrl", array('style'=>'float:left; margin-right:10px;', 'class' => 'button_border')); ?>
-		      <?php echo $this->html->link('Checkout', 'Orders::shipping', array('class' => 'button', 'style'=>'float:left')); ?>
+		      <?php echo $this->html->link('Checkout', 'Orders::shipping', array('class' => 'button btn-checkout', 'style'=>'float:left')); ?>
 		      <div class="clear"></div>
 
 <?php echo $this->form->end(); ?>
@@ -313,9 +325,7 @@ var discountErrors = new Object();
 <?php endif ?>
 </div>
 </div>
-
-<div id="modal" style="background:#fff!important; z-index:9999999999!important;">
-</div>
+<?= $this->view()->render(array('element' => 'modal/password'), array('user' => $user)); ?>
 
 <script type="text/javascript" charset="utf-8">
 
