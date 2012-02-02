@@ -34,11 +34,11 @@ class BaseController extends \lithium\action\Controller {
 			$userInfo = Session::read('userLogin');	
 			
         	//this changes depending on whether we're on prod or not
-        	//if something's funny or not working on kkim, just update it with master
+        	//if something's funny or not working on evan, just update it with master
         	$mamasourceSubDomain = "";
 			
  			if(!Environment::is('production')){	
-				$mamasourceSubDomain = "kkim.totsy.com";
+				$mamasourceSubDomain = "evan.totsy.com";
  			} else {
 				$mamasourceSubDomain = "mamasource.totsy.com";
  			}
@@ -107,11 +107,11 @@ class BaseController extends \lithium\action\Controller {
         $redirected = false;
         
         //this changes depending on whether we're on prod or not
-        //if something's funny or not working on kkim, just update it with master
+        //if something's funny or not working on evan, just update it with master
 		$mamasourceSubDomain = "";
 		       
         if(!Environment::is('production')){	
-			$mamasourceSubDomain = "kkim.totsy.com";
+			$mamasourceSubDomain = "evan.totsy.com";
  		} else {
 			$mamasourceSubDomain = "mamasource.totsy.com";
  		}
