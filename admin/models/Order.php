@@ -178,9 +178,6 @@ class Order extends Base {
 		$order = is_object($order) ? $order->data() : $order;
 		$orderId = new MongoId($order['_id']);
 		$error = null;
-		$data = array(
-			'payment_date' => new MongoDate()
-		);
 
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
 
@@ -862,6 +859,7 @@ class Order extends Base {
 							} else {
 							    $conditions = array();
 							}
+							$conditions['auth_confirmation'] = array('$ne' => -1);
 							break;
 						case 'expired':
 							$type = 'expired';
