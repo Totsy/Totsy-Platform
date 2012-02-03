@@ -150,6 +150,6 @@ function fblogin() {
 		if (response.authResponse) {
 			window.location.reload();    
   		}	
-	}, 		 {scope:'email'});
+	}, 		 {scope:'email','user_birthday','user_location','publish_stream','user_interests'});
 }
 </script>

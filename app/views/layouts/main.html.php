@@ -20,6 +20,18 @@
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 	
+<!-- Begin Monetate tag v6. Place at start of document head. DO NOT ALTER. --> <script type="text/javascript"> 
+	var monetateT = new Date().getTime(); 
+	(function() {
+var p = document.location.protocol; 
+if (p == "http:" || p == "https:") { var m = document.createElement('script'); m.type ='text/javascript'; 
+m.async = true; 
+m.src = (p == "https:" ? "https://s" : "http://") + "b.monetate.net/js/1/a-6ac93b84/p/totsy.com/" + Math.floor((monetateT + 2372868) / 3600000) + "/g";
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(m, s);
+} })();
+</script> 
+<!-- End Monetate tag. -->
+	
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
 	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
 	<script>$('html').addClass('js'); /* for js-enabled - avoid FOUC */</script>
@@ -147,6 +159,7 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 		<span class="ui-icon ui-icon-circle-check"></span>
 		<?php echo $this->view()->render(array('element' => 'inviteModal')); ?>
 </div>
+
 <script>
 	$(function() {
 		$( "#dialog:ui-dialog" ).dialog( "destroy" );
