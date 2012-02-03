@@ -653,11 +653,7 @@ class FinancialExport extends Base  {
                     $order['overSizeHandling'] = 0;
                 }
                 $order['order_date'] = date('m/d/Y', $order['date_created']->sec);
-                if (!empty($order['payment_date'])) {
-                    $order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
-                } else {
-                    $order['payment_date'] = 0;
-                }
+                
                 if (array_key_exists('ship_date', $order)) {
                     $order['estimated_ship_date'] =
                         (is_int($order['ship_date'])) ? date('m/d/Y', $order['ship_date']) : date('m/d/Y', $order['ship_date']->sec);
@@ -718,19 +714,31 @@ class FinancialExport extends Base  {
 					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
 					    $tmp[] = $auth_record;
 					}
-					$order['auth_records'] = $tmp;
-				} else if(!empty($order['payment_date']) && !($order['payment_date'] !== 'none')){
-					$order['auth_records'][] = array(
+					$tmp[] = array(
 							'authKey' => $order['authKey'],
-							'date_saved' => date("m/d/Y h:i:s A", $order['payment_date']->sec)
+							'date_saved' => date("m/d/Y h:i:s A", strtotime($order['auth']['response']['ccAuthReply']['authorizedDateTime']))
 						);
-				}else {
+					$order['auth_records'] = $tmp;
+				} else {
 					$order['auth_records'] = array(
 						array(
 							'authKey' => $order['authKey'],
 							'date_saved' => date("m/d/Y h:i:s A", $order['date_created']->sec)
-						));
+						)); 
 				}
+
+				if(!empty($order['payment_date']) && ($order['payment_date'] !== 'none')){
+					$order['auth_records'][] = array(
+							'authKey' => $order['auth_confirmation'],
+							'date_saved' =>  date('m/d/Y h:i:s A',$order['payment_date']->sec)
+						);
+				}
+				if (!empty($order['payment_date'])) {
+                    $order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
+                } else {
+                    $order['payment_date'] = 0;
+                }
+
                 /*
                 * Get credit, promocodes,  and oversize handling information
                 */
@@ -912,7 +920,6 @@ class FinancialExport extends Base  {
 	* Creates XML from data passed in
 	* @param string $type type of information: used for the root tags of the xml file
 	* @param array $records multidimensional array holding the records to converted to xml
-	* @param string $filename name of the xm file
 	**/
 	private function createXMLDoc($type, $record) {
 	    if ($this->xml == null) {
@@ -924,8 +931,8 @@ class FinancialExport extends Base  {
             //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
             if (is_array($value) && ($key == "auth_records")) {
 				$auth_records = $recordTag->addChild($key);
-				$auth = $auth_records->addChild('auth');
-				foreach($value as $sub_key => $sub_value){
+				foreach($value as $sub_key => $sub_value) {
+					$auth = $auth_records->addChild('auth');
                     if (is_array($sub_value)) {
                         foreach($sub_value as $k => $v) {
                             $auth->addChild($k, $v);
