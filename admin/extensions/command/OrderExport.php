@@ -200,7 +200,7 @@ class OrderExport extends Base {
 					}
 					$this->queue->status = "Processing Item File";
 					$this->queue->save();
-					//$this->_itemGenerator();
+					$this->_itemGenerator();
 					$this->log("Finised processing: $queue->_id");
 					if ($queueData['orders'] || $queueData['purchase_orders']) {
 						$queue->summary = $this->summary;
@@ -632,11 +632,9 @@ class OrderExport extends Base {
 			$purchaseOrder = array();
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
-			//	$eventItem['sizes_process'] = array_merge( array_keys($eventItem['details_original']) , array_keys($eventItem['details']));
-
-				foreach ($eventItem['details_original'] as $key => $value) {
+				foreach ($eventItem['details'] as $key => $value) {
 					$this->log("{$eventItem['_id']} size {$key} value {$value}");
-					$orders = $orderCollection->find(array(
+					$orders = $orderCollection->find( array(
 						'items.item_id' => (string) $eventItem['_id'],
 						'items.size' => (string) $key,
 						'items.status' => array('$ne' => 'Order Canceled'),
