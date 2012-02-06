@@ -36,6 +36,21 @@ class EventsController extends BaseController {
 		)
 	);
 
+	public function splash() {
+		$datas = $this->request->args;
+		
+		$openEventsData = Event::open()->data();
+		$openEvents = array_slice($openEventsData,0,$this->showEvents,true);
+		
+	
+		$this->_render['template'] = 'splash';
+		//if($this->request->is('mobile')){
+		// 	$this->_render['layout'] = 'mobile_main';
+		// 	$this->_render['template'] = 'mobile_age';
+	//	}
+		return compact('openEvents');
+	}
+
 	public function category() {
 		$datas = $this->request->args;
 		$categories = array();
