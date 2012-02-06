@@ -95,7 +95,7 @@ $('#password-prompt footer a[href="#password-requirement-explanation"]').live('c
 
 #password-prompt footer {
 	clear: both;
-	margin-top: 160px;
+	margin-top: 150px;
 	text-align: left;
 }
 
