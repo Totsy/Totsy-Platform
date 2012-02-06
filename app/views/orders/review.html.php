@@ -199,7 +199,6 @@ var discountErrors = new Object();
 		<div class="cart-codes">
 		
 <!-- no promocodes for Mama users begin -->
-				<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
@@ -207,12 +206,13 @@ var discountErrors = new Object();
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
 				    <?php endif ?>
+				<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
 					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 					 <?php if($serviceAvailable) : ?>
 				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
 				    <?php endif ?>
-				</div>
 				<?php endif ?>
+				</div>
 				<!-- no promocodes for Mama users ending -->
 				
 				<div style="clear:both"></div>

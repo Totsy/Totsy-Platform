@@ -55,15 +55,17 @@ class BaseController extends \lithium\action\Controller {
 		    } 	
 			$this->_render['layout'] = '/main';
 		}
-	} 									
 
-	/** 
-		get cart subtotal for price
-	*/
+	}
+
+	/**
+	 * Get the sub-total for all items currently in the user's shopping cart.
+	 *
+	 * @return int The sub-total dollar amount.
+	 */
 	public function getCartSubTotal () {
+		$subTotal = 0;
 
-	     $subTotal = 0;
-	
 		foreach(Cart::active() as $cartItem) {
 			$currentSec = is_object($cartItem->expires) ? $cartItem->expires->sec : $cartItem->expires;
 			if ($cartData['cartExpirationDate'] < $currentSec) {
@@ -125,15 +127,11 @@ class BaseController extends \lithium\action\Controller {
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
 
-		/**
-		 * Setup all the necessary facebook stuff
-		 */
-
 		$this->fbsession = $fbsession = FacebookProxy::getUser();
 		$fbconfig = FacebookProxy::config();
-
+		
 		if ($this->fbsession) {
-			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
 		} else {
 			$fblogout = "/logout";
 		}

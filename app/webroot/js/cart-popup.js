@@ -156,7 +156,6 @@ $(document).ready( function() {
 	}); 
 	
 	$(".cart_icon").mouseover( function(){
-	
 		//if there is an active timeout, clear it
 		if (timeout) {
 			clearTimeout(timeout);
@@ -167,7 +166,6 @@ $(document).ready( function() {
 	//toggle items for carts with more than 3 different types of items
 	var addScrollBar = function() {
 		if (isCollapsed) {
-			//isCollapsed = true; 
 			//add a scrollbar
 			$("#cart_item").css({
 				"overflow-y": "scroll",

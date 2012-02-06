@@ -24,9 +24,6 @@ var discountErrors = new Object();
 		    discountErrors.credits=false;
 		}
 
-	$("#cart-count").text(<?=$itemCount?>);
-	parent = $("#cart-count").parent();
-	parent.attr("title", "My Cart (<?php echo $itemCount;?>)");
 	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);
 
 	//set the timer
@@ -182,20 +179,21 @@ var discountErrors = new Object();
 		<div class="cart-codes">
 				
 				<!-- no promocodes for Mama users begin -->
-				<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
-				<div class="cart-code-buttons">
+								<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?>
 			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
+			        
+<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
 				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				    <?php if($serviceAvailable) : ?>
 				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
 				    <?php endif ?>
-				</div>
 				<?php endif ?>
+				</div>
 				<!-- no promocodes for Mama users ending -->
 				
 				<div style="clear:both"></div>
