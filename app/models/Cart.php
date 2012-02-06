@@ -604,7 +604,7 @@ class Cart extends Base {
 	* Return Credit, Promo, Services Objects and the PostDiscount Total
 	* @see app/models/Cart::check()
 	*/
-	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
+	public static function getDiscount($cart, $subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
 		#Get User Infos
 		$fields = array(
 		'item_id',
@@ -683,7 +683,37 @@ class Cart extends Base {
 		if(!empty($cartCredit->credit_amount)) {
 			$postDiscountTotal += $cartCredit->credit_amount;
 		}
-		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal');
+		#Get Amount Of Non Tangible Items
+		$nonTangibleAmount = static::getNonTangibleAmount($cart);
+		#Calculate amount to Capture on Non Tangible Items
+		$subtotalAfterDiscount = ($subTotal - abs($cartCredit->credit_amount) - abs($cartPromo['saved_amount']));
+		if($subtotalAfterDiscount > $nonTangibleAmount) {
+			$amountToCapture = $nonTangibleAmount;
+		} else {
+			$amountToCapture = $subtotalAfterDiscount;
+		}
+		var_dump($amountToCapture);
+		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal', 'amountToCapture');
+	}
+	
+	/**
+	 * Return the total amount of non tangible Items
+	 * @return captureAmount
+	 */
+	public static function getNonTangibleAmount($cart) {
+		$nonTangibleAmount = 0;
+		foreach($cart as $item) {
+			$event = Event::find('first', array(
+				'conditions' => array(
+					'_id' => $item['event'][0]),
+				'fields' => array(
+					'tangible'					
+			)));
+			if($event['tangible'] == false) {
+				$nonTangibleAmount += ($item['sale_retail'] * $item['quantity']);
+			}
+		}
+		return $nonTangibleAmount;
 	}
 }
 

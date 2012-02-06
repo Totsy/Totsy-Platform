@@ -61,24 +61,17 @@ class Order extends Base {
 		if ($cart) {
 			#Get CreditCard
 			$creditCard = $vars['creditCard'];
-			#Switch Soft Authorized Amount Transaction depending of Credit Card Type
-			if($creditCard['type'] == 'visa') {
-				$authTotalAmount = 0;
-			} else {
-				$authTotalAmount = 1;
-			}
-			#If User has a CyberSource Profile, Use Token
-			$auth = null;
+			#Check If User Has CyberSourceProfile
 			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
 			if(!empty($cyberSourceProfile)) {
 				$cybersource = new CyberSource($payments::config('default'));
-				$profile = $cybersource->profile($cyberSourceProfile['profileID']);
-				if($profile instanceof Customer) {
-					$auth = $payments::authorize('default', $authTotalAmount, $profile, array('orderID' => $order->order_id));
+				$paymentInfos = $cybersource->profile($cyberSourceProfile['profileID']);
+				if($paymentInfos instanceof Customer) {
+					$userHasCyberSourceProfile = true;
 				}
 			}
-			#In Case No CyberSourceProfile has been found
-			if(empty($auth)) {
+			#Without Profile ID create a Payment Object
+			if(!$userHasCyberSourceProfile) {
 				#Read Credit Card Informations
 				$address = array(
 					'firstName' =>  $vars['billingAddr']['firstname'],
@@ -95,23 +88,64 @@ class Order extends Base {
 					'billing' => $payments::create('default', 'address', $address)
 					)
 				);
-				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
 			}
-			if (!$auth->success()) {
-				#Reverse Transaction that Failed
-				$payments::void('default', $auth, array(
-					'processor' => $auth->adapter
-				));
-				Session::write('cc_error', implode('; ', $auth->errors));
+			$transactions = static::processPayments($creditCard, $paymentInfos, $vars['amountToCapture']);
+			if ($transactions['errors']) {
+				Session::write('cc_error', implode('; ', $transactions['errors']));
 				return false;
 			}
-			return static::recordOrder($vars, $cart, $order, $avatax, $auth, $items, $authTotalAmount, $creditCard);
+			return static::recordOrder($vars, $cart, $order, $avatax, $transactions, $items, $authTotalAmount, $creditCard);
 		} else {
 			$order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
 			);
 			$order->set($data);
 			return false;
+		}
+	}
+
+	public static function createSoftAuthorization($order, $creditCard = null, $paymentInfos, $amountToCapture) {
+		$payments = static::$_classes['payments'];
+		#Switch Soft Authorized Amount Transaction depending of Credit Card Type
+		if($creditCard['type'] == 'visa') {
+			$authTotalAmount = 0;
+		} else {
+			$authTotalAmount = 1;
+		}
+		if($amountToCapture > 0) {
+			$authorizationTransaction = $payments::authorize('default', $amountToCapture, $paymentInfos, array('orderID' => $order->order_id));
+			if($authorizationTransaction->success()) {
+				$captureTransaction = $payments::capture('default', $authorizationTransaction->key, floor($amountToCapture * 100) / 100,
+					array(
+						'processor' =>$authorizationTransaction->adapter,
+						'orderID' => $order['order_id']
+					)
+				);
+				if($captureTransaction->success() { 
+					$transactions['capture'] = $captureTransaction;
+				} else {
+					$transactions['errors'] = $captureTransaction->errors;
+					return $transactions;
+				}
+			} else {
+				#Reverse Transaction that Failed
+				$payments::void('default', $authorizationTransaction->key, array(
+					'processor' => $authorizationTransaction->adapter
+				));
+				$transactions['errors'] = $authorizationTransaction->errors;
+				return $transactions;
+			}
+		}
+		$softAuthorizationTransaction = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
+		if($softAuthorizationTransaction->success()) {
+			$transactions['softAuth'] = softAuthorizationTransaction;
+		} else {
+			#Reverse Transaction that Failed
+			$payments::void('default', $softAuthorizationTransaction->key, array(
+				'processor' => $softAuthorizationTransaction->adapter
+			));
+			$transactions['errors'] = $softAuthorizationTransaction->errors;
+			return $transactions;
 		}
 	}
 

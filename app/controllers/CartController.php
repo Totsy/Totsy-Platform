@@ -121,7 +121,7 @@ class CartController extends BaseController {
 			$shipping = 0;
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount($subTotal, $shipping, $overShippingCost, $this->request->data);
+		$vars = Cart::getDiscount($cart, $subTotal, $shipping, $overShippingCost, $this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
@@ -183,7 +183,8 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'vendor_style',
-					'discount_exempt'
+					'discount_exempt',
+					'event'
 			)));
 
 			#Get Item from Cart if already added
