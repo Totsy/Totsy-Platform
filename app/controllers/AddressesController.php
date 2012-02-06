@@ -29,7 +29,7 @@ class AddressesController extends BaseController {
 				'conditions' => array('user_id' => (string) $user['_id'])
 			));
 		}
-		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_view';
 		}
