@@ -327,8 +327,12 @@ class APIController extends  \lithium\action\Controller {
 			$data['maxDiscount'] = 0;
 			$data['vendor'] = '';
 			$data['groups'] = array(
-				'categories' => array(),
-				'ages' => array()
+				'category' => array(),
+				'age' => array()
+			);
+			$data['tags'] = array(
+				'category' => array(),
+				'age' => array()
 			);
 			
 			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
@@ -375,27 +379,31 @@ class APIController extends  \lithium\action\Controller {
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
 					
 					if (!empty($it['ages'])){ 
-						$ages = array();
-						foreach ($it['ages'] as $age){
-							$ages[] = Event::mapCat2Url('ages', $age);
-						}
-						$data['groups']['ages'] = array_merge($data['groups']['ages'],$ages); 
-						unset($ages);
+						$data['groups']['age'] = array_merge($data['groups']['age'],$it['ages']); 
 					}
 					if (!empty($it['categories'])){
-						$categories = array();
-						foreach ($it['categories'] as $category){
-							$categories[] = Event::mapCat2Url('categories', $category);
-						}
-						$data['groups']['categories'] = array_merge($data['groups']['categories'],$categories);
-						unset($categories);
+						$data['groups']['category'] = array_merge($data['groups']['category'],$it['categories']);
 					}
 				}
 				
 			}
 			
-			$data['groups']['ages'] = array_unique( $data['groups']['ages'] );
-			$data['groups']['categories'] = array_unique($data['groups']['categories']);
+			$data['groups']['age'] = array_unique( $data['groups']['age'] );
+			$data['groups']['category'] = array_unique($data['groups']['category']);
+			foreach ($data['groups'] as $csK => $cs){
+				foreach ($cs as $c){
+					$data['tags'][$csK][] = Event::mapCat2Url($csK,$c);
+				}
+			}
+
+			$data['groups']['ages'] = $data['groups']['age'];
+			$data['groups']['categories'] = $data['groups']['category'];
+			$data['tags']['ages'] = $data['tags']['age'];
+			$data['tags']['categories'] = $data['tags']['category'];
+			
+			unset($data['tags']['age'], $data['tags']['category']);
+			unset($data['groups']['category'], $data['groups']['age'] );
+			
 			$events[] = $data;
 		}
 		
@@ -404,6 +412,7 @@ class APIController extends  \lithium\action\Controller {
 		foreach ($pendingEvents as $pendingEvent){
 			$pending[] = $pendingEvent->data();
 		}
+		
 		$this->setView(1);
 		return (compact('events','pending','closing','base_url','maxOff'));
 	}	
@@ -519,6 +528,19 @@ class APIController extends  \lithium\action\Controller {
 			}
 			$data['groups']['ages'] = array_unique( $data['groups']['ages'] );
 			$data['groups']['categories'] = array_unique($data['groups']['categories']);
+			foreach ($data['groups'] as $csK => $cs){
+				foreach ($cs as $c){
+					$data['tags'][$csK][] = Event::mapCat2Url($csK,$c);
+				}
+			}
+			
+			$data['groups']['ages'] = $data['groups']['age'];
+			$data['groups']['categories'] = $data['groups']['category'];
+			$data['tags']['ages'] = $data['tags']['age'];
+			$data['tags']['categories'] = $data['tags']['category'];
+				
+			unset($data['tags']['age'], $data['tags']['category']);
+			unset($data['groups']['category'], $data['groups']['age'] );
 			$events[] = $data;
 		}
 		
