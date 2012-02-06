@@ -16,6 +16,7 @@ use app\extensions\helper\ApiHelper;
 use lithium\action\Request;
 use lithium\data\Connections;
 use lithium\util\Validator;
+use app\controllers\EventsController;
 use app\models\Api;
 use app\models\Item;
 use app\models\Event;
@@ -374,10 +375,20 @@ class APIController extends  \lithium\action\Controller {
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
 					
 					if (!empty($it['ages'])){ 
-						$data['groups']['ages'] = array_merge($data['groups']['ages'],$it['ages']); 
+						$ages = array();
+						foreach ($it['ages'] as $age){
+							$ages[] = Event::mapCat2Url('ages', $age);
+						}
+						$data['groups']['ages'] = array_merge($data['groups']['ages'],$ages); 
+						unset($ages);
 					}
 					if (!empty($it['categories'])){
-						$data['groups']['categories'] = array_merge($data['groups']['categories'],$it['categories']);
+						$categories = array();
+						foreach ($it['categories'] as $category){
+							$categories[] = Event::mapCat2Url('categories', $category);
+						}
+						$data['groups']['categories'] = array_merge($data['groups']['categories'],$categories);
+						unset($categories);
 					}
 				}
 				
@@ -397,7 +408,7 @@ class APIController extends  \lithium\action\Controller {
 		return (compact('events','pending','closing','base_url','maxOff'));
 	}	
 	
-/**
+	/**
 	 * Method to review future available(active) events 
 	 * for given date. 
 	 * 
