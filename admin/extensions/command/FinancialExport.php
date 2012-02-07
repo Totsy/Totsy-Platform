@@ -200,7 +200,8 @@ class FinancialExport extends Base  {
 		'modifications',
 		'avatax',
 		'savings',
-		'auth'
+		'auth',
+		'void_records'
 	);
 
 	/**
@@ -250,7 +251,8 @@ class FinancialExport extends Base  {
 			'shipping',
 			"cancel",
 			'auth',
-			'auth_records'
+			'auth_records',
+			'void_records'
 		);
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
@@ -725,6 +727,15 @@ class FinancialExport extends Base  {
 							'authKey' => $order['authKey'],
 							'date_saved' => date("m/d/Y h:i:s A", $order['date_created']->sec)
 						)); 
+				}
+				if (array_key_exists('void_records', $order) && array_key_exists('auth', $order)) {
+                    $tmp = array();
+					foreach($order['auth_records'] as $auth_record) {
+					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
+					    $tmp[] = $auth_record;
+					}
+
+					$order['auth_records'] = $tmp;
 				}
 
 				if(!empty($order['payment_date']) && ($order['payment_date'] !== 'none')){
