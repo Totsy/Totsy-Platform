@@ -36,12 +36,14 @@ class BaseController extends \lithium\action\Controller {
         	//this changes depending on whether we're on prod or not
         	//if something's funny or not working on kkim, just update it with master
         	$mamasourceSubDomain = "";
-        				
+        	
+        	/*			
  			if(!Environment::is('production')) { 	
 				$mamasourceSubDomain = "evan.totsy.com";
  			} else {
-				$mamasourceSubDomain = "mamasource.totsy.com";
- 			}
+ 			*/
+			$mamasourceSubDomain = "mamasource.totsy.com";
+ 			//}
  									
 			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
