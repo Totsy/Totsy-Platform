@@ -62,7 +62,8 @@ Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/]+}', 'Affiliates::register');
 
 Router::connect('/category/{:args}', 'Events::category');
 Router::connect('/age/{:args}', 'Events::age');
-Router::connect('/splash/{:args}', 'Events::splash');
+Router::connect('/brands', 'Brands::index');
+Router::connect('/brands/{:args}', 'Brands::view');
 
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
