@@ -38,7 +38,7 @@ class BaseController extends \lithium\action\Controller {
         	$mamasourceSubDomain = "";
         				
  			if(!Environment::is('production')){	
-				$mamasourceSubDomain = "evan.totsy.com";
+				$mamasourceSubDomain = "kkim.totsy.com";
  			} else {
 				$mamasourceSubDomain = "mamasource.totsy.com";
  			}
@@ -113,7 +113,7 @@ class BaseController extends \lithium\action\Controller {
 		$mamasourceSubDomain = "";
 			
  		if(!Environment::is('production')){	
-			$mamasourceSubDomain = "evan.totsy.com";
+			$mamasourceSubDomain = "kkim.totsy.com";
  		} else {
 			$mamasourceSubDomain = "mamasource.totsy.com";
  		} 
