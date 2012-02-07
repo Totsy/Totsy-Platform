@@ -92,7 +92,7 @@ class UsersController extends BaseController {
 		if ($this->request->data && Session::read('layout', array('name' => 'default'))=='mamapedia') {
         	$affiliate = new AffiliatesController(array('request' => $this->request));
         	$affiliate->register("mamasource");
-        	$this->redirect("sales?req=invite", array("exit"=>true));
+        	$this->redirect("sales", array("exit"=>true));
         }
 		
 		if (isset($data) && $this->request->data) {
@@ -101,12 +101,7 @@ class UsersController extends BaseController {
 			$data['email_hash'] = md5($data['email']);
 			
 		}
-		
-		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
-        	$affiliate = new AffiliatesController(array('request' => $this->request));
-        	$affiliate->register("mamasource");
-        }
-				
+						
 		$user = User::create($data);
 		
 		if ($this->request->data && $user->validates() ) {
