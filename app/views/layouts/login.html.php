@@ -23,7 +23,7 @@ $googleUACode = "UA-675412-15";
 	if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
 			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
-			$googleUACode = "UA-675412-23";
+			$googleUACode = "UA-675412-22";
 		} else {
 			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
@@ -48,7 +48,7 @@ $googleUACode = "UA-675412-15";
 	</script>
 	
 	<script type="text/javascript">	
-	  var googleUACode = "<?php echo $googleUACode; ?>";
+	  var googleUACode = '<?php echo $googleUACode; ?>';
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', googleUACode]);
 	  _gaq.push(['_trackPageview']);

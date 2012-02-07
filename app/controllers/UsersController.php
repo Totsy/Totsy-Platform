@@ -97,6 +97,7 @@ class UsersController extends BaseController {
 		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
         	$affiliate = new AffiliatesController(array('request' => $this->request));
         	$affiliate->register("mamasource");
+        	exit();
         }
 		
 		$user = User::create($data);
