@@ -290,6 +290,7 @@ class Order extends Base {
 		++$user->purchase_count;
 		$user->save(null, array('validate' => false));
 		#Send Order Confirmation Email
+		
 		$data = array(
 			'order' => $order->data(),
 			'shipDate' =>  date('m-d-Y', $shipDateInsert)

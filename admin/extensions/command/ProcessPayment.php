@@ -87,6 +87,7 @@ class ProcessPayment extends \lithium\console\Command  {
 		}
 		if ($orders) {
 			foreach ($orders as $order) {
+				Logger::info('Process Order : ' . $order['order_id']);
 				$conditions = array('_id' => $order['user_id']);
 				$user = User::find('first', compact('conditions'));
 				$processedOrder = Order::process($order);

@@ -10,6 +10,42 @@
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?php echo $this->view()->render( array('element' => 'popupCartItems') ); ?>
 
+<div style="position:relative">
+<div id="cart_popup" class="grid_16 roundy glow" style="display:none">
+	<div id="cart_popup_header">
+	    <div id="cart_popup_timer">
+	    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
+	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter"></span>
+	    	</span>
+	    	<span style="float:right">Estimated Shipping Date: <br>
+	    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
+	    	</span>
+	    </div>
+	    <div id="cart_popup_close_button">
+	    	<a href="#">
+	    	<img src="<?=$img_path_prefix?>popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    </div>
+	</div>
+	<div style="clear:both"></div>
+	<div id="cart_item"></div>
+	<div style="clear:both"></div>
+	<div style="clear:both"></div>
+	<div><hr></div>
+	<div id="cart_popup_breakdown">
+	   <div class="cart-savings">Your Savings: $<span id="savings"></span></div>
+	   <div id="cart_popup_order_total">
+	   	<span class="cart-order-total">Subtotal: </span>
+	       <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
+	   </div>
+	</div>
+	<div style="clear:both"></div>
+	<div id="cart_popup_checkout_buttons" class="cart-button fr">
+	   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>
+	   <a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
+	</div>
+</div>
+</div>
+
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?php echo $event->url?>" title="<?php echo $event->name?>"><?php echo $event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
 	<hr />
@@ -226,7 +262,7 @@ $(document).ready(function() {
 	            url: $.base + 'items/available',
 	            data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 	            context: document.body,
-	            success: function(data){
+	            success: function(data) {
 	                if (data == 'false') {
 	                    $('#all-reserved').show();
 	                    $('.button').hide();

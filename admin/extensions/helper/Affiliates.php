@@ -25,9 +25,11 @@ class Affiliates extends \lithium\template\Helper {
 	);
 	protected $_bounceHeading = array(
 		'Email',
-		'Register Date',
 		'Bounce Type',
-		'Last Bounced'
+		'Created Date',
+		'Report Date',
+		'Delivery Date',
+		'Delivery Message'
 	);
 
 	public function build($results = null, $options = array('type' => null)){
@@ -90,12 +92,15 @@ class Affiliates extends \lithium\template\Helper {
                      }
 		         }
 		    }else if ($options['type'] == 'Bounces') {
+	    	
 		        if (($key !== "total")) {
                         $html .= "<tr>";
                         $html .= "<td>" . $key ."</td>";
-                        $html .= "<td> " . $value['register_date'] ."</td>";
                         $html .= "<td> " . $value['bounce_type'] ."</td>";
-                        $html .= "<td> " . $value['bounce_date'] ."</td>";
+                        $html .= "<td> ".  $value['created_date']."</td>";
+                        $html .= "<td> ".  $value['report_date']."</td>";
+                        $html .= "<td> ".  $value['delivery_date']."</td>";
+                        $html .= "<td> " . $value['delivery_message']."</td>";
                         $html .= "</tr>";
 		         }
 		    }

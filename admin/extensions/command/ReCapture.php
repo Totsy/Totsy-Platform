@@ -206,7 +206,8 @@ class ReCapture extends \lithium\console\Command {
 			$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
 						array('$set' => array('error_date' => new MongoDate(),
-											  'auth_error' => $error
+											  'auth_error' => $error,
+											  'auth_confirmation' => -1
 						)), array( 'upsert' => true)
 			);
 			#Include errors in Report
