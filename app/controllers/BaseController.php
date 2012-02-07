@@ -25,8 +25,8 @@ class BaseController extends \lithium\action\Controller {
 		$userInfo = Array();
 				
 		parent::__construct($config);
-		
-		if ($user && $this->request->is('mobile')) {
+						
+		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile')) {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
@@ -38,7 +38,7 @@ class BaseController extends \lithium\action\Controller {
         	$mamasourceSubDomain = "";
         				
  			if(!Environment::is('production')) { 	
-				$mamasourceSubDomain = "kkim.totsy.com";
+				$mamasourceSubDomain = "evan.totsy.com";
  			} else {
 				$mamasourceSubDomain = "mamasource.totsy.com";
  			}
@@ -113,7 +113,7 @@ class BaseController extends \lithium\action\Controller {
 		$mamasourceSubDomain = "";
 						
  		if(!Environment::is('production')){	
-			$mamasourceSubDomain = "kkim.totsy.com";
+			$mamasourceSubDomain = "evan.totsy.com";
  		} else {
 			$mamasourceSubDomain = "mamasource.totsy.com";
  		} 
