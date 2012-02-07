@@ -1,15 +1,17 @@
+<?php use lithium\storage\Session; ?>
+
 <!-- JS for cart timer. -->
 <script type="text/javascript" src="/js/cart-timer.js"></script>
 <!-- JS for cart timer for individual items. -->
 <script type="text/javascript" src="/js/cart-items-timer.js"></script>
 
-<script type="text/javascript">	
+<script type="text/javascript">
 
 var discountErrors = new Object();
 
 	$(document).ready( function() {
-					
-		if(discountErrors.promo==true) {	
+
+		if(discountErrors.promo==true) {
 		    show_code_errors("promo");
 		} else if (discountErrors.credits==true)  {
 		    show_code_errors("cred");
@@ -18,25 +20,24 @@ var discountErrors = new Object();
 		    show_code_errors("promo");
 		} else {
 		    discountErrors.promo=false;
-		    discountErrors.credits=false;  
+		    discountErrors.credits=false;
 		}
-		
 
 	var cartExpires = new Date(<?php echo ($cartExpirationDate  * 1000)?>);	
 
 	//set the timer on individual items in the cart
 	cartItemsTimer();
-	
+
 	//set the timer on the cart
 	cartTimer(cartExpires);
-	
+
 	//applying tooltip
 	$('#shipping_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#tax_tooltip').tipsy({gravity: 'e'}); // nw | n | ne | w | e | sw | s | se
 	$('#promocode_tooltip').tipsy({gravity: 'nw'}); // nw | n | ne | w | e | sw | s | se
 
-}); 
-	
+});
+
 </script>
 
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
@@ -49,10 +50,10 @@ var discountErrors = new Object();
 		<div style="float:left;">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Review your Shipping and Payment Information</span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps4.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps4.png"></span>
 			</h2>
 		</div>
 	</div>
@@ -72,7 +73,7 @@ var discountErrors = new Object();
 					<?php echo $shippingAddr['firstname']." ".$shippingAddr['lastname'];?>
 				</div>
 				<div class="cart-review-edit-copy">
-					<?php 
+					<?php
 					if($shippingAddr['address_2']=="") {
 						echo $shippingAddr['address'];
 					} else {
@@ -115,7 +116,7 @@ var discountErrors = new Object();
 			</div>
 		</div>
 	</div>
-	    
+
 <?php endif ?>
 <div class="message"></div>
 
@@ -154,10 +155,11 @@ var discountErrors = new Object();
 								), $item->description,'sale/'.$item->event_url.'/'.$item->url); ?>
 						</span>
 					</td>
-					<td colspan="8">	
+					<td colspan="8">
 						<div class="cart-review-line-content">
 							<span>
 								<span class="cart-review-desc">
+
 									<?php echo $this->form->hidden("item$x", array('value' => $item->_id)); ?>
 									<?php echo $this->html->link($item->description,'sale/'.$item->event_url.'/'.$item->url, array("target"=>"_blank")); ?>
 				
@@ -182,6 +184,7 @@ var discountErrors = new Object();
 							<br><?php echo $shipmsg?>
 
 						</div>	
+
 					</td>
 				</tr>
 				<?php $x++; ?>
@@ -194,19 +197,24 @@ var discountErrors = new Object();
 		<div class="clear"></div>
 		<div class="grid_16" style="width:935px; padding-top:30px">
 		<div class="cart-codes">
+		
+<!-- no promocodes for Mama users begin -->
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
-				    <?php endif ?> 
-
 			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
+				    <?php endif ?>
+				<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
 					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 					 <?php if($serviceAvailable) : ?>
 				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
 				    <?php endif ?>
+				<?php endif ?>
 				</div>
+				<!-- no promocodes for Mama users ending -->
+				
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
 				    <div id="promo" style="display:none">
@@ -216,7 +224,7 @@ var discountErrors = new Object();
 				    	<?php echo $this->view()->render(array('element' => 'credits'), array('orderCredit' => $cartCredit, 'credit' => $credit, 'user' => $user)); ?>
 				    </div>
 				</div>
-			</div>	
+			</div>
 			<div class="cart-subtotal-content">
 			    <div class="subtotal" >
 			        	<span style="float:left;">Subtotal:</span>
@@ -248,9 +256,9 @@ var discountErrors = new Object();
     		        	<span style="float:right">- $<?php echo number_format(abs($credits),2)?></span>
     		    </div>
    			    <?php endif ?>
-			    <div style="clear:both"></div>							
+			    <div style="clear:both"></div>
 			    <div style="font-weight:bold;" >
-			    <div class="subtotal">	
+			    <div class="subtotal">
 			    <span id="shipping_tooltip" class="cart-tooltip" original-title="Shipping charges may vary depending on item type."><img src="/img/tooltip_icon.png">
 			        	</span>
 			        <span style="float: left;" id="shipping">
@@ -268,27 +276,29 @@ var discountErrors = new Object();
 			    <?php if (!empty($shipping_discount)):?>
 			    <div style="clear:both"></div>
 			    <div class="subtotal">
-    		        <span style="float: left;">Free Shipping 
-    		        	<?php 
+    		        <span style="float: left;">Free Shipping
+    		        	<?php
     		        	if(!empty($cartPromo)) {
     		        		if($cartPromo['type'] === 'free_shipping')
+
     		        			echo '[' . $cartPromo['code'] . ']';	
     		        	}?>		
     		        	:</span> 
     		        	<span style="color:#707070; float:right" class="fees_and_discounts">- $<?php echo number_format($shipping_discount,2)?></span>
     		    </div>
    			    <?php endif ?>
-			    <div style="clear:both"></div>	
+			    <div style="clear:both"></div>
 			    <div>
 			    <div class="subtotal">
+
 			        <span id="tax_tooltip" original-title="Sales tax will be calculated once we collect the shipping address for this order. If you are shipping to NY or NJ, tax will be charged on the order subtotal, shipping and handling at the applicable county rate. Tax rates within counties vary." class="cart-tooltip"><img src="/img/tooltip_icon.png"></span>		
 			    <span id="estimated_tax" style="float: left;">Estimated Tax:</span> 
 			        	<span style="float:right">$<?php echo number_format($tax,2)?></span>
 			    </div>
 			    </div>
-			    <div style="clear:both" class="subtotal"><hr /></div>			
+			    <div style="clear:both" class="subtotal"><hr /></div>
 			    <div>
-			        <div class="cart-savings"> 
+			        <div class="cart-savings">
 			        	<?php if (!empty($savings)) : ?>
 			        	Your Savings:
 			        	$<?php echo number_format($savings,2)?>
@@ -298,8 +308,8 @@ var discountErrors = new Object();
 			        <span style="font-size:15px; font-weight:bold">Order Total:</span> 
 			        	<span style="font-size:15px; color:#009900; float:right" id="ordertotal">$<?php echo number_format($total,2)?> </span>
 			        </div>
-			    </div>	
-		</div>				
+			    </div>
+		</div>
 </div>
 
 <div class="cart-button fr cart-nav-buttons">
@@ -316,6 +326,7 @@ var discountErrors = new Object();
 	<?php echo $this->form->end();?>
 </div>
 
+
 <div id="reappServiceF" style="display:none">
 	<?php echo $this->form->create(null ,array('id'=>'reappServiceForm')); ?>
 	<?php echo $this->form->hidden('reapplyService', array('class' => 'inputbox', 'id' => 'reapplyService')); ?>
@@ -323,12 +334,11 @@ var discountErrors = new Object();
 </div>
 
 <script type="text/javascript" src="/js/cart-items-timer.js" charset="utf-8"></script>	
-	
 <div class="clear"></div>
 <?php else: ?>
 	<div class="grid_16 cart-empty">
 		<h1>
-			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span> 	
+			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
 			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
 <?php endif ?>
@@ -414,7 +424,7 @@ function show_code_errors(id) {
 //HIDE / SHOW PROMOS INPUT
 function open_promo() {
 	if ($("#promo").is(":hidden")) {
-		$("#promo").slideToggle("fast");	
+		$("#promo").slideToggle("fast");
 		if (!$("#cred").is(":hidden")) {
 			$("#cred").slideToggle("fast");
 		}

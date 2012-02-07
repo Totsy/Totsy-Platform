@@ -1,5 +1,3 @@
-<?php use lithium\storage\Session; ?>
-
 <?php if ($message){ echo $message; } ?>
 <style>
 h2 {
@@ -29,11 +27,11 @@ padding: 4px 0 0 22px;
 font-size:16px; color:#999999; font-weight:normal;
 }
 
-div.rollover_img {
+.rollover_img {
 width: 108px;
 height: 108px;
 background-image: url(/img/freeShip-badge.png);
-position: absolute; right:-73px; top:406px;
+position: absolute; right:-93px; top:454px;
 }
 
 .rollover_img a {
@@ -43,6 +41,7 @@ display: block;
 text-decoration: none;
 
 }
+
 
 .rollover_img a:hover {
 width: 108px;
@@ -58,21 +57,6 @@ width: 108px;
 .rollover_img a:hover span {
 display: block;
 }
-
-.video { margin-top: 97px;] }
-
-.loginformlabel{
-	width:50px;
-}
-
-.inputbox{
-	float:left;
-}
-
-.button{
-	width:120px;
-}
-
 .gradient {background: #ffffff; /* Old browsers */
 background: -moz-linear-gradient(top, #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f5f5)); /* Chrome,Safari4+ */
@@ -83,55 +67,51 @@ background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:720px; height:473px; float:left; margin:85px 0px 0px 85px;">
-<div class="round gradient"  style="background:#ffffff; height:445px;">
-
-<?php
-
-$brandLogo = "logo_reg_new.png";
-
-if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
-	$brandLogo = "mamapedia/logo.png";
-}
-
-?>
-
+<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:85px 0px 0px 85px;">
+<div class="round">
 <!-- left side -->
-<div class="grid_6" style="float:left;width:315px;">
-<?php echo $this->html->link( $this->html->image($brandLogo, array('style'=>'width:auto; height:auto')), '', array('escape'=> false) ); ?>
-
-<div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:310px; margin-top:8px;">
-
-<h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
-
-<?php echo $this->view()->render(array('element' => 'loginForm')); ?>
+<div class="grid_6">
+<?php echo $this->html->link($this->html->image('mamapedia/logo.png', array('width'=>'280')), '', array('escape'=> false)); ?>
 </div>
-<div class="clear"></div>
-</div>
-
-
-
 <!-- right side -->
-
-<div class="grid_6" style="float:right; ">
-<div class="fr" style="padding-right:20px;padding-top:10px;">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
-<div id="featured-brands-box" class="round gradient featured_brands_box">
-<img src="/img/logos_home_right.jpg">
-</div>
-
-<?php if (Session::read('layout', array('name' => 'default'))!=='mamapedia') { ?>
-<div class="free_shipping_banner_reg_new rollover_img" style="margin-top:0px;"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
-</div>
-<?php } ?>
-
+<div class="grid_6" style="margin-left:28px;">	
+<div class="fr">Already a member? <a href="/mplogin" title="Sign In">Sign In</a></div>
+		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
 </div>
 <div class="clear"></div>
-<?php //echo $this->html->image('featured_brands_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+
+
+<div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
+
+	<div class="grid_6" style="float:left;">	
+		<div style="width:310px; margin-top:5px;">
+		<?php echo $this->view()->render(array('element' => 'registrationForm')); ?>
+		</div>		
+	</div>
+	<div class="grid_6" style="width:330px; margin-left:2px;float:left;margin-top:5px;">	
+		<h2 class="tagline" style="margin-top:2px;">Why savvy moms shop at Totsy?</h2>
+
+		<ul id="bug_bullets">
+		<li>Membership is free</li>
+		<li>Exclusive sales for kids, moms and families</li>
+		<li>Savings of up to 90% off retail</li>
+		<li>Sales last up to 3 days</li>
+		<li>A tree is planted for your first purchase</li>
+		<li>Refer friends and earn Totsy credits</li>
+		</ul>
+	</div>
+
+
+</div>
+
+
 <div class="clear"></div>
+<?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+<div class="clear"></div>
+</div>
 </div>
 <div id="footer">
 <?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
-</div>
 </div>
 
 <!-- Google Code for Homepage Remarketing List -->
@@ -153,13 +133,11 @@ var google_conversion_value = 0;
 </div>
 </noscript>
 <!-- END OF Google Code for Homepage Remarketing List -->
+
 <script>
 //your fb login function
 function fblogin() {
-	FB.login(function(response) {
-		if (response.authResponse) {
-			window.location.reload();    
-  		}	
-	}, 		 {scope:'email'});
+FB.login(function(response) {
+}, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
 }
 </script>
