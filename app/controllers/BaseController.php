@@ -23,10 +23,10 @@ class BaseController extends \lithium\action\Controller {
 		$vars = get_class_vars('\lithium\action\Controller');
 		$this->_classes += $vars['_classes'];
 		$userInfo = Array();
-
+				
 		parent::__construct($config);
-		
-		if ($user && $this->request->is('mobile')) {
+						
+		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile')) {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
@@ -36,14 +36,14 @@ class BaseController extends \lithium\action\Controller {
         	//this changes depending on whether we're on prod or not
         	//if something's funny or not working on kkim, just update it with master
         	$mamasourceSubDomain = "";
-			
- 			if(!Environment::is('production')){	
-				$mamasourceSubDomain = "kkim.totsy.com";
+        				
+ 			if(!Environment::is('production')) { 	
+				$mamasourceSubDomain = "evan.totsy.com";
  			} else {
 				$mamasourceSubDomain = "mamasource.totsy.com";
  			}
  									
-			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain) {				
+			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
 		        $this->set(compact('img_path_prefix'));
@@ -109,11 +109,11 @@ class BaseController extends \lithium\action\Controller {
         $redirected = false;
         
         //this changes depending on whether we're on prod or not
-        //if something's funny or not working on kkim, just update it with master		
+        //if something's funny or not working on kkim, just update it with master	
 		$mamasourceSubDomain = "";
-			
+						
  		if(!Environment::is('production')){	
-			$mamasourceSubDomain = "kkim.totsy.com";
+			$mamasourceSubDomain = "evan.totsy.com";
  		} else {
 			$mamasourceSubDomain = "mamasource.totsy.com";
  		} 

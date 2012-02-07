@@ -54,7 +54,7 @@ class Mailer {
 		rtrim($fields_string,'&amp;');
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER,0);		
+		//curl_setopt($ch, CURLOPT_RETURNTRANSFER,0);		
 		curl_setopt($ch,CURLOPT_URL,$url);
 		curl_setopt($ch,CURLOPT_POST,count($fields));
 		curl_setopt($ch,CURLOPT_POSTFIELDS,$fields_string);
