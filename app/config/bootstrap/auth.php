@@ -20,7 +20,7 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$skip = array('/','login', 'logout', 'register',"register/facebook","reset");
 	$allowed = false;
 	$logged_in = false;
-	
+		
 	#dynamic affiliate pages
 	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
 		 $allowed = true;
@@ -56,14 +56,14 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
-
+	
 	// check if user already logged-in
 	if(Session::check('userLogin')) {
-		$logged_in = true;
+		$logged_in = true;		
 	}
 	
 	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
-	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)){
+	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)) {
 		Session::write('landing',$params['request']->url);
 	}
 
@@ -84,7 +84,6 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	
 		return new Response(array('location' => 'Users::login'));
 	}
-
 
 	if (!$granted) {
 		/* Redirect all non-authenticated users to login page. */

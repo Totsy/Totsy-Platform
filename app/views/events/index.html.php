@@ -25,7 +25,7 @@
 <?php
 	/* @DG-2012.01.04 - Commented out the "Disney" block
 		@ should be a generic "promo" when/if added back, not "disney" as the specific may change (i.e. Parents magazine)
-		@ e.g. <div class="promo">â€¦</div>
+		@ e.g. <div class="promo">…</div>
 	
 	<!-- Disney -->
 	<!--
@@ -48,8 +48,7 @@
 	<section id="openEvents" class="group">
 		<header>
 			<h2 class="page-title gray">Today's Sales</h2>
-		</header>
-	
+		</header>	
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
