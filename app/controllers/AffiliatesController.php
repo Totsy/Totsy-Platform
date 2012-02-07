@@ -36,7 +36,7 @@ class AffiliatesController extends BaseController {
 				return compact('success', 'errors');
 			}
 
-			if ($this->request->data){
+			if ($this->request->data) {
 				$data = $this->request->data;
 				$query = $this->request->query;
 				$genpasswd = false;
@@ -52,10 +52,10 @@ class AffiliatesController extends BaseController {
 				}
                     if (isset($data['password'])) {
                         // New user, need to register here
-                        if (array_key_exists('fname',$data)){
+                        if (array_key_exists('fname', $data)){
                             $user['firstname'] = trim($data['fname']);
                         }
-                        if (array_key_exists('lname',$data)) {
+                        if (array_key_exists('lname', $data)) {
                             $user['lastname'] = trim($data['lname']);
                         }
                         $user['email'] = trim(strtolower($data['email']));
@@ -65,7 +65,9 @@ class AffiliatesController extends BaseController {
                         $user['confirmemail'] = trim(strtolower($data['email']));
                         $user['password'] = $data['password'];
                         $user['terms'] = "1";
+                        
                         extract(UsersController::registration($user));
+                        
                         if ($saved) {
                             if ($code == 'bamboo') {
                                  if ($this->request->query) {
@@ -82,8 +84,8 @@ class AffiliatesController extends BaseController {
                                      Invitation::linkUpInvites($invite_code, $email);
                                    }
                                 }
-                                $_id = (string) $user->_id;
-                                $this->set(compact('_id'));
+                            $_id = (string) $user->_id;
+                            $this->set(compact('_id'));
                             }
                             if(empty($user->invited_by)) {
                                 $user->invited_by = $code;
@@ -150,11 +152,12 @@ class AffiliatesController extends BaseController {
 		$urlredirect = '/sales';
 		$cookie = Session::read('cookieCrumb',array('name'=>'cookie'));
 		$ipaddress = $this->request->env('REMOTE_ADDR');
-		if (($affiliate)) {
+		
+		if ($affiliate) {
 			$pixel = Affiliate::getPixels('after_reg', $affiliate);
 			$gdata = $this->request->query;
 			$params = $this->request->params;
-			if (($gdata)) {
+			if ($gdata) {
 				$affiliate = Affiliate::storeSubAffiliate($gdata, $affiliate);
 				if (array_key_exists('redirect', $gdata)) {
 					$urlredirect = parse_url(htmlspecialchars_decode(urldecode($gdata['redirect'])), PHP_URL_PATH);
@@ -216,19 +219,22 @@ class AffiliatesController extends BaseController {
 		            Session::write('pixel', $pixel, array('name' => 'default'));
 					Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 					User::log($ipaddress);
+
 				}
 
 				$this->redirect($urlredirect);
 			}
 		}
-
-		if($this->request->is('mobile')){
+						
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
 			$this->_render['layout'] = 'mobile_main';
 			$this->_render['template'] = 'mobile_register';
 		} else {
 			$this->_render['layout'] = 'login';
-		}
-		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliateName');
+		}			
+				
+		return compact('message', 'user', 'userfb','categoryName','affiliateName','affBgroundImage','affiliate');
+
 	}
 }
 ?>
