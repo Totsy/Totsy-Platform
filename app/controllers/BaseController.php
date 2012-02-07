@@ -37,7 +37,7 @@ class BaseController extends \lithium\action\Controller {
         	//if something's funny or not working on kkim, just update it with master
         	$mamasourceSubDomain = "";
         				
- 			if(!Environment::is('production')){	
+ 			if(!Environment::is('production')) { 	
 				$mamasourceSubDomain = "kkim.totsy.com";
  			} else {
 				$mamasourceSubDomain = "mamasource.totsy.com";
@@ -111,7 +111,7 @@ class BaseController extends \lithium\action\Controller {
         //this changes depending on whether we're on prod or not
         //if something's funny or not working on kkim, just update it with master	
 		$mamasourceSubDomain = "";
-			
+						
  		if(!Environment::is('production')){	
 			$mamasourceSubDomain = "kkim.totsy.com";
  		} else {
