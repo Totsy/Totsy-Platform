@@ -27,7 +27,7 @@ class BrandsController extends BaseController {
 		$openEvents = array_slice($openEventsData,0,$this->showEvents,true);
 		
 	
-		//if($this->request->is('mobile')){
+			//if($this->request->is('mobile')){
 		// 	$this->_render['layout'] = 'mobile_main';
 		// 	$this->_render['template'] = 'mobile_age';
 	//	}
