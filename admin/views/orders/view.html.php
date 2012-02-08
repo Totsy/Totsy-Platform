@@ -57,14 +57,16 @@
 									</div>
 									<div id="normal" style="display:block">
 										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:black;">
-											<b>Order ID</b> : <?php echo $order['order_id'] ?> / <b>AuthKey :</b> <?php echo $order['authKey'] ?>
+											<b>Order ID</b> : <?php echo $order['order_id'] ?><br />
+											<b>AuthKey :</b> <?php echo $order['authKey'] ?><br />
+											<b>Order Status :</b> <?php echo $orderStatus ?><br />
 										</p>
 										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 											The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
 										</p>
 										<p style="text-align:center;">
-											<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>
-											<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
+											<!--<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>-->
+											<!--<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>-->
 											<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
 										<?php if(empty($order['payment_date']) && empty($order['cancel']) && ($order['authTotal'] == $order['total'])) : ?>
 											<button id="capture_button" style="font-weight:bold;font-size:14px;">Capture Full Order Amount</button>
