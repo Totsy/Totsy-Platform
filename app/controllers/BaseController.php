@@ -107,11 +107,11 @@ class BaseController extends \lithium\action\Controller {
  		if($userInfo) {	       
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
         		if($userInfo['invited_by']=="mamasource"){
-					$this->crossDomainAuth($_SERVER['HTTP_HOST'], $userInfo['email'], $userInfo['password']);
+					$this->crossDomainAuth($whiteLabelSubDomain, $userInfo['email'], $userInfo['password']);
 				}
         	} else {
 				if($userInfo['invited_by']!=="mamasource"){
-					$this->crossDomainAuth($whiteLabelSubDomain, $userInfo['email'], $userInfo['password']);
+					$this->crossDomainAuth($_SERVER['HTTP_HOST'], $userInfo['email'], $userInfo['password']);
 				}
         	}
         }
@@ -341,22 +341,25 @@ class BaseController extends \lithium\action\Controller {
 	**/	
 	private function crossDomainAuth( $sendTo, $email, $pwd ) {
 		// delete session cookie of domain first authenticated
-		setcookie("PHPSESSID","",time()-3600,"/"); 
-    	        	
+		setcookie("PHPSESSID", "", time()-3600, "/"); 
+    	
+    	/*        	
 		$url = "http://".$sendTo.'/login?';
 		$fields = array( 'email'=>$email, 'password'=>$pwd );
 		    				
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER,0);		
-		curl_setopt($ch,CURLOPT_URL,$url);
-		curl_setopt($ch,CURLOPT_POST, count($fields));
-		curl_setopt($ch,CURLOPT_POSTFIELDS, "email=".$email."&password=".$pwd);		
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);		
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST, count($fields));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "email=".$email."&password=".$pwd);		
 		
 		$result = curl_exec($ch);
 		
 		curl_close($ch);
 		
-		//$this->redirect("http://".$sendTo."/sales");
+		$this->redirect("http://".$sendTo."/sales");
+		*/
+		$this->redirect("http://" . $sendTo . "/login?email=".$email."&pwd=".$pwd, array("exit"=>true)); 	
 	}
 }
 
