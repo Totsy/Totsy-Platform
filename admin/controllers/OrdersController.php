@@ -1021,6 +1021,30 @@ class OrdersController extends BaseController {
         }
 		return compact('payments','type');
 	}
+	
+	public function manageDigital() {
+		$orderClass = $this->_classes['order'];
+		$ordersCollection = $orderClass::Collection();
+		$orders = $ordersCollection->find(array(
+			'items.digital' => true,
+			'items.coupon_sent' => array('$exists' => false)
+		));
+		$lineItems = null;
+		foreach($orders as $order) {
+			foreach($order['items'] as $item) {
+				$user = User::lookup($order['user_id']);
+				if($item['digital']) {
+					$lineItem['order_id'] = $order['order_id'];
+					$lineItem['email'] = $user['email'];
+					$lineItem['quantity'] = $item['quantity'];
+					$lineItem['description'] = $item['description'];
+					$lineItem['item_id'] = $item['item_id'];
+					$lineItems[] = $lineItem;
+				}
+			}
+		}
+		return $lineItems;
+	}
 }
 
 ?>

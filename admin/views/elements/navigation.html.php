@@ -11,6 +11,9 @@
 			<li>
 				<?php echo $this->html->link('Order Payment Status', 'Orders::payments'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Manage Digital Orders', 'Orders::manageDigital'); ?>
+			</li>
 		</ul>
 	</li>
 	<li>
