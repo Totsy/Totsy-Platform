@@ -23,10 +23,10 @@ class BaseController extends \lithium\action\Controller {
 		$vars = get_class_vars('\lithium\action\Controller');
 		$this->_classes += $vars['_classes'];
 		$userInfo = Array();
-
+				
 		parent::__construct($config);
-		
-		if ($user && $this->request->is('mobile')) {
+						
+		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile')) {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
@@ -36,14 +36,16 @@ class BaseController extends \lithium\action\Controller {
         	//this changes depending on whether we're on prod or not
         	//if something's funny or not working on kkim, just update it with master
         	$mamasourceSubDomain = "";
-			
- 			if(!Environment::is('production')){	
-				$mamasourceSubDomain = "kkim.totsy.com";
+        	
+        	/*			
+ 			if(!Environment::is('production')) { 	
+				$mamasourceSubDomain = "evan.totsy.com";
  			} else {
-				$mamasourceSubDomain = "mamasource.totsy.com";
- 			}
+ 			*/
+			$mamasourceSubDomain = "mamasource.totsy.com";
+ 			//}
  									
-			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain) {				
+			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
 		        $this->set(compact('img_path_prefix'));
@@ -109,21 +111,21 @@ class BaseController extends \lithium\action\Controller {
         $redirected = false;
         
         //this changes depending on whether we're on prod or not
-        //if something's funny or not working on kkim, just update it with master
+        //if something's funny or not working on kkim, just update it with master	
 		$mamasourceSubDomain = "";
-		       
-        if(!Environment::is('production')){	
-			$mamasourceSubDomain = "kkim.totsy.com";
- 		} else {
+		
+		/*				
+ 		if(!Environment::is('production')){	
+			$mamasourceSubDomain = "evan.totsy.com";
+ 		} else {*/
 			$mamasourceSubDomain = "mamasource.totsy.com";
- 		}
-        
-        if( $userInfo['invited_by']=="mamasource" && $redirected==false && $_SERVER['HTTP_HOST']!==$mamasourceSubDomain ) {
+ 		//} 
+ 			       
+        if( $userInfo['invited_by']=="mamasource" && $_SERVER['HTTP_HOST']!==$mamasourceSubDomain) {
 			setcookie("PHPSESSID","",time()-3600,"/"); // delete session cookie 
         	$this->redirect("http://" . $mamasourceSubDomain . "/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
-        	$redirected = true;
         } 
-        
+                
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
 
@@ -156,7 +158,7 @@ class BaseController extends \lithium\action\Controller {
 			}
 		}
 		
-		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
+		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout', 'cartSubTotal'));
 				
 		/**
 		* Get the pixels for a particular url.

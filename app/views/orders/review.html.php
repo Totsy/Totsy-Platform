@@ -202,11 +202,11 @@ var discountErrors = new Object();
 				<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
-			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
+			         <?php endif ?>
+				<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
+					<span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
-				    <?php endif ?>
-				<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
 					<strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 					 <?php if($serviceAvailable) : ?>
 				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
