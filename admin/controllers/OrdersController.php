@@ -584,6 +584,7 @@ class OrdersController extends BaseController {
 						'processor' => $auth->adapter,
 						'authTotal' => $order['total']
 					), '$unset' => array(
+						'error_date' => 1,
 						'auth_error' => 1
 					)), array( 'upsert' => true)
 			);
@@ -601,7 +602,6 @@ class OrdersController extends BaseController {
 	
 	public function capture($id) {
 		$orderClass = $this->_classes['order'];
-		$current_user = Session::read('userLogin');
 		$ordersCollection = $orderClass::Collection();
 		$order = $ordersCollection->findOne(array("_id" => new MongoId($id)));
 		if($order['auth'] && $order['processor']) {
@@ -621,6 +621,9 @@ class OrdersController extends BaseController {
 											  'auth' => $auth->export(),
 											  'authTotal' => $order['total'],
 											  'processor' => $auth->adapter
+					) , '$unset' => array(
+						'error_date' => 1,
+						'auth_error' => 1
 					)), array( 'upsert' => true));
 					$error = $this->captureAuthorization($order, $auth->key);
 				} else {
@@ -637,6 +640,7 @@ class OrdersController extends BaseController {
 	
 	public function captureAuthorization($order, $authKey) {
 		$orderClass = $this->_classes['order'];
+		$current_user = Session::read('userLogin');
 		$ordersCollection = $orderClass::Collection();
 		$auth_capture = Processor::capture(
 			'default',
@@ -653,7 +657,7 @@ class OrdersController extends BaseController {
 			$modification_datas["type"] = "capture";
 			// We push the modifications datas with the old shipping.
 			$ordersCollection->update(
-				array("_id" => new MongoId($id)),
+				array("_id" => $order['_id']),
 				array('$push' => array('modifications' => $modification_datas)),
 				array('upsert' => true)
 			);
