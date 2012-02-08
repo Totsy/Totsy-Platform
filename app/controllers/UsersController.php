@@ -357,10 +357,11 @@ class UsersController extends BaseController {
 				$this->request->data['email'] = trim($this->request->data['email']);
 			} 
 			
+			/*
 			if ($this->request->query['email'] && $this->request->query['pwd']) 	{					
 				$email = $this->request->query['email'];
 				$password = $this->request->query['pwd'];					
-			}
+			}*/
 						
 			//Grab User Record - either form session, or from form data
 			$user = User::lookup($email);
