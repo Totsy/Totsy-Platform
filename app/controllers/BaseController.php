@@ -103,14 +103,16 @@ class BaseController extends \lithium\action\Controller {
         //this changes depending on whether we're on prod or not
         //if something's funny or not working on kkim, just update it with master			
 		$whiteLabelSubDomain = "kkim.totsy.com";
- 		
- 		if($userInfo) {	       
+		 		
+ 		if($userInfo) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
+        		//totsy to mama
         		if($userInfo['invited_by']=="mamasource") {
 					$this->crossDomainAuth($whiteLabelSubDomain, $userInfo['email'], $userInfo['password']);
 				}
         	} else {
-				if($userInfo['invited_by']!=="mamasource") {
+        		//mama to totsy
+				if ( is_null($userInfo['invited_by']) || $userInfo['invited_by']!=="mamasource" ) {
 					$this->crossDomainAuth("evan.totsy.com", $userInfo['email'], $userInfo['password']);
 				}
         	}
