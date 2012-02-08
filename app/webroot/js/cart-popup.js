@@ -128,8 +128,12 @@ $(document).ready( function() {
 			url: $.base + 'cart/add',
 			data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 			context: document.body,
-			success: function(data) {			
-				showCartPopup(data);
+			success: function(data) {	
+				if(data) {
+					//tracking add to cart in GA	
+					_gaq.push(['_trackEvent', 'Cart', 'Add', 'Add to Cart', 1]);
+					showCartPopup(data);
+				}
 			}
 		});
 	};
