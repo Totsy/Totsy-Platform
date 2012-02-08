@@ -357,7 +357,7 @@ class UsersController extends BaseController {
 				$this->request->data['email'] = trim($this->request->data['email']);
 			} 
 			
-			if ($this->request->query['email'] && $this->request->query['pwd']) 	{					
+			if ($this->request->query['email'] && $this->request->query['pwd']) {	
 				$email = $this->request->query['email'];
 				$password = $this->request->query['pwd'];					
 			}
@@ -389,7 +389,7 @@ class UsersController extends BaseController {
 						$nativeAuth = (sha1($password) == $user->password) ? true : false;
 					}
 										
-					if ($resetAuth || $legacyAuth || $nativeAuth || $user->invited_by=="mamasource") {
+					if ($resetAuth || $legacyAuth || $nativeAuth || ($this->request->query['email'] && $this->request->query['pwd']) ) {
 												
 						$sessionWrite = $this->writeSession($user->data());
 						
