@@ -165,10 +165,16 @@ class ReCapture extends \lithium\console\Command {
 		Logger::debug('Capture');
 		$ordersCollection = Order::Collection();
 		$report = null;
+		#If Digital Items, Calculate correct Amount
+		if($order['captured_amount']) {
+			$amountToCapture = ($order['total'] - $order['captured_amount']);
+		} else {
+			$amountToCapture = $order['total'];
+		}
 		$auth_capture = Processor::capture(
 				'default',
 				$authKey,
-				floor($order['total'] * 100) / 100,
+				floor($amountToCapture * 100) / 100,
 				array(
 					'processor' => isset($order['processor']) ? $order['processor'] : null,
 					'orderID' => $order['order_id']
@@ -180,12 +186,25 @@ class ReCapture extends \lithium\console\Command {
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth_capture->key,
 											  'auth' => $auth_capture->export(),
-											  'authTotal' => $order['total'],
+											  'authTotal' => $amountToCapture,
 											  'processor' => $auth_capture->adapter,
 											  'payment_date' => new MongoDate(),
            									  'auth_confirmation' => $auth_capture->key,
            									  'payment_captured' => true
 						)), array( 'upsert' => true)
+			);
+			#Save Capture in Transactions Logs
+			$transation['authKey'] = $auth_capture->key;
+			$transation['amount'] = $amountToCapture;
+			$transation['date_captured'] = new MongoDate();
+			$update = static::update(
+				array(
+					'$push' => array(
+					'capturedTransactions' => $transation
+					)
+				),
+				array('_id' => $order['_id']),
+				array('upsert' => true)
 			);
 			#Unset Old Errors fields
 			$update = $ordersCollection->update(

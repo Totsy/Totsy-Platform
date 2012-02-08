@@ -677,15 +677,7 @@ class Cart extends Base {
 		if (array_key_exists('credit_amount', $data)) {
 			$credit_amount = abs($data['credit_amount']);
 		}
-		
-		/*
-		print $shippingCost. "<br>";
-		print $overShippingCost. "<br>"; 
-		print $services['tenOffFitfy']. "<br>"; 
-		print $services['freeshipping']['shippingCost']. "<br>"; 
-		print $services['freeshipping']['overSizeHandling'];
-		*/
-		
+
 		#Calculation of the subtotal with shipping and services discount
 		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
 		#Calculation After Promo
@@ -703,14 +695,12 @@ class Cart extends Base {
 		}
 		#Get Amount Of Non Tangible Items
 		$nonTangibleAmount = static::getNonTangibleAmount($cart);
+
 		#Calculate amount to Capture on Non Tangible Items
-		$subtotalAfterDiscount = ($subTotal - abs($cartCredit->credit_amount) - abs($cartPromo['saved_amount']));
-		if($subtotalAfterDiscount > $nonTangibleAmount) {
-			$amountToCapture = $nonTangibleAmount;
-		} else {
-			$amountToCapture = $subtotalAfterDiscount;
+		$amountToCapture = ($nonTangibleAmount - abs($cartCredit->credit_amount) - abs($cartPromo['saved_amount']));
+		if($amountToCapture < 0) {
+			$amountToCapture = 0;
 		}
-		var_dump($amountToCapture);
 		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal', 'amountToCapture');
 	}
 	
@@ -721,17 +711,25 @@ class Cart extends Base {
 	public static function getNonTangibleAmount($cart) {
 		$nonTangibleAmount = 0;
 		foreach($cart as $item) {
-			$event = Event::find('first', array(
-				'conditions' => array(
-					'_id' => $item['event'][0]),
-				'fields' => array(
-					'tangible'					
-			)));
-			if($event['tangible'] == false) {
+			if(!Item::isTangible($item['item_id'])) {
 				$nonTangibleAmount += ($item['sale_retail'] * $item['quantity']);
 			}
 		}
 		return $nonTangibleAmount;
+	}
+	
+	/**
+	 * Check if Items in Cart are only Digital
+	 * @return boolean onlyDigital
+	 */
+	public static function isOnlyDigital($cart) {
+		$onlyDigital = true;
+		foreach($cart as $item) {
+			if(Item::isTangible($item['item_id'])) {
+				$onlyDigital = false;
+			}
+		}
+		return $onlyDigital;
 	}
 }
 

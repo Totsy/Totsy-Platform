@@ -412,8 +412,8 @@ class OrdersController extends BaseController {
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
 		$tax = (float) $avatax['tax'];
 		#Get current Discount
-						
-		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
+		$cartDiscount = Cart::active();
+		$vars = Cart::getDiscount($cartDiscount, $subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
 				
 		#Calculate savings
 		$userSavings = Session::read('userSavings');

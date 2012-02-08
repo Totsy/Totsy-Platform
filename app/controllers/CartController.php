@@ -147,8 +147,29 @@ class CartController extends BaseController {
 		 	$this->_render['template'] = 'mobile_view';
 		}
 
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'serviceAvailable');
-}
+		return $vars + compact(
+			'cart',
+			'user',
+			'message',
+			'subTotal',
+			'services',
+			'total',
+			'shipDate',
+			'promocode',
+			'savings',
+			'shipping_discount',
+			'credits',
+			'cartItemEventEndDates',
+			'cartExpirationDate',
+			'promocode_disable',
+			'itemCount',
+			'returnUrl',
+			'shipping',
+			'overShippingCost',
+			'serviceAvailable'
+		);
+	}
+
 	/**
 	 * The add method increments the quantity of one item.
 	 *

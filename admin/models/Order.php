@@ -181,7 +181,12 @@ class Order extends Base {
 		$data = array();
 
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
-
+		#If Digital Items, Calculate correct Amount
+		if($order['captured_amount']) {
+			$amountToCapture = ($order['total'] - $order['captured_amount']);
+		} else {
+			$amountToCapture = $order['total'];
+		}
 		if ($order['total'] == 0) {
 			$data['auth_confirmation'] = $order['authKey'];
 			$data['payment_date'] = new MongoDate();
@@ -190,7 +195,7 @@ class Order extends Base {
 			$auth = $payments::capture(
 				'default',
 				$order['authKey'],
-				floor($order['total'] * 100) / 100,
+				floor($amountToCapture * 100) / 100,
 				array(
 					'processor' => isset($order['processor']) ? $order['processor'] : null,
 					'orderID' => $order['order_id']
@@ -200,6 +205,19 @@ class Order extends Base {
 				Logger::info("Order Succesfully Captured");
 				$data['auth_confirmation'] = $auth->key;
 				$data['payment_date'] = new MongoDate();
+				#Save Capture in Transactions Logs
+				$transation['authKey'] = $auth->key;
+				$transation['amount'] = $amountToCapture;
+				$transation['date_captured'] = new MongoDate();
+				$update = static::update(
+					array(
+						'$push' => array(
+						'capturedTransactions' => $transation
+						)
+					),
+					array('_id' => $orderId),
+					array('upsert' => true)
+				);
 			} elseif ($auth->errors) {
 				$data['auth_confirmation'] = -1;
 				$data['error_date'] = new MongoDate();
