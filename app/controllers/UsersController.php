@@ -88,18 +88,20 @@ class UsersController extends BaseController {
 		}
 				
 		unset($referer);
+		
+		if ($this->request->data && Session::read('layout', array('name' => 'default'))=='mamapedia') {
+        	$affiliate = new AffiliatesController(array('request' => $this->request));
+        	$affiliate->register("mamasource");
+        	$this->redirect("sales", array("exit"=>true));
+        }
+		
 		if (isset($data) && $this->request->data) {
 			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
 			$data['email'] = strtolower($this->request->data['email']);
 			$data['email_hash'] = md5($data['email']);
+			
 		}
-		
-		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
-        	$affiliate = new AffiliatesController(array('request' => $this->request));
-        	$affiliate->register("mamasource");
-        	exit();
-        }
-		
+						
 		$user = User::create($data);
 		
 		if ($this->request->data && $user->validates() ) {
