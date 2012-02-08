@@ -133,7 +133,14 @@ use lithium\storage\Session;
 	</script>
 	<div class="clear"></div>
 	</div>
-	<?php } ?> 
+	<?php } ?>
+	 
+	<?php // Brand Promo banner - remove (comment out) when promo is over ?>
+		<div class="container_16 brandpromo">
+			<a href="" title="JoJo Maman B&eacute;b&eacute; Special 10-day Event"><img src="/img/bp-banner-jojo.png" alt="JoJo Maman B&eacute;b&eacute; Special 10-day Event" width="816" height="125" /></a>
+		</div>
+	<?php // Brand Promo banner ?>
+	
 	<div id="totsy" class="container_16 roundy glow">
 		
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>

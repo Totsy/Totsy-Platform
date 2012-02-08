@@ -3622,7 +3622,7 @@ a.nivo-prevNav {
 	padding:5px;
 	background:#ed1c25;
 	color:#fff;
-	border-bottom:1px solid #ccc;
+	border-bottom:1px solid #666;
 	text-align:center;
 }
 
@@ -4934,3 +4934,13 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #badges > div {display:inline-block; margin-left:5px;}
 #badges > div:first-child {margin-left:0;}
 #badges .truste {position: relative; top:-16px; margin-right:2px;}
+
+/* Brand Promos - global banners in header for brand promotions */
+.brandpromo {text-align: center;}
+.brandpromo > a {
+	display: inline-block;
+	line-height: 0;
+}
+.brandpromo + #totsy {margin-top: -6px;}
+.brandpromo + #totsy > header {margin-top:-28px; padding-top:0;}
+.brandpromo + #totsy > header #invite {display: none;}
