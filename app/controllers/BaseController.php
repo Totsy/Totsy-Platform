@@ -106,12 +106,12 @@ class BaseController extends \lithium\action\Controller {
  		
  		if($userInfo) {	       
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
-        		if($userInfo['invited_by']=="mamasource"){
+        		if($userInfo['invited_by']=="mamasource") {
 					$this->crossDomainAuth($whiteLabelSubDomain, $userInfo['email'], $userInfo['password']);
 				}
         	} else {
-				if($userInfo['invited_by']!=="mamasource"){
-					$this->crossDomainAuth($_SERVER['HTTP_HOST'], $userInfo['email'], $userInfo['password']);
+				if($userInfo['invited_by']!=="mamasource") {
+					$this->crossDomainAuth("evan.totsy.com", $userInfo['email'], $userInfo['password']);
 				}
         	}
         }
