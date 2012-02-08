@@ -1,15 +1,50 @@
 <?php $this->title($event->name); ?>
 <?php echo $this->html->script('jquery.countdown.min');?>
 <?php echo $this->html->style('jquery.countdown');?>
-<div class="grid_16">
-		<h2 class="page-title gray"><span class="red">
-		<div id="listingCountdown" class="listingCountdown" style="float:right;"></div>
-		<a href="/sales" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?> 
-		</h2>
-		<div style="clear:both;"></div>
-		<hr/>
-<div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
-				<div class="grid_3 alpha omega" style="line-height:0px!important;">
+<div class="grid_16 eventHeader">
+	<h2 class="page-title gray"><span class="red">
+	<div id="listingCountdown" class="listingCountdown" style="float:right;"></div>
+	<a href="/sales" title="Sales"><?php echo $type?> Sales</a> /</span> <?php echo $event->name; ?> 
+	</h2>
+	<div style="clear:both;"></div>
+	<hr/>
+	<div class="md-gray" style="overflow:hidden; border: 1px solid #D7D7D7;  margin-bottom:10px">
+
+				<?php // check event status
+					$eventHasStatus = false;
+					if (!empty($event->status_update) && $event->status_update != 'none'){
+						$eventHasStatus = true;
+						$eventStatusClass = 'status_'.$event->status_update;
+						
+						switch ($event->status_update){
+							case 'stock_added':
+								$eventStatus = "Stock Added";
+							break;
+							case 'styles_added':
+								$eventStatus = "Styles Added";
+							break;
+							case 'blowout':
+								$eventStatus = "Blowout";
+							break;
+							case 'charity':
+								$eventStatus = "Charity Event";
+							break;
+							case 'sold_out':
+								$eventStatus = "Sold Out";
+							break;
+						}
+					}
+				?>
+				<?php // add event status classnames if status exists
+					if (!empty($eventHasStatus)) { ?>
+						<div class="grid_3 alpha omega status <?php echo $eventStatusClass; ?>" style="line-height:0px!important;">
+							<em><?php echo $eventStatus; ?></em>
+				<?php
+					} else { ?>
+						<div class="grid_3 alpha omega" style="line-height:0px!important;">
+					<?php 
+					}
+				?>
 					<!-- Display Event Image -->
 					<?php
 						if (!empty($event->images->event_image)) {
@@ -24,19 +59,19 @@
 									));
 						}
 					?>
-					
+
 				</div>
-				
+
 				<?php if (!empty($event->images->logo_image)) { ?>
 				<div class="grid_8 omega" style="padding:10px 0px;">
 					<div class="grid_8 alpha omega blurb">
-					
+
 					<?php } else { ?>
 					<div class="grid_11 omega">
 					<div class="grid_11 alpha omega blurb">
-					
+
 					<?php } ?>
-					
+
 					<?php if (!empty($event->blurb)): ?>
 						<?php echo $event->blurb ?>
 					<?php endif ?>
@@ -44,15 +79,13 @@
 
 
 					</div>
-				
-					
+
+
 </div>
 <?php if (!empty($event->images->logo_image)): ?>
 <div class="grid_3 alpha omega" style="margin-top:10px;">
 						<!-- Display Logo Image -->
-						
 							<img src="/image/<?php echo $event->images->logo_image?>.gif" alt="<?php echo  $event->name; ?>" title="<?php echo  $event->name; ?>" width="148" height="52" />
-						
 					</div>
 <?php endif ?>
 
@@ -121,8 +154,8 @@
 							"sale/$event->url/{$item->url}",
 							array('title' => $item->name, 'escape' => false)
 						); ?>
-						
-						
+
+
 								<table style="margin:5px;">
 									<tr>
 										<td width="227" valign="top">
@@ -134,7 +167,7 @@
 										</td>
 									</tr>
 								</table>
-								
+
 					</div>
 				</div>
 				<?php $y++ ?>
@@ -202,4 +235,4 @@ f+='&'+key+'='+encodeURIComponent(cto_params[key]);}if(cto_params['kw']!=undefin
 c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponent(document.referrer);}catch(e){}try{
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
-</script> 
+</script>

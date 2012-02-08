@@ -25,7 +25,7 @@
 <?php
 	/* @DG-2012.01.04 - Commented out the "Disney" block
 		@ should be a generic "promo" when/if added back, not "disney" as the specific may change (i.e. Parents magazine)
-		@ e.g. <div class="promo">â€¦</div>
+		@ e.g. <div class="promo">…</div>
 	
 	<!-- Disney -->
 	<!--
@@ -39,29 +39,25 @@
 	<?php
 		/* 
 			@TODO
-			@DG-2012.01.06 in progress:
-				- rebuild template to split into sections:
-				- Today's Sales
-					featured
-					grid of items
-				- Upcoming Sales
+			@DG-2012.01.06: rebuild template to split Today's Sales into sections:
+				- featured
+				- grid of current events
 		*/
 	?>
 	
 	<section id="openEvents" class="group">
 		<header>
 			<h2 class="page-title gray">Today's Sales</h2>
-		</header>
-	
+		</header>	
 		<?php $x = 0; ?>
 		<?php $y = 0; ?>
 		<?php foreach ($openEvents as $event): ?>
 			<!-- Start product item -->
 			<?php if ($y == 0): ?>
-				<div class="grid_6">
+				<div class="event grid_6">
 			<?php endif ?>
 			<?php if ($y == 1): ?>
-				<div class="grid_6">
+				<div class="event grid_6">
 			<?php endif ?>
 	
 			<?php if (($y == 2) || ($y == 3)): ?>
@@ -73,7 +69,44 @@
 			<?php if ($y == 3): ?>
 				<?php $y = 1; ?>
 			<?php endif ?>
-			<div class="p-container roundy_product_home">
+			
+				<?php 
+					$eventHasStatus = false;
+					if (!empty($event->status_update) && $event->status_update != 'none'){
+						$eventHasStatus = true;
+						$eventStatusClass = 'status_'.$event->status_update;
+						
+						switch ($event->status_update){
+							case 'stock_added':
+								$eventStatus = "Stock Added";
+							break;
+							case 'styles_added':
+								$eventStatus = "Styles Added";
+							break;
+							case 'blowout':
+								$eventStatus = "Blowout";
+							break;
+							case 'charity':
+								$eventStatus = "Charity Event";
+							break;
+							case 'sold_out':
+								$eventStatus = "Sold Out";
+							break;
+						}
+					}
+				?>
+				
+				<?php
+					if (!empty($eventHasStatus)) { ?>
+						<div class="p-container roundy_product_home status <?php echo $eventStatusClass; ?>">
+<!-- 							<em><?php echo $eventStatus; ?></em> -->
+					<?php
+					} else { ?>
+						<div class="p-container roundy_product_home">
+					<?php 
+					}
+				?>
+				
 						<!-- this is where the items count was -->
 						<?php
 							//check if top two area, show big splash
@@ -96,7 +129,18 @@
 							}
 						?>
 						<?php if ($x <= 1): ?>
-							<?php echo $this->html->link(
+						
+							<a href="<?php echo "sale/$url"?>" title="<?php echo $event->name; ?>">
+								<?php if (!empty($eventHasStatus)) { ?>
+								<em><?php echo $eventStatus; ?></em>
+								<?php 
+								}?>
+								<img src="<?php echo $productImage; ?>" width="349" height="403" alt="<?php echo $event->name; ?>" style="margin:0px 0px -6px 0px;" />
+							</a>
+							
+							<?php // @DG removed, built as html above to work in the 'em' tag
+/*
+							echo $this->html->link(
 								$this->html->image("$productImage", array(
 								'title' => $event->name,
 								'alt' => $event->name,
@@ -104,30 +148,43 @@
 								'height' => '403',
 						'style' => 'margin:0px 0px -6px 0px;'
 								)), "sale/$url", array('escape'=> false));
+*/
 							?>
 						<?php else: ?>
-							<?php echo $this->html->link(
+						
+							<a href="<?php echo "sale/$url"?>" title="<?php echo $event->name; ?>">
+								<?php if (!empty($eventHasStatus)) { ?>
+								<em><?php echo $eventStatus; ?></em>
+								<?php 
+								}?>
+								<img src="<?php echo $productImage; ?>" width="228" height="263" alt="<?php echo $event->name; ?>" />
+							</a>
+						
+							<?php // @DG removed, built as html above to work in the 'em' tag
+/*
+							echo $this->html->link(
 								$this->html->image("$productImage", array(
 								'title' => $event->name,
 								'alt' => $event->name,
 								'width' => '228',
 								'height' => '263'
 							)), "sale/$url", array('escape'=> false));
+*/
 							 ?>
 						<?php endif ?>
-	
-				<div class="splash-details">
-							<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
+				
+					<div class="splash-details">
+						<div class="table-cell left" style="display:block; padding:5px 5px 5px 10px;">
 							 <p style="padding:0px; margin:0px; font-size:15px; color:#fff; font-weight:normal; text-transform:none;"> <?php echo $event->name; ?></p>
 							 <p style="padding:0px; margin:-3px 0px 0px 0px; font-size:12px; color:#c7c7c7; font-weight:normal; font-style:italic; text-transform:none;"><span id="<?php echo "todaysplash$x"; ?>" title="<?php echo $date = $event->end_date->sec * 1000; ?>" class="counter end"></span>
-							</div>
-	
-							<div class="table-cell right">
-								<?php echo $this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
-							</div>
 						</div>
-					</div>
-				</div>
+						
+						<div class="table-cell right">
+							<?php echo $this->html->link('Shop', 'sale/'.$event->url, array('class' => 'button small', 'style'=>'display:table-cell !important'));?>
+						</div>
+					</div><!-- /.splash-details -->
+				</div><!-- /.p-container -->
+			</div>
 	
 				<?php if ($x == 1): ?>
 					<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;">

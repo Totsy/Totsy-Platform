@@ -1,3 +1,5 @@
+<?php use lithium\storage\Session; ?>
+
 <script type="text/javascript"> 
   function setIframe() {
     var tiframe = document.getElementById('psm').innerHTML = '<iframe src="/static/signup-tracking.html" style="border:none;width:1px;height:1px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>';
@@ -11,14 +13,15 @@
 				<div class="tt">
 					<div><!-- --></div>
 				</div>
+				
+				<?php if (Session::read('layout', array('name' => 'default'))!=='mamapedia'): ?>
 				<div class="free_shipping_banner_reg"><img src="/img/freeShip-badge.png" /></div>
+				<?php endif ?>
 
 				<div class="tm">
-
 					<div class="ti">
 
 						<div class="tc login-inner register-inner">
-
 							<div id='logo'>
                               <a href="/login/?fbcancel=true" title="Totsy.com">
                                 Totsy</a>
@@ -31,7 +34,7 @@
 							</div>
 
 							<div class="message">
-								<?php if($message){echo "$message"; } ?>
+								<?php if($message){ echo "$message"; } ?>
 							</div>
 
 

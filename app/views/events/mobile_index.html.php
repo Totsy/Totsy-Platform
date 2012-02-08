@@ -16,7 +16,47 @@
 		<?php if ($y == 3): ?>
 			<?php $y = 1; ?>
 		<?php endif ?>
+				
 			<li><!-- this is where the items count was -->
+			
+			<?php 
+					$eventHasStatus = false;
+					if (!empty($event->status_update) && $event->status_update != 'none'){
+						$eventHasStatus = true;
+						$eventStatusClass = 'status_'.$event->status_update;
+						
+						switch ($event->status_update){
+							case 'stock_added':
+								$eventStatus = "Stock Added";
+							break;
+							case 'styles_added':
+								$eventStatus = "Styles Added";
+							break;
+							case 'blowout':
+								$eventStatus = "Blowout";
+							break;
+							case 'charity':
+								$eventStatus = "Charity Event";
+							break;
+							case 'sold_out':
+								$eventStatus = "Sold Out";
+							break;
+						}
+					}
+				?>
+				
+				<?php
+					if (!empty($eventHasStatus)) { ?>
+						<div class="p-container roundy_product_home status <?php echo $eventStatusClass; ?>">
+							<span class="ui-li-count" style="margin:-3em -3em 0 0;"><?php echo $eventStatus; ?></span>
+					<?php
+					} else { ?>
+						<div class="p-container roundy_product_home">
+					<?php 
+					}
+				?>
+				
+				</div>
 					<?php
 						if (!empty($event->images->splash_big_image)) {
 							$productImage = "/image/{$event->images->splash_big_image}.jpg";

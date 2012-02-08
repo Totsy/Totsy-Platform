@@ -263,9 +263,11 @@ class Affiliate extends Base {
         $bounces = array();
 
         foreach($cursor as $value) {
-            $bounces[$value['email']]['register_date'] = date('m/d/Y', $value['created_date']->sec);
             $bounces[$value['email']]['bounce_type'] = $value['email_engagement']['type'];
-            $bounces[$value['email']]['bounce_date'] = date('m/d/Y', $value['email_engagement']['date']->sec);
+            $bounces[$value['email']]['created_date'] = date('m/d/Y',$value['created_date']->sec);
+            $bounces[$value['email']]['report_date'] = date('m/d/Y',$value['email_engagement']['date']->sec);
+            $bounces[$value['email']]['delivery_date'] = date('m/d/Y',$value['email_engagement']['delivery']['status_time']->sec);
+            $bounces[$value['email']]['delivery_message'] = $value['email_engagement']['delivery']['message'];
         }
         $bounces['total'] = count($bounces);
         return $bounces;

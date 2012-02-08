@@ -1,4 +1,5 @@
 <?php 
+
 namespace admin\extensions\command;
 
 use lithium\core\Environment;
@@ -12,6 +13,8 @@ use admin\extensions\BlackBox;
 
 use MongoId;
 use MongoRegex;
+use MongoException;
+use MongoCursorTimeoutException;
 
 /**
 * Run this command to provide invitation credits for all users
@@ -91,37 +94,65 @@ class AddCredits extends \lithium\console\Command {
 	public function setTmpCollections(){
 		
 		// list of tmp collections to check
-		$list = array('tmp.invites','tmp.credited');
+		$list = array('tmp.invites');
 		// set database
 		$totsy = Invitation::connection()->connection; 
 		
-		// drop tmp collections if any
-		$dbs = $totsy->listCollections();
-		foreach ($dbs as $db){
-			if (in_array($db->getName(),$list)){
-				$db->drop();
+		/** 
+		 * drop collections only when number of rows that contains 'tmp'
+		 * elements are equal to zero!
+		 * When there is rows with tmp element - meaning cron job
+		 * wasn't finishied succesfully so, finish what we had before.
+		 */
+		$conditions = array( 'tmp' => array('$exists' => true));
+		$counter = Invitation::collection()->find($conditions)->count();
+
+		if ($counter == 0) {
+			// drop tmp collections if any
+			$dbs = $totsy->listCollections();
+			foreach ($dbs as $db){
+				if (in_array($db->getName(),$list)){
+					$db->drop();
+				}
 			}
-		}
-		
-		//create new tmp collections
-		foreach( $list as $collection ){
-			$totsy->createCollection(array(
-				'create' => $collection,
-				'capped' => false
-			));
-		}
 			
+			//create new tmp collections
+			foreach( $list as $collection ){
+				$totsy->createCollection(array(
+					'create' => $collection,
+					'capped' => false
+				));
+			}
+		} else {
+			$this->mssg('no db cleanup. found rows with tmp element: '.$counter);
+		}
+					
 		$this->tmpInvites = $totsy->{'tmp.invites'};
 		$this->tmpInvites->ensureIndex(array('user_id'=>1));
 		
-		$this->tmpCredited = $totsy->{'tmp.credited'};
-		$this->tmpCredited->ensureIndex(array('email'=>1));
+		// make sure all necessary fields have indexes
+		$ensure_indexes = array( 'email', 'user_id', 'credited', 'tmp', 'creditet', 'status');
+		$is = Invitation::collection()->getIndexInfo();
+		$indexes = array();
+		foreach ($is as $i){
+			foreach ($i['key'] as $k=>$v){
+				$indexes[] = $k;
+			}
+		}
+		
+		$indexes = array_unique($indexes);
+		foreach ($ensure_indexes as $ie){
+			if (!in_array($ie, $indexes)){
+				Invitation::collection()->ensureIndex(array($ie => 1));
+			}
+		}
+		
 	}
 	
 	public function clean(){
 	
 		// list of tmp collections to check
-		$list = array('tmp.invites','tmp.credited');
+		$list = array('tmp.invites');
 		// set database
 		$totsy = Invitation::connection()->connection;
 		// drop tmp collections if any
@@ -131,14 +162,23 @@ class AddCredits extends \lithium\console\Command {
 				$db->drop();
 			}
 		}
+		
+		// unset tmp flag
+		Invitation::collection()->update(
+			array('tmp' => array('$exists' => true)),
+			array('$unset' => array('$tmp' => true))
+		);
 	}
 	
 	public function applyFilterCredits(){
 		// get users ivited users and codes
 		
+		$this->mssg('RUNNING');
+		
 		$conditions = array(
 			'credited' => array( '$ne' => true ),
-			'status' => 'Accepted'
+			'status' => 'Accepted',
+			'tmp' => array('$exists' => false)
 		);
 		
 		if (!empty($this->test)){
@@ -147,16 +187,52 @@ class AddCredits extends \lithium\console\Command {
 		
 		$invitedCursor = Invitation::collection()->find($conditions);
 		if (!$invitedCursor->hasNext()){ 
-			Logger::info('No pending invitations found'."\n");
+			$this->mssg('No pending invitations found');
 			unset($invitedCursor);
 			return ;
 		}
-		$invitedCursor->timeout(50000);
+		//$invitedCursor->timeout(50000);
 		
-		while($invitedCursor->hasNext()){
-
-			$row =  $invitedCursor->getNext();
-			
+		$c = $invitedCursor->count();
+		$process = true; 
+		while($process == true){
+			try{
+				if (!$invitedCursor->hasNext()){
+					$process = false;
+					$this->mssg('No more records. finish "while" loop.');
+					continue;
+				}
+			} catch (MongoException $e) {
+				
+				$this->mssg('-cursor timeout.');
+				$invitedCursor = Invitation::collection()->find($conditions);				
+				$this->mssg('-creteate new cursor....');
+				$c = $invitedCursor->count();
+				$this->mssg('found '.$c);
+				if ($c==0){
+					$process = false;
+				}
+				continue;
+			}
+			if (!$invitedCursor->valid()){
+				$this->mssg('cursor is not valid. Reset cursor'."\n");
+				try{
+					$invitedCursor->rewind();
+				} catch (MongoCursorTimeoutException $e){
+					$this->mssg("\n".'cannot rewind');
+					continue;
+				}
+				$this->mssg('rewined....');
+				continue;
+			}
+			try{
+				$row =  $invitedCursor->getNext();
+			} catch (Exception $e){
+				$this->mssg('Exception...');
+				Logger::info('add-credits FATAL ERRROR. Check AddCredits LOG and OUT files');
+				BlackBox::AddCreditsOUT(print_r($e,true));
+				exit(0);
+			}
 			
 			$tmpInviterCursor = $this->tmpInvites->find(array(
 				'user_id'=>$row['user_id']
@@ -166,21 +242,14 @@ class AddCredits extends \lithium\console\Command {
 			if ($emails==false){
 				continue;
 			}
-			
 			if ($tmpInviterCursor->hasNext()){
 				$tmpInvite = $tmpInviterCursor->getNext();
 				$add = $tmpInvite['emails'];
 				
 				foreach ($emails as $email){
 					$mail5 = md5($email);
-					if (array_key_exists($mail5, $add)){
-						$add[$mail5]['invitation_ids'][] = (string) $row['_id'];
-					} else {
-						$add[$mail5] = array(
-							'email' => $email,
-							'invitation_ids' => array((string) $row['_id'])
-						);
-					}
+					$add[$mail5]['email'] = $email;
+					$add[$mail5]['invitation_ids'][] = (string) $row['_id'];
 				}
 
 				$this->tmpInvites->update(
@@ -204,18 +273,28 @@ class AddCredits extends \lithium\console\Command {
 					'user_id' => $row['user_id'],
 					'emails' => $add,
 					'email_counter' => count($add)
-				), true);
+				));
 			}
+			
+			Invitation::collection()->update(
+				array('_id' => $row['_id']),
+				array('$set' => array( 'tmp' => true))
+			);
+			
 			unset($add,$emails);
 		}
 		unset($invitedCursor);
+	}
+	
+	private function mssg($msg){
+		BlackBox::AddCreditsLog($msg);
 	}
 	
 	public function addCredits(){
 		$invitedCursor = $this->tmpInvites->find(array());
 		
 		if (!$invitedCursor->hasNext()){
-			Logger::info('No filtered invitations found'."\n");
+			$this->mssg('No filtered invitations found');
 			unset($invitedCursor);
 			return ;
 		}
@@ -262,7 +341,7 @@ class AddCredits extends \lithium\console\Command {
 			$this->_updateTmpInvites($row);
 			unset($row);
 		}
-		Logger::info('Added Credits for '.$total.' invitations'."\n");
+		$this->mssg('Added Credits for '.$total.' invitations'."\n");
 		unset($invitedCursor);
 	}
 	
