@@ -4935,7 +4935,10 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #badges > div:first-child {margin-left:0;}
 #badges .truste {position: relative; top:-16px; margin-right:2px;}
 
-/* Brand Promos - global banners in header for brand promotions */
+/* 
+	Brand Promos - global banners in header for brand promotions 
+*/
+/* brand promo banner */
 .brandpromo {text-align: center;}
 .brandpromo > a {
 	display: inline-block;
@@ -4944,3 +4947,34 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 .brandpromo + #totsy {margin-top: -6px;}
 .brandpromo + #totsy > header {margin-top:-28px; padding-top:0;}
 .brandpromo + #totsy > header #invite {display: none;}
+
+/* brand promo landing page */
+ul.bp-events li {
+	float: left;
+	margin-left:43px;
+}
+ul.bp-events li:first-child {margin-left:0;}
+ul.bp-events img {
+	display: block;
+	width:246px; height: 283px;
+	border:10px solid #fff;
+	box-shadow: 0px 3px 5px #444;
+	/* transforms */
+	-webkit-transform: rotate(-3deg);
+	-webkit-transform-origin: 0% 0%;
+	-moz-transform: rotate(-3deg);
+	-moz-transform-origin: 0% 0%;
+	-o-transform: rotate(-3deg);
+	-o-transform-origin: 0% 0%;
+	-ms-transform: rotate(-3deg);
+	-ms-transform-origin: 0% 0%;
+	transform: rotate(-3deg);
+	transform-origin: 0% 0%;
+}
+ul.bp-events li:nth-of-type(even) img {
+	-webkit-transform: rotate(3deg);
+	-moz-transform: rotate(3deg);
+	-o-transform: rotate(3deg);
+	-ms-transform: rotate(3deg);
+	transform: rotate(3deg);
+}
