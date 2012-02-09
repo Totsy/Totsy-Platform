@@ -946,7 +946,27 @@ class Order extends Base {
 		}
 		return $creditCard; 
 	}
-
+	
+	public static function getStatus($order) {
+		$status = 'Idle';
+		if($order['authTotal'] != $order['total']) {
+			$status = 'Soft Authorized';
+		}
+		if($order['ship_records']) {
+			$status = 'Shipped';
+		}
+		if($order['payment_date']) {
+			$status = 'Captured but not Shipped';
+		}
+		if($order['payment_date'] && $order['ship_records']) {
+			$status = 'Shipped And Captured';
+		}
+		if($order['cancel']) {
+			$status = 'Canceled';
+		}
+		return $status;
+	}
+	
 	/**
 	 * Encrypt all credits card informations with MCRYPT and store it in the Session
 	 */
