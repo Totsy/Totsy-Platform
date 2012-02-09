@@ -229,6 +229,12 @@ class UsersController extends BaseController {
 	 */
 		public static function registration($data = null) {
 			$saved = false;
+			
+			$whiteLabel = false;
+			
+			if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+				$whiteLabel = true;
+			} 
 
 			if ($data) {
 			
@@ -272,13 +278,15 @@ class UsersController extends BaseController {
 						);
 
 						if (isset($user['clear_token'])) {
-							$mail_template = 'Welcome_auto_passgen';
+							$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');						
 							$params['token'] = $user['clear_token'];
 						}
+						
 						if (isset($user['requires_set_password'])) {
-							$mail_template = 'Welcome_auto_passgen';
+							$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');
 							$params['token'] = $plaintext_password;
 						}
+						
 							$params = array();
 						
 							$data = array(
@@ -287,7 +295,7 @@ class UsersController extends BaseController {
 							);
 						
 							if (isset($user['clear_token'])) {
-								$mailTemplate = 'Welcome_auto_passgen';
+								$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');
 								$params['token'] = $user['clear_token'];
 							}
 														
@@ -357,7 +365,7 @@ class UsersController extends BaseController {
 				$this->request->data['email'] = trim($this->request->data['email']);
 			} 
 			
-			if ($this->request->query['email'] && $this->request->query['pwd']) 	{					
+			if ($this->request->query['email'] && $this->request->query['pwd']) {	
 				$email = $this->request->query['email'];
 				$password = $this->request->query['pwd'];					
 			}
@@ -389,7 +397,7 @@ class UsersController extends BaseController {
 						$nativeAuth = (sha1($password) == $user->password) ? true : false;
 					}
 										
-					if ($resetAuth || $legacyAuth || $nativeAuth || $user->invited_by=="mamasource") {
+					if ($resetAuth || $legacyAuth || $nativeAuth || ($this->request->query['email'] && $this->request->query['pwd']) ) {
 												
 						$sessionWrite = $this->writeSession($user->data());
 						
