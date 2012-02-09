@@ -54,6 +54,30 @@ class Event extends Base {
 	protected $_meta = array('source' => 'events');
 	public $validates = array();
 
+	private static $_mapCategories = array (
+		'category' =>  array(
+			'all' => "All",
+			'girls-apparel' => "Girls Apparel",
+			'boys-apparel' => "Boys Apparel",
+			'shoes' => "Shoes",
+			'accessories' =>"Accessories",
+			'toys-books' => "Toys and Books",
+			'gear' => "Gear",
+			'home' => "Home",
+			'moms-dads' => "Moms and Dads"
+		),
+		'age' => array(
+			'all' => 'All',
+			'newborn' => 'Newborn 0-6M',
+			'infant' => 'Infant 6-24M',
+			'toddler' => 'Toddler 1-3 Y',
+			'preschool' => 'Preschool 3-4Y',
+			'school' => 'School Age 5+',
+			'adult' => 'Adult'
+		)
+	);
+	
+	
 	/**
 	 * Query for all the events within the next 24 hours.
 	 *
@@ -170,6 +194,19 @@ class Event extends Base {
 		unset($cursor,$data,$connection);
 
 		return $return;
+	}
+	
+	public static function mapCat2Url($category,$name){
+		$map = array_flip(self::$_mapCategories[$category]);
+		return $map[$name];
+	}
+	
+	public static function mapUrl2Cat($category,$name){
+		return self::$_mapCategories[$category][$name];
+	}
+	
+	public static function mapCat($category){
+		return self::$_mapCategories[$category];
 	}
 }
 
