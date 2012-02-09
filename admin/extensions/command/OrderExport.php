@@ -187,6 +187,11 @@ class OrderExport extends Base {
 					$this->time = date('ymdHis');
 					$queueData = $queue->data();
 					$this->queue = $queue;
+					if($this->queue->run_amount) {
+						$this->queue->run_amount += 1;
+					} else {
+						$this->queue->run_amount = 1;
+					}
 					if ($queueData['orders']) {
 
 						$this->orderEvents = $queueData['orders'];
