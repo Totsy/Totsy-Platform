@@ -78,6 +78,7 @@ $(document).ready( function() {
 		$("#template").tmpl(visibleItems).appendTo("#cart_item");
 		
 		if (invisibleItemCount > 0) {
+			isCollapsed = true;
 		    addScrollBar();
 		}
 			
@@ -155,7 +156,6 @@ $(document).ready( function() {
 	}); 
 	
 	$(".cart_icon").mouseover( function(){
-	
 		//if there is an active timeout, clear it
 		if (timeout) {
 			clearTimeout(timeout);
@@ -165,8 +165,7 @@ $(document).ready( function() {
 	
 	//toggle items for carts with more than 3 different types of items
 	var addScrollBar = function() {
-		if (isCollapsed == false) {
-			isCollapsed = true; 
+		if (isCollapsed) {
 			//add a scrollbar
 			$("#cart_item").css({
 				"overflow-y": "scroll",
@@ -178,7 +177,6 @@ $(document).ready( function() {
 			//add all items to template
 			$("#template").tmpl(invisibleItems).appendTo("#cart_item");
 		} else {
-			isCollapsed = false; 
 			//remove scrollbar
 			$("#cart_item").css({
 				"overflow-y": "hidden",
