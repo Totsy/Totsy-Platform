@@ -35,7 +35,7 @@ class BaseController extends \lithium\action\Controller {
 			
         	//this changes depending on whether we're on prod or not
         	//if something's funny or not working on kkim, just update it with master        	
-			$mamasourceSubDomain = "evan.totsy.com";
+			$mamasourceSubDomain = "mamasource.totsy.com";
  									
 			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
@@ -102,7 +102,7 @@ class BaseController extends \lithium\action\Controller {
         
         //this changes depending on whether we're on prod or not
         //if something's funny or not working on kkim, just update it with master			
-		$whiteLabelSubDomain = "evan.totsy.com";
+		$whiteLabelSubDomain = "mamasource.totsy.com";
 		 		
  		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
@@ -113,7 +113,7 @@ class BaseController extends \lithium\action\Controller {
         	} else {
         		//mama to totsy
 				if ( is_null($userInfo['invited_by']) || $userInfo['invited_by']!=="mamasource" ) {
-					$this->crossDomainAuth("evan.totsy.com", $userInfo['email'], $userInfo['password']);
+					$this->crossDomainAuth("totsy.com", $userInfo['email'], $userInfo['password']);
 				}
         	}
         }
@@ -361,6 +361,7 @@ class BaseController extends \lithium\action\Controller {
 		
 		$this->redirect("http://".$sendTo."/sales");
 		*/
+		
 		$this->redirect("http://" . $sendTo . "/login?email=".$email."&pwd=".$pwd, array("exit"=>true)); 	
 	}
 }
