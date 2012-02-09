@@ -868,6 +868,8 @@ class Order extends Base {
 							    $conditions = array();
 							}
 							$conditions['cancel'] = array('$exists' => false);
+							$conditions['auth_confirmation'] = -1;
+							$conditions['ship_records'] = array('$exists' => true);
 							$conditions['payment_captured'] = array('$exists' => false);
 							break;
 						case 'failed_reauth':
