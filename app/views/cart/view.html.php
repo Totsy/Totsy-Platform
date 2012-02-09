@@ -41,8 +41,8 @@ var discountErrors = new Object();
 		$( "#password-prompt").find('form').attr('action', this.href).end()
 			.dialog({
 				modal: true,
-				width: 512,
-				height: 256
+				width: 384,
+				height: 300
 			}
 		);
 	});

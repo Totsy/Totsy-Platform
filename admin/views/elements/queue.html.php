@@ -13,10 +13,11 @@
                     <th>Event POs Queued</th>
                     <th>Expected Order/Line Count </th>
                     <th>Current Status</th>
+                    <th>No of times the batch ran</th>
                 </tr>
             </thead>
             <tbody id="queue_body">
-                <td colspan="7"><center>Loading...</center></td>
+                <td colspan="8"><center>Loading...</center></td>
             </tbody>
         </table>
 	</div>
@@ -58,16 +59,21 @@ function updateCurrentQueue() {
                     } else{
                          table = table +  "<td></td>";
                     }
+                    if (queue[index].run_amount) {
+                        table = table + "<td>" + queue[index].run_amount + "</td>";
+                    } else{
+                         table = table +  "<td></td>";
+                    }
                     table += "</tr>";
 
                     body.append(table);
                 }
                 if (index == 0 ) {
-                    table += "<td colspan=\"7\"><center>Nothing in the queue!</center></td>";
+                    table += "<td colspan=\"8\"><center>Nothing in the queue!</center></td>";
                      body.append(table);
                 }
             } else {
-                table += "<td colspan=\"7\"><center>Nothing in the queue!</center></td>";
+                table += "<td colspan=\"8\"><center>Nothing in the queue!</center></td>";
                 body.append(table);
             }
         }
