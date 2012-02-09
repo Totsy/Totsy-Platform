@@ -67,7 +67,6 @@ function checkspreadsheet(){
 
 	$.post('/events/uploadcheck', params, function(result) {
 		if(result.substring(0,7)=="success"){
-			//$("#items_errors").html(result);
 			$("#events_edit").submit();
 		}
 		else{
@@ -690,9 +689,16 @@ for ( i=1; i<6; i++ ) {
 			$("#inventoryIframe").attr('src', "/events/inventory/<?php echo $event->_id; ?>");
 		});
 
+		$('#events_edit').submit(function() {
+			var eventName  = document.getElementById('Name').value;
 
+			if (eventName.length > 32) {
+				alert("The event name '" + eventName + "' is too long. Event names cannot exceed 32 characters.");
+				return false;
+			}
 
-
+			return true;
+		});
 	});
 
 	function limitTextArea(text,info,limiter){
