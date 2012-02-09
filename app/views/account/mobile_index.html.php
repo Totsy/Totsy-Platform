@@ -18,7 +18,7 @@
 			</div>
 			<div data-role="collapsible">
 				<h3>Email Preferences</h3>
-				<p>Coming soon, for now you can click "unsubscribe" in the footer of the emails to stop receiving them.</p>
+				<p><a href="http://link.totsy.com/manage/optout?email=<?php echo $userInfo['email'];?>" target="_blank">Manage Email Subscriptions</a></p>
 			</div>
 			<div data-role="collapsible">
 				<h3>Manage Addresses</h3>

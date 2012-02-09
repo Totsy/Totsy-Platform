@@ -35,16 +35,20 @@ class AffiliatesController extends \admin\controllers\BaseController {
     );
 
 	public function index() {
-	   $affiliates = Affiliate::collection()->find(array('affiliate'=>true), array(
-       'date_created' => true,
-       'created_by' => true,
-       'active' => true,
-       'name' => true,
-       'active_pixel' => true,
-       'level' => true
-       ));
+
+	  $affiliates = Affiliate::collection()->find(array('affiliate'=>true), array(
+	    'date_created' => true,
+	    'created_by' => true,
+	    'active' => true,
+	    'name' => true,
+	    'active_pixel' => true,
+	    'level' =>true
+	    ));
+
 	   $userCollection = User::collection();
 	   $afs = array();
+
+
        foreach($affiliates as $affiliate){
             $obj_data = $affiliate;
             if(!empty( $obj_data['date_created'] )) {
@@ -75,6 +79,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 	public function getCategories() {
 
 		$affiliateCategories = array();
+
 		$temp = Affiliate::collection()->find( array('affiliate'=>true), array(
     	'date_created' => true,
     	'created_by' => true,
@@ -110,9 +115,11 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
        	$affiliate = Affiliate::create();
        	$affiliateCategories = $this->getCategories();
+
         $info = array();
         $landing = array();
        	$data = $this->request->data;
+
 		if ($data) {
             $info['active'] = (($data['active'] == '1' || $data['active'] == 'on')) ? true : false;
             $info['name'] = $data['affiliate_name'];
@@ -129,6 +136,7 @@ class AffiliatesController extends \admin\controllers\BaseController {
 
             if ($info['level'] != 'regular') {
                 $info['active_pixel'] = (boolean) $data['active_pixel'];
+
                 if ($info['active_pixel']) {
 			        $info['pixel'] = Affiliate::pixelFormating($data['pixel'],
 			                                                $info['invitation_codes'],
