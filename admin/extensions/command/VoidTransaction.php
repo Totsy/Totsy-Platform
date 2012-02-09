@@ -135,8 +135,8 @@ class VoidTransaction extends \lithium\console\Command {
 		$limitDate = mktime(23, 59, 59, date("m"), date("d") - $this->expirationAuth, date("Y"));
 		$limitDateVoid = mktime(23, 59, 59, date("m"), date("d") - $this->expirationVoid, date("Y"));
 		#Check If There were already ReAuthorization Records
-		if(!empty($order['auth_records'])) {
-			$lastDate = $order['date_created'];
+		$lastDate = $order['date_created'];
+		if(!empty($order['auth_records'])) {			
 			foreach($order['auth_records'] as $record) {
 				if($lastDate->sec < $record['date_saved']->sec) {
 					$lastDate = $record['date_saved'];
@@ -147,6 +147,12 @@ class VoidTransaction extends \lithium\console\Command {
 			}
 		} else {
 			$toVoid = true;
+		}
+		#Don't Void if the last Auth is an error
+		if(!empty($order['error_date'])) {
+			if($lastDate->sec < $order['error_date']->sec) {
+				$reAuth = false;
+			}	
 		}
 		if(!empty($order['void_records'])) {
 			$lastDateVoid = $order['date_created'];
