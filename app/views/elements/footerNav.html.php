@@ -15,7 +15,7 @@
 	<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
 	<?php } else { ?>
-	<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li> 
+	<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
 	<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
 	<?php } ?>
 	<li class="last" style="margin:-5px 3px 0px 5px;"><a href="http://www.facebook.com/totsyfan" target="_blank"><img src="/img/icons/facebook_16.png" align="middle" /></a></li>
