@@ -36,6 +36,18 @@ $('#password-prompt form').live('submit', function(e) {
 	return success;
 });
 
+$('#password-prompt footer a[href="#password-requirement-explanation"]').live('click', function(e) {
+	e.preventDefault();
+
+	$('#password-prompt').dialog({
+		height: 350
+	});
+	$('#password-requirement-explanation').show();
+	$(this).hide();
+
+	return false;
+})
+
 </script>
 <style type="text/css">
 
@@ -81,6 +93,23 @@ $('#password-prompt form').live('submit', function(e) {
 	margin: 10px 0 0 200px;
 }
 
+#password-prompt footer {
+	clear: both;
+	margin-top: 150px;
+	text-align: left;
+}
+
+#password-prompt footer a[href='#password-requirement-explanation'] {
+	float: right;
+}
+
+#password-prompt #password-requirement-explanation {
+	clear: both;
+	display: none;
+	margin-top: 20px;
+	text-align: left;
+}
+
 </style>
 <div id="password-prompt" class="no-show">
 <? if($user['requires_set_password']): ?>
@@ -97,4 +126,11 @@ $('#password-prompt form').live('submit', function(e) {
 		<input type="password" id="pwd" name="pwd" placeholder="Enter Password" />
 		<input type="submit" value="<?= $user['requires_set_password'] ? 'Create Account' : 'Continue' ?>" class="button" />
 	</form>
+<? if(!$user['requires_set_password']): ?>
+	<footer>
+		<a href="/reset">Forgot your password?</a>
+		<a href="#password-requirement-explanation">Why do we need it again?</a>
+	</footer>
+	<p id="password-requirement-explanation">At Totsy, we're as concerned with your security as we are in finding you a great deal! That's why we want to make sure it's <em>YOU</em> who is getting this great deal, by confirming your Totsy password.</p>
+<? endif ?>
 </div>

@@ -37,17 +37,10 @@
 				<div class="tl"></div>
 				<div class="tr"></div>
 				<div class="r-box lt-gradient-1">
-					<h3 class="gray fl">Email Preferences - Coming Soon</h3><!--&nbsp;|&nbsp;<a href="" title="Edit">Edit</a>
-					<br />
-					<br />
-					<dl>
-						<dt>You are currently subscribed to:</dt>
-						<dd>
-							<ul>
-								<li>General Subscription</li>
-							</ul>
-						</dd>
-					</dl>-->
+					<h3 class="gray fl">Email Preferences</h3><br/>
+					
+					<a href="http://link.totsy.com/manage/optout?email=<?php echo $userInfo['email'];?>" target="_blank">Manage Email Subscriptions</a>
+					
 				</div>
 				<div class="bl"></div>
 				<div class="br"></div>
