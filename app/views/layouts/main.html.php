@@ -135,24 +135,19 @@ use lithium\storage\Session;
 	</div>
 	<?php } ?>
 	 
-	<?php // Brand Promo banner - remove (comment out) when promo is over ?>
-		<div class="container_16 brandpromo">
-				<p>
-				<?php
-					$query = $_SERVER['REQUEST_URI'];
-					echo "the url path is ". $query . "<br />";
-					
-					// test for string in query
-					if(preg_match("/brands/", $query)) {
-						echo "We are in /brands/";
-					} else {
-						echo "We are NOT in /brands/";
-					}
-				?>
-				</p>
-			<a href="/brands/jojomamanbebe" title="JoJo Maman B&eacute;b&eacute; Special 10-day Event"><img src="/img/bp-banner-jojo.png" alt="JoJo Maman B&eacute;b&eacute; Special 10-day Event" width="816" height="125" /></a>
-		</div>
-	<?php // Brand Promo banner ?>
+	<?php 
+		/*
+			Brand Promo banner - remove (comment out) when promo is over
+		*/
+		// don't show banner when in /brands directory
+		$query = $_SERVER['REQUEST_URI'];
+		if(!preg_match("/brands/", $query)) { ?>
+		
+			<div class="container_16 brandpromo">
+				<a href="/brands/jojomamanbebe" title="JoJo Maman B&eacute;b&eacute; Special 10-day Event"><img src="/img/bp-banner-jojo.png" alt="JoJo Maman B&eacute;b&eacute; Special 10-day Event" width="816" height="125" /></a>
+			</div>
+	<?php 
+		} ?>
 	
 	<div id="totsy" class="container_16 roundy glow">
 		

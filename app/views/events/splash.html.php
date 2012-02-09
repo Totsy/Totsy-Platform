@@ -1,4 +1,4 @@
-<h1>JOJO MAMAN BEBE SPLASH TEST FRAMEWORK</h1>
+<h1>WE ARE NOT USING THIS - MOVED VIEW TO /brands</h1>
 
 
 		<ul class="group">
