@@ -115,7 +115,7 @@ class MakeSku extends \lithium\console\Command  {
 		$sizes = implode(', ', array_keys($item['details']));
 		$skus = $k_implode($skulist);
 		$diff = implode(', ' , array_keys(array_diff_key($item['details'], $skulist)));
-		$To = "lhanson@totsy.com";
+		$To = "bugs@totsy.com, logistics@totsy.com";
 		$subject = "Make-sku fail: Potential Sku Problem with item id: {$item['_id']}";
 		$header = "From: reports@totsy.com";
 		$message = <<<MESSAGE
