@@ -161,6 +161,38 @@ class Order extends Base {
 		return $update && !$error;
 	}
 
+	public static function findUnshippedItems($order) {
+		$unshipped_items = array();
+		$ordersShippedCollection = OrderShipped::collection();
+
+		// Get the SKUs for all items in the order to match against the ship records
+		$itemSkus = Item::getSkus($order['items']);
+		
+		// Retrieve all of the orders.shipped documents
+		$ship_records = $ordersShippedCollection->find(
+			array('_id' => 
+				array('$in' => 
+					$order['ship_records']
+				)
+			)
+		);
+		
+		// Remove all shipped items from the itemSkus array
+		foreach ($ship_records as $ship_record) {
+			if (isset($itemSkus[$ship_record['SKU']]))
+				unset($itemSkus[$ship_record['SKU']]);
+		}
+		
+		if (!empty($itemSkus)) {
+			// items still in itemsSkus were not shipped
+			foreach ($itemSkus as $item) {
+				$unshipped_items[] = $item['_id'];
+			}
+		}
+		
+		return $unshipped_items;
+	}
+
 	/**
 	 * Processes an order.
 	 *
@@ -458,8 +490,7 @@ class Order extends Base {
 			'subTotal' => (float) $selected_order["subTotal"],
 			'handling' => (float) $selected_order["handling"],
 			'promo_discount' => (float) $selected_order["promo_discount"],
-			'promocode_disable' => $selected_order["promocode_disable"],
-			'comment' => $selected_order["comment"]
+			'promocode_disable' => $selected_order["promocode_disable"]
 		);
 		if(!empty($selected_order["overSizeHandling"])) {
 			$datas_order_prices['overSizeHandling'] = (float) $selected_order["overSizeHandling"];
@@ -473,6 +504,9 @@ class Order extends Base {
 		if(!empty($selected_order["overSizeHandlingDiscount"])) {
 			$datas_order_prices['overSizeHandlingDiscount'] = (float) $selected_order["overSizeHandlingDiscount"];
 		}
+		if(!empty($selected_order["comment"])) {
+			$datas_order_prices['comment'] = $selected_order["comment"];
+		}
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		   $datas_order_prices['original_credit_used'] = $selected_order["original_credit_used"];
 		}
@@ -483,13 +517,14 @@ class Order extends Base {
 			$datas_order_prices["credit_used"] = (float) $selected_order["credit_used"];
 		}
 		/**************UPDATE TAX****************************/
+// Is this even used?
 		extract(static::_recalculateTax($selected_order,$items,true));
 		/**************UPDATE DB****************************/
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		    $new_credit = $selected_order['original_credit_used'] - (float) number_format($selected_order['credit_used'],2);
 		    $new_credit = abs((float)$selected_order['original_credit_used']) - (float) $selected_order['credit_used'];
 		}
-		if(isset($selected_order["user_total_credits"])){
+		if(isset($selected_order["user_total_credits"]) && $selected_order["user_total_credits"] != 0){
 			if (array_key_exists('original_credit_used', $selected_order)) {
                 $new_credit = $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
                 $new_credit = abs($new_credit);
@@ -525,7 +560,9 @@ class Order extends Base {
 		$modification_datas["author"] = $author;
 		$modification_datas["type"] = "items";
 		$modification_datas["date"] = new MongoDate(strtotime('now'));
-		$modification_datas["comment"] = $selected_order['comment'];
+		if (array_key_exists('comment', $selected_order)) {
+			$modification_datas["comment"] = $selected_order['comment'];
+		}
 		$result = static::collection()->update(array("_id" => new MongoId($selected_order["id"])),
 		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
 		return compact('result', 'credits_recorded');
@@ -590,6 +627,11 @@ class Order extends Base {
 			$datas_order["items"] = $items;
 		}
 		//Get Actual Taxes and Handling
+		$total = 0;
+		$afterDiscount = 0;
+		$tax = 0;
+		$handling = 0;
+		$overSizeHandling = 0;
 		$handling = static::shipping($items);
 		$overSizeHandling = static::overSizeShipping($items);
 		extract(static::_recalculateTax($selected_order,$items));
@@ -603,7 +645,7 @@ class Order extends Base {
             //$tax = static::tax($selected_order,$items);
             //$tax = $tax ? $tax + (($overSizeHandling + $handling) * static::TAX_RATE) : 0;
 		}
-		$subTotal = static::subTotal($items);
+		$afterDiscount = $subTotal = static::subTotal($items);
 		/************PROMOCODES TREATMENT************/
 		if(!empty($selected_order["promo_code"])){
 			//Get Actual Promocodes variables
@@ -978,6 +1020,38 @@ class Order extends Base {
 			}
 		}
 		return $creditCard;
+	}
+	
+	/**
+	 * This function is used to send out various emails with order update or cancelation details.
+	 * The 'Order_Update' and 'Cancel_Order' templates are currently used
+	 * @param object $order
+	 * @param string $email_template
+	 * @see admin\controllers\OrdersController->manage_items()
+	 * @see admin\controllers\OrdersController->view()
+	 */
+	public static function sendEmail($order, $email_template) {
+		$userCollection = User::collection();
+		$current_user = Session::read('userLogin');
+		if(strlen($order["user_id"]) > 10){
+			$user = $userCollection->findOne(array("_id" => new MongoId($order->user_id)));
+		} else {
+			$user = $userCollection->findOne(array("_id" => $order->user_id));
+		}
+		if (is_object($order->ship_date))
+			$shipDate = $order->ship_date->sec;
+		else if (is_string($order->ship_date))
+			$shipDate = strtotime(substr($order->ship_date,0,10));
+		else 
+			$shipDate = $order->ship_date;
+		$data = array(
+			'order' => $order->data(),
+			'shipDate' => date('M d, Y', $shipDate)
+		);
+		if (Environment::get() == 'production')
+			Mailer::send($email_template, $user["email"], $data);
+		else
+			Mailer::send($email_template, $current_user["email"], $data);
 	}
 }
 

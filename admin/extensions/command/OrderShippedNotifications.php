@@ -127,7 +127,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					$data['email'] = $this->debugemail;
 				}
 				$data['items'] = array();
-				$itemSkus = $this->getSkus($data['order']['items']);
+				$itemSkus = Item::getSkus($data['order']['items']);
 				$problem = '';
 				foreach($result['TrackNums'] as $trackNum => $items){
 					if ( $trackNum == 0 || (strlen($trackNum) < 15 && $data['order']['auth_confirmation'] < 0) ){
@@ -182,8 +182,8 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					foreach($result['TrackNums'] as $trackNum => $items){
 						foreach ($items as $item){
 							$conditions = array(
-									'ItemId' =>  $item['id'],
-									'OrderId' => $result['OrderId']
+									'ItemId' =>  new MongoId($item),
+									'OrderId' => new MongoId($result['OrderId'])
 							);
 							$ordersShippedCollection->update($conditions, array('$set' => array('emailNotificationSent' => new MongoDate())));
 						}
@@ -205,7 +205,7 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 			$data['skipped'] = $skipped;
 
 			if(is_null($this->debugemail)) {
-				$data['email'] = 'email-notifiations@totsy.com';
+				$data['email'] = 'email-notifications@totsy.com';
 			}
 			else {
 				$data['email'] = $this->debugemail;

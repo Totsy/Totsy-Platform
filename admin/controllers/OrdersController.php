@@ -9,6 +9,7 @@ use admin\models\Item;
 use admin\models\Credit;
 use admin\models\Promocode;
 use admin\controllers\BaseController;
+use lithium\action\Request;
 use lithium\storage\Session;
 use MongoCode;
 use MongoDate;
@@ -247,6 +248,47 @@ class OrdersController extends BaseController {
 	}
 
 	/**
+	 * Find orders that have items that were short shipped and cancel those items so that the order
+	 * can be billed correctly
+	 * 
+	 * @param order
+	 * @see admin\extensions\command\ProcessPayment
+	 */
+	public function cancelUnshippedItems($order) {
+		$this->request = new Request();
+		$order_data = $order;
+		$unshipped_items = Order::findUnshippedItems($order);
+		
+		if (empty($unshipped_items))
+			return;
+		
+		foreach ($unshipped_items as $unshipped_item) {
+			foreach($order["items"] as $key => $item) {
+				$order_data["items"][$key]['initial_quantity'] = $order_data["items"][$key]['quantity'];
+				if($item["_id"] == new MongoId($unshipped_item)) {
+					$order_data["items"][$key]["cancel"] = "true";
+				}
+			}
+		}
+		
+		$order_data['id'] = $order_data['_id'];
+		$order_data['credit_used'] = '';
+		$order_data['promo_code'] = '';
+		$order_data['promo_discount'] = '';
+		$order_data['save'] = false;
+		$order_data['comment'] = 'Canceling unshipped items';
+		$this->request->data = $order_data;
+		
+		$order_data = $this->manage_items(false);
+		$order_data = $order_data->data();
+		$order_data['save'] = true;
+		$order_data['id'] = $order_data['_id'];
+		$this->request->data = $order_data;
+		$order_data = $this->manage_items(false);
+		return $order_data;
+	}
+
+	/**
 	* The manage_items method update the temporary order.
 	* If the variable save is set to true, it apply the changes.
 	*
@@ -273,8 +315,10 @@ class OrdersController extends BaseController {
 			* before any changes are made to the credit
 			*/
 			if (!$orderClass::checkForCancellations($selected_order['order_id'])) {
-				$selected_order["original_credit_used"] = $selected_order["credit_used"];
-				$datas["original_credit_used"] = $selected_order["credit_used"];
+				if (isset($selected_order["credit_used"])) {
+					$selected_order["original_credit_used"] = $selected_order["credit_used"];
+					$datas["original_credit_used"] = $selected_order["credit_used"];
+				}
 			}
 			$datas["user_id"] = $selected_order["user_id"];
 			$datas["order_id"] = $selected_order["order_id"];
@@ -346,45 +390,13 @@ class OrdersController extends BaseController {
 				));
 
 				// If the order is canceled, send an email
-				if (strlen($order_temp["user_id"]) > 10) {
-					$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
-				} else {
-					$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
-				}
-				if (!is_int($order_temp->ship_date)){
-					$shipDate = $order_temp->ship_date->sec;
-				} else {
-					$shipDate = $order_temp->ship_date;
-				}
-				$data = array(
-					'order' => $order_temp->data(),
-					'shipDate' => date('M d, Y', $shipDate)
-				);
-				if (Environment::is('production')) {
-					Mailer::send('Cancel_Order', $user["email"], $data);
-				}
+				Order::sendEmail($order_temp, 'Cancel_Order');
 			}
 
 			// If order is updated without cancel, send email
 			if (($datas["save"] == 'true') && empty($cancel_order)) {
 				$order = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
-				if(strlen($order_temp["user_id"]) > 10){
-					$user = $userCollection->findOne(array("_id" => new MongoId($order->user_id)));
-				} else {
-					$user = $userCollection->findOne(array("_id" => $order->user_id));
-				}
-				if(!is_int($order->ship_date)){
-					$shipDate = $order->ship_date->sec;
-				} else {
-					$shipDate = $order->ship_date;
-				}
-				$data = array(
-					'order' => $order->data(),
-					'shipDate' => date('M d, Y', $shipDate)
-				);
-				if (Environment::is('production')) {
-					Mailer::send('Order_Update', $user["email"], $data);
-				}
+				Order::sendEmail($order, 'Order_Update');
 			}
 		}
 		return $order_temp;
@@ -628,24 +640,7 @@ class OrdersController extends BaseController {
 
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
-			
-			if(strlen($order_temp["user_id"]) > 10){
-				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
-			} else {
-				$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
-			}
-			if (!is_int($order_temp->ship_date)){
-				$shipDate = $order_temp->ship_date->sec;
-			} else {
-				$shipDate = $order_temp->ship_date;
-			}
-			$data = array(
-				'order' => $order_temp->data(),
-				'shipDate' => date('M d, Y', $shipDate)
-			);
-			if (Environment::is('production')) {
-				Mailer::send('Cancel_Order', $user["email"], $data);
-			}
+			Order::sendEmail($order_temp, 'Cancel_Order');
 		}
 		if(!empty($datas["process-as-an-exception"])){
 			$update = $ordersCollection->update(
@@ -719,6 +714,7 @@ class OrdersController extends BaseController {
 	 * The update method captures payment and updates the order with tracking info.
 	 */
 	public function update() {
+		$current_user = Session::read('userLogin');
 		$orderClass = $this->_classes['order'];
 
 		$_shipToHeaders = array(
@@ -806,7 +802,10 @@ class OrdersController extends BaseController {
 								'email' => $shipRecord['Email'],
 								'details' => $details
 							);
-							Mailer::send('Order_Shipped', $shipRecord['Email'], $data);
+							if (Environment::get() == 'production')
+								Mailer::send('Order_Shipped', $shipRecord['Email'], $data);
+							else
+								Mailer::send('Order_Shipped', $current_user["email"], $data);
 						}
 						if ($orderClass::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
 							if (empty($order->auth_confirmation)) {
