@@ -20,6 +20,7 @@ use PHPExcel_Cell;
 use PHPExcel_Cell_DataType;
 use li3_flash_message\extensions\storage\FlashMessage;
 use li3_payments\payments\Processor;
+use li3_payments\extensions\adapter\payment\CyberSource;
 use admin\extensions\Mailer;
 
 /**
@@ -520,7 +521,7 @@ class OrdersController extends BaseController {
 										'card_number' => substr($datas['creditcard']['number'], -4) 
 					))
 				);
-				FlashMessage::write("Payment details has been updated.", array('class' => 'pass'));	
+				FlashMessage::write("Payment details has been updated.", array('class' => 'pass'));
 			} else {
 				FlashMessage::write(
 					$errors,
@@ -583,6 +584,7 @@ class OrdersController extends BaseController {
 						'processor' => $auth->adapter,
 						'authTotal' => $order['total']
 					), '$unset' => array(
+						'error_date' => 1,
 						'auth_error' => 1
 					)), array( 'upsert' => true)
 			);
@@ -598,6 +600,90 @@ class OrdersController extends BaseController {
 		return $message;
 	}
 	
+	public function capture($id) {
+		$orderClass = $this->_classes['order'];
+		$ordersCollection = $orderClass::Collection();
+		$order = $ordersCollection->findOne(array("_id" => new MongoId($id)));
+		if($order['auth'] && $order['processor']) {
+			#Try To Capture With the Actual Authorization
+			$error = $this->captureAuthorization($order, $order['authKey']);
+			if($error) {
+				#Try To Create A New Authorization and Capture
+				$cybersource = new CyberSource(Processor::config('default'));
+				$profile = $cybersource->profile($order['cyberSourceProfileId']);
+				#Create a new Transaction and Get a new Authorization Key
+				$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
+				if ($auth->success()) {
+					$authKey = $auth->key;
+					$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array('authKey' => $auth->key,
+											  'auth' => $auth->export(),
+											  'authTotal' => $order['total'],
+											  'processor' => $auth->adapter
+					) , '$unset' => array(
+						'error_date' => 1,
+						'auth_error' => 1
+					)), array( 'upsert' => true));
+					$error = $this->captureAuthorization($order, $auth->key);
+				} else {
+					$error = implode('; ', $auth->errors);
+				}
+			}
+		} 		
+		if(!$error) {
+			FlashMessage::write("Capture Successfully Processed for order id `{$order['order_id']}`:", array('class' => 'pass'));
+		} else {
+			FlashMessage::write("Capture Failed Processed for order id `{$order['order_id']}`:". $error, array('class' => 'warning'));
+		}
+	}
+	
+	public function captureAuthorization($order, $authKey) {
+		$orderClass = $this->_classes['order'];
+		$current_user = Session::read('userLogin');
+		$ordersCollection = $orderClass::Collection();
+		$auth_capture = Processor::capture(
+			'default',
+			$authKey,
+			floor($order['total'] * 100) / 100,
+			array(
+				'processor' => isset($order['processor']) ? $order['processor'] : null,
+				'orderID' => $order['order_id']
+			)
+		);
+		if ($auth_capture->success()) {
+			$modification_datas["author"] = $current_user["email"];
+			$modification_datas["date"] = new MongoDate(strtotime('now'));
+			$modification_datas["type"] = "capture";
+			// We push the modifications datas with the old shipping.
+			$ordersCollection->update(
+				array("_id" => $order['_id']),
+				array('$push' => array('modifications' => $modification_datas)),
+				array('upsert' => true)
+			);
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => array('authKey' => $auth_capture->key,
+									  'auth' => $auth_capture->export(),
+									  'authTotal' => $order['total'],
+									  'processor' => $auth_capture->adapter,
+									  'payment_date' => new MongoDate(),
+   									  'auth_confirmation' => $auth_capture->key
+				)), array( 'upsert' => true)
+			);
+			#Unset Old Errors fields
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$unset' => array('error_date' => 1,
+										'auth_error' => 1)
+				)
+			);
+			return false;
+		} else {
+			$error = implode('; ', $auth_capture->errors);
+			return $error;
+		}
+	}
 	/**
 	* The view method renders the order confirmation page that is sent to the customer
 	* after they have placed their order
@@ -625,7 +711,6 @@ class OrdersController extends BaseController {
 		}
 		if (!empty($datas["cancel_action"])){
 			$this->cancel();
-
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
 			
@@ -661,6 +746,9 @@ class OrdersController extends BaseController {
 		}
 		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["phone"])) {
 			$this->updateShipping($id);
+		}
+		if ($id && empty($datas["save"]) && !empty($datas["capture_action"])) {
+			$this->capture($id);
 		}
 		if ($id && empty($datas["save"]) && empty($datas["cancel_action"]) && !empty($datas["billing"])) {
 			$this->updatePayment($id);
@@ -710,9 +798,11 @@ class OrdersController extends BaseController {
 		} else {
 			$service = $order->service;
 		}
-
+		
+		$orderStatus = $orderClass::getStatus($order);
+		
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count');
+		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service', 'processed_count', 'orderStatus');
 	}
 
 	/**

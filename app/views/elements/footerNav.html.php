@@ -1,11 +1,16 @@
+<?php use lithium\storage\Session; ?>
 <ul>
 	<li class="first"><a href="/pages/terms" title="Terms of Use">Terms of Use</a></li>
 	<li><a href="/pages/privacy" title="Privacy Policy">Privacy Policy</a></li>
 	<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
 	<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 	<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
+	
+	<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia"): ?>
 	<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
 	<li><a href="/pages/careers" title="Careers">Careers</a></li>
+	<?php endif ?>
+	
 	<?php if (empty($userInfo)){ ?>
 	<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	<li class="last"><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
