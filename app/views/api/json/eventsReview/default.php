@@ -21,7 +21,7 @@ if (is_array($events)){
 		$evnt['categories'] = $event['groups']['categories'];
 		$evnt['ages'] = $event['groups']['ages'];
 		$evnt['items'] = $event['items'];
-		$evnt['tag'] = implode(',',$event['groups']['ages']);
+		$evnt['tag'] = implode(',',$event['tags']['ages']);
 		$out['events'][] = $evnt;
 	}
 }
