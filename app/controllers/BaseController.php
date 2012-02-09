@@ -104,7 +104,7 @@ class BaseController extends \lithium\action\Controller {
         //if something's funny or not working on kkim, just update it with master			
 		$whiteLabelSubDomain = "evan.totsy.com";
 		 		
- 		if($userInfo) {	   		
+ 		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
         		//totsy to mama
         		if($userInfo['invited_by']=="mamasource") {
@@ -118,8 +118,8 @@ class BaseController extends \lithium\action\Controller {
         	}
         }
                 
-		//$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
-	    $logoutUrl = "/logout";
+		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
+	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
 
 		$this->fbsession = $fbsession = FacebookProxy::getUser();
 		$fbconfig = FacebookProxy::config();
