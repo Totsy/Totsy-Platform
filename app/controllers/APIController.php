@@ -1,9 +1,5 @@
 <?php
 
-/*
- * 2011-07-07 updates
- * 	- took off methods: events, changePassword
- */
 
 namespace app\controllers;
 
