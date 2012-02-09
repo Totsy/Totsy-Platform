@@ -22,13 +22,42 @@ class BaseController extends \lithium\action\Controller {
 		/* Merge $_classes of parent. */
 		$vars = get_class_vars('\lithium\action\Controller');
 		$this->_classes += $vars['_classes'];
-
+		$userInfo = Array();
+				
 		parent::__construct($config);
-		if ($user && $this->request->is('mobile')) {
-			$this->_render['layout'] = 'mobile_main';
+						
+		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile')) {
+		 	$this->_render['layout'] = 'mobile_main';
+		   	$this->tenOffFiftyEligible($userInfo);
+		 	$this->freeShippingEligible($userInfo);
 		} else {
-			$this->_render['layout'] = 'main';
+			$userInfo = Session::read('userLogin');	
+			
+        	//this changes depending on whether we're on prod or not
+        	//if something's funny or not working on kkim, just update it with master
+        	$mamasourceSubDomain = "";
+        	
+        	/*			
+ 			if(!Environment::is('production')) { 	
+				$mamasourceSubDomain = "evan.totsy.com";
+ 			} else {
+ 			*/
+			$mamasourceSubDomain = "mamasource.totsy.com";
+ 			//}
+ 									
+			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
+ 		        Session::write('layout', 'mamapedia', array('name' => 'default'));
+		        $img_path_prefix = "/img/mamapedia/";
+		        $this->set(compact('img_path_prefix'));
+		    } else { 
+		        Session::write('layout', 'main', array('name' => 'default'));
+		        $img_path_prefix = "/img/";
+		        $this->tenOffFiftyEligible($userInfo);
+		        $this->freeShippingEligible($userInfo);
+		    } 	
+			$this->_render['layout'] = '/main';
 		}
+
 	}
 
 	/**
@@ -55,37 +84,66 @@ class BaseController extends \lithium\action\Controller {
 	/**
 	 * Get the userinfo for the rest of the site from the session.
 	 */
-	protected function _init() {
 
+	protected function _init() {
+	
 		parent::_init();
+
 	     if(!Environment::is('production')){
             $branch = "Current branch: " . $this->currentBranch();
             $this->set(compact('branch'));
         }
-        if(Environment::is('production')){
+
+        if(Environment::is('production')) {
             $version = "<!-- Current version: " . $this->currentVersion() . " -->";
             $this->set(compact('version'));
         }
-
-		$userInfo = Session::read('userLogin');
-		$this->set(compact('userInfo'));
+        
+		$userInfo = Session::read('userLogin');		
+		$this->set(compact('userInfo'));	
+			
 		$cartCount = Cart::itemCount();
 		
 		$cartSubTotal = $this->getCartSubTotal();
 		
         User::setupCookie();
+        
+        $redirected = false;
+        
+        //this changes depending on whether we're on prod or not
+        //if something's funny or not working on kkim, just update it with master	
+		$mamasourceSubDomain = "";
+		
+		/*				
+ 		if(!Environment::is('production')){	
+			$mamasourceSubDomain = "evan.totsy.com";
+ 		} else {*/
+			$mamasourceSubDomain = "mamasource.totsy.com";
+ 		//} 
+ 			       
+        if( $userInfo['invited_by']=="mamasource" && $_SERVER['HTTP_HOST']!==$mamasourceSubDomain) {
+			setcookie("PHPSESSID","",time()-3600,"/"); // delete session cookie 
+        	$this->redirect("http://" . $mamasourceSubDomain . "/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
+        } 
+                
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
 
 		$this->fbsession = $fbsession = FacebookProxy::getUser();
 		$fbconfig = FacebookProxy::config();
-		$fblogout = "/logout";
+		
+		if ($this->fbsession) {
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
+		} else {
+			$fblogout = "/logout";
+		}
 
 		if ($userInfo) {
 			$user = User::find('first', array(
 				'conditions' => array('_id' => $userInfo['_id']),
 				'fields' => array('total_credit', 'deactivated','affiliate_share')
 			));
+						
 			if (isset($user) && $user) {
 			    /**
 			    * If the users account has been deactivated during login,
@@ -94,15 +152,14 @@ class BaseController extends \lithium\action\Controller {
 			    if ($user->deactivated == true) {
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-					//FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
 		}
+		
 		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout', 'cartSubTotal'));
-		$this->freeShippingEligible($userInfo);
-		$this->tenOffFiftyEligible($userInfo);
+				
 		/**
 		* Get the pixels for a particular url.
 		**/
@@ -116,7 +173,7 @@ class BaseController extends \lithium\action\Controller {
             }
             if (array_key_exists('invited_by',$userInfo)){
                 $invited_by = $userInfo['invited_by'];
-            }else if(array_key_exists('affiliate_share',$userData)){
+            } else if(array_key_exists('affiliate_share',$userData)){
                 $invited_by = $userData['affiliate_share']['affiliate'];
             }
 		}
@@ -155,8 +212,6 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$this->set(compact('pixel'));
 
-
-
 	}
 
 	/**
@@ -165,9 +220,9 @@ class BaseController extends \lithium\action\Controller {
 	* @see app/controllers/AffiliatesController
 	* @see app/controllers/UsersController
 	**/
-	public function freeShippingEligible($userInfo){
+	public function freeShippingEligible($userInfo) {
 	    $sessionServices = Session::read('services', array('name' => 'default'));
-	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping') ));
+	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
 	        if ($user) {
@@ -182,12 +237,13 @@ class BaseController extends \lithium\action\Controller {
 	            *   starts and end; and the user uses the service with in thirty days
 	            *   of their registration
 	            */
-                if ( ($service->start_date->sec <= $created_date &&
+	            	            
+                if ( (($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
-                    (strtotime("now") < $dayThirty)) {
-
+                    (strtotime("now") < $dayThirty)) ) {
+                    
                     //checks if the user ever made a purchase
-                    if ($user->purchase_count < 1) {
+                    if ($user->purchase_count < 1 ) {
                         $sessionServices = Session::read('services', array('name' => 'default'));
                         $sessionServices['freeshipping'] = 'eligible';
                         Session::write('services', $sessionServices, array('name' => 'default'));
@@ -202,6 +258,7 @@ class BaseController extends \lithium\action\Controller {
 	        }
 	    }
 	}
+	
 	public function tenOffFiftyEligible($userInfo) {
 	    $serviceSession = Session::read('services', array('name' => 'default'));
 	    $service = Service::find('first', array('conditions' => array('name' => '10off50') ));

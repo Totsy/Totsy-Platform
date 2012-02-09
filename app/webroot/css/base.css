@@ -232,6 +232,24 @@ abbr {
 }
 */
 
+#mamapedia-logo-outer {
+	height: 102px; 
+	width: 351px; 
+	float:left; 
+	margin: 5px 0px 5px 10px;
+	text-align:center !important;
+	display: table;
+}
+
+#mamapedia-logo-inner {
+	margin: 0 auto !important; 
+	display: table-cell !important;
+	vertical-align: middle; 
+	width: 100%; 
+	text-align:center !important;
+	background:url(../img/mamapedia/logo.png) no-repeat;
+}
+
 blockquote {
 	margin-bottom:20px;
 	width:70%;
@@ -762,6 +780,7 @@ h2.page-title {
 	margin:0 0 20px 0;
 	font-weight:normal;
 	font-size:20px;
+	text-align:left !important;
 }
 .fullwidth > section > header h2 {
 	margin-bottom:6px; padding-bottom:6px;
@@ -1114,7 +1133,7 @@ margin:7px !important;
 }
 
 .cart_popup_item_thumbnail {
-width:73px!important; 
+width:73px !important; 
 float:left;
 }
 
@@ -1123,26 +1142,26 @@ float:left;
 }
 
 .cart_popup_item_description {
-float:left!important; 
+float:left !important; 
 width:250px;
 }
 
 .cart_popup_item_price {
-width:46px!important;
+width:46px !important;
 float:left; 
 text-align:right !important;
 }
 
 .cart_popup_line_qty {
-width:40px!important;
+width:40px !important;
 float:left; 
 text-align:right !important;
 }	
 
 .cart_popup_line_total {
-width:55px!important;
+width:55px !important;
 float:left; 
-text-align:right!important;
+text-align:right !important;
 font-weight: bold;
 }
 
@@ -1203,9 +1222,9 @@ text-align:center !important;
 }
 
 .ui-dialog .ui-dialog-titlebar-close span {
-	background:url(../img/close-btn.gif) no-repeat scroll transparent right center !important;
+	background:url(../img/close-btn.png) no-repeat scroll transparent right center !important;
 	padding-right:16px;
-	font-size:16px;
+	font-size:12px;
 }
 
 .ui-dialog .ui-dialog-content {
@@ -2581,6 +2600,14 @@ html {
 
 body.login {
 	height:100%;
+}
+
+#featured-brands-box {
+border:1px #eeeeee solid; 
+height:330px; 
+width:300px; 
+margin-top:83px;
+margin-left:20px;
 }
 
 #fullscreen {
@@ -4659,7 +4686,7 @@ nav .haschild li a:hover {
 #userUtils .cart strong {color:#ED1C25;}
 #userUtils .cart *:hover {text-decoration:underline;}
 #userUtils .cart strong {font-size:14px; font-weight: bold;}
-#userUtils .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
+#userUtils .btn, .modal .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
 	padding:1px 10px 0;
 	background: url(../img/btn-glass.png) 0 50.5% repeat-x;
 	border:1px solid rgba(0,0,0,0);
@@ -4680,7 +4707,7 @@ nav .haschild li a:hover {
 	background-color:rgba(218,80,77,1);
 	color:#fff;
 }
-#userUtils .checkout strong {
+#userUtils .checkout strong, .modal .btn strong {
 	padding-right:9px;
 	background: url(../img/btn-arrow-s.png) 100% 25% no-repeat;
 	line-height: 1.6;

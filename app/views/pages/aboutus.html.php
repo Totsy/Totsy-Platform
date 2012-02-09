@@ -1,5 +1,5 @@
+<?php use lithium\storage\Session; ?>
 <?php $this->title("About Us"); ?>
-
 <div class="grid_16">
 	<h2 class="page-title gray">About Us</h2>
 	<hr />
@@ -12,6 +12,14 @@
 
 
 <div class="grid_11 omega roundy grey_inside b_side">
+	
+	<?php if(Session::read("layout", array("name"=>"default"))=="mamapedia"): ?>
+	<p>
+		Mamasource has partnered with Totsy to provide all Mamasource members with the best deals on top brands for babies, kids and moms.
+	</p>
+
+	<br />	
+	<?php endif ?>
 
 	<h2 class="page-title gray">Where the savvy mom shops</h2>
 	<hr />
@@ -21,6 +29,7 @@
 	</p>
 
 	<br />
+	
 	<h2 class="page-title gray">Top brands for mom, baby, and child</h2>
 	<hr />
 	<p>

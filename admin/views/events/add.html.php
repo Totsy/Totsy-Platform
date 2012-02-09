@@ -93,6 +93,11 @@ tinyMCE.init({
 			var eventName  = document.getElementById('Name').value,
 				eventCount = 0;
 
+			if (eventName.length > 32) {
+				alert("The event name '" + eventName + "' is too long. Event names cannot exceed 32 characters.");
+				return false;
+			}
+
 			$.ajax({
 				url: 'find',
 				dataType: 'json',
