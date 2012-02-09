@@ -23,9 +23,6 @@ var discountErrors = new Object();
 		    discountErrors.credits=false;
 		}
 
-	$("#cart-count").text(<?=$itemCount?>);
-	parent = $("#cart-count").parent();
-	parent.attr("title", "My Cart (<?php echo $itemCount;?>)");
 	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);
 
 	//set the timer
