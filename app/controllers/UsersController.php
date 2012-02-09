@@ -229,6 +229,12 @@ class UsersController extends BaseController {
 	 */
 		public static function registration($data = null) {
 			$saved = false;
+			
+			$whiteLabel = false;
+			
+			if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+				$whiteLabel = true;
+			} 
 
 			if ($data) {
 			
@@ -272,13 +278,15 @@ class UsersController extends BaseController {
 						);
 
 						if (isset($user['clear_token'])) {
-							$mail_template = 'Welcome_auto_passgen';
+							$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');						
 							$params['token'] = $user['clear_token'];
 						}
+						
 						if (isset($user['requires_set_password'])) {
-							$mail_template = 'Welcome_auto_passgen';
+							$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');
 							$params['token'] = $plaintext_password;
 						}
+						
 							$params = array();
 						
 							$data = array(
@@ -287,7 +295,7 @@ class UsersController extends BaseController {
 							);
 						
 							if (isset($user['clear_token'])) {
-								$mailTemplate = 'Welcome_auto_passgen';
+								$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');
 								$params['token'] = $user['clear_token'];
 							}
 														

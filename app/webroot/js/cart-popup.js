@@ -131,8 +131,8 @@ $(document).ready( function() {
 			success: function(data) {	
 				if(data) {
 					//tracking add to cart in GA	
-					_gaq.push(['_trackEvent', 'Cart', 'Add', 'Add to Cart', 1]);
 					showCartPopup(data);
+					_gaq.push(['_trackEvent', 'Cart', 'Add', 'Add to Cart', 1]);
 				}
 			}
 		});

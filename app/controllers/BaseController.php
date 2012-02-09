@@ -35,7 +35,7 @@ class BaseController extends \lithium\action\Controller {
 			
         	//this changes depending on whether we're on prod or not
         	//if something's funny or not working on kkim, just update it with master        	
-			$mamasourceSubDomain = "kkim.totsy.com";
+			$mamasourceSubDomain = "evan.totsy.com";
  									
 			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
@@ -102,7 +102,7 @@ class BaseController extends \lithium\action\Controller {
         
         //this changes depending on whether we're on prod or not
         //if something's funny or not working on kkim, just update it with master			
-		$whiteLabelSubDomain = "kkim.totsy.com";
+		$whiteLabelSubDomain = "evan.totsy.com";
 		 		
  		if($userInfo) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
@@ -118,8 +118,8 @@ class BaseController extends \lithium\action\Controller {
         	}
         }
                 
-		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
-	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
+		//$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
+	    $logoutUrl = "/logout";
 
 		$this->fbsession = $fbsession = FacebookProxy::getUser();
 		$fbconfig = FacebookProxy::config();
