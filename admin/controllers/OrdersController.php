@@ -6,6 +6,7 @@ use lithium\core\Environment;
 use admin\models\User;
 use admin\models\Event;
 use admin\models\Item;
+use admin\models\Order;
 use admin\models\Credit;
 use admin\models\Promocode;
 use admin\controllers\BaseController;
@@ -977,9 +978,8 @@ class OrdersController extends BaseController {
 	public function taxreturn(){
 		$taxClass   = $this->_classes['tax'];
 		$orderClass = $this->_classes['order'];
-
+		
 		if ($this->request->data) {
-
 			//get order details
 			$order = $orderClass::collection()->findOne(array('_id' => new MongoId($this->request->data['id']) ));
 
@@ -1004,7 +1004,7 @@ class OrdersController extends BaseController {
 				}
 				return array('order'=>$order, 'sku' => $sku, 'itemscanceled' => false, 'edit_mode' => false);
 			}
-
+			
 			// FULL order tax return
 			if(array_key_exists('fullordertaxreturn_action',$this->request->data)){
 				$data['order'] = $order;
@@ -1016,9 +1016,18 @@ class OrdersController extends BaseController {
 				$data['order']['return'] = 'full';
 				$order['return'] = 'full';
 				$this->_shipping($data);
-				$orderClass::save($order);
+				if (array_key_exists('_id',$order) && is_object($order['_id'])){
+					
+					$id= array_shift($order);
+					Order::collection()->update(
+						array('_id'=>$id),
+						array('$set'=> $order)
+					);
+				} else {
+					$orderClass::save($order);
+				}
 			}
-
+			
 			// Partial order tax return
 			if (isset($this->request->data['return_check']) && is_array($this->request->data['return_check']) && count($this->request->data['return_check'])>0){
 				$data['order'] = $order;
@@ -1051,18 +1060,15 @@ class OrdersController extends BaseController {
 				$order['total'] = $order['total'] - ( $sub + $tax);
 				$orderClass::collection()->save($order);
 			}
-
+			
 			// remember to set for all returned items to negative amount
 			foreach ($data['items'] as $k=>$v){
 				$v['sale_retail'] = '-'.$v['sale_retail'];
 				$data['items'][$k] = $v;
 			}
-
 			$taxClass::returnTax($data);
 		}
-
-		$this->redirect(array('Orders::view::'.$this->request->data['id']));
-		exit(0);
+		$this->redirect('orders/view/'.$this->request->data['id'], array("exit"=>true));
 	}
 
 	protected function _shipping(&$data){
