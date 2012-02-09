@@ -13,44 +13,6 @@ use app\models\Affiliate;
 
 class EventsController extends BaseController {
 // if you change this here also remember to change it in mobile and the app (it's hard coded)
-	private $_mapCategories = array (
-		'category' =>  array(
-			'all' => "All",
-			'girls-apparel' => "Girls Apparel",
-			'boys-apparel' => "Boys Apparel",
-			'shoes' => "Shoes",
-			'accessories' =>"Accessories",
-			'toys-books' => "Toys and Books",
-			'gear' => "Gear",
-			'home' => "Home",
-			'moms-dads' => "Moms and Dads"
-		),
-		'age' => array(
-			'all' => 'All',
-			'newborn' => 'Newborn 0-6M',
-			'infant' => 'Infant 6-24M',
-			'toddler' => 'Toddler 1-3 Y',
-			'preschool' => 'Preschool 3-4Y',
-			'school' => 'School Age 5+',
-			'adult' => 'Adult'
-		)
-	);
-
-	public function splash() {
-		$datas = $this->request->args;
-		
-		$openEventsData = Event::open()->data();
-		$openEvents = array_slice($openEventsData,0,$this->showEvents,true);
-		
-	
-		$this->_render['template'] = 'splash';
-		//if($this->request->is('mobile')){
-		// 	$this->_render['layout'] = 'mobile_main';
-		// 	$this->_render['template'] = 'mobile_age';
-	//	}
-		return compact('openEvents');
-	}
-
 	public function category() {
 		$datas = $this->request->args;
 		$categories = array();
@@ -60,7 +22,7 @@ class EventsController extends BaseController {
 //			$openEvents = Event::open()->data();
 			$this->redirect('/sales');
 		} else {
-			$map = $this->_mapCategories[ $this->request->params['action'] ];
+			$map = Event::mapCat($this->request->params['action']); 
 			$categories =  $map[ $this->request->args[0] ];
 			if($categories==""){
 				$this->redirect('/'.$this->request->args[0]);
@@ -120,7 +82,7 @@ class EventsController extends BaseController {
 //			$openEvents = Event::open()->data();
 			$this->redirect('/sales');
 		} else {
-			$map = $this->_mapCategories[ $this->request->params['action'] ];
+			$map = Event::mapCat($this->request->params['action']); 
 			$ages =  $map[ $this->request->args[0] ];
 			if($ages==""){
 				$this->redirect('/'.$this->request->args[0]);
@@ -369,6 +331,7 @@ class EventsController extends BaseController {
 	public function disney(){
 		$this->_render['layout'] = false;
 	}
+	
 }
 
 

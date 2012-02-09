@@ -1222,9 +1222,9 @@ text-align:center !important;
 }
 
 .ui-dialog .ui-dialog-titlebar-close span {
-	background:url(../img/close-btn.gif) no-repeat scroll transparent right center !important;
+	background:url(../img/close-btn.png) no-repeat scroll transparent right center !important;
 	padding-right:16px;
-	font-size:16px;
+	font-size:12px;
 }
 
 .ui-dialog .ui-dialog-content {
@@ -4686,7 +4686,7 @@ nav .haschild li a:hover {
 #userUtils .cart strong {color:#ED1C25;}
 #userUtils .cart *:hover {text-decoration:underline;}
 #userUtils .cart strong {font-size:14px; font-weight: bold;}
-#userUtils .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
+#userUtils .btn, .modal .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
 	padding:1px 10px 0;
 	background: url(../img/btn-glass.png) 0 50.5% repeat-x;
 	border:1px solid rgba(0,0,0,0);
@@ -4707,7 +4707,7 @@ nav .haschild li a:hover {
 	background-color:rgba(218,80,77,1);
 	color:#fff;
 }
-#userUtils .checkout strong {
+#userUtils .checkout strong, .modal .btn strong {
 	padding-right:9px;
 	background: url(../img/btn-arrow-s.png) 100% 25% no-repeat;
 	line-height: 1.6;
