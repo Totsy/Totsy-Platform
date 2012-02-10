@@ -1,5 +1,12 @@
 <style>
 .cs_import { margin:0px 10px;}
+
+#invites h2 {
+	color: #777;
+	font-weight: bold;
+	font-size: 20px;
+}
+
 </style>
 
 <?php $this->title("My Invitations"); ?>
@@ -21,7 +28,7 @@
 				<div class='standard-message'><strong><?=$flashMessage?></strong></div>
 				<br>
 			<?php endif ?>
-				<h2 style="font-size:18px; margin:10px 0px 0px 10px; font-weight:normal;">Dress your kids for free with Totsy!<br />Invite friends &amp; get $15 credits in your account!*</h2>
+				<h2>Dress your kids for free with Totsy!<br />Invite friends &amp; get $15 credits in your account!*</h2>
 				<div class="clear"></div>
 				<div style="width:255px; float:left; margin:25px 10px 0px 10px;">
 				<hr style="margin:0 0px 7px"/>
