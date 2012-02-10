@@ -56,13 +56,21 @@
 										</div><br />
 									</div>
 									<div id="normal" style="display:block">
+										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:black;">
+											<b>Order ID</b> : <?php echo $order['order_id'] ?><br />
+											<b>AuthKey :</b> <?php echo $order['authKey'] ?><br />
+											<b>Order Status :</b> <?php echo $orderStatus ?><br />
+										</p>
 										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 											The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
 										</p>
 										<p style="text-align:center;">
-											<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>
-											<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
+											<!--<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>-->
+											<!--<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>-->
 											<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+										<?php if(empty($order['payment_date']) && empty($order['cancel']) && ($order['authTotal'] == $order['total'])) : ?>
+											<button id="capture_button" style="font-weight:bold;font-size:14px;">Capture Full Order Amount</button>
+										<?php endif; ?>
 											<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
 											<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
 											<button id="refresh_total" style="font-weight:bold;font-size:14px;">Refresh & Update Total</button>
@@ -88,6 +96,11 @@
 										<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 										<?php echo $this->form->hidden('cancel_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
 										<?php echo $this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
+										<?php echo $this->form->end();?>
+									</div>
+									<div id="capture_form" style="display:none">
+										<?php echo $this->form->create(null ,array('id'=>'captureForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('capture_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
 										<?php echo $this->form->end();?>
 									</div>
 									<div id="order_file" style="display:none">
@@ -659,6 +672,12 @@ $(document).ready(function(){
 		if ($("#confirm_cancel_div").is(":hidden")) {
 			$("#confirm_cancel_div").show("slow");
 			$("#normal").slideUp();
+		}
+	});
+	$("#capture_button").click(function () {
+		if (confirm('Are you sure to capture this order ?')) {
+			$('#capture_action').val(true);
+			$('#captureForm').submit();
 		}
 	});
 	$('#full_order_tax_return_button').click(function(){

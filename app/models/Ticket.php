@@ -10,6 +10,7 @@ class Ticket extends \lithium\data\Model {
 		'default' => 'support@totsy.com',
 		'order' => 'support@totsy.com',
 		'tech'=> 'support@totsy.com',
+		'shipping'=> 'support@totsy.com',
 		'refunds' => 'support@totsy.com',
 		'merch' => 'support@totsy.com',
 		'business' => 'business@totsy.com',

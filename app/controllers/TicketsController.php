@@ -25,11 +25,12 @@ class TicketsController extends BaseController {
 	 * TODO: in fufture make normal form errors error reports no extra params (data and error)
 	 */
 	public function add() {
-					if($this->request->is('mobile')){
+					if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 				 	$this->_render['layout'] = 'mobile_main';
 				 	$this->_render['template'] = 'mobile_add';
 				} else {
-					//$this->_render['template'] = 'sent';
+					// we're doing this to disable the contact form.
+					$this->redirect("/pages/contact");
 				}
 		$ticket = Ticket::create();
 		$user = Session::read('userLogin');
@@ -73,7 +74,7 @@ class TicketsController extends BaseController {
 					} 
 				}
 				Mailer::send('Tickets', $email, $args, $options);
-				if($this->request->is('mobile')){
+				if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 				 	$this->_render['layout'] = 'mobile_main';
 				 	$this->_render['template'] = 'mobile_sent';
 				} else {
