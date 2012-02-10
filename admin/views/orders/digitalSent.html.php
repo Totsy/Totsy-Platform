@@ -45,7 +45,7 @@
 					<?php echo date('m-d-Y', $item['date_sent']->sec);?>
 				</td>
 				<td>
-					<?php echo $item['email']; ?>
+					<a href="/users/view/<?php echo $item['user_id'];?>"><?php echo $item['email']; ?></a>
 				</td>
 				<td>
 					<?php echo $item['description']; ?>

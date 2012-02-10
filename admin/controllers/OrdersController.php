@@ -1126,7 +1126,7 @@ class OrdersController extends BaseController {
 	public function digitalToSend() {
 		$orderClass = $this->_classes['order'];
 		if($order_id = $this->request->query['updated']) {
-			FlashMessage::write("Item has been updated.", array('class' => 'pass'));
+			FlashMessage::write("Item has been processed.", array('class' => 'pass'));
 		}
 		$ordersCollection = $orderClass::Collection();
 		$orders = $ordersCollection->find(array(
@@ -1141,6 +1141,7 @@ class OrdersController extends BaseController {
 					$lineItem['full_order_id'] = (string) $order['_id'];
 					$lineItem['date_created'] = $order['date_created'];
 					$lineItem['email'] = $user['email'];
+					$lineItem['user_id'] = $order['user_id'];
 					$lineItem['quantity'] = $item['quantity'];
 					$lineItem['description'] = $item['description'];
 					$lineItem['item_id'] = $item['item_id'];
@@ -1154,12 +1155,10 @@ class OrdersController extends BaseController {
 	public function markedDigitalItem() {
 		$orderClass = $this->_classes['order'];
 		$ordersCollection = $orderClass::Collection();
-		$order_id = $this->request->query['order_id'];
+		$id = $this->request->query['order_id'];
 		$item_id = $this->request->query['item_id'];
 		$order = $ordersCollection->findOne(array(
-			'items.digital' => true,
-			'order_id' => $order_id,
-			'items.item_id' => $item_id
+			'_id' => new MongoId($id)
 		));
 		if($order) {
 			foreach($order['items'] as $key => $item) {
@@ -1173,7 +1172,6 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-		
 		$this->redirect('/orders/digitalToSend/?updated=true');
 	}
 	
@@ -1194,6 +1192,7 @@ class OrdersController extends BaseController {
 					$lineItem['date_created'] = $order['date_created'];
 					$lineItem['date_sent'] = $item['coupon_sent_date'];
 					$lineItem['email'] = $user['email'];
+					$lineItem['user_id'] = $order['user_id'];
 					$lineItem['quantity'] = $item['quantity'];
 					$lineItem['description'] = $item['description'];
 					$lineItem['item_id'] = $item['item_id'];

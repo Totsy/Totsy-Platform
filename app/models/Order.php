@@ -29,7 +29,6 @@ class Order extends Base {
 	);
 
 	public $validates = array(
-		'authKey' => 'Could not secure payment.'
 	);
 
 	public static function dates($name) {
@@ -113,6 +112,11 @@ class Order extends Base {
 
 	public static function processPayments($cart, $order, $paymentInfos, $amountToCapture, $authTotalAmount) {
 		$payments = static::$_classes['payments'];
+		$transactions = array (
+			'capture' => null,
+			'errors' => null,
+			'softAuth' => null
+		);
 		if($amountToCapture > 0) {
 			$authorizationTransaction = $payments::authorize('default', $amountToCapture, $paymentInfos, array('orderID' => $order->order_id));
 			if($authorizationTransaction->success()) {
@@ -270,7 +274,6 @@ class Order extends Base {
 				$order->payment_date = new MongoDate();
 				$order->processor = $transactions['capture']->adapter;
 				$order->auth = $transactions['capture']->export();
-				$shipDateInsert = date('now');
 			}
 		}
 		if($transactions['softAuth']) {
@@ -280,7 +283,9 @@ class Order extends Base {
 			$order->auth = $transactions['softAuth']->export();
 		}
 		if(Cart::isOnlyDigital($cart)) {
+			$shippingMethod = 'email';
 			$order->isOnlyDigital = true;
+			$shipDateInsert = time();
 		}
 		$order->save(array(
 			'total' => $vars['total'],

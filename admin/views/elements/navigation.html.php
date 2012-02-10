@@ -12,10 +12,10 @@
 				<?php echo $this->html->link('Order Payment Status', 'Orders::payments'); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('Digital Items To Send', 'Orders::digitalToSend'); ?>
+				<?php echo $this->html->link('Digital Items to be Processed', 'Orders::digitalToSend'); ?>
 			</li>
 			<li>
-				<?php echo $this->html->link('Digital Items Sent', 'Orders::digitalSent'); ?>
+				<?php echo $this->html->link('Digital Items Processed', 'Orders::digitalSent'); ?>
 			</li>
 		</ul>
 	</li>

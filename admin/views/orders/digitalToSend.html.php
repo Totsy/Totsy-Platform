@@ -24,7 +24,7 @@
 				<th>User Email</th>
 				<th>Description</th>
 				<th width="10%">Quantity</th>
-				<th width="15%">Sent To Customer</th>
+				<th width="15%">Processed ?</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -42,7 +42,7 @@
 					<?php echo date('m-d-Y', $item['date_created']->sec);?>
 				</td>
 				<td>
-					<?php echo $item['email']; ?>
+					<a href="/users/view/<?php echo $item['user_id'];?>"><?php echo $item['email']; ?></a>
 				</td>
 				<td>
 					<?php echo $item['description']; ?>
