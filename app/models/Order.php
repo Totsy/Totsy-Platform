@@ -270,7 +270,6 @@ class Order extends Base {
 				$order->payment_date = new MongoDate();
 				$order->processor = $transactions['capture']->adapter;
 				$order->auth = $transactions['capture']->export();
-				$order->digital = true;
 				$shipDateInsert = date('now');
 			}
 		}
@@ -279,6 +278,9 @@ class Order extends Base {
 			$order->processor = $transactions['softAuth']->adapter;
 			$order->authTotal = $authTotalAmount;
 			$order->auth = $transactions['softAuth']->export();
+		}
+		if(Cart::isOnlyDigital($cart)) {
+			$order->isOnlyDigital = true;
 		}
 		$order->save(array(
 			'total' => $vars['total'],

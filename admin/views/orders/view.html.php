@@ -62,7 +62,9 @@
 										<p style="text-align:center;">
 											<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>
 											<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
-											<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+											<?php if(!$hasDigitalItems): ?>
+												<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+											<?php endif ?>
 											<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
 											<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
 											<button id="refresh_total" style="font-weight:bold;font-size:14px;">Refresh & Update Total</button>
@@ -453,8 +455,10 @@
 													} while ($i <= $limit)
 													?>
 													<?php echo $this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
+												
 													<?php echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
 													?>
+													
 													<?php if ($return_q>0){?>
 													<?php echo $return_q; ?> return(s)
 													<?php }?>
@@ -462,6 +466,7 @@
 												<td title="subtotal" style="padding:5px; color:#009900;">
 													$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
 												</td>
+												<?php if(empty($item["digital"])){ ?>
 												<td>
 													<div style="text-align:center;">
 														<?php if($item["cancel"] == true){ ?>
@@ -473,6 +478,7 @@
 														<?php }//endelse?>
 													</div>
 												</td>
+												<?php }//endelse?>
 											<?php endforeach ?>
 											</tr>
 

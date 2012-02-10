@@ -82,7 +82,8 @@ class VoidTransaction extends \lithium\console\Command {
 							'auth' => array('$exists' => true),
 							'cancel' => array('$ne' => true),
 							'total' => array('$ne' => 0),
-							'$where' => 'this.total == this.authTotal'
+							'$where' => 'this.total == this.authTotal',
+							'isOnlyDigital' => array('$ne' => true)
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -165,7 +166,14 @@ class VoidTransaction extends \lithium\console\Command {
 				$toVoid = false;
 			}
 		}
-		if(isset($order['authTotal']) && $order['authTotal'] != $order['total']) {
+		
+		#Check The Amount to Authorize
+		if(!empty($order['captured_amount'])) {
+			$amountToAuthorize = ($order['total'] - $order['captured_amount']);
+		} else {
+			$amountToAuthorize = $order['total'];
+		}	
+		if((!isset($order['authTotal'])) || ($order['authTotal'] != $amountToAuthorize)) {
 			$toVoid = false;
 		}
 		Logger::debug('Eligible for Void: ' . $toVoid);

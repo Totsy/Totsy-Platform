@@ -182,7 +182,7 @@ class Order extends Base {
 
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
 		#If Digital Items, Calculate correct Amount
-		if($order['captured_amount']) {
+		if(!empty($order['captured_amount'])) {
 			$amountToCapture = ($order['total'] - $order['captured_amount']);
 		} else {
 			$amountToCapture = $order['total'];
@@ -470,7 +470,6 @@ class Order extends Base {
 			'comment' => null,
 			'initial_credit_used' => null
 		);
-				
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
@@ -608,10 +607,22 @@ class Order extends Base {
 			$datas_order["items"] = $items;
 		}
 		//Get Actual Taxes and Handling
-		$handling = static::shipping($items);
-		$overSizeHandling = static::overSizeShipping($items);
-		extract(static::_recalculateTax($selected_order,$items));
 
+		if(static::isOnlyDigital($datas_order)) {
+			$selected_order['handling'] = 0;
+			$selected_order['overSizeHandling'] = 0;
+			$datas_order['overSizeHandling'] = 0;	
+			$datas_order['handling'] = 0;
+			$datas_order['tax'] = 0;
+			$selected_order['tax'] = 0;
+		} else {
+			$datas_order['handling'] = static::shipping($items);
+			$datas_order['overSizeHandling'] = static::overSizeShipping($items);
+			$selected_order['handling'] = $datas_order['handling'];
+			$selected_order['overSizeHandling'] = $datas_order['overSizeHandling'];
+			extract(static::_recalculateTax($selected_order,$items));
+			$datas_order['tax'] = $tax;
+		}
 		if ($tax instanceof Exception) {
 			/* Rethrow exceptions received while recalculating tax. */
 			throw $tax;
@@ -997,6 +1008,21 @@ class Order extends Base {
 		}
 		return $creditCard;
 	}
+	
+	/**
+	 * Check if Items in Order are only Digital
+	 * @return boolean onlyDigital
+	 */
+	public static function isOnlyDigital($order) {
+		$onlyDigital = true;
+		foreach($order['items'] as $item) {
+			if(empty($item['digital']) && empty($item['cancel'])) {
+				$onlyDigital = false;
+			}
+		}
+		return $onlyDigital;
+	}
+
 }
 
 ?>

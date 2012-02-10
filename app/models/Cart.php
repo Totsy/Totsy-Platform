@@ -306,6 +306,11 @@ class Cart extends Base {
 		if (count($cartCheck) == 1 && !Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
 			$cost = 0;
 		}
+		
+		if(static::isOnlyDigital($carts)) {
+			$cost = 0;
+		}
+		
 		return $cost;
 	}
 
@@ -323,6 +328,11 @@ class Cart extends Base {
 					$cost+= $data['shipping_rate'];
 				}
 			}
+			
+			if(static::isOnlyDigital($carts)) {
+				$cost = 0;
+			}
+
 			return $cost;
 	}
 

@@ -74,7 +74,9 @@ class ReCapture extends \lithium\console\Command {
 				$conditions = array('order_id' => $orderId,
 									'total' => array('$ne' => 0),
 									'cancel' => array('$ne' => true),
-									'payment_captured' => array('$exists' => false)
+									'payment_captured' => array('$exists' => false),
+									'cancel' => array('$ne' => true),
+									'isOnlyDigital' => array('$ne' => true)
 									);
 				$order = $ordersCollection->findOne($conditions);
 				if(!empty($order)) {		
@@ -126,8 +128,14 @@ class ReCapture extends \lithium\console\Command {
 		#Retrieve Profile using CyberSourceProfile ID		
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
+		#If Digital Items, Calculate correct Amount
+		if(!empty($order['captured_amount'])) {
+			$amountToAuthorize = ($order['total'] - $order['captured_amount']);
+		} else {
+			$amountToAuthorize = $order['total'];
+		}
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
+		$auth = Processor::authorize('default', $amountToAuthorize, $profile, array('orderID' => $order['order_id']));
 		if ($auth->success()) {
 			Logger::debug('Authorize Complete: ' . $auth->key);
 			$authKey = $auth->key;
@@ -136,7 +144,7 @@ class ReCapture extends \lithium\console\Command {
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth->key,
 											  'auth' => $auth->export(),
-											  'authTotal' => $order['total'],
+											  'authTotal' => $amountToAuthorize,
 											  'processor' => $auth->adapter
 						)), array( 'upsert' => true)
 				);
@@ -156,7 +164,7 @@ class ReCapture extends \lithium\console\Command {
 			$reportAuthorize[] = $error;
 			$reportAuthorize[] = $order['order_id'];
 			$reportAuthorize[] = $order['authKey'];
-			$reportAuthorize[] = $order['total'];
+			$reportAuthorize[] = $amountToAuthorize;
 		}
 		return compact('authKey', 'reportAuthorize');
 	}
@@ -166,7 +174,7 @@ class ReCapture extends \lithium\console\Command {
 		$ordersCollection = Order::Collection();
 		$report = null;
 		#If Digital Items, Calculate correct Amount
-		if($order['captured_amount']) {
+		if(!empty($order['captured_amount'])) {
 			$amountToCapture = ($order['total'] - $order['captured_amount']);
 		} else {
 			$amountToCapture = $order['total'];
@@ -197,14 +205,13 @@ class ReCapture extends \lithium\console\Command {
 			$transation['authKey'] = $auth_capture->key;
 			$transation['amount'] = $amountToCapture;
 			$transation['date_captured'] = new MongoDate();
-			$update = static::update(
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
 				array(
 					'$push' => array(
 					'capturedTransactions' => $transation
 					)
-				),
-				array('_id' => $order['_id']),
-				array('upsert' => true)
+				)
 			);
 			#Unset Old Errors fields
 			$update = $ordersCollection->update(
@@ -216,7 +223,7 @@ class ReCapture extends \lithium\console\Command {
 			$report[] = '';
 			$report[] = $order['order_id'];
 			$report[] = $authKey;
-			$report[] = $order['total'];
+			$report[] = $amountToCapture;
 			Logger::debug('Order Document Updated!');
 		} else {
 			#Record errors in DB
@@ -234,7 +241,7 @@ class ReCapture extends \lithium\console\Command {
 			$report[] = $error;
 			$report[] = $order['order_id'];
 			$report[] = $order['authKey'];
-			$report[] = $order['total'];
+			$report[] = $amountToCapture;
 		}
 		return $report;
 	}

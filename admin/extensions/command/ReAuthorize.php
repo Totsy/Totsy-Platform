@@ -125,7 +125,8 @@ class ReAuthorize extends \lithium\console\Command {
 							'$where' => 'this.total == this.authTotal',
 							'cyberSourceProfileId' => array('$exists' => true),
 							'authTotal' => array('$exists' => true),
-							'processor' => 'CyberSource'
+							'processor' => 'CyberSource',
+							'isOnlyDigital' => array('$ne' => true)
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -206,7 +207,13 @@ class ReAuthorize extends \lithium\console\Command {
 		}
 		#If The Order has been already full authorize and Order send to Dotcom. Don't reauth
 		if(!empty($this->fullAmount)) {
-			if((!isset($order['authTotal'])) || ($order['authTotal'] >= $order['total'])) {
+			#Check The Amount to Authorize
+			if(!empty($order['captured_amount'])) {
+				$amountToAuthorize = ($order['total'] - $order['captured_amount']);
+			} else {
+				$amountToAuthorize = $order['total'];
+			}	
+			if((!isset($order['authTotal'])) || ($order['authTotal'] >= $amountToAuthorize)) {
 				$reAuth = false;
 			}
 		} else {
@@ -233,6 +240,9 @@ class ReAuthorize extends \lithium\console\Command {
 		if(!empty($order['cancel'])) {
 			$reAuth = false;
 		}
+		if(!empty($order['isOnlyDigital'])) {
+			$reAuth = false;
+		}
 		if($reAuth) {
 			Logger::debug('Eligible for Reauth');
 		}
@@ -256,7 +266,13 @@ class ReAuthorize extends \lithium\console\Command {
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
 		Logger::debug("Authorizing...");
-		$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
+		#If Digital Items, Calculate correct Amount
+		if(!empty($order['captured_amount'])) {
+			$amountToAuthorize = ($order['total'] - $order['captured_amount']);
+		} else {
+			$amountToAuthorize = $order['total'];
+		}	
+		$auth = Processor::authorize('default', $amountToAuthorize, $profile, array('orderID' => $order['order_id']));
 		if($auth->success()) {
 			Logger::debug("Authorization Succeeded");
 			#Setup new AuthKey
@@ -267,7 +283,7 @@ class ReAuthorize extends \lithium\console\Command {
 						'authKey' => $auth->key,
 						'auth' => $auth->export(),
 						'processor' => $auth->adapter,
-						'authTotal' => $order['total']
+						'authTotal' => $amountToAuthorize
 					),
 					'$push' => array(
 						'auth_records' => $newRecord
@@ -279,7 +295,7 @@ class ReAuthorize extends \lithium\console\Command {
 				'order_id' => $order['order_id'],
 				'authKey' => $order['authKey'],
 				'new_authKey' => $auth->key,
-				'total' => $order['total']
+				'total' => $amountToAuthorize
 			);
 		} else {
 			#Reverse Transaction that Failed

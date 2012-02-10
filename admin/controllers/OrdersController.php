@@ -669,6 +669,7 @@ class OrdersController extends BaseController {
 
 		if ($id) {
 			$itemscanceled = true;
+			$hasDigitalItems = false;
 			$order_current = $orderClass::find('first', array('conditions' => array('_id' => $id)));
 			//Check if the order was processed and sent to Dotcom
 			$processed_count = $processedOrderColl->count(array('OrderNum' => $order_current['order_id']));
@@ -687,6 +688,9 @@ class OrdersController extends BaseController {
 						'conditions' => array('_id' => $orderItem['item_id']
 					)));
 					$sku["$orderItem[item_id]"] = $item->vendor_style;
+					if(!empty($orderItem["cancel"])) {
+						$hasDigitalItems = true;
+					}
 					//Check if items are all canceled
 					if(empty($orderItem["cancel"])) {
 						$itemscanceled = false;
@@ -712,7 +716,7 @@ class OrdersController extends BaseController {
 		}
 
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count');
+		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count', 'hasDigitalItems');
 	}
 
 	/**
@@ -1022,19 +1026,23 @@ class OrdersController extends BaseController {
 		return compact('payments','type');
 	}
 	
-	public function manageDigital() {
+	public function digitalToSend() {
 		$orderClass = $this->_classes['order'];
+		if($order_id = $this->request->query['updated']) {
+			FlashMessage::write("Item has been updated.", array('class' => 'pass'));
+		}
 		$ordersCollection = $orderClass::Collection();
 		$orders = $ordersCollection->find(array(
-			'items.digital' => true,
-			'items.coupon_sent' => array('$exists' => false)
+			'items.digital' => true
 		));
 		$lineItems = null;
 		foreach($orders as $order) {
 			foreach($order['items'] as $item) {
 				$user = User::lookup($order['user_id']);
-				if($item['digital']) {
+				if($item['digital'] && !$item['coupon_sent']) {
 					$lineItem['order_id'] = $order['order_id'];
+					$lineItem['full_order_id'] = (string) $order['_id'];
+					$lineItem['date_created'] = $order['date_created'];
 					$lineItem['email'] = $user['email'];
 					$lineItem['quantity'] = $item['quantity'];
 					$lineItem['description'] = $item['description'];
@@ -1043,7 +1051,60 @@ class OrdersController extends BaseController {
 				}
 			}
 		}
-		return $lineItems;
+		return compact('lineItems');
+	}
+	
+	public function markedDigitalItem() {
+		$orderClass = $this->_classes['order'];
+		$ordersCollection = $orderClass::Collection();
+		$order_id = $this->request->query['order_id'];
+		$item_id = $this->request->query['item_id'];
+		$order = $ordersCollection->findOne(array(
+			'items.digital' => true,
+			'order_id' => $order_id,
+			'items.item_id' => $item_id
+		));
+		if($order) {
+			foreach($order['items'] as $key => $item) {
+				if($item['item_id'] == $item_id) {
+					$update = $ordersCollection->update(
+						array('_id' => new MongoId($id)),
+						array('$set' => array('items.'.$key.'.coupon_sent' => true,
+												'items.'.$key.'.coupon_sent_date' => new MongoDate())
+						), array( 'upsert' => true)
+					);
+				}
+			}
+		}
+		
+		$this->redirect('/orders/digitalToSend/?updated=true');
+	}
+	
+	public function digitalSent() {
+		$orderClass = $this->_classes['order'];
+		$ordersCollection = $orderClass::Collection();
+		$orders = $ordersCollection->find(array(
+			'items.digital' => true,
+			'items.coupon_sent' => true
+		));
+		$lineItems = null;
+		foreach($orders as $order) {
+			foreach($order['items'] as $item) {
+				$user = User::lookup($order['user_id']);
+				if($item['digital'] && $item['coupon_sent']) {
+					$lineItem['order_id'] = $order['order_id'];
+					$lineItem['full_order_id'] = (string) $order['_id'];
+					$lineItem['date_created'] = $order['date_created'];
+					$lineItem['date_sent'] = $item['coupon_sent_date'];
+					$lineItem['email'] = $user['email'];
+					$lineItem['quantity'] = $item['quantity'];
+					$lineItem['description'] = $item['description'];
+					$lineItem['item_id'] = $item['item_id'];
+					$lineItems[] = $lineItem;
+				}
+			}
+		}
+		return compact('lineItems');
 	}
 }
 
