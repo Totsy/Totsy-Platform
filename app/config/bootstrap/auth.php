@@ -43,6 +43,11 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 		 $allowed = true;
 	 }
 	 
+	 #brand pages
+	 if(preg_match('#(brands/)#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 
 	 #API
 	 if(preg_match('#(api/)#', $params['request']->url)) {
 	 	$allowed = true;
