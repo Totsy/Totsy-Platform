@@ -59,7 +59,7 @@ class AddCredits extends \lithium\console\Command {
 	 * Tmp ref to filtered invitations
 	 */
 	private $tmpInvites = null;
-	
+
 	/**
 	* Main method for adding Credits.
 	*
@@ -171,14 +171,19 @@ class AddCredits extends \lithium\console\Command {
 	}
 	
 	public function applyFilterCredits(){
-		// get users ivited users and codes
-		
+		// get users ivited users and codes	
 		$this->mssg('RUNNING');
-		
+
 		$conditions = array(
 			'credited' => array( '$ne' => true ),
 			'status' => 'Accepted',
-			'tmp' => array('$exists' => false)
+			'tmp' => array('$exists' => false),
+			/********** IMPORTANT **************/
+			/* make sure to skip an old-scholl */
+			/*	affiliate user that we no      */
+			/* longer using. id is 4292  	   */
+			/***********************************/
+			'user_id' => array('$ne'=>'4292')
 		);
 		
 		if (!empty($this->test)){
@@ -191,11 +196,12 @@ class AddCredits extends \lithium\console\Command {
 			unset($invitedCursor);
 			return ;
 		}
-		//$invitedCursor->timeout(50000);
+		$invitedCursor->timeout(100);
 		
 		$c = $invitedCursor->count();
-		$process = true; 
-		while($process == true){
+		$process = true;
+		$skip = null;
+		while($process == true){  
 			try{
 				if (!$invitedCursor->hasNext()){
 					$process = false;
@@ -205,18 +211,23 @@ class AddCredits extends \lithium\console\Command {
 			} catch (MongoException $e) {
 				
 				$this->mssg('-cursor timeout.');
-				$invitedCursor = Invitation::collection()->find($conditions);				
+				$invitedCursor = Invitation::collection()->find($conditions);	
+				$invitedCursor->timeout(900);
 				$this->mssg('-creteate new cursor....');
 				$c = $invitedCursor->count();
 				$this->mssg('found '.$c);
 				if ($c==0){
 					$process = false;
-				}
+				} 
 				continue;
 			}
 			if (!$invitedCursor->valid()){
 				$this->mssg('cursor is not valid. Reset cursor'."\n");
 				try{
+					$skip = $invitedCursor->info();
+					$invitedCursor = Invitation::collection()->find($conditions);
+					$invitedCursor->skip($skip['numReturned']);
+					$skip = null;
 					$invitedCursor->rewind();
 				} catch (MongoCursorTimeoutException $e){
 					$this->mssg("\n".'cannot rewind');
@@ -225,6 +236,7 @@ class AddCredits extends \lithium\console\Command {
 				$this->mssg('rewined....');
 				continue;
 			}
+			
 			try{
 				$row =  $invitedCursor->getNext();
 			} catch (Exception $e){
@@ -233,10 +245,11 @@ class AddCredits extends \lithium\console\Command {
 				BlackBox::AddCreditsOUT(print_r($e,true));
 				exit(0);
 			}
-			
+
 			$tmpInviterCursor = $this->tmpInvites->find(array(
 				'user_id'=>$row['user_id']
 			));
+			
 			$emails = $this->_parseEmail($row);
 
 			if ($emails==false){
@@ -291,6 +304,8 @@ class AddCredits extends \lithium\console\Command {
 	}
 	
 	public function addCredits(){
+		$this->mssg('add credits chunk has started');
+		
 		$invitedCursor = $this->tmpInvites->find(array());
 		
 		if (!$invitedCursor->hasNext()){
@@ -299,7 +314,7 @@ class AddCredits extends \lithium\console\Command {
 			return ;
 		}
 	
-		$total = 0;
+		$total = 0; 
 		while($invitedCursor->hasNext()){
 		
 			$row = $invitedCursor->getNext();
@@ -406,6 +421,12 @@ class AddCredits extends \lithium\console\Command {
 		}
 
 		unset($r_email,$e);
+		
+		// skip
+		if (sizeof($emails)>1){
+			return false;
+		}
+		
 		return $emails;
 		
 	}
