@@ -161,9 +161,11 @@ input.text, input.email, input.password, textarea.uniform
 	.ui-datepicker .ui-datepicker-header,
 	.ui-dialog .ui-dialog-titlebar
 	{
+/*
 		background: #f7f7f7;
 		background: -webkit-gradient(linear, left top, left bottom, from(#4c4c4e), to(#282425));
 		background: -moz-linear-gradient(top, #4c4c4e,  #282425);
+*/
 		color: #000;
 		
 		/*
@@ -191,6 +193,6 @@ input.text, input.email, input.password, textarea.uniform
 		background: #000;
 		background: -webkit-gradient(linear, left top, left bottom, from(#6a6b6e), to(#3e3e3e));
 		background: -moz-linear-gradient(top, #6a6b6e,  #3e3e3e);
-		color: #ffffff;
+		color: #333333 !important;
 		height:45px;
 	}

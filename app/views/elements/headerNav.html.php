@@ -1,11 +1,10 @@
 <?php use lithium\storage\Session; ?>
 <header class="group">
-
+	
 	<h1 id="logo">
-		<?php //echo $this->html->link($this->html->image('logo.png', array('width'=>'120')), '/sales', array('escape'=> false)); ?>
 		<a href="/sales" title="Totsy">totsy</a>
 	</h1>
-		
+	
 	<?php 
 		use li3_facebook\extension\FacebookProxy; 
 		$fbconfig = FacebookProxy::config();
@@ -23,8 +22,6 @@
 			$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
 		} 
 	?>	
-		
-
 	<?php
 		if (!(empty($userInfo))) { ?>
 			<nav class="group">
@@ -33,7 +30,9 @@
 					<?php
 						if (!empty($userInfo)) { ?>
 							<div id="userinfo">
-								<strong>Hi <?php 
+								<strong>Hi, 
+								<?php
+
 									if (array_key_exists('firstname',$userInfo) && !empty($userInfo['firstname'])) :
 										echo "{$userInfo['firstname']}";
 									else :

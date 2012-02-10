@@ -1,3 +1,4 @@
+<?php use lithium\storage\Session; ?>
 <!-- JS for cart timer. -->
 <script type="text/javascript" src="/js/cart-timer.js"></script>
 <!-- JS for cart timer for individual items. -->
@@ -23,9 +24,6 @@ var discountErrors = new Object();
 		    discountErrors.credits=false;
 		}
 
-	$("#cart-count").text(<?=$itemCount?>);
-	parent = $("#cart-count").parent();
-	parent.attr("title", "My Cart (<?php echo $itemCount;?>)");
 	var cartExpires = new Date(<?=($cartExpirationDate  * 1000)?>);
 
 	//set the timer
@@ -43,8 +41,8 @@ var discountErrors = new Object();
 		$( "#password-prompt").find('form').attr('action', this.href).end()
 			.dialog({
 				modal: true,
-				width: 512,
-				height: 256
+				width: 384,
+				height: 300
 			}
 		);
 	});
@@ -54,15 +52,16 @@ var discountErrors = new Object();
 <script type="text/javascript" src="/js/jquery.number_format.js"></script>
 
 <?php  if(!empty($subTotal)): ?>
+
 <div class="cart-content">
 	<div class="grid_11 cart-header-left">
 		<div style="float:left;">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Shopping Cart</span>
-				<span class="cart-step-status"><img src="/img/cart_steps1.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps1.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
 			</h2>
 		</div>
 	</div>
@@ -178,18 +177,25 @@ var discountErrors = new Object();
 
 		<div class="grid_16" style="width:935px; padding-top:30px;">
 		<div class="cart-codes">
-				<div class="cart-code-buttons">
+				
+				<!-- no promocodes for Mama users begin -->
+								<div class="cart-code-buttons">
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?>
-			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
+			        			        
+<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
+					<span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
 				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				    <?php if($serviceAvailable) : ?>
 				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>
 				    <?php endif ?>
+				<?php endif ?>
 				</div>
+				<!-- no promocodes for Mama users ending -->
+				
 				<div style="clear:both"></div>
 				<div id="promos_and_credit">
 				    <div id="promo" style="display:none">
@@ -200,6 +206,7 @@ var discountErrors = new Object();
 				    </div>
 				</div>
 			</div>
+			
 			<div class="cart-subtotal-content">
 				<div class="subtotal" >
 				   <span style="float:left;">Subtotal:</span>
