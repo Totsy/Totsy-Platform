@@ -478,25 +478,30 @@ class Order extends Base {
 			'promocode_disable' => $selected_order["promocode_disable"],
 			'comment' => $selected_order["comment"]
 		);
-		if(!empty($selected_order["overSizeHandling"])) {
+		if(static::isOnlyDigital(array('items' => $items))) {
+			$datas_order_prices['isOnlyDigital'] = true;
+		} else {
+			$datas_order_prices['isOnlyDigital'] = false;
+		}
+		if(isset($selected_order["overSizeHandling"])) {
 			$datas_order_prices['overSizeHandling'] = (float) $selected_order["overSizeHandling"];
 		}
-		if(!empty($selected_order["discount"])) {
+		if(isset($selected_order["discount"])) {
 			$datas_order_prices['discount'] = (float) $selected_order["discount"];
 		}
-		if(!empty($selected_order["handlingDiscount"])) {
+		if(isset($selected_order["handlingDiscount"])) {
 			$datas_order_prices['handlingDiscount'] = (float) $selected_order["handlingDiscount"];
 		}
-		if(!empty($selected_order["overSizeHandlingDiscount"])) {
+		if(isset($selected_order["overSizeHandlingDiscount"])) {
 			$datas_order_prices['overSizeHandlingDiscount'] = (float) $selected_order["overSizeHandlingDiscount"];
 		}
-		if (array_key_exists('original_credit_used', $selected_order)) {
+		if(array_key_exists('original_credit_used', $selected_order)) {
 		   $datas_order_prices['original_credit_used'] = $selected_order["original_credit_used"];
 		}
-		if(!empty($selected_order["tax"])) {
+		if(isset($selected_order["tax"])) {
 			$datas_order_prices["tax"] = $selected_order["tax"];
 		}
-		if(!empty($selected_order["credit_used"])) {
+		if(isset($selected_order["credit_used"])) {
 			$datas_order_prices["credit_used"] = (float) $selected_order["credit_used"];
 		}
 		/**************UPDATE TAX****************************/
@@ -532,6 +537,7 @@ class Order extends Base {
 			}
 			$credits_recorded = true;
 		}
+		
 		$orderCollection->update(array("_id" => new MongoId($selected_order["id"])),array('$set' => $datas_order_prices));
 		//Update Items
 		foreach($items as $item) {
@@ -611,10 +617,10 @@ class Order extends Base {
 		if(static::isOnlyDigital($datas_order)) {
 			$selected_order['handling'] = 0;
 			$selected_order['overSizeHandling'] = 0;
+			$selected_order['tax'] = 0;
 			$datas_order['overSizeHandling'] = 0;	
 			$datas_order['handling'] = 0;
 			$datas_order['tax'] = 0;
-			$selected_order['tax'] = 0;
 		} else {
 			$datas_order['handling'] = static::shipping($items);
 			$datas_order['overSizeHandling'] = static::overSizeShipping($items);
@@ -657,7 +663,7 @@ class Order extends Base {
 				if($preAfterDiscount < 0) {
 					$preAfterDiscount = 0;
 				}
-				if ($promocode['type'] == 'free_shipping') {
+				if ($promocode['type'] == 'free_shipping' && !static::isOnlyDigital($datas_order)) {
 					$datas_order["handlingDiscount"] = $selected_order["handling"];
 					$datas_order["overSizeHandlingDiscount"] = $selected_order["overSizeHandling"];
 					$preAfterDiscount = $subTotal - $datas_order["handlingDiscount"] - $datas_order["overSizeHandlingDiscount"];
@@ -678,7 +684,14 @@ class Order extends Base {
 					$datas_order["discount"] = 0.00;
 				}
 			} else {
-				$preAfterDiscount -= $selected_order["discount"];
+				if(!static::isOnlyDigital($datas_order)) {
+					$datas_order["discount"] = (abs($datas_order['handling']) + abs($datas_order['overSizeHandling']));
+					$preAfterDiscount -= $datas_order["discount"];
+				} else {
+					$datas_order["discount"] = 0.00;
+					$datas_order["handlingDiscount"] = 0.00;
+					$datas_order["overSizeHandlingDiscount"] = 0.00;
+				}
 			}
 		}
 		/**************CREDITS TREATMENT**************/
