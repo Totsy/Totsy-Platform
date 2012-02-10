@@ -783,6 +783,23 @@ h2.page-title {
 	text-align:left !important;
 }
 
+.fullwidth > section > header h2 {
+	margin-bottom:6px; padding-bottom:6px;
+	border-bottom:1px solid #ddd;
+}
+
+#events-wrap > header h2 {
+	border: none;
+}
+#page p {
+	margin-bottom:10px;
+}
+
+#page h2,h3 {
+	margin-top:2px;
+}
+
+
 #page p {
 	margin-bottom:10px;
 }
@@ -4506,7 +4523,7 @@ Text Align > left / right
 #totsy > header > #invite a strong {
 	padding-right:8px;
 	background: url(../img/btn-arrow.png) 100% 50% no-repeat;
-	color:#d84643;
+	color:#DE6076;
 	}
 #totsy > header > #invite a strong:hover {text-decoration: underline;}
 
@@ -4671,8 +4688,9 @@ nav .haschild li a:hover {
 #userUtils .btn:hover {text-decoration: none;}
 #userUtils .checkout {
 	float: left;
-	background-color:rgb(218,80,77); /* fallback */
-	background-color:rgba(218,80,77,1);
+	/*background-color:rgb(218,80,77); /* fallback */
+	/*background-color:rgba(218,80,77,1);*/
+	background-color: #DE6076;
 	color:#fff;
 }
 #userUtils .checkout strong {
@@ -4680,7 +4698,10 @@ nav .haschild li a:hover {
 	background: url(../img/btn-arrow-s.png) 100% 25% no-repeat;
 	line-height: 1.6;
 	}
-#userUtils .checkout:hover {background-color:rgba(230,87,84,1);}
+#userUtils .checkout:hover {
+/*background-color:rgba(230,87,84,1);*/
+background-color: #DE6076;
+}
 
 /* webkit one-offs for user utils - they want pixel-perfect, this is pixel perfection*/
 @media screen and (-webkit-min-device-pixel-ratio:0) {
