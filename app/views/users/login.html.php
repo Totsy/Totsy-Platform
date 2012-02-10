@@ -109,8 +109,6 @@ if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
 <div class="clear"></div>
 </div>
 
-
-
 <!-- right side -->
 
 <div class="grid_6" style="float:right; ">
