@@ -655,9 +655,11 @@ class UsersController extends BaseController {
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
 				$user->email_hash = md5($user->email);
+				$link = "http://" . $_SERVER['HTTP_HOST'] . "/reset/?t=" . $token;
+				
 				if ($user->save(null, array('validate' => false))) {
 					$mailer = $this->_classes['mailer'];
-					$mailer::send('Reset_Password_new_flow', $user->email, array('token' => $token));
+					$mailer::send('Reset_Password_new_flow', $user->email, array('link' => $link));
 					$message = '<div class="success_flash">Your password has been reset. Please check your email.</div>';
 					$success = true;
 				} else {
