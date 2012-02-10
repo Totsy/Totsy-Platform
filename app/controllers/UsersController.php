@@ -17,6 +17,7 @@ class UsersController extends BaseController {
 
 	public $sessionKey = 'userLogin';
 
+
 	/**
 	 * Instances
 	 * @var array
