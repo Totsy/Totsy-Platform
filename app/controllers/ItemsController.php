@@ -84,8 +84,11 @@ class ItemsController extends BaseController {
 				}
 			}
             $pixel = Affiliate::getPixels('product', 'spinback');
-			$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
+            
+            if(Session::read('layout', array('name' => 'default'))!=='mamapedia') {
+				$spinback_fb = Affiliate::generatePixel('spinback', $pixel,
 				array('product' => $_SERVER['REQUEST_URI']));
+			}
 		}
 		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';

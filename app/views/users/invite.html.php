@@ -1,3 +1,4 @@
+<?php use lithium\storage\Session; ?>
 <?php $this->title("My Invitations"); ?>
 
 <link rel="stylesheet" type="text/css" href="/css/validation-engine.jquery.css" media="screen" />
@@ -17,12 +18,22 @@
 
 <div class="grid_11 omega roundy grey_inside b_side">
 
+<?php
+	$inviteBlurb = "For each friend you invite, Totsy will credit your account with <span style='color:#009900;'>$15</span> after your friend's place their first order.";
+	$inviteMsg = "Please accept this invitation to join Totsy";
+	
+	if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
+		$inviteBlurb = "For each friend you invite, we will credit your account with <span style='color:#009900;'>$15</span> after your friend's place their first order.";
+		$inviteMsg = "Please accept this invitation to join Mamasource Private Sales powered by Totsy";
+	} 
+?>
+
 <?php if (is_object($user->invitation_codes)): ?>
 	<?php foreach ($user->invitation_codes as $code): ?>
-		<?php $invite = "http://www.totsy.com/join/" . $code;?>
+	    <?php $invite = "http://".$_SERVER['HTTP_HOST']."/join/" . $code; ?>
 	<?php endforeach ?>
 <?php else: ?>
-	<?php $invite = "http://www.totsy.com/join/" . $user->invitation_codes;?>
+	<?php $invite = "http://".$_SERVER['HTTP_HOST']."/join/" . $user->invitation_codes;?>
 <?php endif ?>
 
 	<h2 class="page-title gray">My Invitations <span class="fr" style="font-size:12px; margin-top:-10px;">Share this link with your friends: <br><span style="word-wrap:break-word;"><strong><a href="<?php echo $invite?>" title="Your Invite Link"><?php echo $invite?></a></strong></span></span></h2>
@@ -43,7 +54,7 @@
 				<div class="grid_6">
 					<h2 class="gray mar-b">Send Invitations</h2>
 					<hr />
-					<p>For each friend you invite, Totsy will credit your account with <span style="color:#009900;">$15</span> after your friend's place their first order.</p>
+					<p><?php echo $inviteBlurb; ?></p>
 						<fieldset>
 							<br>
 							<?php echo $this->form->create( "", array("id"=>"inviteForm") ); ?>
@@ -63,7 +74,7 @@
 									'class' => 'inputbox',
 									'id' => 'comments',
 									'style' => "width:339px; height:100px",
-									'value' => "Please accept this invitation to join Totsy",
+									'value' => $inviteMsg,
 									'onblur' => "if(this.value=='') this.value='Please accept this invitation to join Totsy';",
 									'onfocus' => "if(this.value=='Please accept this invitation to join Totsy') this.value='';"
 									)); ?>

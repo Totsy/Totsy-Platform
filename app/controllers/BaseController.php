@@ -34,16 +34,8 @@ class BaseController extends \lithium\action\Controller {
 			$userInfo = Session::read('userLogin');	
 			
         	//this changes depending on whether we're on prod or not
-        	//if something's funny or not working on kkim, just update it with master
-        	$mamasourceSubDomain = "";
-        	
-        	/*			
- 			if(!Environment::is('production')) { 	
-				$mamasourceSubDomain = "evan.totsy.com";
- 			} else {
- 			*/
+        	//if something's funny or not working on kkim, just update it with master        	
 			$mamasourceSubDomain = "mamasource.totsy.com";
- 			//}
  									
 			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
@@ -57,7 +49,6 @@ class BaseController extends \lithium\action\Controller {
 		    } 	
 			$this->_render['layout'] = '/main';
 		}
-
 	}
 
 	/**
@@ -67,7 +58,7 @@ class BaseController extends \lithium\action\Controller {
 	 */
 	public function getCartSubTotal () {
 		$subTotal = 0;
-
+		
 		foreach(Cart::active() as $cartItem) {
 			$currentSec = is_object($cartItem->expires) ? $cartItem->expires->sec : $cartItem->expires;
 			if ($cartData['cartExpirationDate'] < $currentSec) {
@@ -77,7 +68,6 @@ class BaseController extends \lithium\action\Controller {
 			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
 			$i++;
 		}
-
 		return $subTotal;
 	}
 
@@ -111,20 +101,22 @@ class BaseController extends \lithium\action\Controller {
         $redirected = false;
         
         //this changes depending on whether we're on prod or not
-        //if something's funny or not working on kkim, just update it with master	
-		$mamasourceSubDomain = "";
-		
-		/*				
- 		if(!Environment::is('production')){	
-			$mamasourceSubDomain = "evan.totsy.com";
- 		} else {*/
-			$mamasourceSubDomain = "mamasource.totsy.com";
- 		//} 
- 			       
-        if( $userInfo['invited_by']=="mamasource" && $_SERVER['HTTP_HOST']!==$mamasourceSubDomain) {
-			setcookie("PHPSESSID","",time()-3600,"/"); // delete session cookie 
-        	$this->redirect("http://" . $mamasourceSubDomain . "/login?email=".$userInfo['email']."&pwd=".$userInfo['password'], array("exit"=>true));
-        } 
+        //if something's funny or not working on kkim, just update it with master			
+		$whiteLabelSubDomain = "mamasource.totsy.com";
+		 		
+ 		if ( $userInfo ) {	   		
+        	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
+        		//totsy to mama
+        		if($userInfo['invited_by']=="mamasource") {
+					$this->crossDomainAuth($whiteLabelSubDomain, $userInfo['email'], $userInfo['password']);
+				}
+        	} else {
+        		//mama to totsy
+				if ( is_null($userInfo['invited_by']) || $userInfo['invited_by']!=="mamasource" ) {
+					$this->crossDomainAuth("totsy.com", $userInfo['email'], $userInfo['password']);
+				}
+        	}
+        }
                 
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
@@ -345,7 +337,33 @@ class BaseController extends \lithium\action\Controller {
 			Session::delete('cc_infos');
 		}
 	}
+	
+	/**
+	* Redirect white label users coming from totsy to white label, and vice-vera
+	**/	
+	private function crossDomainAuth( $sendTo, $email, $pwd ) {
+		// delete session cookie of domain first authenticated
+		setcookie("PHPSESSID", "", time()-3600, "/"); 
+    	
+    	/*        	
+		$url = "http://".$sendTo.'/login?';
+		$fields = array( 'email'=>$email, 'password'=>$pwd );
+		    				
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);		
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST, count($fields));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "email=".$email."&password=".$pwd);		
 		
+		$result = curl_exec($ch);
+		
+		curl_close($ch);
+		
+		$this->redirect("http://".$sendTo."/sales");
+		*/
+		
+		$this->redirect("http://" . $sendTo . "/login?email=".$email."&pwd=".$pwd, array("exit"=>true)); 	
+	}
 }
 
 ?>
