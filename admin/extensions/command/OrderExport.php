@@ -187,6 +187,11 @@ class OrderExport extends Base {
 					$this->time = date('ymdHis');
 					$queueData = $queue->data();
 					$this->queue = $queue;
+					if($this->queue->run_amount) {
+						$this->queue->run_amount += 1;
+					} else {
+						$this->queue->run_amount = 1;
+					}
 					if ($queueData['orders']) {
 
 						$this->orderEvents = $queueData['orders'];
@@ -628,12 +633,13 @@ class OrderExport extends Base {
 			$this->log("Opening PO file $handle");
 			$fp = fopen($handle, 'w');
 			$this->summary['purchase_orders'][] = $filename;
-
+			
 			$purchaseOrder = array();
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
-					$orders = $orderCollection->find(array(
+					$this->log("{$eventItem['_id']} size {$key} value {$value}");
+					$orders = $orderCollection->find( array(
 						'items.item_id' => (string) $eventItem['_id'],
 						'items.size' => (string) $key,
 						'items.status' => array('$ne' => 'Order Canceled'),
@@ -651,7 +657,7 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
 									$purchaseOrder[$inc]['SKU'] = $eventItem['sku_details'][$item['size']];
 									if (empty($eventItem['sku_details'][$item['size']])) {
-										$purchaseOrder[$inc]['SKU'] = Item::sku($eventItem['vendor'], $eventItem['vendor_style'], $item['size'], $item['color']);
+										$purchaseOrder[$inc]['SKU'] = Item::sku($eventItem['vendor'], $eventItem['vendor_style'], (string)$item['size'], $item['color']);
 									}
 									if (empty($purchaseOrder[$inc]['Qty'])) {
 										$purchaseOrder[$inc]['Qty'] = $item['quantity'];
