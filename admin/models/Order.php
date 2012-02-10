@@ -213,7 +213,12 @@ class Order extends Base {
 		$data = array();
 
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
-
+		#If Digital Items, Calculate correct Amount
+		if(!empty($order['captured_amount'])) {
+			$amountToCapture = ($order['total'] - $order['captured_amount']);
+		} else {
+			$amountToCapture = $order['total'];
+		}
 		if ($order['total'] == 0) {
 			$data['auth_confirmation'] = $order['authKey'];
 			$data['payment_date'] = new MongoDate();
@@ -222,7 +227,7 @@ class Order extends Base {
 			$auth = $payments::capture(
 				'default',
 				$order['authKey'],
-				floor($order['total'] * 100) / 100,
+				floor($amountToCapture * 100) / 100,
 				array(
 					'processor' => isset($order['processor']) ? $order['processor'] : null,
 					'orderID' => $order['order_id']
@@ -232,6 +237,19 @@ class Order extends Base {
 				Logger::info("Order Succesfully Captured");
 				$data['auth_confirmation'] = $auth->key;
 				$data['payment_date'] = new MongoDate();
+				#Save Capture in Transactions Logs
+				$transation['authKey'] = $auth->key;
+				$transation['amount'] = $amountToCapture;
+				$transation['date_captured'] = new MongoDate();
+				$update = static::update(
+					array(
+						'$push' => array(
+						'capturedTransactions' => $transation
+						)
+					),
+					array('_id' => $orderId),
+					array('upsert' => true)
+				);
 			} elseif ($auth->errors) {
 				$data['auth_confirmation'] = -1;
 				$data['error_date'] = new MongoDate();
@@ -484,7 +502,6 @@ class Order extends Base {
 			'comment' => null,
 			'initial_credit_used' => null
 		);
-				
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
@@ -492,16 +509,21 @@ class Order extends Base {
 			'promo_discount' => (float) $selected_order["promo_discount"],
 			'promocode_disable' => $selected_order["promocode_disable"]
 		);
-		if(!empty($selected_order["overSizeHandling"])) {
+		if(static::isOnlyDigital(array('items' => $items))) {
+			$datas_order_prices['isOnlyDigital'] = true;
+		} else {
+			$datas_order_prices['isOnlyDigital'] = false;
+		}
+		if(isset($selected_order["overSizeHandling"])) {
 			$datas_order_prices['overSizeHandling'] = (float) $selected_order["overSizeHandling"];
 		}
-		if(!empty($selected_order["discount"])) {
+		if(isset($selected_order["discount"])) {
 			$datas_order_prices['discount'] = (float) $selected_order["discount"];
 		}
-		if(!empty($selected_order["handlingDiscount"])) {
+		if(isset($selected_order["handlingDiscount"])) {
 			$datas_order_prices['handlingDiscount'] = (float) $selected_order["handlingDiscount"];
 		}
-		if(!empty($selected_order["overSizeHandlingDiscount"])) {
+		if(isset($selected_order["overSizeHandlingDiscount"])) {
 			$datas_order_prices['overSizeHandlingDiscount'] = (float) $selected_order["overSizeHandlingDiscount"];
 		}
 		if(!empty($selected_order["comment"])) {
@@ -510,10 +532,10 @@ class Order extends Base {
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		   $datas_order_prices['original_credit_used'] = $selected_order["original_credit_used"];
 		}
-		if(!empty($selected_order["tax"])) {
+		if(isset($selected_order["tax"])) {
 			$datas_order_prices["tax"] = $selected_order["tax"];
 		}
-		if(!empty($selected_order["credit_used"])) {
+		if(isset($selected_order["credit_used"])) {
 			$datas_order_prices["credit_used"] = (float) $selected_order["credit_used"];
 		}
 		/**************UPDATE TAX****************************/
@@ -550,6 +572,7 @@ class Order extends Base {
 			}
 			$credits_recorded = true;
 		}
+		
 		$orderCollection->update(array("_id" => new MongoId($selected_order["id"])),array('$set' => $datas_order_prices));
 		//Update Items
 		foreach($items as $item) {
@@ -629,13 +652,22 @@ class Order extends Base {
 		//Get Actual Taxes and Handling
 		$total = 0;
 		$afterDiscount = 0;
-		$tax = 0;
-		$handling = 0;
-		$overSizeHandling = 0;
-		$handling = static::shipping($items);
-		$overSizeHandling = static::overSizeShipping($items);
-		extract(static::_recalculateTax($selected_order,$items));
 
+		if(static::isOnlyDigital($datas_order)) {
+			$selected_order['handling'] = 0;
+			$selected_order['overSizeHandling'] = 0;
+			$selected_order['tax'] = 0;
+			$datas_order['overSizeHandling'] = 0;	
+			$datas_order['handling'] = 0;
+			$datas_order['tax'] = 0;
+		} else {
+			$datas_order['handling'] = static::shipping($items);
+			$datas_order['overSizeHandling'] = static::overSizeShipping($items);
+			$selected_order['handling'] = $datas_order['handling'];
+			$selected_order['overSizeHandling'] = $datas_order['overSizeHandling'];
+			extract(static::_recalculateTax($selected_order,$items));
+			$datas_order['tax'] = $tax;
+		}
 		if ($tax instanceof Exception) {
 			/* Rethrow exceptions received while recalculating tax. */
 			throw $tax;
@@ -670,7 +702,7 @@ class Order extends Base {
 				if($preAfterDiscount < 0) {
 					$preAfterDiscount = 0;
 				}
-				if ($promocode['type'] == 'free_shipping') {
+				if ($promocode['type'] == 'free_shipping' && !static::isOnlyDigital($datas_order)) {
 					$datas_order["handlingDiscount"] = $selected_order["handling"];
 					$datas_order["overSizeHandlingDiscount"] = $selected_order["overSizeHandling"];
 					$preAfterDiscount = $subTotal - $datas_order["handlingDiscount"] - $datas_order["overSizeHandlingDiscount"];
@@ -691,7 +723,14 @@ class Order extends Base {
 					$datas_order["discount"] = 0.00;
 				}
 			} else {
-				$preAfterDiscount -= $selected_order["discount"];
+				if(!static::isOnlyDigital($datas_order)) {
+					$datas_order["discount"] = (abs($datas_order['handling']) + abs($datas_order['overSizeHandling']));
+					$preAfterDiscount -= $datas_order["discount"];
+				} else {
+					$datas_order["discount"] = 0.00;
+					$datas_order["handlingDiscount"] = 0.00;
+					$datas_order["overSizeHandlingDiscount"] = 0.00;
+				}
 			}
 		}
 		/**************CREDITS TREATMENT**************/
@@ -1074,6 +1113,19 @@ class Order extends Base {
 			Mailer::send($email_template, $user["email"], $data);
 		else
 			Mailer::send($email_template, $current_user["email"], $data);
+	}
+
+	/* Check if Items in Order are only Digital
+	 * @return boolean onlyDigital
+	 */
+	public static function isOnlyDigital($order) {
+		$onlyDigital = true;
+		foreach($order['items'] as $item) {
+			if(empty($item['digital']) && empty($item['cancel'])) {
+				$onlyDigital = false;
+			}
+		}
+		return $onlyDigital;
 	}
 }
 
