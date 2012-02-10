@@ -41,8 +41,8 @@ var discountErrors = new Object();
 		$( "#password-prompt").find('form').attr('action', this.href).end()
 			.dialog({
 				modal: true,
-				width: 512,
-				height: 256
+				width: 384,
+				height: 300
 			}
 		);
 	});
@@ -183,11 +183,11 @@ var discountErrors = new Object();
 				     <?php if(!empty($credit)): ?>
 				    	<strong>Add <a href="#" id="credits_lnk" onclick="open_credit();" >Credits</a></strong> /
 				    <?php endif ?>
-			        <span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
+			        			        
+<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
+					<span id="promocode_tooltip" original-title="Promo codes cannot be combined and can be applied once to an order per member." class="cart-tooltip">
 			        	<img src="/img/tooltip_icon.png">
 			        </span>
-			        
-<?php if(Session::read("layout", array("name"=>"default"))!=="mamapedia") : ?>
 				    <strong>Add <a href="#" id="promos_lnk" onclick="open_promo();">Promo Code</a></strong>
 				    <?php if($serviceAvailable) : ?>
 				    	/ <strong><a href="#" id="reservices_lnk" onclick="reaplyService();">Re-Apply <?php echo $serviceAvailable; ?></a></strong>

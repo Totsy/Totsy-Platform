@@ -29,7 +29,8 @@ class TicketsController extends BaseController {
 				 	$this->_render['layout'] = 'mobile_main';
 				 	$this->_render['template'] = 'mobile_add';
 				} else {
-					//$this->_render['template'] = 'sent';
+					// we're doing this to disable the contact form.
+					$this->redirect("/pages/contact");
 				}
 		$ticket = Ticket::create();
 		$user = Session::read('userLogin');

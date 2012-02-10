@@ -123,7 +123,7 @@ class QueueController extends BaseController {
 		$queue = $queue->data();
 
 		foreach($queue as $data) {
-		    $data['created_date'] = date('m-d-Y', $data['created_date']);
+		    $data['created_date'] = date('m-d-Y H:i:s', $data['created_date']);
 		    $data['percent'] =  number_format($data['percent'], 1);
 		    /**
 		    * PO event count

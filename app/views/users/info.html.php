@@ -1,4 +1,14 @@
+<?php use lithium\storage\Session; ?>
 <?php $this->title("Account Information"); ?>
+<?php
+	$brandName = "Totsy";
+	$fbConnectBlurb = "Connect your Facebook Account with Totsy";
+	
+	if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
+		$brandName = "Mamasource";
+		$fbConnectBlurb = "Connect your Facebook Account";
+	} 
+?>
 
 <div class="grid_16">
 	<h2 class="page-title gray">Account Information</h2>
@@ -68,12 +78,12 @@
 	</div>
 <div style="width:48%; margin-left:10px; float:left;">
 	<?php if ($connected): ?>
-		<h2 class="gray mar-b">You're Connected With Totsy</h2>
+		<h2 class="gray mar-b">You're Connected With <?php echo $brandName; ?></h2>
 		<hr />
 		<img src="https://graph.facebook.com/<?php echo $user->facebook_info['id']?>/picture">
 		<br /><b><?php echo $user->facebook_info['name']?></b>
 	<?php else: ?>
-		<h2 class="gray mar-b">Connect your Facebook Account with Totsy</h2>
+		<h2 class="gray mar-b"><?php echo $fbConnectBlurb; ?></h2>
 		<hr />
 		<fb:login-button scope="email" size="large" length="long" v="2" style="text-align:center;">Connect With Facebook</fb:login-button>
 		<div id="fb-root"></div>
