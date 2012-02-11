@@ -4994,7 +4994,6 @@ ul.bp-events li {
 ul.bp-events li:first-child {margin-left:0;}
 ul.bp-events img {
 	display: block;
-	width:246px; height: 283px;
 	border:10px solid #fff;
 	box-shadow: 0px 3px 5px #444;
 }

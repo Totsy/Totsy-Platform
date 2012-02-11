@@ -8,6 +8,7 @@
 				<iframe width="400" height="233" src="http://www.youtube.com/embed/P_m7ZSo_l-s?rel=0" frameborder="0" allowfullscreen></iframe>		
 			</aside>
 		</header>
+		
 		<ul class="bp-events group">
 			<?php $x = 0; ?>
 			<?php foreach ($openEvents as $event): ?>
@@ -21,13 +22,13 @@
 						*/
 					?>
 						<?php // image check and store
-							if($event['images']['event_image'] !== null) { 
-								$eventImage = "/image/" . $event['images']['event_image'] . ".jpg";
+							if($event['images']['splash_big_image'] !== null) { 
+								$eventImage = "/image/" . $event['images']['splash_big_image'] . ".jpg";
 							} else {
 								$eventImage = '/img/no-image-small.jpeg';
 							}
 						?>
-						<img src="<?php echo $eventImage; ?>" alt="<?php echo $event['name']; ?>" />
+						<img src="<?php echo $eventImage; ?>" alt="<?php echo $event['name']; ?>" width="246" height="284" />
 						<em><?php echo $event['name']; ?></em>
 					</a>
 				</li>
