@@ -28,7 +28,7 @@
 								$eventImage = '/img/no-image-small.jpeg';
 							}
 						?>
-						<img src="<?php echo $eventImage; ?>" alt="<?php echo $event['name']; ?>" width="246" height="284" />
+						<img src="<?php echo $eventImage; ?>" alt="<?php echo $event['name']; ?>" width="236" height="273" />
 						<em><?php echo $event['name']; ?></em>
 					</a>
 				</li>

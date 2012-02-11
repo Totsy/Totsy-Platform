@@ -4984,26 +4984,26 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 ul.bp-events {
 	margin:0 auto;
 	width:885px;
-	outline:1px solid #fc0;
 }
 ul.bp-events li {
 	float: left;
 	margin-left:0;
-	outline:1px dotted #c00;
 }
 ul.bp-events li:first-child {margin-left:0;}
 ul.bp-events img {
 	display: block;
 	border:10px solid #fff;
-	box-shadow: 0px 3px 5px #444;
+	box-shadow: 3px 3px 5px rgba(0,0,0,0.5);
 }
 
 /* transforms */
 ul.bp-events li:nth-of-type(3n+1) img {	
 	-webkit-transform: rotate(-2deg) translate(8px,8px);
 	-webkit-transform-origin: 50% 50%;
-	-moz-transform: rotate(-2deg) translate(6px,6px);
-	-moz-transform-origin: 50% 50%;
+	
+	-moz-transform: rotate(-2deg) translate(8px,0px);
+	-moz-transform-origin: 100% 100%;
+	
 	-o-transform: rotate(-2deg) translate(8px,8px);
 	-o-transform-origin: 50% 50%;
 	-ms-transform: rotate(-2deg) translate(8px,8px);
