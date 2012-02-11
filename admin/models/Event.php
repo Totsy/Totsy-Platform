@@ -160,7 +160,7 @@ class Event extends \lithium\data\Model {
 		$check_departments = array("Girls", "Boys", "Momsdads");
 		$check_dept = array("department_1", "department_2", "department_3");
 		$check_related = array("related_1", "related_2", "related_3", "related_4", "related_5");
-		$check_alphanumeric = array('vendor', 'vendor_style', 'color');
+		$check_alphanumeric = array('vendor', 'vendor_style');
 		$check_limit = array(
 			'description' => 64
 		);
