@@ -152,7 +152,7 @@ class VoidTransaction extends \lithium\console\Command {
 		#Don't Void if the last Auth is an error
 		if(!empty($order['error_date'])) {
 			if($lastDate->sec < $order['error_date']->sec) {
-				$reAuth = false;
+				$toVoid = false;
 			}	
 		}
 		if(!empty($order['void_records'])) {
@@ -168,11 +168,7 @@ class VoidTransaction extends \lithium\console\Command {
 		}
 		
 		#Check The Amount to Authorize
-		if(!empty($order['captured_amount'])) {
-			$amountToAuthorize = ($order['total'] - $order['captured_amount']);
-		} else {
-			$amountToAuthorize = $order['total'];
-		}	
+		$amountToAuthorize = Order::getAmountNotCaptured($order);
 		if((!isset($order['authTotal'])) || ($order['authTotal'] != $amountToAuthorize)) {
 			$toVoid = false;
 		}

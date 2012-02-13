@@ -208,11 +208,7 @@ class ReAuthorize extends \lithium\console\Command {
 		#If The Order has been already full authorize and Order send to Dotcom. Don't reauth
 		if(!empty($this->fullAmount)) {
 			#Check The Amount to Authorize
-			if(!empty($order['captured_amount'])) {
-				$amountToAuthorize = ($order['total'] - $order['captured_amount']);
-			} else {
-				$amountToAuthorize = $order['total'];
-			}	
+			$amountToAuthorize = Order::getAmountNotCaptured($order);
 			if((!isset($order['authTotal'])) || ($order['authTotal'] >= $amountToAuthorize)) {
 				$reAuth = false;
 			}
