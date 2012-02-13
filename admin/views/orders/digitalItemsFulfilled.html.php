@@ -11,7 +11,7 @@
 
 <div class="grid_16">
 	<h2 id="page-heading">
-		Follows Digital Items To Be Processed
+		FulFilled Digital Items
 	</h2>
 </div>
 
@@ -21,10 +21,10 @@
 			<tr>
 				<th>Order ID</th>
 				<th>Order Date</th>
+				<th>Date Sent to Customer</th>
 				<th>User Email</th>
 				<th>Description</th>
 				<th width="10%">Quantity</th>
-				<th width="15%"></th>
 				<th></th>
 			</tr>
 		</thead>
@@ -42,6 +42,9 @@
 					<?php echo date('m-d-Y', $item['date_created']->sec);?>
 				</td>
 				<td>
+					<?php echo date('m-d-Y', $item['date_sent']->sec);?>
+				</td>
+				<td>
 					<a href="/users/view/<?php echo $item['user_id'];?>"><?php echo $item['email']; ?></a>
 				</td>
 				<td>
@@ -49,9 +52,6 @@
 				</td>
 				<td width="10%">
 					<?php echo $item['quantity']; ?>
-				</td>
-				<td width="15%">
-					<a href="/orders/markedDigitalItem?order_id=<?php echo $item['full_order_id'];?>&item_id=<?php echo $item['item_id'];?>" onclick="return markItemAsSent();">Mark Processed</a>
 				</td>
 			</tr>
 			<?php endforeach; ?>

@@ -268,7 +268,7 @@ class OrdersController extends BaseController {
 			foreach($order["items"] as $key => $item) {
 				$order_data["items"][$key]['initial_quantity'] = $order_data["items"][$key]['quantity'];
 				if($item["_id"] == new MongoId($unshipped_item)) {
-					$order_data["items"][$key]["cancel"] = "true";
+					$order_data["items"][$key]["cancel"] = true;
 				}
 			}
 		}
@@ -277,13 +277,13 @@ class OrdersController extends BaseController {
 		$order_data['credit_used'] = '';
 		$order_data['promo_code'] = '';
 		$order_data['promo_discount'] = '';
-		$order_data['save'] = false;
+		$order_data['save'] = 'false';
 		$order_data['comment'] = 'Canceling unshipped items';
 		$this->request->data = $order_data;
 		
 		$order_data = $this->manage_items(false);
 		$order_data = $order_data->data();
-		$order_data['save'] = true;
+		$order_data['save'] = 'true';
 		$order_data['id'] = $order_data['_id'];
 		$this->request->data = $order_data;
 		$order_data = $this->manage_items(false);
@@ -1132,7 +1132,7 @@ class OrdersController extends BaseController {
 		return compact('payments','type');
 	}
 	
-	public function digitalToSend() {
+	public function digitalItemsToFulfill() {
 		$orderClass = $this->_classes['order'];
 		if($order_id = $this->request->query['updated']) {
 			FlashMessage::write("Item has been processed.", array('class' => 'pass'));
@@ -1145,7 +1145,7 @@ class OrdersController extends BaseController {
 		foreach($orders as $order) {
 			foreach($order['items'] as $item) {
 				$user = User::lookup($order['user_id']);
-				if($item['digital'] && !$item['coupon_sent']) {
+				if($item['digital'] && !$item['digital_item_fulfilled']) {
 					$lineItem['order_id'] = $order['order_id'];
 					$lineItem['full_order_id'] = (string) $order['_id'];
 					$lineItem['date_created'] = $order['date_created'];
@@ -1161,7 +1161,7 @@ class OrdersController extends BaseController {
 		return compact('lineItems');
 	}
 	
-	public function markedDigitalItem() {
+	public function fulfillDigitalItem() {
 		$orderClass = $this->_classes['order'];
 		$ordersCollection = $orderClass::Collection();
 		$id = $this->request->query['order_id'];
@@ -1174,32 +1174,32 @@ class OrdersController extends BaseController {
 				if($item['item_id'] == $item_id) {
 					$update = $ordersCollection->update(
 						array('_id' => new MongoId($id)),
-						array('$set' => array('items.'.$key.'.coupon_sent' => true,
-												'items.'.$key.'.coupon_sent_date' => new MongoDate())
+						array('$set' => array('items.'.$key.'.digital_item_fulfilled' => true,
+												'items.'.$key.'.digital_item_fulfilled_date' => new MongoDate())
 						), array( 'upsert' => true)
 					);
 				}
 			}
 		}
-		$this->redirect('/orders/digitalToSend/?updated=true');
+		$this->redirect('/orders/digitalItemsToFulfill/?updated=true');
 	}
 	
-	public function digitalSent() {
+	public function digitalItemsFulfilled() {
 		$orderClass = $this->_classes['order'];
 		$ordersCollection = $orderClass::Collection();
 		$orders = $ordersCollection->find(array(
 			'items.digital' => true,
-			'items.coupon_sent' => true
+			'items.digital_item_fulfilled' => true
 		));
 		$lineItems = null;
 		foreach($orders as $order) {
 			foreach($order['items'] as $item) {
 				$user = User::lookup($order['user_id']);
-				if($item['digital'] && $item['coupon_sent']) {
+				if($item['digital'] && $item['digital_item_fulfilled']) {
 					$lineItem['order_id'] = $order['order_id'];
 					$lineItem['full_order_id'] = (string) $order['_id'];
 					$lineItem['date_created'] = $order['date_created'];
-					$lineItem['date_sent'] = $item['coupon_sent_date'];
+					$lineItem['date_sent'] = $item['digital_item_fulfilled_date'];
 					$lineItem['email'] = $user['email'];
 					$lineItem['user_id'] = $order['user_id'];
 					$lineItem['quantity'] = $item['quantity'];
