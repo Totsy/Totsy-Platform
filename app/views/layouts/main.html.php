@@ -144,7 +144,7 @@ use lithium\storage\Session;
 		if(!preg_match("/brands/", $query)) { ?>
 		
 			<div class="container_16 brandpromo">
-				<a href="/brands/jojomamanbebe" title="JoJo Maman B&eacute;b&eacute; Special 10-day Event"><img src="/img/bp-banner-jojo.png" alt="JoJo Maman B&eacute;b&eacute; Special 10-day Event" width="816" height="125" /></a>
+				<a href="/brands/jojomamanbebe" title="JoJo Maman B&eacute;b&eacute; Special 10-day Event"><img src="/img/jojo-banner.png" alt="JoJo Maman B&eacute;b&eacute; Special 10-day Event" width="816" height="125" /></a>
 			</div>
 	<?php 
 		} ?>
