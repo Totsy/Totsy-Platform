@@ -29,8 +29,9 @@
 							}
 						?>
 						<img src="<?php echo $eventImage; ?>" alt="<?php echo $event['name']; ?>" width="236" height="273" />
-						<em><?php echo $event['name']; ?></em>
+						<h3><?php echo $event['name']; ?></h3>
 					</a>
+					<p><?php echo strip_tags($event['blurb']); ?></p>
 				</li>
 				<?php } ?>
 			<?php $x++; ?>
