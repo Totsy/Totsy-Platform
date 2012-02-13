@@ -2,6 +2,8 @@
 
 namespace admin\models;
 
+use lithium\storage\Session;
+use lithium\core\Environment;
 use MongoId;
 use MongoDate;
 use MongoRegex;
@@ -12,6 +14,7 @@ use admin\extensions\Mailer;
 use admin\models\User;
 use admin\models\Item;
 use admin\models\Credit;
+use admin\extensions\Mailer;
 use li3_payments\extensions\adapter\payment\CyberSource;
 use Exception;
 
@@ -224,11 +227,7 @@ class Order extends Base {
 
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
 		#If Digital Items, Calculate correct Amount
-		if(!empty($order['captured_amount'])) {
-			$amountToCapture = ($order['total'] - $order['captured_amount']);
-		} else {
-			$amountToCapture = $order['total'];
-		}
+		$amountToCapture = static::getAmountNotCaptured($order);
 		if ($order['total'] == 0) {
 			$data['auth_confirmation'] = $order['authKey'];
 			$data['payment_date'] = new MongoDate();
@@ -254,7 +253,7 @@ class Order extends Base {
 				$update = static::update(
 					array(
 						'$push' => array(
-						'capturedTransactions' => $transation
+						'capture_records' => $transation
 						)
 					),
 					array('_id' => $orderId),
@@ -548,8 +547,17 @@ class Order extends Base {
 		if(isset($selected_order["credit_used"])) {
 			$datas_order_prices["credit_used"] = (float) $selected_order["credit_used"];
 		}
+		if(isset($selected_order['isOnlyDigital'])) {
+			$datas_order_prices["isOnlyDigital"] = $selected_order["isOnlyDigital"];
+		}
+		if(isset($selected_order['payment_date'])) {
+			$datas_order_prices["payment_date"] = $selected_order["payment_date"];
+		}
+		if(isset($selected_order['auth_confirmation'])) {
+			$datas_order_prices["auth_confirmation"] = $selected_order["auth_confirmation"];
+		}		
 		/**************UPDATE TAX****************************/
-// Is this even used?
+		// Is this even used?
 		extract(static::_recalculateTax($selected_order,$items,true));
 		/**************UPDATE DB****************************/
 		if (array_key_exists('original_credit_used', $selected_order)) {
@@ -670,6 +678,13 @@ class Order extends Base {
 			$datas_order['overSizeHandling'] = 0;	
 			$datas_order['handling'] = 0;
 			$datas_order['tax'] = 0;
+			$datas_order['isOnlyDigital'] = true;
+			$datas_order['payment_date'] = static::dates('now');
+			if($selected_order['capture_records']) {
+				$datas_order['auth_confirmation'] = $selected_order['capture_records'][0]['authKey'];
+			} else {
+   				$datas_order['auth_confirmation'] = 1;
+			}
 		} else {
 			$datas_order['handling'] = static::shipping($items);
 			$datas_order['overSizeHandling'] = static::overSizeShipping($items);
@@ -1136,6 +1151,16 @@ class Order extends Base {
 			}
 		}
 		return $onlyDigital;
+	}
+	
+	public static function getAmountNotCaptured($order) {
+		$amountNotCaptured = 0;
+		if(!empty($order['captured_amount'])) {
+			$amountNotCaptured = ($order['total'] - $order['captured_amount']);
+		} else {
+			$amountNotCaptured = $order['total'];
+		}
+		return $amountNotCaptured;
 	}
 }
 

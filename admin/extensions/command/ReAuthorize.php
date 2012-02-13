@@ -208,11 +208,7 @@ class ReAuthorize extends \lithium\console\Command {
 		#If The Order has been already full authorize and Order send to Dotcom. Don't reauth
 		if(!empty($this->fullAmount)) {
 			#Check The Amount to Authorize
-			if(!empty($order['captured_amount'])) {
-				$amountToAuthorize = ($order['total'] - $order['captured_amount']);
-			} else {
-				$amountToAuthorize = $order['total'];
-			}	
+			$amountToAuthorize = Order::getAmountNotCaptured($order);
 			if((!isset($order['authTotal'])) || ($order['authTotal'] >= $amountToAuthorize)) {
 				$reAuth = false;
 			}
@@ -267,11 +263,7 @@ class ReAuthorize extends \lithium\console\Command {
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
 		Logger::debug("Authorizing...");
 		#If Digital Items, Calculate correct Amount
-		if(!empty($order['captured_amount'])) {
-			$amountToAuthorize = ($order['total'] - $order['captured_amount']);
-		} else {
-			$amountToAuthorize = $order['total'];
-		}	
+		$amountToAuthorize = Order::getAmountNotCaptured($order);
 		$auth = Processor::authorize('default', $amountToAuthorize, $profile, array('orderID' => $order['order_id']));
 		if($auth->success()) {
 			Logger::debug("Authorization Succeeded");

@@ -263,15 +263,15 @@ class Order extends Base {
 			$capturedTransactions = array();
 			$transation['authKey'] = $transactions['capture']->key;
 			$transation['amount'] = $vars['amountToCapture'];
-			$transation['date_captured'] = new MongoDate();
+			$transation['date_captured'] = static::dates('now');
 			$capturedTransactions[] = $transation;
 			$order->captured_amount = $vars['amountToCapture'];
-			$order->capturedTransactions = $capturedTransactions;
+			$order->capture_records = $capturedTransactions;
 			#If Only Capture Amount / Digital Order
 			if(!$transactions['softAuth']) {
 				$order->authKey = $transactions['capture']->key;
 				$order->auth_confirmation = $transactions['capture']->key;
-				$order->payment_date = new MongoDate();
+				$order->payment_date = static::dates('now');
 				$order->processor = $transactions['capture']->adapter;
 				$order->auth = $transactions['capture']->export();
 			}
@@ -281,6 +281,11 @@ class Order extends Base {
 			$order->processor = $transactions['softAuth']->adapter;
 			$order->authTotal = $authTotalAmount;
 			$order->auth = $transactions['softAuth']->export();
+		}
+		#Case If the order is only digital and the total is zero
+		if(empty($transactions['capture']) && empty($transactions['softAuth']) && empty($order['total'])) {
+			$order->auth_confirmation = 1;
+			$order->payment_date = static::dates('now');
 		}
 		if(Cart::isOnlyDigital($cart)) {
 			$shippingMethod = 'email';

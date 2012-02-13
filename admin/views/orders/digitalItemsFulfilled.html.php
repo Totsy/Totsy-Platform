@@ -11,7 +11,7 @@
 
 <div class="grid_16">
 	<h2 id="page-heading">
-		All Digital Items Sent To Customer
+		FulFilled Digital Items
 	</h2>
 </div>
 

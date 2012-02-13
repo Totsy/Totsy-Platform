@@ -11,7 +11,7 @@
 
 <div class="grid_16">
 	<h2 id="page-heading">
-		Follows Digital Items Progress
+		Follows Digital Items To Fulfill
 	</h2>
 </div>
 
@@ -24,7 +24,7 @@
 				<th>User Email</th>
 				<th>Description</th>
 				<th width="10%">Quantity</th>
-				<th width="15%">Processed ?</th>
+				<th width="15%"></th>
 				<th></th>
 			</tr>
 		</thead>
@@ -51,7 +51,7 @@
 					<?php echo $item['quantity']; ?>
 				</td>
 				<td width="15%">
-					<a href="/orders/markedDigitalItem?order_id=<?php echo $item['full_order_id'];?>&item_id=<?php echo $item['item_id'];?>" onclick="return markItemAsSent();">Yes</a>
+					<a href="/orders/fulfillDigitalItem?order_id=<?php echo $item['full_order_id'];?>&item_id=<?php echo $item['item_id'];?>" onclick="return markItemAsSent();">Mark Processed</a>
 				</td>
 			</tr>
 			<?php endforeach; ?>
