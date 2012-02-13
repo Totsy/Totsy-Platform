@@ -523,6 +523,9 @@
 <?php echo $this->form->hidden("original_credit_used", array('class' => 'inputbox', 'id' => "original_credit_used", 'value' => $order->original_credit_used)); ?>
 <?php echo $this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
 <?php echo $this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
+<?php echo $this->form->hidden("isOnlyDigital", array('class' => 'inputbox', 'id' => "isOnlyDigital", 'value' => $order->isOnlyDigital )); ?>
+<?php echo $this->form->hidden("payment_date", array('class' => 'inputbox', 'id' => "payment_date", 'value' => $order->payment_date )); ?>
+<?php echo $this->form->hidden("auth_confirmation", array('class' => 'inputbox', 'id' => "auth_confirmation", 'value' => $order->auth_confirmation )); ?>
 									<!--- END HIDDEN DATAS - ITEMS -->
 									<?php if(empty($order->cancel)): ?>
 									<table style="width:250px; float: right;">

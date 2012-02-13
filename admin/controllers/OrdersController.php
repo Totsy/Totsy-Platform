@@ -577,8 +577,9 @@ class OrdersController extends BaseController {
 				'email'     => $userInfos['email']
 
 		))));
+		$amountToCapture = Order::getAmountNotCaptured($order);
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', $order['total'], $card, array('orderID' => $order['order_id']));
+		$auth = Processor::authorize('default', $amountToCapture, $card, array('orderID' => $order['order_id']));
 		if($auth->success()) {
 			$result = Processor::profile('default', $auth, array('orderID' => $order['order_id']));
 			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
@@ -595,7 +596,7 @@ class OrdersController extends BaseController {
 						'authKey' => $auth->key,
 						'auth' => $auth->export(),
 						'processor' => $auth->adapter,
-						'authTotal' => $order['total']
+						'authTotal' => $amountToCapture
 					), '$unset' => array(
 						'error_date' => 1,
 						'auth_error' => 1
@@ -624,15 +625,16 @@ class OrdersController extends BaseController {
 				#Try To Create A New Authorization and Capture
 				$cybersource = new CyberSource(Processor::config('default'));
 				$profile = $cybersource->profile($order['cyberSourceProfileId']);
+				$amountToCapture = Order::getAmountNotCaptured($order);
 				#Create a new Transaction and Get a new Authorization Key
-				$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
+				$auth = Processor::authorize('default', $amountToCapture, $profile, array('orderID' => $order['order_id']));
 				if ($auth->success()) {
 					$authKey = $auth->key;
 					$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth->key,
 											  'auth' => $auth->export(),
-											  'authTotal' => $order['total'],
+											  'authTotal' => $amountToCapture,
 											  'processor' => $auth->adapter
 					) , '$unset' => array(
 						'error_date' => 1,
@@ -655,10 +657,11 @@ class OrdersController extends BaseController {
 		$orderClass = $this->_classes['order'];
 		$current_user = Session::read('userLogin');
 		$ordersCollection = $orderClass::Collection();
+		$amountToCapture = Order::getAmountNotCaptured($order);
 		$auth_capture = Processor::capture(
 			'default',
 			$authKey,
-			floor($order['total'] * 100) / 100,
+			floor($amountToCapture * 100) / 100,
 			array(
 				'processor' => isset($order['processor']) ? $order['processor'] : null,
 				'orderID' => $order['order_id']
@@ -678,17 +681,24 @@ class OrdersController extends BaseController {
 				array('_id' => $order['_id']),
 				array('$set' => array('authKey' => $auth_capture->key,
 									  'auth' => $auth_capture->export(),
-									  'authTotal' => $order['total'],
+									  'authTotal' => $amountToCapture,
 									  'processor' => $auth_capture->adapter,
 									  'payment_date' => new MongoDate(),
    									  'auth_confirmation' => $auth_capture->key
 				)), array( 'upsert' => true)
 			);
+			#Save Capture in Transactions Logs
+			$transation['authKey'] = $auth_capture->key;
+			$transation['amount'] = $amountToCapture;
+			$transation['date_captured'] = new MongoDate();
 			#Unset Old Errors fields
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
 				array('$unset' => array('error_date' => 1,
-										'auth_error' => 1)
+										'auth_error' => 1),					
+					'$push' => array(
+					'capture_records' => $transation
+					)
 				)
 			);
 			return false;
@@ -772,7 +782,7 @@ class OrdersController extends BaseController {
 						'conditions' => array('_id' => $orderItem['item_id']
 					)));
 					$sku["$orderItem[item_id]"] = $item->vendor_style;
-					if(!empty($orderItem["cancel"])) {
+					if(!empty($orderItem["digital"])) {
 						$hasDigitalItems = true;
 					}
 					//Check if items are all canceled

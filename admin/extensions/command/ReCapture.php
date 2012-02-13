@@ -129,11 +129,7 @@ class ReCapture extends \lithium\console\Command {
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
 		#If Digital Items, Calculate correct Amount
-		if(!empty($order['captured_amount'])) {
-			$amountToAuthorize = ($order['total'] - $order['captured_amount']);
-		} else {
-			$amountToAuthorize = $order['total'];
-		}
+		$amountToAuthorize = Order::getAmountNotCaptured($order);
 		#Create a new Transaction and Get a new Authorization Key
 		$auth = Processor::authorize('default', $amountToAuthorize, $profile, array('orderID' => $order['order_id']));
 		if ($auth->success()) {
@@ -174,11 +170,7 @@ class ReCapture extends \lithium\console\Command {
 		$ordersCollection = Order::Collection();
 		$report = null;
 		#If Digital Items, Calculate correct Amount
-		if(!empty($order['captured_amount'])) {
-			$amountToCapture = ($order['total'] - $order['captured_amount']);
-		} else {
-			$amountToCapture = $order['total'];
-		}
+		$amountToCapture = Order::getAmountNotCaptured($order);
 		$auth_capture = Processor::capture(
 				'default',
 				$authKey,
@@ -209,7 +201,7 @@ class ReCapture extends \lithium\console\Command {
 				array('_id' => $order['_id']),
 				array(
 					'$push' => array(
-					'capturedTransactions' => $transation
+					'capture_records' => $transation
 					)
 				)
 			);
