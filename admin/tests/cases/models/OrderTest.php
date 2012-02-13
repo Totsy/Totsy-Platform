@@ -3,6 +3,7 @@
 namespace admin\tests\cases\models;
 
 use admin\models\Order;
+use admin\models\OrderShipped;
 use admin\tests\mocks\models\OrderMock;
 use admin\tests\mocks\payments\ProcessorMock;
 use admin\models\User;
@@ -171,7 +172,10 @@ class OrderTest extends \lithium\test\Unit {
 	 */
 	public function testFindUnshippedItems() {
 		//configuration
-		$order_id = new MongoId("4e7a37cfc24efc3107000269");
+		$order_id = new MongoId();
+		$ship_record_one_id = new MongoId();
+		$ship_record_two_id = new MongoId();
+		$ship_record_three_id = new MongoId();
 		//Create temporary documents
 		$remote = new Order();
 		$order_datas = 
@@ -264,6 +268,7 @@ class OrderTest extends \lithium\test\Unit {
 		          'category' => 'Accessories' ,
 		          'color' => 'Blue' ,
 		          'description' => 'Trunki Saddlebag ' ,
+		          'digital' => true,
 		          'discount_exempt' => false,
 		          'expires' => '',
 		          'item_id' => '4e4149615899efe21c00011c' ,
@@ -315,9 +320,9 @@ class OrderTest extends \lithium\test\Unit {
 		  'ship_date' => '2011-09-06T04: 00: 00.0Z' ,
 		  'ship_records' => 
 		    array(
-		      "0" => new MongoId('4e53a1ff974f5b9c08001769') ,
-		      "1" => new MongoId('4e53a205974f5b9c0800176c') ,
-		      "2" => new MongoId('4e53a207974f5b9c0800176d')),
+		      "0" => $ship_record_one_id ,
+		      "1" => $ship_record_two_id ,
+		      "2" => $ship_record_three_id),
 		  'shipping' => 
 		    array(
 		      '_id' => '4e4293975899efaa5c0000bb' ,
@@ -340,12 +345,92 @@ class OrderTest extends \lithium\test\Unit {
 		);
 		$order = Order::create();
 		$order->save($order_datas);
+		
+		$ship_record_one_data = 
+		array(
+			'_id'=> $ship_record_one_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-846-B1C-959',
+			'Weight'=> '1.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000242'),
+			'hash'=> '1a6d6010c78f36dbd6b9634de832752a',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:07'))
+		);
+		$ship_record_one = OrderShipped::create();
+		$ship_record_one->save($ship_record_one_data);
+		
+		$ship_record_two_data = 
+		array(
+			'_id'=> $ship_record_two_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-4DB-B1C-D41',
+			'Weight'=> '2.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d1000024a'),
+			'hash'=> '2d3a802ce868a693431951f39ecc5608',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:13'))
+		);
+		$ship_record_two = OrderShipped::create();
+		$ship_record_two->save($ship_record_two_data);
+		
+		$ship_record_three_data = 
+		array(
+			'_id'=> $ship_record_three_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-56D-B1C-959',
+			'Weight'=> '1.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000249'),
+			'hash'=> 'dad03956e3fcae78d55360b6bcc97808',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:15'))
+		);
+		$ship_record_three = OrderShipped::create();
+		$ship_record_three->save($ship_record_three_data);
+		
 		$orderCollection = Order::collection();
 		$order = $orderCollection->findOne(array('_id' => $order_id));
+		
 		$unshippedItems = Order::findUnshippedItems($order);
 
 		//Delete Temporary Documents
 		Order::remove(array("_id" => $order_id));
+		OrderShipped::remove(array("_id" => $ship_record_one_id));
+		OrderShipped::remove(array("_id" => $ship_record_two_id));
+		OrderShipped::remove(array("_id" => $ship_record_three_id));
 		
 		$this->assertEqual('4e4292de5899ef675d0000b3', $unshippedItems[0]);
 		$this->assertEqual(2, count($unshippedItems));

@@ -6,6 +6,9 @@ use MongoId;
 use MongoDate;
 use MongoRegex;
 use lithium\analysis\Logger;
+use lithium\core\Environment;
+use lithium\storage\Session;
+use admin\extensions\Mailer;
 use admin\models\User;
 use admin\models\Item;
 use admin\models\Credit;
@@ -164,9 +167,16 @@ class Order extends Base {
 	public static function findUnshippedItems($order) {
 		$unshipped_items = array();
 		$ordersShippedCollection = OrderShipped::collection();
+		$order_items = array();
+		
+		// Remove digital items
+		foreach ($order['items'] as $item) {
+			if(empty($item['digital']))
+				$order_items[]=$item;
+		}
 
 		// Get the SKUs for all items in the order to match against the ship records
-		$itemSkus = Item::getSkus($order['items']);
+		$itemSkus = Item::getSkus($order_items);
 		
 		// Retrieve all of the orders.shipped documents
 		$ship_records = $ordersShippedCollection->find(
