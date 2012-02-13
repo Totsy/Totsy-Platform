@@ -159,7 +159,6 @@ class QueueController extends BaseController {
                         $orders = Order::find('all',compact('conditions','fields'));
                         $cancel_count = 0;
                         $line_count = 0;
-                        $data['purchase_orders'] = count($data['purchase_orders']);
                         /**
                         * Get the number of order lines
                         **/
