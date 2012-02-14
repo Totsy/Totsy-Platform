@@ -4686,7 +4686,11 @@ nav .haschild li a:hover {
 #userUtils .cart strong {color:#ED1C25;}
 #userUtils .cart *:hover {text-decoration:underline;}
 #userUtils .cart strong {font-size:14px; font-weight: bold;}
-#userUtils .btn, .modal .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
+
+/* @TODO - abstract out all .btn styles… need design consistency / standards */
+#userUtils .btn,
+.modal .btn,
+#jojoLoggedOut .btn {
 	padding:1px 10px 0;
 	background: url(../img/btn-glass.png) 0 50.5% repeat-x;
 	border:1px solid rgba(0,0,0,0);
@@ -4697,17 +4701,20 @@ nav .haschild li a:hover {
 	box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
 	font:bold 10px/0 Helvetica, Arial, sans-serif;
 	text-transform: uppercase; 
-
 }
 #userUtils .cart:hover,
-#userUtils .btn:hover {text-decoration: none;}
-#userUtils .checkout {
+#userUtils .btn:hover,
+#jojoLoggedOut .btn:hover {text-decoration: none;}
+#userUtils .checkout,
+#jojoLoggedOut .btn {
 	float: left;
 	background-color:rgb(218,80,77); /* fallback */
 	background-color:rgba(218,80,77,1);
 	color:#fff;
 }
-#userUtils .checkout strong, .modal .btn strong {
+#userUtils .checkout strong,
+.modal .btn strong,
+#jojoLoggedOut .btn strong {
 	padding-right:9px;
 	background: url(../img/btn-arrow-s.png) 100% 25% no-repeat;
 	line-height: 1.6;
@@ -5050,4 +5057,38 @@ ul.bp-events li:nth-of-type(3n) img {
 	-ms-transform-origin: 0% 100%;
 	transform: rotate(-2deg) translate(3px,2px);
 	transform-origin: 0% 100%;
+}
+
+/* logged out jojo public view */
+#jojoLoggedOut {
+    position: absolute; right: 0; top: 0;
+    z-index: 1000;
+    margin: -20px 20px 0 0;
+    width: 250px;
+}
+#jojoLoggedOut .signin {
+	text-align: right;
+}
+#jojoLoggedOut .signup {
+	margin-top:5px;
+}
+#jojoLoggedOut .signup > strong {
+	float: left;
+	width:150px;
+	color:#ef4036;
+	font-size: 13.12px;
+	font-weight: normal;
+}
+#jojoLoggedOut .signup > strong em {
+	display: block;
+	font-size:15.9px ; font-weight: bold;
+}
+
+#jojoLoggedOut .btn {
+	float:right;
+	margin-top:5px;
+	font-size:1.1em;
+}
+#jojoLoggedOut .btn strong {
+	background:url(../img/btn-arrow-lg.png) 100% 25% no-repeat;
 }
