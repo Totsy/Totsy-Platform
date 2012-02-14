@@ -43,7 +43,7 @@ class MakeSku extends \lithium\console\Command  {
 	public function generateSku($items) {
 	    $itemCollection = Item::connection()->connection->items;
 	    $i =0;
-	    Logger::debug("Going generate skus for {$items->count()} items");
+	   // Logger::debug("Going generate skus for {$items->count()} items");
 	    foreach ($items as $item) {
 	    	Logger::debug("Generating skus for {$item['description']} ({$item['_id']}) from event {$item['event'][0]} :");
 			$i++;
