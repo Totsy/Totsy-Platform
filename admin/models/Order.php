@@ -2,8 +2,6 @@
 
 namespace admin\models;
 
-use lithium\storage\Session;
-use lithium\core\Environment;
 use MongoId;
 use MongoDate;
 use MongoRegex;
@@ -14,7 +12,6 @@ use admin\extensions\Mailer;
 use admin\models\User;
 use admin\models\Item;
 use admin\models\Credit;
-use admin\extensions\Mailer;
 use li3_payments\extensions\adapter\payment\CyberSource;
 use Exception;
 
