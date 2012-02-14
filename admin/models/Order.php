@@ -548,7 +548,7 @@ class Order extends Base {
 			$datas_order_prices["isOnlyDigital"] = $selected_order["isOnlyDigital"];
 		}
 		if(isset($selected_order['payment_date'])) {
-			$datas_order_prices["payment_date"] = $selected_order["payment_date"];
+			$datas_order_prices["payment_date"] = new MongoDate();
 		}
 		if(isset($selected_order['auth_confirmation'])) {
 			$datas_order_prices["auth_confirmation"] = $selected_order["auth_confirmation"];
@@ -676,7 +676,7 @@ class Order extends Base {
 			$datas_order['handling'] = 0;
 			$datas_order['tax'] = 0;
 			$datas_order['isOnlyDigital'] = true;
-			$datas_order['payment_date'] = static::dates('now');
+			$datas_order['payment_date'] = true;
 			if($selected_order['capture_records']) {
 				$datas_order['auth_confirmation'] = $selected_order['capture_records'][0]['authKey'];
 			} else {
@@ -1057,13 +1057,13 @@ class Order extends Base {
 		if($order['authTotal'] != $order['total']) {
 			$status = 'Soft Authorized';
 		}
-		if($order['ship_records']) {
+		if($order['ship_records'] || $order['isOnlyDigital']) {
 			$status = 'Shipped';
 		}
 		if($order['payment_date']) {
 			$status = 'Captured but not Shipped';
 		}
-		if($order['payment_date'] && $order['ship_records']) {
+		if($order['payment_date'] && ($order['ship_records'] || $order['isOnlyDigital'])) {
 			$status = 'Shipped And Captured';
 		}
 		if($order['cancel']) {

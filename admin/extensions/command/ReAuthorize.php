@@ -122,7 +122,6 @@ class ReAuthorize extends \lithium\console\Command {
 							'auth' => array('$exists' => true),
 							'cancel' => array('$ne' => true),
 							'total' => array('$ne' => 0),
-							'$where' => 'this.total == this.authTotal',
 							'cyberSourceProfileId' => array('$exists' => true),
 							'authTotal' => array('$exists' => true),
 							'processor' => 'CyberSource',
@@ -209,7 +208,7 @@ class ReAuthorize extends \lithium\console\Command {
 		if(!empty($this->fullAmount)) {
 			#Check The Amount to Authorize
 			$amountToAuthorize = Order::getAmountNotCaptured($order);
-			if((!isset($order['authTotal'])) || ($order['authTotal'] >= $amountToAuthorize)) {
+			if($order['authTotal'] >= $amountToAuthorize) {
 				$reAuth = false;
 			}
 		} else {

@@ -324,6 +324,9 @@ class OrdersController extends BaseController {
 			}
 			$datas["user_id"] = $selected_order["user_id"];
 			$datas["order_id"] = $selected_order["order_id"];
+			if(isset($selected_order["capture_records"])) {
+				$datas["capture_records"] = $selected_order["capture_records"];
+			}
 			$items = $selected_order["items"];
 
 			foreach($datas["items"] as $key => $item) {
