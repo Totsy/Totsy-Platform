@@ -161,7 +161,7 @@ class UsersController extends BaseController {
 				if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
 					$mailTemplate = 'Welcome_Free_Shipping';
 				} else {
-					$mailTemplate = 'Welcome_Mamasource_1-31';	
+					$mailTemplate = 'Welcome_Mamasource_1-31';
 					$invitedFlag = true;	
 				}
 								

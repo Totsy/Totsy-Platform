@@ -26,7 +26,7 @@ class BaseController extends \lithium\action\Controller {
 				
 		parent::__construct($config);
 						
-		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile')) {
+		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
@@ -43,16 +43,16 @@ class BaseController extends \lithium\action\Controller {
  									
 			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
-		        $img_path_prefix = "/img/mamapedia/";
-		        $this->set(compact('img_path_prefix'));
+		        $img_path_prefix = "/img/mamapedia";
 		    } else { 
 		        Session::write('layout', 'main', array('name' => 'default'));
-		        $img_path_prefix = "/img/";
+		        $img_path_prefix = "/img";
 		        $this->tenOffFiftyEligible($userInfo);
 		        $this->freeShippingEligible($userInfo);
 		    } 	
 			$this->_render['layout'] = '/main';
 		}
+		$this->set(compact('img_path_prefix'));
 	}
 
 	/**
