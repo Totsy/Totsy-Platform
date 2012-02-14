@@ -641,6 +641,7 @@ class UsersController extends BaseController {
         return $string;
     }
 
+	/* sends user to a public reset password page */
 	public function reset() {
 		$success = false;
 		if ($this->request->data) {
@@ -655,7 +656,8 @@ class UsersController extends BaseController {
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
 				$user->email_hash = md5($user->email);
-				$link = "http://" . $_SERVER['HTTP_HOST'] . "/reset/?t=" . $token;
+												
+				$link = "http://" . $_SERVER['HTTP_HOST'] . "/pages/password/?t=" . $token;
 				
 				if ($user->save(null, array('validate' => false))) {
 					$mailer = $this->_classes['mailer'];
@@ -760,29 +762,56 @@ class UsersController extends BaseController {
 	 * @return array
 	 */
 	public function password() {
-		$status = 'default';
+		$status = 'default';		
 		$user = User::getUser(null, $this->sessionKey);
+		
+		if(is_null($user) || $this->sessionKey=="userLogin" || $this->request->data['clear_token']) {
+			$user = user::find('all', array(
+			'conditions' => array(
+				'clear_token' => $this->request->data['clear_token'])));		
+		}
+		
+		print_r($user->data());
+				
 		if ($this->request->data) {
-			$oldPass = $this->request->data['password'];
+			
+			$oldPass = "";
+			
+			if($this->request->data['password']){
+				$oldPass = $this->request->data['password'];
+			} else {
+				$oldPass = $user->password;
+			}
+			
 			$newPass = $this->request->data['new_password'];
 			$confirmPass = $this->request->data['password_confirm'];
+			
 			if ($user->legacy == 1) {
 				$status = ($this->authIllogic($oldPass, $user)) ? 'true' : 'false';
 			} else {
 				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
 			}
+			
+			print $status;
+			exit();
+			
 			if (!empty($user->reset_token)) {
 				$status = ($user->reset_token == sha1($oldPass) ||
 				 $user->password == sha1($oldPass)) ? 'true' : 'false';
 			}
+			
 			if ($status == 'true') {
-				if(($newPass == $confirmPass)){
+				if($newPass == $confirmPass){
 					if(strlen($confirmPass) > 5){
 						$user->password = sha1($newPass);
 						$user->legacy = 0;
 						$user->reset_token = '0';
 						$user->requires_set_password = null;
-						unset($this->request->data['password']);
+						
+						if ($this->request->data['password']) {
+							unset($this->request->data['password']);
+						}
+						
 						unset($this->request->data['new_password']);
 						unset($this->request->data['password_confirm']);
 						if ($user->save($this->request->data, array('validate' => false))) {
@@ -797,13 +826,14 @@ class UsersController extends BaseController {
 				}
 			}
 		}
+		
 		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_password';
 		}
 		return compact("user", "status");
 	}
-
+	
 	/**
 	 * Create a new User object using data from the logged-in Facebook user.
 	 *

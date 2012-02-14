@@ -63,6 +63,8 @@ Router::connect('/age/{:args}', 'Events::age');
 
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
+/*Router::connect('/pages/password', 'Users::password');*/
+
 Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
 Router::connect('/blog', 'Blog::index');
 Router::connect('/feeds/{:args}', 'Feeds::home');

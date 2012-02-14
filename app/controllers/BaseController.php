@@ -25,19 +25,25 @@ class BaseController extends \lithium\action\Controller {
 		$userInfo = Array();
 				
 		parent::__construct($config);
-						
-		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile')) {
+								
+		if ( get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
-		} else {
+		} else {			
 			$userInfo = Session::read('userLogin');	
 			
         	//this changes depending on whether we're on prod or not
-        	//if something's funny or not working on kkim, just update it with master        	
-			$mamasourceSubDomain = "mamasource.totsy.com";
- 									
-			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
+        	//if something's funny or not working on kkim, just update it with master        
+        	$whiteLabelSubDomain = "";
+        	
+			if(Environment::is('production')) {
+			    $whiteLabelSubDomain = "mamasource.totsy.com";
+			} else { 
+			    $whiteLabelSubDomain = "evan.totsy.com";
+			} 
+			    							
+			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {	
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia/";
 		        $this->set(compact('img_path_prefix'));
@@ -101,8 +107,15 @@ class BaseController extends \lithium\action\Controller {
         $redirected = false;
         
         //this changes depending on whether we're on prod or not
-        //if something's funny or not working on kkim, just update it with master			
-		$whiteLabelSubDomain = "mamasource.totsy.com";
+        //if something's funny or not working on kkim, just update it with master	
+        
+        $whiteLabelSubDomain = "";
+        
+       	if(Environment::is('production') || Environment::is('staging')) {
+			$whiteLabelSubDomain = "mamasource.totsy.com";
+		} else { 
+			$whiteLabelSubDomain = "evan.totsy.com";
+		} 
 		 		
  		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
