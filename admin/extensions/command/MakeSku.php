@@ -83,7 +83,7 @@ class MakeSku extends \lithium\console\Command  {
 						Logger::debug("\tItems sizes: " . implode(', ', $item['detail']));
 						Logger::debug("\tItems skus sizes generated: " . implode(', ', $skulist));
 						if ($noTries == 3) {
-							$this->sendMail($item);
+							//$this->sendMail($item);
 							break;
 						}
 						$allskus = false;
