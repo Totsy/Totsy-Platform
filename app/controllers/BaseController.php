@@ -35,13 +35,13 @@ class BaseController extends \lithium\action\Controller {
 			
         	//this changes depending on whether we're on prod or not
         	//if something's funny or not working on kkim, just update it with master        			
-        	if(Environment::is('production')) {
-				$mamasourceSubDomain = "mamasource.totsy.com";
-			} else {
+        	//if(Environment::is('production')) {
+				$whiteLabelSubDomain = "mamasource.totsy.com";
+			/*} else {
 				$mamasourceSubDomain = "kkim.totsy.com";
-			}
+			}*/
  									
-			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
+			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia";
 		    } else { 
@@ -107,13 +107,14 @@ class BaseController extends \lithium\action\Controller {
         //this changes depending on whether we're on prod or not
         //if something's funny or not working on kkim, just update it with master	
         
-        if(Environment::is('production')) {
-			$whiteLabelSubDomain = "mamasource.totsy.com";
-			$mainDomain = "totsy.com";	
+        //if(Environment::is('production')) {
+		$whiteLabelSubDomain = "mamasource.totsy.com";
+		$mainDomain = "totsy.com";	
+		/*
 		} else {
 			$whiteLabelSubDomain = "kkim.totsy.com";
 			$mainDomain = "evan.totsy.com";	
-		}
+		}*/
 		 		
  		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
