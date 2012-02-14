@@ -4991,7 +4991,7 @@ ul.bp-events li {
 	margin:0 0 35px 53px;
 }
 ul.bp-events li:first-child,
-ul.bp-events li:nth-of-type(3n+1) {margin-left:5px;}
+ul.bp-events li:nth-child(3n+1) {margin-left:5px;}
 ul.bp-events img {
 	display: block;
 	border:10px solid #fff;
