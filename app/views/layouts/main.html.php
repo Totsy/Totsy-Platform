@@ -39,9 +39,9 @@ use lithium\storage\Session;
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
 	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
 	<script>$('html').addClass('js'); /* for js-enabled - avoid FOUC */</script>
-	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements support -->
+	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements and CSS3 selectors support -->
 	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-	<!--[if lte IE 8]><script src="/js/selectivizr.js"></script><![endif]-->	
+	<!--[if lte IE 8]><script type="text/javascript" src="/js/selectivizr-min.js"></script><![endif]-->	
 	<?php echo $this->scripts(); ?>
 	<meta http-equiv="Expires" content="<?php echo date('D, d M Y h:i T', strtotime('tomorrow')); ?>"/>
 	<meta property="og:site_name" content="Totsy"/>

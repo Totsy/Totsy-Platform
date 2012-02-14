@@ -13,15 +13,6 @@
 			<?php $x = 0; ?>
 			<?php foreach ($openEvents as $event): ?>
 				<?php if($x<6){ ?>
-
-					<?php
-/*
-						echo "<pre>";
-						print_r($event);
-						echo "</pre>";
-*/
-					?>
-					
 				<li>
 					<a href="<?php echo '/sale/' . $event['url'];?>" title="Go to <?php echo $event['name']; ?> sale">
 					<?php
@@ -38,13 +29,11 @@
 							}
 						?>
 						<img src="<?php echo $eventImage; ?>" alt="<?php echo $event['name']; ?>" width="236" height="273" />
-						<?php 
-							// remove JoJo Maman Bébé
+						<?php // remove JoJo Maman Bébé
 							$eventTitle = $event['name'];
 							$jojostr = '/JoJo Maman Bébé /';
 							$nojojoEventTitle = preg_replace($jojostr, '', $eventTitle);
-						?>
-						<h3><?php echo $nojojoEventTitle; ?></h3>
+						?><h3><?php echo $nojojoEventTitle; ?></h3>
 					</a>
 					<p><?php echo strip_tags($event['short']); ?></p>
 				</li>

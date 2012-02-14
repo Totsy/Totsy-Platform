@@ -4967,6 +4967,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 }
 #jojo header {
 	margin:0 0 45px;
+	border-bottom:1px solid transparent;
 }
 #jojo header p {
 	float: left;
@@ -4983,14 +4984,15 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	line-height: 0;
 }
 ul.bp-events {
-	margin:0 auto;
+	margin:0 auto; 
+	*margin-top:285px; /* IE7 hack… so ashamed */
 	width:885px;
 }
 ul.bp-events li {
 	float: left;
 	margin:0 0 35px 53px;
 }
-ul.bp-events li:first-child,
+ul.bp-events li:first-child {margin-left:5px;} /* fallback for <IE8 while selectivizr loads */
 ul.bp-events li:nth-child(3n+1) {margin-left:5px;}
 ul.bp-events img {
 	display: block;
