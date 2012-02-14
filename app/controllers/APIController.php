@@ -467,6 +467,10 @@ class APIController extends  \lithium\action\Controller {
 				'categories' => array(),
 				'ages' => array()
 			);
+			$data['tags'] = array(
+				'category' => array(),
+				'age' => array()
+			);
 			
 			if (!array_key_exists('event_image',$data)) { $data['event_image'] = $base_url.'img/no-image-small.jpeg'; }
 			else { $data['event_image'] = $base_url.'image/'.$data['event_image'].'.jpg'; }
@@ -516,19 +520,20 @@ class APIController extends  \lithium\action\Controller {
 				}
 				
 			}
-			$data['groups']['ages'] = array_unique( $data['groups']['ages'] );
-			$data['groups']['categories'] = array_unique($data['groups']['categories']);
+			
+			$data['groups']['age'] = array_unique( $data['groups']['age'] );
+			$data['groups']['category'] = array_unique($data['groups']['category']);
 			foreach ($data['groups'] as $csK => $cs){
 				foreach ($cs as $c){
 					$data['tags'][$csK][] = Event::mapCat2Url($csK,$c);
 				}
 			}
-			
+
 			$data['groups']['ages'] = $data['groups']['age'];
 			$data['groups']['categories'] = $data['groups']['category'];
 			$data['tags']['ages'] = $data['tags']['age'];
 			$data['tags']['categories'] = $data['tags']['category'];
-				
+			
 			unset($data['tags']['age'], $data['tags']['category']);
 			unset($data['groups']['category'], $data['groups']['age'] );
 			$events[] = $data;
