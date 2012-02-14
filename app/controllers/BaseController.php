@@ -26,7 +26,7 @@ class BaseController extends \lithium\action\Controller {
 				
 		parent::__construct($config);
 						
-		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile')) {
+		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
@@ -34,21 +34,25 @@ class BaseController extends \lithium\action\Controller {
 			$userInfo = Session::read('userLogin');	
 			
         	//this changes depending on whether we're on prod or not
-        	//if something's funny or not working on kkim, just update it with master        	
-			$mamasourceSubDomain = "mamasource.totsy.com";
+        	//if something's funny or not working on kkim, just update it with master        			
+        	//if(Environment::is('production')) {
+				$whiteLabelSubDomain = "mamasource.totsy.com";
+			/*} else {
+				$mamasourceSubDomain = "kkim.totsy.com";
+			}*/
  									
-			if ( $_SERVER['HTTP_HOST']==$mamasourceSubDomain ) {							
+			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
-		        $img_path_prefix = "/img/mamapedia/";
-		        $this->set(compact('img_path_prefix'));
+		        $img_path_prefix = "/img/mamapedia";
 		    } else { 
 		        Session::write('layout', 'main', array('name' => 'default'));
-		        $img_path_prefix = "/img/";
+		        $img_path_prefix = "/img";
 		        $this->tenOffFiftyEligible($userInfo);
 		        $this->freeShippingEligible($userInfo);
 		    } 	
 			$this->_render['layout'] = '/main';
 		}
+		$this->set(compact('img_path_prefix'));
 	}
 
 	/**
@@ -101,8 +105,16 @@ class BaseController extends \lithium\action\Controller {
         $redirected = false;
         
         //this changes depending on whether we're on prod or not
-        //if something's funny or not working on kkim, just update it with master			
+        //if something's funny or not working on kkim, just update it with master	
+        
+        //if(Environment::is('production')) {
 		$whiteLabelSubDomain = "mamasource.totsy.com";
+		$mainDomain = "totsy.com";	
+		/*
+		} else {
+			$whiteLabelSubDomain = "kkim.totsy.com";
+			$mainDomain = "evan.totsy.com";	
+		}*/
 		 		
  		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
@@ -113,7 +125,7 @@ class BaseController extends \lithium\action\Controller {
         	} else {
         		//mama to totsy
 				if ( is_null($userInfo['invited_by']) || $userInfo['invited_by']!=="mamasource" ) {
-					$this->crossDomainAuth("totsy.com", $userInfo['email'], $userInfo['password']);
+					$this->crossDomainAuth($mainDomain, $userInfo['email'], $userInfo['password']);
 				}
         	}
         }
