@@ -1,3 +1,6 @@
+<?=$this->html->script('jquery-1.4.2.min.js');?>
+<?php echo $this->html->script('jquery.maskedinput-1.2.2')?>
+
 <div class="grid_16">
 	<div class='block' id="forms">
 		<h5>
@@ -19,7 +22,7 @@
 	</div>
 </div>
 <div class='grid_16'>
-	<strong>Search Criteria</strong>: 
+	<strong>Query:</strong>: 
 	<?php 
 		echo "Issue type: " . $search_criteria['issue_type'] . "  Search by: " . $search_criteria['search_by'] . " ";
 		switch($search_criteria['search_by']) {
@@ -27,11 +30,10 @@
 				echo $search_criteria['search_by_value'];
 				break;
 				case 'month':
-				
 				echo date('F', mktime(0,0,0,(int)$search_criteria['search_by_value'] + 1));
 				break;
 			case 'date':
-				echo $search_criteria['search_by_value'];
+				echo $search_criteria['search_by_value']['start_date'] . " - " . $search_criteria['search_by_value']['end_date'];
 				break;
 		};
 	?>
@@ -46,11 +48,22 @@
 	<?=$this->form->create(null, array('id' => 'ticket_form'));?>
 		<?php
 			if($count != 0) {
-				echo $this->form->submit('Send selected to LivePerson', array('id' => 'liveperson'));
-				echo $this->form->submit("Send selected to all {$count} LivePerson", array('id' => 'liveperson'));
+				echo $this->form->button('Send selected to LivePerson', array('id' => 'liveperson', 'name' => 'send_button', 'value' => 'selected'));
+				echo $this->form->button("Send all {$count} to LivePerson", array('id' => 'liveperson', 'name' => 'send_button','value' => 'all'));
 			}
 		?>
-		
+
+		<div style='float: right'>
+			 <?php $limit = round($count/(int)$search_criteria['limit_by']); ?>
+			 Page : <?=$getNext;?> of <?php echo $limit; ?>
+			 <?php if ($getNext > 1):?>
+				 	 <?=$this->form->button('Prev batch', array('value' => $getNext, 'name' => 'goBack'));?>
+			<?php endif; ?>
+			<?php if ($getNext < $limit):?>
+				 	 <?=$this->form->button('Next batch', array('value' => $getNext, 'name' => 'getNext'));?>
+			<?php endif; ?>
+		</div>
+		<div style="clear:both;"></div>
 		<table>
 			<thead>
 				<th><?=$this->form->checkbox("checkall", array('id' => 'checkall'));?></th>
@@ -59,6 +72,7 @@
 				<th>Sent By</th>
 				<th>Subject</th>
 				<th>Message</th>
+				<th>Status</th>
 			</thead>
 			<tbody>
 				<?php foreach($tickets as $ticket):?>
@@ -67,13 +81,13 @@
 						<td><?=date('m/d/Y H:i:s', $ticket['date_created']->sec);?></td>
 						<td><?=$ticket['issue']['issue_type'];?>
 						<td><?=$ticket['user']['email'];?></td>
-						<?php if($ticket['issue']['issue_type'] == "order"):?>
-							<td><?=$this->html->link($ticket['issue']['type'],"/orders/view/{$ticket['issue']['type']}");?></td>
-						<?php else:?>
-							<td><?=$ticket['issue']['type'];?></td>
-						<?php endif;?>
-						
+						<td><?=$ticket['issue']['type'];?></td>						
 						<td><?=$ticket['issue']['message'];?></td>
+						<?php if (array_key_exists('status', $ticket)):?>
+							<td><?=$ticket['status'];?></td>
+						<?php else:?>
+							<td>Might have been sent originally</td>
+						<?php endif; ?>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -84,56 +98,61 @@
 <script type="text/javascript">
 $().ready(function(){
 	if($(".send_ticket").checked) {
-	//	$('#liveperson').removeAttr('disabled');
+		$('#liveperson').removeAttr('disabled');
 	} else {
-	//	$('#liveperson').attr('disabled','disabled');
+		$('#liveperson').attr('disabled','disabled');
 	}
-});
-$('#search_by').change(function(){
-	if($(this).val() == 'email'){
-		$('#search_by_field').html("");	
-		$('#search_by_field').append("<input type='text' name='email' value='enter email' />");
-	} else if ($(this).val() == 'month'){
-		$('#search_by_field').html("");	
-		html = "<select name='month'>" +
-			"<option value='0'>January</option>" +
-			"<option value='1'>February</option>" +
-			"<option value='2'>March</option>" +
-			"<option value='3'>April</option>" +
-			"<option value='4'>May</option>" +
-			"<option value='5'>June</option>" +
-			"<option value='6'>July</option>" +
-			"<option value='7'>August</option>" +
-			"<option value='8'>September</option>" +
-			"<option value='9'>October</option>" +
-			"<option value='10'>November</option>" +
-			"<option value='11'>December</option>" +
-			"</select>" ;
-		$('#search_by_field').append(html);		
-	} else {
-		$('#search_by_field').html("");	
-		$('#search_by_field').append("<label>Start Date</label> <input type='text' name='start_date' class='date'>  <label>End Date</label>  <input type='text' name='start_date' class='date'>");	
-	}
-	
-});
-$(".send_ticket").change(function(){
-	if($(this).checked) {
-	//	$('#liveperson').removeAttr('disabled');
-	} else {
-	//	$('#liveperson').attr('disabled','disabled');
-	}
-});
 
-$("#checkall").click(function() {
-	var checked_status = this.checked;
-	$(".send_ticket").each(function()
-	{
-		this.checked = checked_status;
+	$('#search_by').change(function(){
+		if($(this).val() == 'email'){
+			$('#search_by_field').html("");	
+			$('#search_by_field').append("<input type='text' name='email' value='enter email' />");
+		} else if ($(this).val() == 'month'){
+			$('#search_by_field').html("");	
+			html = "<select name='month'>" +
+				"<option value='0'>January</option>" +
+				"<option value='1'>February</option>" +
+				"<option value='2'>March</option>" +
+				"<option value='3'>April</option>" +
+				"<option value='4'>May</option>" +
+				"<option value='5'>June</option>" +
+				"<option value='6'>July</option>" +
+				"<option value='7'>August</option>" +
+				"<option value='8'>September</option>" +
+				"<option value='9'>October</option>" +
+				"<option value='10'>November</option>" +
+				"<option value='11'>December</option>" +
+				"</select>" ;
+			$('#search_by_field').append(html);		
+		} else {
+			$('#search_by_field').html("");	
+			$('#search_by_field').append("<label>Start Date</label> <input type='text' name='start_date' class='date'>  <label>End Date</label>  <input type='text' name='end_date' class='date'>");
+			jQuery(function($){
+			 	$(".date").mask("99/99/9999");
+			});	
+		}
+		
 	});
-	if($(this).checked) {
-	//	$('#liveperson').removeAttr('disabled');
-	} else {
-	//	$('#liveperson').attr('disabled','disabled');
-	}
+	$(".send_ticket").change(function(){
+		if(this.checked) {
+			$('#liveperson').removeAttr('disabled');
+		} else {
+			$('#liveperson').attr('disabled','disabled');
+		}
+	});
+
+	$("#checkall").click(function() {
+		var checked_status = this.checked;
+		$(".send_ticket").each(function()
+		{
+			this.checked = checked_status;
+		});
+
+		if(this.checked) {
+			$('#liveperson').removeAttr('disabled');
+		} else {
+			$('#liveperson').attr('disabled','disabled');
+		}
+	});
 });
 </script>
