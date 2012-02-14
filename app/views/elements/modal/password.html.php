@@ -1,7 +1,6 @@
 <script type="text/javascript">
 
 $('#password-prompt .btn.continue').live('click', function(e) {
-	e.preventDefault();
 	var success = false, error = '';
 
 	$.ajax({
@@ -24,12 +23,14 @@ $('#password-prompt .btn.continue').live('click', function(e) {
 	});
 
 	if (success && !error) {
-		location.href = $('#password-prompt form').attr('action');
+		return true;
 	} else if(error) {
 		alert(error);
+		e.preventDefault();
 		$('#pwd').focus();
 	} else {
 		alert('The password entered is incorrect. Please re-type your password and try again.');
+		e.preventDefault();
 		$('#pwd').focus();
 	}
 
@@ -100,15 +101,13 @@ $('#password-prompt .btn.continue').live('click', function(e) {
 <? else: ?>
 	<h2>To continue with your purchase please re-enter your password.</h2>
 <? endif; ?>
-	<form action="" method="post">
 <? if($user['requires_set_password']): ?>
-		<label for="email">Your Email Address:</label>
-		<input type="text" id="email" name="email" value="<?= $user['email'] ?>" />
+	<label for="email">Your Email Address:</label>
+	<input type="text" id="email" name="email" value="<?= $user['email'] ?>" />
 <? endif; ?>
-		<label for="pwd"><? if($user['requires_set_password']) echo 'Create Your ' ?>Password</label>
-		<input type="password" id="pwd" name="pwd" placeholder="Enter Password" />
-		<a href="#" class="btn continue"><strong>Continue</strong></a>
-	</form>
+	<label for="pwd"><? if($user['requires_set_password']) echo 'Create Your ' ?>Password</label>
+	<input type="password" id="pwd" name="pwd" placeholder="Enter Password" />
+	<a href="#" class="btn continue"><strong>Continue</strong></a>
 <? if(!$user['requires_set_password']): ?>
 	<a href="/reset">Forgot your password? Click here to reset it.</a>
 	<strong>Why are asking for your password again?</strong>
