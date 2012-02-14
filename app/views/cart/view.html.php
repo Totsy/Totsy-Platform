@@ -42,7 +42,7 @@ var discountErrors = new Object();
 			.dialog({
 				modal: true,
 				width: 384,
-				height: 300
+				height: 310
 			}
 		);
 	});
