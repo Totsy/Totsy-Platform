@@ -118,7 +118,11 @@ class Order extends Base {
 			'softAuth' => null
 		);
 		if($amountToCapture > 0) {
-			$authorizationTransaction = $payments::authorize('default', $amountToCapture, $paymentInfos, array('orderID' => $order->order_id));
+			if($authTotalAmount > $amountToCapture) {
+				$authorizationTransaction = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
+			} else {
+				$authorizationTransaction = $payments::authorize('default', $amountToCapture, $paymentInfos, array('orderID' => $order->order_id));	
+			}
 			if($authorizationTransaction->success()) {
 				$captureTransaction = $payments::capture('default', $authorizationTransaction->key, floor($amountToCapture * 100) / 100,
 					array(

@@ -92,7 +92,7 @@ class ProcessPayment extends \lithium\console\Command  {
 				$conditions = array('_id' => $order['user_id']);
 				$user = User::find('first', compact('conditions'));
 				$oc = new OrdersController;
-				$oc->cancelUnshippedItems($order);
+				$order = $oc->cancelUnshippedItems($order);
 				$processedOrder = Order::process($order);
 				if (Order::failedCaptureCheck($order['order_id'])){
 				    $this->failedCaptures[] = $order['order_id'];
