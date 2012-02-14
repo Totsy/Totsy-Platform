@@ -241,9 +241,11 @@ class CartController extends BaseController {
 				}
 			}
 		}
-		if(!$this->request->is('mobile')){
-		//call the cart popup
-		$this->getCartPopupData();
+		if($this->request->is('mobile')==1 && Session::read('layout', array('name' => 'default'))=='mamapedia') {
+			echo "noPopup";
+			exit();
+		} elseif(!$this->request->is('mobile')) {
+			$this->getCartPopupData();
 		}
 	}
 	
