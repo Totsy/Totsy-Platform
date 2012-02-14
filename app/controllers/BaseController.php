@@ -40,7 +40,7 @@ class BaseController extends \lithium\action\Controller {
 			if(Environment::is('production')) {
 			    $whiteLabelSubDomain = "mamasource.totsy.com";
 			} else { 
-			    $whiteLabelSubDomain = "evan.totsy.com";
+			    $whiteLabelSubDomain = "kkim.totsy.com";
 			} 
 			    							
 			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {	
@@ -114,7 +114,7 @@ class BaseController extends \lithium\action\Controller {
        	if(Environment::is('production') || Environment::is('staging')) {
 			$whiteLabelSubDomain = "mamasource.totsy.com";
 		} else { 
-			$whiteLabelSubDomain = "evan.totsy.com";
+			$whiteLabelSubDomain = "kkim.totsy.com";
 		} 
 		 		
  		if ( $userInfo ) {	   		
