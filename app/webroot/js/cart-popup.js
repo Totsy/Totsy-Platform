@@ -129,10 +129,12 @@ $(document).ready( function() {
 			data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 			context: document.body,
 			success: function(data) {	
-				if(data) {
-					//tracking add to cart in GA	
+				if(data!=="noPopup") {
+					//tracking add to cart in GA
 					showCartPopup(data);
 					_gaq.push(['_trackEvent', 'Cart', 'Add', 'Add to Cart', 1]);
+				} else {
+					window.location = "/cart/view";
 				}
 			}
 		});
