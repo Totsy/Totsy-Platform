@@ -124,6 +124,9 @@
 		</ul>
 		
 	</li>
+	<li>
+		<?php echo $this->html->link('Tickets Management', array('Tickets::view')); ?>
+	</li>
 	<li class="secondary">
 		<?php echo $this->html->link('Logout', 'Users::logout'); ?>
 	</li>
