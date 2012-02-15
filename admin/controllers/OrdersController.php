@@ -454,8 +454,7 @@ class OrdersController extends BaseController {
 			// We push the modifications datas with the old shipping.
 			$orderCollection->update(
 				array("_id" => new MongoId($id)),
-				array('$push' => array('modifications' => $modification_datas)),
-				array('upsert' => true)
+				array('$push' => array('modifications' => $modification_datas))
 			);
 			$orderCollection->update(
 				array("_id" => new MongoId($id)),
@@ -527,8 +526,7 @@ class OrdersController extends BaseController {
 				// We push the modifications datas with the old shipping.
 				$orderCollection->update(
 					array("_id" => new MongoId($id)),
-					array('$push' => array('modifications' => $modification_datas)),
-					array('upsert' => true)
+					array('$push' => array('modifications' => $modification_datas))
 				);
 				$orderCollection->update(
 					array("_id" => new MongoId($id)),
@@ -588,9 +586,7 @@ class OrdersController extends BaseController {
 			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
-				array('$set' => array(
-					'cyberSourceProfileId' => $profileID
-							)), array( 'upsert' => true)
+				array('$set' => array('cyberSourceProfileId' => $profileID))
 			);
 			#Setup new AuthKey
 			$update = $ordersCollection->update(
@@ -603,12 +599,12 @@ class OrdersController extends BaseController {
 					), '$unset' => array(
 						'error_date' => 1,
 						'auth_error' => 1
-					)), array( 'upsert' => true)
+					))
 			);
 			#Add to Auth Records Array
 			$update = $ordersCollection->update(
 					array('_id' => $order['_id']),
-					array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
+					array('$push' => array('auth_records' => $newRecord))
 			);
 		} else {
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
@@ -639,10 +635,11 @@ class OrdersController extends BaseController {
 											  'auth' => $auth->export(),
 											  'authTotal' => $amountToCapture,
 											  'processor' => $auth->adapter
-					) , '$unset' => array(
-						'error_date' => 1,
-						'auth_error' => 1
-					)), array( 'upsert' => true));
+						) , '$unset' => array(
+							'error_date' => 1,
+							'auth_error' => 1
+						))
+					);
 					$error = $this->captureAuthorization($order, $auth->key);
 				} else {
 					$error = implode('; ', $auth->errors);
@@ -677,8 +674,7 @@ class OrdersController extends BaseController {
 			// We push the modifications datas with the old shipping.
 			$ordersCollection->update(
 				array("_id" => $order['_id']),
-				array('$push' => array('modifications' => $modification_datas)),
-				array('upsert' => true)
+				array('$push' => array('modifications' => $modification_datas))
 			);
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
@@ -688,7 +684,7 @@ class OrdersController extends BaseController {
 									  'processor' => $auth_capture->adapter,
 									  'payment_date' => new MongoDate(),
    									  'auth_confirmation' => $auth_capture->key
-				)), array( 'upsert' => true)
+				))
 			);
 			#Save Capture in Transactions Logs
 			$transation['authKey'] = $auth_capture->key;
@@ -744,7 +740,7 @@ class OrdersController extends BaseController {
 		if(!empty($datas["process-as-an-exception"])){
 			$update = $ordersCollection->update(
 					array('_id' => new MongoId($id)),
-					array('$set' => array('process-as-an-exception' => true)), array( 'upsert' => true)
+					array('$set' => array('process-as-an-exception' => true))
 			);
 			FlashMessage::write("This Order is on the queue as Dotcom Exception", array('class' => 'pass'));	
 		}
@@ -1179,7 +1175,7 @@ class OrdersController extends BaseController {
 						array('_id' => new MongoId($id)),
 						array('$set' => array('items.'.$key.'.digital_item_fulfilled' => true,
 												'items.'.$key.'.digital_item_fulfilled_date' => new MongoDate())
-						), array( 'upsert' => true)
+						)
 					);
 				}
 			}

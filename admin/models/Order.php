@@ -254,16 +254,10 @@ class Order extends Base {
 					$totalAmountCaptured = $amountToCapture;
 				}
 				$update = static::update(
-					array(
-						'$push' => array(
-							'capture_records' => $transation
-						),
-						'$set' => array(
-							'captured_amount' => $totalAmountCaptured
-						)
+					array('$push' => array('capture_records' => $transation),
+						  '$set' => array('captured_amount' => $totalAmountCaptured)
 					),
-					array('_id' => $orderId),
-					array('upsert' => true)
+					array('_id' => $orderId)
 				);
 			} elseif ($auth->errors) {
 				$data['auth_confirmation'] = -1;
