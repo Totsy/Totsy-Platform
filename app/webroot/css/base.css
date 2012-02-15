@@ -2913,6 +2913,8 @@ label.required {
 	background:#f7f7f7;
 	font-weight:bold;
 	color:#ff0000;
+	background-color: pink;
+	border: solid 1px #ff0000;
 }
 
 .cart-message {
