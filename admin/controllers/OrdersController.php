@@ -268,6 +268,7 @@ class OrdersController extends BaseController {
 			foreach($order["items"] as $key => $item) {
 				$order_data["items"][$key]['initial_quantity'] = $order_data["items"][$key]['quantity'];
 				if($item["_id"] == new MongoId($unshipped_item)) {
+					$order_data["items"][$key]["shortshipped"] = true;
 					$order_data["items"][$key]["cancel"] = true;
 				}
 			}
