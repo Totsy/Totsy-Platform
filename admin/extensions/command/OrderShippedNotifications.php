@@ -182,8 +182,8 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 					foreach($result['TrackNums'] as $trackNum => $items){
 						foreach ($items as $item){
 							$conditions = array(
-									'ItemId' =>  new MongoId($item),
-									'OrderId' => new MongoId($result['OrderId'])
+									'ItemId' =>  $item['id'],
+									'OrderId' => $result['OrderId']
 							);
 							$ordersShippedCollection->update($conditions, array('$set' => array('emailNotificationSent' => new MongoDate())));
 						}
@@ -221,38 +221,6 @@ class OrderShippedNotifications extends \lithium\console\Command  {
 		} else {
 			return new MongoId($id);
 		}
-	}
-
-	/**
-	 * Method to get array of skus out of the array of shipped items for a particular order
-	 *
-	 * @param array $itms
-	 */
-	private function getSkus ($itms){
-		$itemsCollection = Item::collection();
-
-		$ids = array();
-		$items = array();
-		$itemSkus = array();
-
-		foreach($itms as $itm){
-			$items[$itm['item_id']] = $itm;
-			$ids[] = new MongoId($itm['item_id']);
-		}
-		$iSkus = $itemsCollection->find(array('_id' => array( '$in' => $ids )));
-		unset($ids);
-		$iSs = array();
-		foreach ($iSkus as $i){
-			$iSs[ (string) $i['_id'] ] = $i;
-		}
-
-		foreach ($itms as $itm){
-			$sku = $iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ];
-			$itemSkus[ $sku ] = $itm;
-		}
-		unset($iSs);
-		unset($items);
-		return $itemSkus;
 	}
 
 	private function getCommandLineParams(){
