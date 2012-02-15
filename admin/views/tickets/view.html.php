@@ -22,21 +22,29 @@
 	</div>
 </div>
 <div class='grid_16'>
+	<h5>
+		Please note that when you send the tickets to Liveperson, it is sent to them in the background. DO NOT REFRESH THE PAGE or you will send the tickets twice to Liveperson.
+	</h5>
+	<p style="font-size:13px">
 	<strong>Query:</strong>: 
-	<?php 
-		echo "Issue type: " . $search_criteria['issue_type'] . "  Search by: " . $search_criteria['search_by'] . " ";
-		switch($search_criteria['search_by']) {
-			case 'email':
-				echo $search_criteria['search_by_value'];
-				break;
-				case 'month':
-				echo date('F', mktime(0,0,0,(int)$search_criteria['search_by_value'] + 1));
-				break;
-			case 'date':
-				echo $search_criteria['search_by_value']['start_date'] . " - " . $search_criteria['search_by_value']['end_date'];
-				break;
-		};
-	?>
+		<?php 
+			echo "Issue type: " . $search_criteria['issue_type'] . "  Search by: " . $search_criteria['search_by'] . " ";
+			switch($search_criteria['search_by']) {
+				case 'email':
+					echo $search_criteria['search_by_value'];
+					break;
+					case 'month':
+					echo date('F', mktime(0,0,0,(int)$search_criteria['search_by_value'] + 1));
+					break;
+				case 'date':
+					echo $search_criteria['search_by_value']['start_date'] . " - " . $search_criteria['search_by_value']['end_date'];
+					break;
+				default:
+					echo "none";
+					break;
+			};
+		?>
+		</p>
 	<?php 
 		if ($tickets) {
 			$count = $tickets->count();

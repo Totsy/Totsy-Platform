@@ -69,7 +69,7 @@ class Ticket extends Base {
 					));
 			}*/
 		}
-		var_dump(exec("li3"));
+		exec("(cd ../; li3 send-pending-tickets) &> /dev/null &");
 	}
 
 	public static function getConditions($request, $search_criteria = array()) {

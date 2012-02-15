@@ -53,13 +53,8 @@ class TicketsController extends BaseController {
 			Session::write('search_criteria', $search_criteria);
 			$ticketsCol = Ticket::collection();
 			$tickets = $ticketsCol->find($condition)->limit($data['limit_by'])->skip($skip);
-			/*echo '<pre>';
-			print_r($data);
-			echo '</pre>';
-			die();*/
 
 		}
-
 		return compact('issue_list', 'tickets', 'search_criteria', 'getNext');
 	}
 }

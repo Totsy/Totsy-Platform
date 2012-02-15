@@ -3,6 +3,7 @@
 namespace admin\extensions\command;
 
 use lithium\core\Environment;
+use lithium\analysis\Logger;
 use admin\extensions\Mailer;
 use admin\models\Ticket;
 use MongoDate;
@@ -24,7 +25,7 @@ class SendPendingTickets extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public 	$email = 'lhanson@totsy.com';
+	public 	$email = 'support@totsy.com';
 	/**
 	 * Sailthru Template to use.
 	 *
@@ -41,6 +42,7 @@ class SendPendingTickets extends \lithium\console\Command {
 
 		foreach($tickets as $ticket) {
 		//	$email = $ticket['user']['email'];
+			Logger::debug("Sending mail {$ticket['user']['email']}");
 			$email = $this->email;
 			if (array_key_exists('email', $ticket['user']) && !empty( $ticket['user'])){
 				$options['replyto'] = $options['behalf_email'] = $email;
