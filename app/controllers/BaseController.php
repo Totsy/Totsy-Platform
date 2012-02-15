@@ -36,7 +36,7 @@ class BaseController extends \lithium\action\Controller {
         	//this changes depending on whether we're on prod or not
         	//if something's funny or not working on kkim, just update it with master        			
         	//if(Environment::is('production')) {
-				$whiteLabelSubDomain = "mamasource.totsy.com";
+				$whiteLabelSubDomain = "evan.totsy.com";
 			/*} else {
 				$mamasourceSubDomain = "kkim.totsy.com";
 			}*/
