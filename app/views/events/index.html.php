@@ -208,6 +208,9 @@
 							<?php endforeach ?>
 						<?php endif ?>
 					</div>
+					
+<ul class="echoShare" data-productname='<?php echo $event->name ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($event->name))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST']. '/sale/'.$event->url ?>'></ul> 
+					
 					<div class="clear"></div>
 				<?php endif ?>
 			<?php $x++; ?>
@@ -261,8 +264,6 @@
 						</div>
 					</div>
 				</div><!-- /.event -->
-				
-<ul class="echoShare" data-productname='<?php echo $event->name ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($event->blurb))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST']. '/sale/'.$event->url ?>'></ul> 
 				
 			<?php $x++; ?>
 			<?php $y++; ?>

@@ -220,15 +220,6 @@
 	</div>
 	<div class="clear"></div>
 		
-		<script type="text/javascript">
-			(function () {
-				var a, b, c, d; b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
-				var e = new Date(); var f = e.getFullYear()+""+e.getMonth()+""+e.getDate()+""+e.getHours();
-				b.src = (document.location.protocol === "https:" ? "https:"  : "http:") + "//api.theechosystem.com/core/resource/getjs?antiCache="+f;
-				a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(b, a);
-			} ())
-		</script>
-		
 	<ul class="echoShare" data-productname='<?php echo $item->description ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($item->blurb))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST'].'/image/' . $item->primary_image . 'jpg' ?>'></ul> 
 	
 	<div class="grid_3" style="padding-left:11px;">

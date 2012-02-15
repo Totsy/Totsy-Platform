@@ -253,6 +253,15 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 <?php endif ?>
 
 <script type="text/javascript">
+			(function () {
+				var a, b, c, d; b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
+				var e = new Date(); var f = e.getFullYear()+""+e.getMonth()+""+e.getDate()+""+e.getHours();
+				b.src = (document.location.protocol === "https:" ? "https:"  : "http:") + "//api.theechosystem.com/core/resource/getjs?antiCache="+f;
+				a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(b, a);
+			} ())
+		</script>
+
+<script type="text/javascript">
 	<?php // global functions here (although all js *really* should be externalized and view-specific… Magento Magento Magento we'll make it happen) ?>
 	$(document).ready(function() {
 		$("input:file, select").not('.uniform-hidden').uniform().each(function(i,elt) {
