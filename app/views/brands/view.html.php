@@ -2,7 +2,7 @@
 	if ((empty($userInfo))) { ?>
 		<div id="jojoLoggedOut">
 			<p class="signin">Already a member? <a href="/login" title="Sign In">Sign in here</a></p>
-			<p class="signup">
+			<p class="signup group">
 				<strong><em>Up to 90% off retail</em> for mom, baby, and child.</strong>
 				<a title="Register a Totsy account" class="btn" href="/register"><strong>Join Now</strong></a>
 			</p>
@@ -16,7 +16,7 @@
 			<header class="group">
 				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vitae nisl sit amet est ornare faucibus. Ut a tellus vitae dui posuere fermentum ut a nulla. Vivamus rhoncus imperdiet fringilla. Cras elit eros, ultrices sodales sodales non, interdum ut nisi. Nunc accumsan urna a mi sodales eu suscipit elit euismod. Donec scelerisque, tellus a luctus cursus, nulla risus auctor dui, in pulvinar ligula risus tempus augue. Pellentesque eu consectetur felis. In ut elit nisl. In tincidunt sollicitudin feugiat. Quisque nec nisi felis, id laoreet tortor.</p>
 				<aside class="video">
-					<?php // placeholder youtube video below ?>
+					<?php // @TODO - replace placeholder youtube video below ?>
 					<iframe width="400" height="233" src="http://www.youtube.com/embed/P_m7ZSo_l-s?rel=0" frameborder="0" allowfullscreen></iframe>		
 				</aside>
 			</header>

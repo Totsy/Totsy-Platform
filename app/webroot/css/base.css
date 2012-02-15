@@ -4963,6 +4963,8 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	margin:-20px auto 15px;
 	width:920px;
 }
+#jojo.public {margin-top:-30px;}
+
 #jojo h2 {
 	height: 99px;
 	background: url(../img/jojo-header-title.gif) 0 0 no-repeat;
@@ -5023,40 +5025,62 @@ ul.bp-events li p {
 
 /* transforms */
 ul.bp-events li:nth-of-type(3n+1) img {	
-	-webkit-transform: rotate(-2deg) translate(4px,0px);
-	-webkit-transform-origin: 100% 100%;
 	-moz-transform: rotate(-2deg) translate(4px,0px);
 	-moz-transform-origin: 100% 100%;
-	-o-transform: rotate(-2deg) translate(4px,0px);
-	-o-transform-origin: 100% 100%;
 	-ms-transform: rotate(-2deg) translate(4px,0px);
 	-ms-transform-origin: 100% 100%;
+	-o-transform: rotate(-2deg) translate(4px,0px);
+	-o-transform-origin: 100% 100%;
+	-webkit-transform: rotate(-2deg) translate(4px,0px);
+	-webkit-transform-origin: 100% 100%;
 	transform: rotate(-2deg) translate(4px,0px);
 	transform-origin: 100% 100%;
 }
 ul.bp-events li:nth-of-type(3n+2) img {
-	-webkit-transform: rotate(1deg) translate(-3px,1px);
-	-webkit-transform-origin: 100% 100%;
 	-moz-transform: rotate(1deg) translate(-3px,1px);
 	-moz-transform-origin: 100% 100%;
-	-o-transform: rotate(1deg) translate(-3px,1px);
-	-o-transform-origin: 100% 100%;
 	-ms-transform: rotate(1deg) translate(-3px,1px);
 	-ms-transform-origin: 100% 100%;
+	-o-transform: rotate(1deg) translate(-3px,1px);
+	-o-transform-origin: 100% 100%;
+	-webkit-transform: rotate(1deg) translate(-3px,1px);
+	-webkit-transform-origin: 100% 100%;
 	transform: rotate(1deg) translate(-3px,1px);
 	transform-origin: 100% 100%;
 } 
 ul.bp-events li:nth-of-type(3n) img {
-	-webkit-transform: rotate(-2deg) translate(3px,2px);
-	-webkit-transform-origin: 0% 100%;
 	-moz-transform: rotate(-2deg) translate(3px,2px);
 	-moz-transform-origin: 0% 100%;
-	-o-transform: rotate(-2deg) translate(3px,2px);
-	-o-transform-origin: 0% 100%;
 	-ms-transform: rotate(-2deg) translate(3px,2px);
 	-ms-transform-origin: 0% 100%;
+	-o-transform: rotate(-2deg) translate(3px,2px);
+	-o-transform-origin: 0% 100%;
+	-webkit-transform: rotate(-2deg) translate(3px,2px);
+	-webkit-transform-origin: 0% 100%;
 	transform: rotate(-2deg) translate(3px,2px);
 	transform-origin: 0% 100%;
+}
+
+/* transitions and hover states
+@TODO:  likely Creative/Craig will put the kabosh on these… just playing around, trying stuff, remove follow two declarations as needed*/
+ul.bp-events li a img {
+	-moz-transition: all 0.4s linear;
+	-ms-transition: all 0.4s linear;
+	-o-transition: all 0.4s linear;
+	-webkit-transition: all 0.4s linear;
+	transition: all 0.4s linear;
+}
+ul.bp-events li a:hover img {
+	-moz-transform:rotate(0) translate(0,0);
+	-moz-transform-origin: 50% 50%;
+	-ms-transform:rotate(0) translate(0,0);
+	-ms-transform-origin: 50% 50%;
+	-o-transform:rotate(0) translate(0,0);
+	-o-transform-origin: 50% 50%;
+	-webkit-transform:rotate(0) translate(0,0);
+	-webkit-transform-origin: 50% 50%;
+	transform:rotate(0) translate(0,0);
+	transform-origin: 50% 50%;
 }
 
 /* logged out jojo public view */
@@ -5064,7 +5088,7 @@ ul.bp-events li:nth-of-type(3n) img {
     position: absolute; right: 0; top: 0;
     z-index: 1000;
     margin: -20px 20px 0 0;
-    width: 250px;
+    width: 257px;
 }
 #jojoLoggedOut .signin {
 	text-align: right;
@@ -5074,10 +5098,10 @@ ul.bp-events li:nth-of-type(3n) img {
 }
 #jojoLoggedOut .signup > strong {
 	float: left;
+	margin-top:3px;
 	width:150px;
 	color:#ef4036;
-	font-size: 13.12px;
-	font-weight: normal;
+	font-size: 13.12px; font-weight: normal; line-height: 1.1;
 }
 #jojoLoggedOut .signup > strong em {
 	display: block;
@@ -5090,5 +5114,7 @@ ul.bp-events li:nth-of-type(3n) img {
 	font-size:1.1em;
 }
 #jojoLoggedOut .btn strong {
+	padding-right:12px;
 	background:url(../img/btn-arrow-lg.png) 100% 25% no-repeat;
+	font-weight: 500; letter-spacing: 0.025em;
 }
