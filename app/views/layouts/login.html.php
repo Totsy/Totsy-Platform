@@ -8,27 +8,28 @@ use lithium\storage\Session;
       xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
-	<title>Totsy, the private sale site for Moms</title>
-	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
-	<meta property="og:site_name" content="Totsy"/>
-    <meta name="description"
-          content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
-	
-<?php
+	<?php
 
 $baseCSSPath = "";
 $jQueryAllPath = "";
 $googleUACode = "UA-675412-15";
+$titleTag = "Totsy, the private sale site for Moms";
 	
 	if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
 			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
 			$googleUACode = "UA-675412-22";
+			$titleTag = "Mamasource, powered by Totsy private sale";
 		} else {
 			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
 		}
 ?>
+<title><?php echo $titleTag ?></title>
+	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
+	<meta property="og:site_name" content="Totsy"/>
+    <meta name="description"
+          content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	
 	<?php echo $this->html->style(array($baseCSSPath, '960.css', $jQueryAllPath), array('media' => 'screen')); ?>
 		

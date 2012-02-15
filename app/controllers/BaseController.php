@@ -25,36 +25,27 @@ class BaseController extends \lithium\action\Controller {
 		$userInfo = Array();
 				
 		parent::__construct($config);
-								
-		if ( get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
+						
+		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
 		} else {			
 			$userInfo = Session::read('userLogin');	
-			
-        	//this changes depending on whether we're on prod or not
-        	//if something's funny or not working on kkim, just update it with master        
-        	$whiteLabelSubDomain = "";
-        	
-			if(Environment::is('production')) {
-			    $whiteLabelSubDomain = "mamasource.totsy.com";
-			} else { 
-			    $whiteLabelSubDomain = "kkim.totsy.com";
-			} 
-			    							
-			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {	
+       		$whiteLabelSubDomain = "mamasource.totsy.com";
+ 									
+			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {				
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
-		        $img_path_prefix = "/img/mamapedia/";
-		        $this->set(compact('img_path_prefix'));
+		        $img_path_prefix = "/img/mamapedia";
 		    } else { 
 		        Session::write('layout', 'main', array('name' => 'default'));
-		        $img_path_prefix = "/img/";
+		        $img_path_prefix = "/img";
 		        $this->tenOffFiftyEligible($userInfo);
 		        $this->freeShippingEligible($userInfo);
 		    } 	
 			$this->_render['layout'] = '/main';
 		}
+		$this->set(compact('img_path_prefix'));
 	}
 
 	/**
@@ -109,13 +100,8 @@ class BaseController extends \lithium\action\Controller {
         //this changes depending on whether we're on prod or not
         //if something's funny or not working on kkim, just update it with master	
         
-        $whiteLabelSubDomain = "";
-        
-       	if(Environment::is('production') || Environment::is('staging')) {
-			$whiteLabelSubDomain = "mamasource.totsy.com";
-		} else { 
-			$whiteLabelSubDomain = "kkim.totsy.com";
-		} 
+		$whiteLabelSubDomain = "mamasource.totsy.com";
+		$mainDomain = "totsy.com";	
 		 		
  		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
@@ -126,7 +112,7 @@ class BaseController extends \lithium\action\Controller {
         	} else {
         		//mama to totsy
 				if ( is_null($userInfo['invited_by']) || $userInfo['invited_by']!=="mamasource" ) {
-					$this->crossDomainAuth("totsy.com", $userInfo['email'], $userInfo['password']);
+					$this->crossDomainAuth($mainDomain, $userInfo['email'], $userInfo['password']);
 				}
         	}
         }
@@ -356,25 +342,7 @@ class BaseController extends \lithium\action\Controller {
 	**/	
 	private function crossDomainAuth( $sendTo, $email, $pwd ) {
 		// delete session cookie of domain first authenticated
-		setcookie("PHPSESSID", "", time()-3600, "/"); 
-    	
-    	/*        	
-		$url = "http://".$sendTo.'/login?';
-		$fields = array( 'email'=>$email, 'password'=>$pwd );
-		    				
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);		
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_POST, count($fields));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "email=".$email."&password=".$pwd);		
-		
-		$result = curl_exec($ch);
-		
-		curl_close($ch);
-		
-		$this->redirect("http://".$sendTo."/sales");
-		*/
-		
+		setcookie("PHPSESSID", "", time()-3600, "/"); 		
 		$this->redirect("http://" . $sendTo . "/login?email=".$email."&pwd=".$pwd, array("exit"=>true)); 	
 	}
 }
