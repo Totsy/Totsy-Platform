@@ -762,22 +762,30 @@ class UsersController extends BaseController {
 	 * @return array
 	 */
 	public function password() {
-		$status = 'default';		
-		$user = User::getUser(null, $this->sessionKey);
+	
+		$status = 'default';
 		
-		if(is_null($user) || $this->sessionKey=="userLogin" || $this->request->data['clear_token']) {
-			$user = user::find('all', array(
+		//flag for public vs private password reset page
+		//on public pages we use the clear_token for getting user objects, not the sessionKey
+		//and the auto-generated password (the old password in the private reset page) is already stored as sha1, so converting to sha1 isn't necesary		
+		$publicReset = false;
+		
+		if ($this->request->data['clear_token']) {
+			$publicReset = true;
+			$user = User::find('all', array(
 			'conditions' => array(
-				'clear_token' => $this->request->data['clear_token'])));		
+				'clear_token' => $this->request->data['clear_token'])));	
+			$user = $user[0];	
+					
+		} else {
+			$user = User::getUser(null, $this->sessionKey);
 		}
-		
-		print_r($user->data());
-				
+						
 		if ($this->request->data) {
 			
 			$oldPass = "";
 			
-			if($this->request->data['password']){
+			if($this->request->data['password']) {
 				$oldPass = $this->request->data['password'];
 			} else {
 				$oldPass = $user->password;
@@ -785,21 +793,27 @@ class UsersController extends BaseController {
 			
 			$newPass = $this->request->data['new_password'];
 			$confirmPass = $this->request->data['password_confirm'];
-			
+					
 			if ($user->legacy == 1) {
 				$status = ($this->authIllogic($oldPass, $user)) ? 'true' : 'false';
 			} else {
-				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
+				if(!$publicReset) {
+					$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
+				} else {
+					$status = ($oldPass == $user->password) ? 'true' : 'false';
+				}
 			}
-			
-			print $status;
-			exit();
-			
+						
 			if (!empty($user->reset_token)) {
-				$status = ($user->reset_token == sha1($oldPass) ||
-				 $user->password == sha1($oldPass)) ? 'true' : 'false';
+				if(!$publicReset) {
+					$status = ($user->reset_token == sha1($oldPass) ||
+				 	$user->password == sha1($oldPass)) ? 'true' : 'false';
+				} else {
+					$status = ($user->reset_token == sha1($oldPass) ||
+				 	$user->password == $oldPass) ? 'true' : 'false';			
+				}
 			}
-			
+						
 			if ($status == 'true') {
 				if($newPass == $confirmPass){
 					if(strlen($confirmPass) > 5){
@@ -817,11 +831,15 @@ class UsersController extends BaseController {
 						if ($user->save($this->request->data, array('validate' => false))) {
 							$info = Session::read('userLogin');
 							Session::write('userLogin', $user, array('name'=>'default'));
+							//if this is being done the public reset page, redirect the user to the public login page when they've successfully upated their password	
+							if($publicReset) {
+								$this->redirect("/login");
+							}
 						}
 					} else {
 						$status = 'shortpass';
 					}
-				}else {
+				} else {
 					$status = 'errornewpass';
 				}
 			}
@@ -831,6 +849,7 @@ class UsersController extends BaseController {
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_password';
 		}
+		
 		return compact("user", "status");
 	}
 	
@@ -844,7 +863,6 @@ class UsersController extends BaseController {
 		Session::delete('landing', array('name'=>'default'));
 
 		$fbuser = FacebookProxy::api("/me");
-
 		
 		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
         		$affiliate = new AffiliatesController(array('request' => $this->request));

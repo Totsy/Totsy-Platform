@@ -261,8 +261,12 @@
 						</div>
 					</div>
 				</div><!-- /.event -->
+				
+<ul class="echoShare" data-productname='<?php echo $event->name ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($event->blurb))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST']. '/sale/'.$event->url ?>'></ul> 
+				
 			<?php $x++; ?>
 			<?php $y++; ?>
+			
 		<?php endforeach ?>
 	</section><!-- /#upcoming -->
 </div><!-- /.fullwidth -->
