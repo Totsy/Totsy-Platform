@@ -247,10 +247,19 @@ class Order extends Base {
 				$transation['authKey'] = $auth->key;
 				$transation['amount'] = $amountToCapture;
 				$transation['date_captured'] = new MongoDate();
+				#Update the Money Captured field
+				if($order['captured_amount']) {
+					$totalAmountCaptured = ($amountToCapture + $order['captured_amount']);
+				} else {
+					$totalAmountCaptured = $amountToCapture;
+				}
 				$update = static::update(
 					array(
 						'$push' => array(
-						'capture_records' => $transation
+							'capture_records' => $transation
+						),
+						'$set' => array(
+							'captured_amount' => $totalAmountCaptured
 						)
 					),
 					array('_id' => $orderId),
