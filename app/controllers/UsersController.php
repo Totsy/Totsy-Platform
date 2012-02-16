@@ -829,11 +829,9 @@ class UsersController extends BaseController {
 						unset($this->request->data['new_password']);
 						unset($this->request->data['password_confirm']);
 						if ($user->save($this->request->data, array('validate' => false))) {
-							$info = Session::read('userLogin');
-							Session::write('userLogin', $user, array('name'=>'default'));
-							//if this is being done the public reset page, redirect the user to the public login page when they've successfully upated their password	
-							if($publicReset) {
-								$this->redirect("/login");
+							if(!$publicReset){
+								$info = Session::read('userLogin');
+								Session::write('userLogin', $user, array('name'=>'default'));
 							}
 						}
 					} else {
@@ -842,7 +840,7 @@ class UsersController extends BaseController {
 				} else {
 					$status = 'errornewpass';
 				}
-			}
+			}			
 		}
 		
 		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
@@ -850,7 +848,11 @@ class UsersController extends BaseController {
 		 	$this->_render['template'] = 'mobile_password';
 		}
 		
-		return compact("user", "status");
+		if($publicReset) {
+			$this->redirect("/pages/password/?t=".$this->request->data['clear_token']."&s=".$status);
+		} else {
+			return compact("user", "status");
+		}
 	}
 	
 	/**

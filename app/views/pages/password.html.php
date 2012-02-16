@@ -4,9 +4,14 @@ use lithium\storage\Session;
 use app\controllers\UsersController;
 
 $token = "";
+$status = "";
 
 if($this->_request->query['t']) {
 	$token = $this->_request->query['t'];
+}
+
+if($this->_request->query['s']) {
+	$status = $this->_request->query['s'];
 }
 
 ?>
@@ -23,7 +28,6 @@ if($this->_request->query['t']) {
 </div>
 
 <div class="grid_11 omega roundy grey_inside b_side">
-
 	<h2 class="page-title gray">Change Your Password</h2>
 	<hr />
 	<fieldset>
@@ -31,7 +35,7 @@ if($this->_request->query['t']) {
 				<?php
 					switch ($status) {
 						case 'true' :
-							echo "<div class=\"standard-message\">Your information has been updated.</div>";
+							echo "<div class=\"standard-message\">Your information has been updated.</div><br />Feel free to login to <a href='/login'>Totsy</a>";
 							break;
 						case 'false' :
 							echo "<div class=\"standard-error-message\">Your current password is incorrect. Please try again.</div>";
@@ -68,7 +72,8 @@ if($this->_request->query['t']) {
 			<?php echo $this->form->end();?>
 		</fieldset>
 	<br />
+</div>
 
 </div>
-</div>
+
 <div class="clear"></div>
