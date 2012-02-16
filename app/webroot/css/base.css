@@ -4707,6 +4707,7 @@ nav .haschild li a:hover {
 	background-color:rgba(218,80,77,1);
 	color:#fff;
 }
+.modal .btn {background-color:#DA504D;}
 #userUtils .checkout strong, .modal .btn strong {
 	padding-right:9px;
 	background: url(../img/btn-arrow-s.png) 100% 25% no-repeat;
