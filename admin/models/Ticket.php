@@ -5,6 +5,7 @@ namespace admin\models;
 use admin\extensions\Mailer;
 use MongoDate;
 use MongoId;
+use MongoRegex;
 
 class Ticket extends Base {
 	
@@ -84,12 +85,12 @@ class Ticket extends Base {
 		switch($request['search_by']) {
 			case 'email':
 				$condition['user.email'] = $request['email'];
-				$search_criteria['search_by'] = 'email';
+				$search_criteria['search_by'] = $request['search_by'];
 				$search_criteria['search_by_value'] = $request['email'];
 				break;
 			case 'month':
 				$condition['$where'] = "this.date_created.getMonth()==" . $request['month'];
-				$search_criteria['search_by'] = 'month';
+				$search_criteria['search_by'] = $request['search_by'];
 				$search_criteria['search_by_value'] = $request['month'];
 				break;
 			case 'date':
@@ -97,11 +98,20 @@ class Ticket extends Base {
 						'$gte' => new MongoDate(strtotime($request['start_date'])),
 						'$lte' => new MongoDate(strtotime($request['end_date']))
 					); 
-				$search_criteria['search_by'] = 'date';
+				$search_criteria['search_by'] = $request['search_by'];
 				$search_criteria['search_by_value'] = array(
 					'start_date' => $request['start_date'],
 					'end_date' => $request['end_date']
 				);
+				break;
+			case 'keyword':
+				$condition['$or'] = array(
+						array('user.email' => new MongoRegex('/(' . $request['keyword'] .')/i')),
+						array('issue.type' => new MongoRegex('/(' . $request['keyword'] .')/i')),
+						array('issue.message' => new MongoRegex('/(' . $request['keyword'] .')/i'))
+					);
+				$search_criteria['search_by'] = $request['search_by'];
+				$search_criteria['search_by_value'] = $request['keyword'];
 				break;
 		};
 		return compact('condition','search_criteria');	
