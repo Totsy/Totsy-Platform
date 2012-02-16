@@ -2600,6 +2600,7 @@ html {
 
 body.login {
 	height:100%;
+	min-height: 600px; /* keep signin button in view in IE8 and below… and other browsers that may choke on 100% height layout */
 }
 
 #featured-brands-box {
