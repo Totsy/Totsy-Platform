@@ -355,25 +355,7 @@ class BaseController extends \lithium\action\Controller {
 	**/	
 	private function crossDomainAuth( $sendTo, $email, $pwd ) {
 		// delete session cookie of domain first authenticated
-		setcookie("PHPSESSID", "", time()-3600, "/"); 
-    	
-    	/*        	
-		$url = "http://".$sendTo.'/login?';
-		$fields = array( 'email'=>$email, 'password'=>$pwd );
-		    				
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);		
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_POST, count($fields));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "email=".$email."&password=".$pwd);		
-		
-		$result = curl_exec($ch);
-		
-		curl_close($ch);
-		
-		$this->redirect("http://".$sendTo."/sales");
-		*/
-		
+		setcookie("PHPSESSID", "", time()-3600, "/"); 		
 		$this->redirect("http://" . $sendTo . "/login?email=".$email."&pwd=".$pwd, array("exit"=>true)); 	
 	}
 }
