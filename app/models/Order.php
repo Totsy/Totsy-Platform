@@ -10,6 +10,7 @@ use app\models\User;
 use app\models\Base;
 use app\models\FeatureToggles;
 use app\models\CreditCard;
+use app\models\Cart;
 
 use li3_payments\payments\TransactionResponse;
 use li3_payments\extensions\adapter\payment\CyberSource;
@@ -28,7 +29,6 @@ class Order extends Base {
 	);
 
 	public $validates = array(
-		'authKey' => 'Could not secure payment.'
 	);
 
 	public static function dates($name) {
@@ -61,24 +61,17 @@ class Order extends Base {
 		if ($cart) {
 			#Get CreditCard
 			$creditCard = $vars['creditCard'];
-			#Switch Soft Authorized Amount Transaction depending of Credit Card Type
-			if($creditCard['type'] == 'visa') {
-				$authTotalAmount = 0;
-			} else {
-				$authTotalAmount = 1;
-			}
-			#If User has a CyberSource Profile, Use Token
-			$auth = null;
+			#Check If User Has CyberSourceProfile
 			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
 			if(!empty($cyberSourceProfile)) {
 				$cybersource = new CyberSource($payments::config('default'));
-				$profile = $cybersource->profile($cyberSourceProfile['profileID']);
-				if($profile instanceof Customer) {
-					$auth = $payments::authorize('default', $authTotalAmount, $profile, array('orderID' => $order->order_id));
+				$paymentInfos = $cybersource->profile($cyberSourceProfile['profileID']);
+				if($paymentInfos instanceof Customer) {
+					$userHasCyberSourceProfile = true;
 				}
 			}
-			#In Case No CyberSourceProfile has been found
-			if(empty($auth)) {
+			#Without Profile ID create a Payment Object
+			if(!$userHasCyberSourceProfile) {
 				#Read Credit Card Informations
 				$address = array(
 					'firstName' =>  $vars['billingAddr']['firstname'],
@@ -95,17 +88,19 @@ class Order extends Base {
 					'billing' => $payments::create('default', 'address', $address)
 					)
 				);
-				$auth = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
 			}
-			if (!$auth->success()) {
-				#Reverse Transaction that Failed
-				$payments::void('default', $auth, array(
-					'processor' => $auth->adapter
-				));
-				Session::write('cc_error', implode('; ', $auth->errors));
+			#Switch Soft Authorized Amount Transaction depending of Credit Card Type
+			if($creditCard['type'] == 'visa') {
+				$authTotalAmount = 0;
+			} else {
+				$authTotalAmount = 1;
+			}
+			$transactions = static::processPayments($cart, $order, $paymentInfos, $vars['amountToCapture'], $authTotalAmount);
+			if ($transactions['errors']) {
+				Session::write('cc_error', implode('; ', $transactions['errors']));
 				return false;
 			}
-			return static::recordOrder($vars, $cart, $order, $avatax, $auth, $items, $authTotalAmount, $creditCard);
+			return static::recordOrder($vars, $cart, $order, $avatax, $transactions, $items, $authTotalAmount, $creditCard);
 		} else {
 			$order->errors(
 				$order->errors() + array($key => "All the items in your cart have expired. Please see our latest sales.")
@@ -115,17 +110,70 @@ class Order extends Base {
 		}
 	}
 
+	public static function processPayments($cart, $order, $paymentInfos, $amountToCapture, $authTotalAmount) {
+		$payments = static::$_classes['payments'];
+		$transactions = array (
+			'capture' => null,
+			'errors' => null,
+			'softAuth' => null
+		);
+		if($amountToCapture > 0) {
+			if($authTotalAmount > $amountToCapture) {
+				$authorizationTransaction = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
+			} else {
+				$authorizationTransaction = $payments::authorize('default', $amountToCapture, $paymentInfos, array('orderID' => $order->order_id));	
+			}
+			if($authorizationTransaction->success()) {
+				$captureTransaction = $payments::capture('default', $authorizationTransaction->key, floor($amountToCapture * 100) / 100,
+					array(
+						'processor' =>$authorizationTransaction->adapter,
+						'orderID' => $order['order_id']
+					)
+				);
+				if($captureTransaction->success()) { 
+					$transactions['capture'] = $captureTransaction;
+				} else {
+					$transactions['errors'] = $captureTransaction->errors;
+					return $transactions;
+				}
+			} else {
+				#Reverse Transaction that Failed
+				$payments::void('default', $authorizationTransaction->key, array(
+					'processor' => $authorizationTransaction->adapter
+				));
+				$transactions['errors'] = $authorizationTransaction->errors;
+				return $transactions;
+			}
+		}
+		if(!Cart::isOnlyDigital($cart)) {
+			$softAuthorizationTransaction = $payments::authorize('default', $authTotalAmount, $paymentInfos, array('orderID' => $order->order_id));
+			if($softAuthorizationTransaction->success()) {
+				$transactions['softAuth'] = $softAuthorizationTransaction;
+			} else {
+				#Reverse Transaction that Failed
+				$payments::void('default', $softAuthorizationTransaction->key, array(
+					'processor' => $softAuthorizationTransaction->adapter
+				));
+				$transactions['errors'] = $softAuthorizationTransaction->errors;
+			}
+		}
+		return $transactions;
+	}
+
 	/**
 	 * Record in DB all informations linked with the order
 	 * @return redirect
 	 */
-	public static function recordOrder($vars, $cart, $order, $avatax, TransactionResponse $auth, $items, $authTotalAmount, $creditCard) {
+	public static function recordOrder($vars, $cart, $order, $avatax, $transactions, $items, $authTotalAmount, $creditCard) {
 		$tax = static::$_classes['tax'];
 		$user = Session::read('userLogin');
 		$service = Session::read('services', array('name' => 'default'));
 		#Update Items Status
 		$inc = 0;
 		foreach ($cart as $item) {
+			if(!Item::isTangible($item['item_id'])) {
+				$item['digital'] = true;
+			}
 			$item['line_number'] = $inc;
 			$item['status'] = 'Order Placed';
 			$items[] = $item;
@@ -203,48 +251,71 @@ class Order extends Base {
 		if(empty($cyberSourceProfile)) {
 			$vars['savedByUser'] = false;
 			$vars['order_id'] = $order->order_id;
-			$vars['auth'] = $auth;
+			$vars['auth'] = $transactions['softAuth'];
 			$cyberSourceProfile = CreditCard::add($vars);
 		}
 		$order->cyberSourceProfileId = $cyberSourceProfile['profileID'];
 		$cart = Cart::active();
 		#Save Order Infos
 		$shipDate = Cart::shipDate($cart);
-		if($shipDate=="On or before 12/23"){
-			$shipDateInsert = strtotime("2011-12-23".' +1 day');
-		}
-		elseif($shipDate=="See delivery alert below"){
+		if($shipDate=="See delivery alert below"){
 			$shipDateInsert = Cart::shipDate($cart, true);
-		}
-		else{
+		} else{
 			$shipDateInsert = $shipDate;
 		}
+		if($transactions['capture']) {
+			$capturedTransactions = array();
+			$transation['authKey'] = $transactions['capture']->key;
+			$transation['amount'] = $vars['amountToCapture'];
+			$transation['date_captured'] = static::dates('now');
+			$capturedTransactions[] = $transation;
+			$order->captured_amount = $vars['amountToCapture'];
+			$order->capture_records = $capturedTransactions;
+			#If Only Capture Amount / Digital Order
+			if(!$transactions['softAuth']) {
+				$order->authKey = $transactions['capture']->key;
+				$order->auth_confirmation = $transactions['capture']->key;
+				$order->payment_date = static::dates('now');
+				$order->processor = $transactions['capture']->adapter;
+				$order->auth = $transactions['capture']->export();
+			}
+		}
+		if($transactions['softAuth']) {
+			$order->authKey = $transactions['softAuth']->key;
+			$order->processor = $transactions['softAuth']->adapter;
+			$order->authTotal = $authTotalAmount;
+			$order->auth = $transactions['softAuth']->export();
+		}
+		#Case If the order is only digital and the total is zero
+		if(empty($transactions['capture']) && empty($transactions['softAuth']) && empty($order['total'])) {
+			$order->auth_confirmation = 1;
+			$order->payment_date = static::dates('now');
+		}
+		if(Cart::isOnlyDigital($cart)) {
+			$shippingMethod = 'email';
+			$order->isOnlyDigital = true;
+			$shipDateInsert = time();
+		}
 		$order->save(array(
-				'total' => $vars['total'],
-				'subTotal' => $vars['subTotal'],
-				'handling' => $vars['shippingCost'],
-				'overSizeHandling' => $vars['overShippingCost'],
-				'handlingDiscount' => $vars['shippingCostDiscount'],
-				'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
-				'email' => $user['email'],
-				'user_id' => (string) $user['_id'],
-				'tax' => (float) $avatax['tax'],
-				'card_type' => $creditCard['type'],
-				'card_number' => substr($creditCard['number'], -4),
-				'date_created' => static::dates('now'),
-				/* The key is stored as `authKey` for BC and slow migration.
-				   `auth` will contain key info, too. */
-				'authKey' => $auth->key,
-				'auth' => $auth->export(),
-				'billing' => $vars['billingAddr'],
-				'shipping' => $vars['shippingAddr'],
-				'shippingMethod' => $shippingMethod,
-				'items' => $items,
-				'avatax' => $avatax,
-				'ship_date' => new MongoDate($shipDateInsert),
-				'savings' => $savings,
-				'processor' => $auth->adapter,
-				'authTotal' => $authTotalAmount
+			'total' => $vars['total'],
+			'subTotal' => $vars['subTotal'],
+			'handling' => $vars['shippingCost'],
+			'overSizeHandling' => $vars['overShippingCost'],
+			'handlingDiscount' => $vars['shippingCostDiscount'],
+			'overSizeHandlingDiscount' => $vars['overShippingCostDiscount'],
+			'email' => $user['email'],
+			'user_id' => (string) $user['_id'],
+			'tax' => (float) $avatax['tax'],
+			'card_type' => $creditCard['type'],
+			'card_number' => substr($creditCard['number'], -4),
+			'date_created' => static::dates('now'),
+			'billing' => $vars['billingAddr'],
+			'shipping' => $vars['shippingAddr'],
+			'shippingMethod' => $shippingMethod,
+			'items' => $items,
+			'avatax' => $avatax,
+			'ship_date' => new MongoDate($shipDateInsert),
+			'savings' => $savings
 		));
 		Cart::remove(array('session' => Session::key('default')));
 		#Update quantity of items
