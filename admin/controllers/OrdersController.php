@@ -275,15 +275,12 @@ class OrdersController extends BaseController {
 		}
 		
 		$order_data['id'] = $order_data['_id'];
-		$order_data['credit_used'] = '';
-		$order_data['promo_code'] = '';
-		$order_data['promo_discount'] = '';
 		$order_data['save'] = 'false';
-		$order_data['comment'] = 'Canceling unshipped items';
 		$this->request->data = $order_data;
 		
 		$order_data = $this->manage_items(false);
 		$order_data = $order_data->data();
+		$order_data['comment'] = 'Canceling unshipped items';
 		$order_data['save'] = 'true';
 		$order_data['id'] = $order_data['_id'];
 		$this->request->data = $order_data;
