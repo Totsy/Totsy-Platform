@@ -566,10 +566,10 @@ class Order extends Base {
 		}
 		if(isset($selected_order["user_total_credits"]) && $selected_order["user_total_credits"] != 0){
 			if (array_key_exists('original_credit_used', $selected_order)) {
-                $new_credit = $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
+                $new_credit = $selected_order['original_credit_used'] - (float) abs($selected_order['credit_used']);
                 $new_credit = abs($new_credit);
             } else {
-                $new_credit = (float) $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
+                $new_credit = (float) $selected_order['original_credit_used'] - (float) abs($selected_order['credit_used']);
                  $new_credit = abs($new_credit);
             }
             $creditReturnData = array(
@@ -580,7 +580,7 @@ class Order extends Base {
                     'amount' => (string) $new_credit,
                     'reason' => "Credit Adjustment",
                     'description' => "Credit Returned to user. Line Item(s) were cancelled from order $selected_order[order_id]."
-                );
+            );
             Credit::add($creditReturnData,array('type' => 'Credit Refund'));
 
 			if(strlen($selected_order["user_id"]) > 10){
