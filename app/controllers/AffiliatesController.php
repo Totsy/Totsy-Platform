@@ -177,7 +177,7 @@ class AffiliatesController extends BaseController {
 				$this->redirect($urlredirect);
 			}
 
-			$result = UsersController::facebookLogin(null, $cookie, $ipaddress);
+			$result = UsersController::facebookLogin($affiliate, $cookie, $ipaddress);
 			extract($result);
 
 			$fbCancelFlag = false;

@@ -38,11 +38,11 @@ var discountErrors = new Object();
 	$('.btn-checkout').click(function(e) {
 		e.preventDefault();
 
-		$( "#password-prompt").find('form').attr('action', this.href).end()
+		$( "#password-prompt").find('.btn.continue').attr('href', this.href).end()
 			.dialog({
 				modal: true,
 				width: 384,
-				height: 300
+				height: 310
 			}
 		);
 	});
