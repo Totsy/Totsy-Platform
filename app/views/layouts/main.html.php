@@ -7,15 +7,12 @@ use lithium\storage\Session;
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
-	<title>
-	<?php echo $this->title() ?: 'Totsy, the private sale site for Moms'; ?>
-	<?php echo $this->title() ? '- Totsy' : ''; ?>
-	</title>
 	
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	<?php 
 		$baseCSSPath = "";
 		$jQueryAllPath = "";
+		$titleTag = "Totsy, the private sale site for Moms";
 		$googleUACode = "UA-675412-15";
 		
 		//pick CSS for Mamasource vs Totsy based on session variable
@@ -23,13 +20,18 @@ use lithium\storage\Session;
 			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
 			$googleUACode = "UA-675412-22";
+			$titleTag = "Mamasource, powered by Totsy private sale";
 		} else {
 			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
 		}
-
-	 echo $this->html->style(Array( $baseCSSPath , "/css/960.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/960.css"), $jQueryAllPath));
-	 
+		
+	 ?>
+	 <title>
+	<?php echo $titleTag; ?>
+	</title>
+	 <?php 
+	 	echo $this->html->style(Array( $baseCSSPath , "/css/960.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/960.css"), $jQueryAllPath));
 	 ?>
 	<script src="https://www.google.com/jsapi"></script>
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
@@ -231,9 +233,11 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 		}	
 </script>
 
+<?php if(Session::read('layout', array('name' => 'default'))!=='mamapedia'): ?>
 <script language="javascript"> 
 	document.write('<sc'+'ript src="http'+ (document.location.protocol=='https:'?'s://www':'://www')+ '.upsellit.com/upsellitJS4.jsp?qs=237268202226312324343293280329277309292309329331334326345325&siteID=6605"><\/sc'+'ript>')
 </script>
+<?php endif ?>
 
 <script type="text/javascript">
 	<?php // global functions here (although all js *really* should be externalized and view-specific… Magento Magento Magento we'll make it happen) ?>
