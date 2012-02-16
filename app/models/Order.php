@@ -150,6 +150,11 @@ class Order extends Base {
 			if($softAuthorizationTransaction->success()) {
 				$transactions['softAuth'] = $softAuthorizationTransaction;
 			} else {
+				if(!empty($transactions['capture'])) {
+					$payments::void('default', $transactions['capture']->key, array(
+						'processor' => $transactions['capture']->adapter
+					));
+				}
 				#Reverse Transaction that Failed
 				$payments::void('default', $softAuthorizationTransaction->key, array(
 					'processor' => $softAuthorizationTransaction->adapter
