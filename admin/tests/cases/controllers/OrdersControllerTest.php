@@ -8,6 +8,7 @@ use admin\controllers\OrdersController;
 use admin\tests\mocks\models\OrderMock;
 use admin\models\Event;
 use admin\models\Order;
+use admin\models\OrderShipped;
 use admin\models\User;
 use admin\models\Item;
 use MongoId;
@@ -19,8 +20,12 @@ class OrdersControllerTest extends \lithium\test\Unit {
 
 	public function setUp() {
 		Session::config(array(
-			'default' => array('adapter' => 'Memory')
+			'default' => array('adapter' => 'Memory'),
+            'cookie' => array('adapter' => 'Memory'),
+		    'flash_message' => array('adapter' => 'Php')
 		));
+		
+		Session::write('userLogin', array('invited_by' => '','email' => "jsquillets+t@totsy.com") , array('name' => 'default'));
 
 		$this->controller = new OrdersController(array(
 			'request' => new Request(),
@@ -98,6 +103,636 @@ class OrdersControllerTest extends \lithium\test\Unit {
 		$event->delete();
 		$order1->delete();
 		$order2->delete();
+	}
+	
+	/*
+	 * Test OrdersController->cancelUnshippedItems with all items shipped
+	 * The order should not be modified at all
+	 */
+	public function testCancelUnshippedItems_AllShipped() {
+		
+		//configuration
+		$order_id = new MongoId();
+		$ship_record_one_id = new MongoId();
+		$ship_record_two_id = new MongoId();
+		$ship_record_three_id = new MongoId();
+		$ship_record_four_id = new MongoId();
+		$ship_record_five_id = new MongoId();
+		$ship_record_six_id = new MongoId();
+		//Create temporary documents
+		$remote = new Order();
+		$order_datas = 
+		array(
+		  '_id' => $order_id,
+		  'authKey' => '3789571045', 
+		  'auth_error' => null,
+		  'avatax' => true,
+		  'billing' => 
+		    array(
+		      '_id' => '4e4293975899efaa5c0000bb' ,
+		      'description' => 'Home' ,
+		      'firstname' => 'Maria' ,
+		      'lastname' => 'Tommasi' ,
+		      'telephone' => '' ,
+		      'address' => '37 Columbia Court' ,
+		      'address_2' => '' ,
+		      'city' => 'North Haledon' ,
+		      'state' => 'NJ' ,
+		      'zip' => '07508' ,
+		      'isAjax' => '1' ,
+		      'user_id' => '4d503feb5389266501000034'),
+		  'card_number' => '6840' ,
+		  'card_type' => 'visa' ,
+		  'date_created' => '2011-08-10T14: 20: 19.0Z' ,
+		  'handling' => 7.95,
+		  'items' => 
+		    array(
+		      "0" => 
+		        array(
+		          '_id' => '4e429272974f5bb36a0064e7' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Blue' ,
+		          'description' => 'Trunki Terrance' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c000115' ,
+		          'primary_image' => '4dbb2ec1d6b0259742000075' ,
+		          'product_weight' => 3.8,
+		          'quantity' => 1,
+		          'sale_retail' => 28,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-terrance-blue' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 0,
+		          'status' => 'Order Placed' ),
+		      "1" => 
+		        array(
+		          '_id' => '4e4292de5899ef675d0000b3' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Red' ,
+		          'description' => 'Trunki Ruby' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c000118' ,
+		          'primary_image' => '4dbb2e64d6b025994200006a' ,
+		          'product_weight' => 3.8,
+		          'quantity' => 4,
+		          'sale_retail' => 28,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-ruby-red' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 1,
+		          'status' => 'Order Placed' ),
+		      "2" => 
+		        array(
+		          '_id' => '4e429238d6b02585160000e3' ,
+		          'category' => 'Accessories' ,
+		          'color' => '' ,
+		          'description' => 'Trunki Alphabet Stickers' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c00011d' ,
+		          'primary_image' => '4dbb2dbbd6b025ca3f000074' ,
+		          'product_weight' => 0.05,
+		          'quantity' => 2,
+		          'sale_retail' => 1.4,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-alphabet-stickers' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 2,
+		          'status' => 'Order Placed' ),
+		      "3" => 
+		        array(
+		          '_id' => '4e429250d6b0256416001eb6' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Blue' ,
+		          'description' => 'Trunki Saddlebag ' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c00011c' ,
+		          'primary_image' => '4dbb2ddcd6b0258842000073' ,
+		          'product_weight' => 0.45,
+		          'quantity' => 1,
+		          'sale_retail' => 10.5,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-saddlebag-blue' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 3,
+		          'status' => 'Order Placed' ),
+		      "4" => 
+		        array(
+		          '_id' => '4e42925cd6b0256416001eb7' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Orange/Red' ,
+		          'description' => 'Trunki Saddlebag' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149625899efe21c000120' ,
+		          'primary_image' => '4dbb2d1cd6b0258d4200006a' ,
+		          'product_weight' => 0.45,
+		          'quantity' => 4,
+		          'sale_retail' => 10.5,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-saddlebag-orange-red' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 4,
+		          'status' => 'Order Placed')),
+		  'modifications' => 
+		    array(
+		    	"0" =>
+		        array(
+		          'author' => null,
+		          'type' => 'items' ,
+		          'date' => '2011-09-12T16: 10: 28.0Z' ,
+		          'comment' => 'Canceling unshipped items')),
+		  'order_id' => null,
+		  'overSizeHandling' => 0,
+		  'payment_date' => '2011-08-25T12: 14: 00.753Z' ,
+		  'promo_code' => '' ,
+		  'promo_discount' => '' ,
+		  'promocode_disable' => true,
+		  'service' => 
+		    array(),
+		  'ship_date' => '2011-09-06T04: 00: 00.0Z' ,
+		  'ship_records' => 
+		    array(
+			     "0" => $ship_record_one_id,
+			     "1" => $ship_record_two_id,
+			     "2" => $ship_record_three_id,
+			     "3" => $ship_record_four_id,
+			     "4" => $ship_record_five_id,
+			     "5" => $ship_record_six_id), 
+		  'shipping' => 
+		    array(
+		      '_id' => '4e4293975899efaa5c0000bb' ,
+		      'description' => 'Home' ,
+		      'firstname' => 'Maria' ,
+		      'lastname' => 'Tommasi' ,
+		      'telephone' => '' ,
+		      'address' => '37 Columbia Court' ,
+		      'address_2' => '' ,
+		      'city' => 'North Haledon' ,
+		      'state' => 'NJ' ,
+		      'zip' => '07508' ,
+		      'isAjax' => '1' ,
+		      'user_id' => '4d503feb5389266501000034'),
+		  'shippingMethod' => 'ups' ,
+		  'subTotal' => 195.3,
+		  'tax' => 14.2,
+		  'total' => 198.1,
+		  'user_id' => null
+		);
+		$order = Order::create();
+		$order->save($order_datas);
+		$orderCollection = Order::collection();
+		$order = $orderCollection->findOne(array('_id' => $order_id));
+		
+		$ship_record_one_data = 
+		array(
+			'_id'=> $ship_record_one_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-846-B1C-959',
+			'Weight'=> '1.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000242'),
+			'hash'=> '1a6d6010c78f36dbd6b9634de832752a',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:07'))
+		);
+		$ship_record_one = OrderShipped::create();
+		$ship_record_one->save($ship_record_one_data);
+		
+		$ship_record_two_data = 
+		array(
+			'_id'=> $ship_record_two_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-4DB-B1C-D41',
+			'Weight'=> '2.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d1000024a'),
+			'hash'=> '2d3a802ce868a693431951f39ecc5608',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:13'))
+		);
+		$ship_record_two = OrderShipped::create();
+		$ship_record_two->save($ship_record_two_data);
+		
+		$ship_record_three_data = 
+		array(
+			'_id'=> $ship_record_three_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-56D-B1C-959',
+			'Weight'=> '1.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000249'),
+			'hash'=> 'dad03956e3fcae78d55360b6bcc97808',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:15'))
+		);
+		$ship_record_three = OrderShipped::create();
+		$ship_record_three->save($ship_record_three_data);
+		
+		$ship_record_four_data = 
+		array(
+			'_id'=> $ship_record_four_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-BB1-B1C-EE3',
+			'Weight'=> '2.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000245'),
+			'hash'=> 'd94e4cdb6cd9185e8f9edf17ade7d65b',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:15'))
+		);
+		$ship_record_four = OrderShipped::create();
+		$ship_record_four->save($ship_record_four_data);
+		
+		$ship_record_five_data = 
+		array(
+			'_id'=> $ship_record_five_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-BB1-B1C-EE3',
+			'Weight'=> '2.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000245'),
+			'hash'=> '87e3d5d0ceb2d397d13a3a11512d5fd9',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:15'))
+		);
+		$ship_record_five = OrderShipped::create();
+		$ship_record_five->save($ship_record_five_data);
+		
+		$ship_record_six_data = 
+		array(
+			'_id'=> $ship_record_six_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-88F-B1C-3F8',
+			'Weight'=> '4.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d1000024d'),
+			'hash'=> 'f44acaa8a92ed0ef760e36b0fcaa1ba6',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:15'))
+		);
+		$ship_record_six = OrderShipped::create();
+		$ship_record_six->save($ship_record_six_data);
+
+		$oc = new OrdersController;
+		$oc->cancelUnshippedItems($order);
+		
+		$result = $orderCollection->findOne(array('_id' => $order_id));
+
+		//Delete Temporary Documents
+		Order::remove(array("_id" => $order_id));
+		OrderShipped::remove(array("_id" => $ship_record_one_id));
+		OrderShipped::remove(array("_id" => $ship_record_two_id));
+		OrderShipped::remove(array("_id" => $ship_record_three_id));
+		OrderShipped::remove(array("_id" => $ship_record_four_id));
+		OrderShipped::remove(array("_id" => $ship_record_five_id));
+		OrderShipped::remove(array("_id" => $ship_record_six_id));
+		
+		$this->assertEqual($order, $result);	
+	}
+
+	/*
+	 * Test OrdersController->cancelUnshippedItems with 2 unshipped items
+	 */
+	public function testCancelUnshippedItems() {
+		//configuration
+		$order_id = new MongoId();
+		$ship_record_one_id = new MongoId();
+		$ship_record_two_id = new MongoId();
+		$ship_record_three_id = new MongoId();
+		//Create temporary documents
+		$remote = new Order();
+		$order_datas = 
+		array(
+		  '_id' => $order_id,
+		  'authKey' => '3789571045', 
+		  'auth_error' => null,
+		  'avatax' => true,
+		  'billing' => 
+		    array(
+		      '_id' => '4e4293975899efaa5c0000bb' ,
+		      'description' => 'Home' ,
+		      'firstname' => 'Maria' ,
+		      'lastname' => 'Tommasi' ,
+		      'telephone' => '' ,
+		      'address' => '37 Columbia Court' ,
+		      'address_2' => '' ,
+		      'city' => 'North Haledon' ,
+		      'state' => 'NJ' ,
+		      'zip' => '07508' ,
+		      'isAjax' => '1' ,
+		      'user_id' => '4d503feb5389266501000034'),
+		  'card_number' => '6840' ,
+		  'card_type' => 'visa' ,
+		  'date_created' => '2011-08-10T14: 20: 19.0Z' ,
+		  'handling' => 7.95,
+		  'items' => 
+		    array(
+		      "0" => 
+		        array(
+		          '_id' => '4e429272974f5bb36a0064e7' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Blue' ,
+		          'description' => 'Trunki Terrance' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c000115' ,
+		          'primary_image' => '4dbb2ec1d6b0259742000075' ,
+		          'product_weight' => 3.8,
+		          'quantity' => 1,
+		          'sale_retail' => 28,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-terrance-blue' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 0,
+		          'status' => 'Order Placed' ),
+		      "1" => 
+		        array(
+		          '_id' => '4e4292de5899ef675d0000b3' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Red' ,
+		          'description' => 'Trunki Ruby' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c000118' ,
+		          'primary_image' => '4dbb2e64d6b025994200006a' ,
+		          'product_weight' => 3.8,
+		          'quantity' => 4,
+		          'sale_retail' => 28,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-ruby-red' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 1,
+		          'status' => 'Order Placed' ),
+		      "2" => 
+		        array(
+		          '_id' => '4e429238d6b02585160000e3' ,
+		          'category' => 'Accessories' ,
+		          'color' => '' ,
+		          'description' => 'Trunki Alphabet Stickers' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c00011d' ,
+		          'primary_image' => '4dbb2dbbd6b025ca3f000074' ,
+		          'product_weight' => 0.05,
+		          'quantity' => 2,
+		          'sale_retail' => 1.4,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-alphabet-stickers' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 2,
+		          'status' => 'Order Placed' ),
+		      "3" => 
+		        array(
+		          '_id' => '4e429250d6b0256416001eb6' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Blue' ,
+		          'description' => 'Trunki Saddlebag ' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c00011c' ,
+		          'primary_image' => '4dbb2ddcd6b0258842000073' ,
+		          'product_weight' => 0.45,
+		          'quantity' => 1,
+		          'sale_retail' => 10.5,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-saddlebag-blue' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 3,
+		          'status' => 'Order Placed' ),
+		      "4" => 
+		        array(
+		          '_id' => '4e42925cd6b0256416001eb7' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Orange/Red' ,
+		          'description' => 'Trunki Saddlebag' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149625899efe21c000120' ,
+		          'primary_image' => '4dbb2d1cd6b0258d4200006a' ,
+		          'product_weight' => 0.45,
+		          'quantity' => 4,
+		          'sale_retail' => 10.5,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-saddlebag-orange-red' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 4,
+		          'status' => 'Order Placed')),
+		  'modifications' => 
+		    array(
+		    	"0" =>
+		        array(
+		          'author' => null,
+		          'type' => 'items' ,
+		          'date' => '2011-09-12T16: 10: 28.0Z' ,
+		          'comment' => 'Canceling unshipped items')),
+		  'order_id' => null,
+		  'overSizeHandling' => 0,
+		  'payment_date' => '2011-08-25T12: 14: 00.753Z' ,
+		  'promo_code' => '' ,
+		  'promo_discount' => '' ,
+		  'promocode_disable' => true,
+		  'service' => 
+		    array(),
+		  'ship_date' => '2011-09-06T04: 00: 00.0Z' ,
+		  'ship_records' => 
+		    array(
+			     "0" => $ship_record_one_id,
+			     "1" => $ship_record_two_id,
+			     "2" => $ship_record_three_id),
+		  'shipping' => 
+		    array(
+		      '_id' => '4e4293975899efaa5c0000bb' ,
+		      'description' => 'Home' ,
+		      'firstname' => 'Maria' ,
+		      'lastname' => 'Tommasi' ,
+		      'telephone' => '' ,
+		      'address' => '37 Columbia Court' ,
+		      'address_2' => '' ,
+		      'city' => 'North Haledon' ,
+		      'state' => 'NJ' ,
+		      'zip' => '07508' ,
+		      'isAjax' => '1' ,
+		      'user_id' => '4d503feb5389266501000034'),
+		  'shippingMethod' => 'ups' ,
+		  'subTotal' => 195.3,
+		  'tax' => 14.2,
+		  'total' => 198.1,
+		  'user_id' => null
+		);
+		$order = Order::create();
+		$order->save($order_datas);
+		$orderCollection = Order::collection();
+		$order = $orderCollection->findOne(array('_id' => $order_id));
+		
+		$ship_record_one_data = 
+		array(
+			'_id'=> $ship_record_one_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-846-B1C-959',
+			'Weight'=> '1.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000242'),
+			'hash'=> '1a6d6010c78f36dbd6b9634de832752a',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:07'))
+		);
+		$ship_record_one = OrderShipped::create();
+		$ship_record_one->save($ship_record_one_data);
+		
+		$ship_record_two_data = 
+		array(
+			'_id'=> $ship_record_two_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-4DB-B1C-D41',
+			'Weight'=> '2.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d1000024a'),
+			'hash'=> '2d3a802ce868a693431951f39ecc5608',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:13'))
+		);
+		$ship_record_two = OrderShipped::create();
+		$ship_record_two->save($ship_record_two_data);
+		
+		$ship_record_three_data = 
+		array(
+			'_id'=> $ship_record_three_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-56D-B1C-959',
+			'Weight'=> '1.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000249'),
+			'hash'=> 'dad03956e3fcae78d55360b6bcc97808',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:15'))
+		);
+		$ship_record_three = OrderShipped::create();
+		$ship_record_three->save($ship_record_three_data);
+
+		$oc = new OrdersController;
+		$order = $oc->cancelUnshippedItems($order);
+		
+		$order = $order->data();
+
+		//Delete Temporary Documents
+		Order::remove(array("_id" => $order_id));
+		OrderShipped::remove(array("_id" => $ship_record_one_id));
+		OrderShipped::remove(array("_id" => $ship_record_two_id));
+		OrderShipped::remove(array("_id" => $ship_record_three_id));
+		
+		// Verify that only 2 items were canceled
+		$this->assertEqual(false, $order['items'][0]['cancel']);
+		$this->assertEqual(true, $order['items'][1]['cancel']);
+		$this->assertEqual(false, $order['items'][2]['cancel']);
+		$this->assertEqual(false, $order['items'][3]['cancel']);
+		$this->assertEqual(true, $order['items'][4]['cancel']);
+		
+		// Verify that the total was updated
+		$this->assertEqual(52.15, $order['total']);	
 	}
 
 	public function testCancel() {

@@ -11,6 +11,12 @@
 			<li>
 				<?php echo $this->html->link('Order Payment Status', 'Orders::payments'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Digital Items to be Fulfilled', 'Orders::digitalItemsToFulfill'); ?>
+			</li>
+			<li>
+				<?php echo $this->html->link('Fulfilled Digital Items', 'Orders::digitalItemsFulfilled'); ?>
+			</li>
 		</ul>
 	</li>
 	<li>
@@ -123,6 +129,9 @@
 
 		</ul>
 		
+	</li>
+	<li>
+		<?php echo $this->html->link('Tickets Management', array('Tickets::view')); ?>
 	</li>
 	<li class="secondary">
 		<?php echo $this->html->link('Logout', 'Users::logout'); ?>
