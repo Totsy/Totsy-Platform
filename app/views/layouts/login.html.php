@@ -43,14 +43,6 @@ $titleTag = "Totsy, the private sale site for Moms";
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
-	<script type="text/javascript">
-			(function () {
-				var a, b, c, d; b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
-				var e = new Date(); var f = e.getFullYear()+""+e.getMonth()+""+e.getDate()+""+e.getHours();
-				b.src = (document.location.protocol === "https:" ? "https:"  : "http:") + "//api.theechosystem.com/core/resource/getjs?antiCache="+f;
-				a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(b, a);
-			} ())
-		</script>
 	
 	<script type="text/javascript">
 		//this is used for swapping backgrounds on registration pages that pass in affiliate codes	

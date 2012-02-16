@@ -14,6 +14,7 @@ use lithium\storage\Session;
 		$jQueryAllPath = "";
 		$titleTag = "Totsy, the private sale site for Moms";
 		$googleUACode = "UA-675412-15";
+		$isWhateLabel =  false;
 		
 		//pick CSS for Mamasource vs Totsy based on session variable
 		if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
@@ -21,6 +22,7 @@ use lithium\storage\Session;
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
 			$googleUACode = "UA-675412-22";
 			$titleTag = "Mamasource, powered by Totsy private sale";
+			$isWhiteLabel = true;
 		} else {
 			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
@@ -253,15 +255,6 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 <?php endif ?>
 
 <script type="text/javascript">
-			(function () {
-				var a, b, c, d; b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
-				var e = new Date(); var f = e.getFullYear()+""+e.getMonth()+""+e.getDate()+""+e.getHours();
-				b.src = (document.location.protocol === "https:" ? "https:"  : "http:") + "//api.theechosystem.com/core/resource/getjs?antiCache="+f;
-				a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(b, a);
-			} ())
-		</script>
-
-<script type="text/javascript">
 	<?php // global functions here (although all js *really* should be externalized and view-specific… Magento Magento Magento we'll make it happen) ?>
 	$(document).ready(function() {
 		$("input:file, select").not('.uniform-hidden').uniform().each(function(i,elt) {
@@ -317,6 +310,26 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
         };
     })();
 </script>
+<?php
+$currentURI  = $_SERVER['REQUEST_URI'];
+					
+$URIArray = explode("/", $currentURI);
+$controllerName = $URIArray[1];			
+		    																	 
+if( $controllerName!=="checkout" && $controllerName!=="orders" && $controllerName!=="cart" && $isWhiteLabel==false) { 
+?>
+
+<script type="text/javascript">
+			(function () {
+				var a, b, c, d; b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
+				var e = new Date(); var f = e.getFullYear()+""+e.getMonth()+""+e.getDate()+""+e.getHours();
+				b.src = (document.location.protocol === "https:" ? "https:"  : "http:") + "//api.theechosystem.com/core/resource/getjs?antiCache="+f;
+				a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(b, a);
+			} ())
+</script>
+
+<?php }  ?>
+
 <!-- Server Name: <?php echo $_SERVER['SERVER_NAME']; ?> -->
 <!-- Host Name: <?php echo php_uname('n'); ?> -->
 <?php if(isset($version)) { echo $version; } ?>
