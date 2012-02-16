@@ -62,7 +62,10 @@
 				echo $this->form->button("Send all {$count} to LivePerson", array('id' => 'liveperson', 'name' => 'send_button','value' => 'all'));
 			}
 		?>
-		Sort By : <?=$this->form->select('sort_by',array());?>
+		&nbsp;&nbsp;
+		Sort By : <?=$this->form->select('sort_by',array('user.email' => 'email', 'date_created' => 'date', 'status' => 'status', 'issue.issue_type' => 'issue'), array('value' => $sort_by));?>
+		<?=$this->form->select('order_by',array('1' => 'ascending', '-1' => 'descending'),array('value' => $order_by));?>
+		<?=$this->form->button('sort',array('value' => 'sort', 'name' => 'sort'));?>
 		<div style='float: right'>
 			 <?php $limit = round($count/(int)$search_criteria['limit_by']); ?>
 			  <?php 
