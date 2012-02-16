@@ -14,7 +14,7 @@ use lithium\storage\Session;
 		$jQueryAllPath = "";
 		$titleTag = "Totsy, the private sale site for Moms";
 		$googleUACode = "UA-675412-15";
-		$isWhateLabel =  false;
+		$isWhiteLabel =  false;
 		
 		//pick CSS for Mamasource vs Totsy based on session variable
 		if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
