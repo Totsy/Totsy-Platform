@@ -263,6 +263,8 @@ class OrderExport extends Base {
 		#Setting Production Environment
 		if (Environment::is('production')) {
 			$ReAuthorize->env = 'production';
+		} else if (Environment::is('staging')) {
+			$ReAuthorize->env = 'staging';
 		}
 		$ReAuthorize->fullAmount = true;
 		$ReAuthorize->orders = $orders;
