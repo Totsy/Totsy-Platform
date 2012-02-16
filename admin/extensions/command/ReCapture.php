@@ -74,7 +74,9 @@ class ReCapture extends \lithium\console\Command {
 				$conditions = array('order_id' => $orderId,
 									'total' => array('$ne' => 0),
 									'cancel' => array('$ne' => true),
-									'payment_captured' => array('$exists' => false)
+									'payment_captured' => array('$exists' => false),
+									'cancel' => array('$ne' => true),
+									'isOnlyDigital' => array('$ne' => true)
 									);
 				$order = $ordersCollection->findOne($conditions);
 				if(!empty($order)) {		
@@ -126,8 +128,10 @@ class ReCapture extends \lithium\console\Command {
 		#Retrieve Profile using CyberSourceProfile ID		
 		$cybersource = new CyberSource(Processor::config('default'));
 		$profile = $cybersource->profile($order['cyberSourceProfileId']);
+		#If Digital Items, Calculate correct Amount
+		$amountToAuthorize = Order::getAmountNotCaptured($order);
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
+		$auth = Processor::authorize('default', $amountToAuthorize, $profile, array('orderID' => $order['order_id']));
 		if ($auth->success()) {
 			Logger::debug('Authorize Complete: ' . $auth->key);
 			$authKey = $auth->key;
@@ -136,7 +140,7 @@ class ReCapture extends \lithium\console\Command {
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth->key,
 											  'auth' => $auth->export(),
-											  'authTotal' => $order['total'],
+											  'authTotal' => $amountToAuthorize,
 											  'processor' => $auth->adapter
 						)), array( 'upsert' => true)
 				);
@@ -156,7 +160,7 @@ class ReCapture extends \lithium\console\Command {
 			$reportAuthorize[] = $error;
 			$reportAuthorize[] = $order['order_id'];
 			$reportAuthorize[] = $order['authKey'];
-			$reportAuthorize[] = $order['total'];
+			$reportAuthorize[] = $amountToAuthorize;
 		}
 		return compact('authKey', 'reportAuthorize');
 	}
@@ -165,10 +169,12 @@ class ReCapture extends \lithium\console\Command {
 		Logger::debug('Capture');
 		$ordersCollection = Order::Collection();
 		$report = null;
+		#If Digital Items, Calculate correct Amount
+		$amountToCapture = Order::getAmountNotCaptured($order);
 		$auth_capture = Processor::capture(
 				'default',
 				$authKey,
-				floor($order['total'] * 100) / 100,
+				floor($amountToCapture * 100) / 100,
 				array(
 					'processor' => isset($order['processor']) ? $order['processor'] : null,
 					'orderID' => $order['order_id']
@@ -180,12 +186,24 @@ class ReCapture extends \lithium\console\Command {
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth_capture->key,
 											  'auth' => $auth_capture->export(),
-											  'authTotal' => $order['total'],
+											  'authTotal' => $amountToCapture,
 											  'processor' => $auth_capture->adapter,
 											  'payment_date' => new MongoDate(),
            									  'auth_confirmation' => $auth_capture->key,
            									  'payment_captured' => true
 						)), array( 'upsert' => true)
+			);
+			#Save Capture in Transactions Logs
+			$transation['authKey'] = $auth_capture->key;
+			$transation['amount'] = $amountToCapture;
+			$transation['date_captured'] = new MongoDate();
+			$update = $ordersCollection->update(
+				array('_id' => $order['_id']),
+				array(
+					'$push' => array(
+					'capture_records' => $transation
+					)
+				)
 			);
 			#Unset Old Errors fields
 			$update = $ordersCollection->update(
@@ -197,7 +215,7 @@ class ReCapture extends \lithium\console\Command {
 			$report[] = '';
 			$report[] = $order['order_id'];
 			$report[] = $authKey;
-			$report[] = $order['total'];
+			$report[] = $amountToCapture;
 			Logger::debug('Order Document Updated!');
 		} else {
 			#Record errors in DB
@@ -215,7 +233,7 @@ class ReCapture extends \lithium\console\Command {
 			$report[] = $error;
 			$report[] = $order['order_id'];
 			$report[] = $order['authKey'];
-			$report[] = $order['total'];
+			$report[] = $amountToCapture;
 		}
 		return $report;
 	}
