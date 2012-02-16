@@ -335,6 +335,10 @@ class OrdersController extends BaseController {
 				$items[$key]["initial_quantity"] = $item["initial_quantity"];
 				$items[$key]["quantity"] = $item["quantity"];
 
+				#shortshipped
+				if (!empty($item["shortshipped"])) {
+					$items[$key]["shortshipped"] = true;
+				}
 				//Cancel Status
 				if (empty($item["cancel"])){
 					$cancelCheck = false;

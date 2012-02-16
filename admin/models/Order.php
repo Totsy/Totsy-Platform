@@ -594,8 +594,12 @@ class Order extends Base {
 		$orderCollection->update(array("_id" => new MongoId($selected_order["id"])),array('$set' => $datas_order_prices));
 		//Update Items
 		foreach($items as $item) {
+			$shortshipped = null;
+			if(!empty($item["shortshipped"])) {
+				$shortshipped = true;
+			}
 			static::changeQuantity($selected_order["id"], $item["_id"], $item["quantity"], $item["initial_quantity"]);
-			static::cancelItem($selected_order["id"], $item["_id"], $item["cancel"]);
+			static::cancelItem($selected_order["id"], $item["_id"], $item["cancel"], $shortshipped);
 		}
 		//Pushing modification datas to db
 		$modification_datas["author"] = $author;
@@ -615,13 +619,16 @@ class Order extends Base {
 	* @param string $cart_id
 	* @param boolean $cancel
 	*/
-	public static function cancelItem($order_id, $cart_id, $cancel = true) {
+	public static function cancelItem($order_id, $cart_id, $cancel = true, $shortshipped = null) {
 		$orderCollection = static::collection();
 		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)), array('items' => 1));
 
 		foreach($order["items"] as $key => $item) {
 			if($item["_id"] == new MongoId($cart_id)) {
 				$order["items"][$key]["cancel"] = $cancel;
+				if($shortshipped) {
+					$order["items"][$key]["shortshipped"] = true;
+				}
 			}
 		}
 		return $orderCollection->update(
