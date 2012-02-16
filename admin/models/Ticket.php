@@ -106,9 +106,9 @@ class Ticket extends Base {
 				break;
 			case 'keyword':
 				$condition['$or'] = array(
-						array('user.email' => new MongoRegex('/(' . $request['keyword'] .')/i')),
-						array('issue.type' => new MongoRegex('/(' . $request['keyword'] .')/i')),
-						array('issue.message' => new MongoRegex('/(' . $request['keyword'] .')/i'))
+						array('user.email' => new MongoRegex('/' . $request['keyword'] .'/i')),
+						array('issue.type' => new MongoRegex('/' . $request['keyword'] .'/i')),
+						array('issue.message' => new MongoRegex('/' . $request['keyword'] .'/i'))
 					);
 				$search_criteria['search_by'] = $request['search_by'];
 				$search_criteria['search_by_value'] = $request['keyword'];
