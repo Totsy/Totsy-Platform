@@ -515,8 +515,12 @@ class APIController extends  \lithium\action\Controller {
 					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
 					
-					$data['groups']['ages'] = array_merge($data['groups']['ages'],$it['ages']);
-					$data['groups']['categories'] = array_merge($data['groups']['categories'],$it['categories']);
+					if (!empty($it['ages'])){ 
+						$data['groups']['age'] = array_merge($data['groups']['age'],$it['ages']); 
+					}
+					if (!empty($it['categories'])){
+						$data['groups']['category'] = array_merge($data['groups']['category'],$it['categories']);
+					}
 				}
 				
 			}
