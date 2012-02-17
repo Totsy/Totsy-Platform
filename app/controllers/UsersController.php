@@ -17,6 +17,7 @@ class UsersController extends BaseController {
 
 	public $sessionKey = 'userLogin';
 
+
 	/**
 	 * Instances
 	 * @var array
@@ -451,6 +452,18 @@ class UsersController extends BaseController {
 
 		return compact('message', 'fbsession', 'fbconfig');
 	}
+	
+	public function publicpassword(){
+		
+		$this->password();
+		
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_public_password';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
+	}
 
 	protected function autoLogin() {	
 		
@@ -649,6 +662,7 @@ class UsersController extends BaseController {
         return $string;
     }
 
+	/* sends user to a public reset password page */
 	public function reset() {
 		$success = false;
 		if ($this->request->data) {
@@ -663,9 +677,12 @@ class UsersController extends BaseController {
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
 				$user->email_hash = md5($user->email);
+												
+				$link = "http://" . $_SERVER['HTTP_HOST'] . "/publicpassword/?t=" . $token;
+				
 				if ($user->save(null, array('validate' => false))) {
 					$mailer = $this->_classes['mailer'];
-					$mailer::send('Reset_Password', $user->email, array('token' => $token));
+					$mailer::send('Reset_Password_new_flow', $user->email, array('link' => $link));
 					$message = '<div class="success_flash">Your password has been reset. Please check your email.</div>';
 					$success = true;
 				} else {
@@ -766,50 +783,99 @@ class UsersController extends BaseController {
 	 * @return array
 	 */
 	public function password() {
+	
 		$status = 'default';
-		$user = User::getUser(null, $this->sessionKey);
+		
+		//flag for public vs private password reset page
+		//on public pages we use the clear_token for getting user objects, not the sessionKey
+		//and the auto-generated password (the old password in the private reset page) is already stored as sha1, so converting to sha1 isn't necesary		
+		$publicReset = false;
+		
+		if ($this->request->data['clear_token']) {
+			$publicReset = true;
+			$user = User::find('all', array(
+			'conditions' => array(
+				'clear_token' => $this->request->data['clear_token'])));	
+			$user = $user[0];	
+					
+		} else {
+			$user = User::getUser(null, $this->sessionKey);
+		}
+						
 		if ($this->request->data) {
-			$oldPass = $this->request->data['password'];
+			
+			$oldPass = "";
+			
+			if($this->request->data['password']) {
+				$oldPass = $this->request->data['password'];
+			} else {
+				$oldPass = $user->password;
+			}
+			
 			$newPass = $this->request->data['new_password'];
 			$confirmPass = $this->request->data['password_confirm'];
+					
 			if ($user->legacy == 1) {
 				$status = ($this->authIllogic($oldPass, $user)) ? 'true' : 'false';
 			} else {
-				$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
+				if(!$publicReset) {
+					$status = (sha1($oldPass) == $user->password) ? 'true' : 'false';
+				} else {
+					$status = ($oldPass == $user->password) ? 'true' : 'false';
+				}
 			}
+						
 			if (!empty($user->reset_token)) {
-				$status = ($user->reset_token == sha1($oldPass) ||
-				 $user->password == sha1($oldPass)) ? 'true' : 'false';
+				if(!$publicReset) {
+					$status = ($user->reset_token == sha1($oldPass) ||
+				 	$user->password == sha1($oldPass)) ? 'true' : 'false';
+				} else {
+					$status = ($user->reset_token == sha1($oldPass) ||
+				 	$user->password == $oldPass) ? 'true' : 'false';			
+				}
 			}
+						
 			if ($status == 'true') {
-				if(($newPass == $confirmPass)){
+				if($newPass == $confirmPass){
 					if(strlen($confirmPass) > 5){
 						$user->password = sha1($newPass);
 						$user->legacy = 0;
 						$user->reset_token = '0';
 						$user->requires_set_password = null;
-						unset($this->request->data['password']);
+						
+						if ($this->request->data['password']) {
+							unset($this->request->data['password']);
+						}
+						
 						unset($this->request->data['new_password']);
 						unset($this->request->data['password_confirm']);
 						if ($user->save($this->request->data, array('validate' => false))) {
-							$info = Session::read('userLogin');
-							Session::write('userLogin', $user, array('name'=>'default'));
+							if(!$publicReset){
+								$info = Session::read('userLogin');
+								Session::write('userLogin', $user, array('name'=>'default'));
+							}
 						}
 					} else {
 						$status = 'shortpass';
 					}
-				}else {
+				} else {
 					$status = 'errornewpass';
 				}
-			}
+			}			
 		}
+		
 		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_password';
 		}
-		return compact("user", "status");
+		
+		if($publicReset) {
+			$this->redirect("/publicpassword/?t=".$this->request->data['clear_token']."&s=".$status);
+		} else {
+			return compact("user", "status");
+		}
 	}
-
+	
 	/**
 	 * Create a new User object using data from the logged-in Facebook user.
 	 *
@@ -820,7 +886,6 @@ class UsersController extends BaseController {
 		Session::delete('landing', array('name'=>'default'));
 
 		$fbuser = FacebookProxy::api("/me");
-
 		
 		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
         		$affiliate = new AffiliatesController(array('request' => $this->request));
