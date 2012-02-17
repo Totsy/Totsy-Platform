@@ -6,6 +6,9 @@ use MongoId;
 use MongoDate;
 use MongoRegex;
 use lithium\analysis\Logger;
+use lithium\core\Environment;
+use lithium\storage\Session;
+use admin\extensions\Mailer;
 use admin\models\User;
 use admin\models\Item;
 use admin\models\Credit;
@@ -161,6 +164,45 @@ class Order extends Base {
 		return $update && !$error;
 	}
 
+	public static function findUnshippedItems($order) {
+		$unshipped_items = array();
+		$ordersShippedCollection = OrderShipped::collection();
+		$order_items = array();
+		
+		// Remove digital items
+		foreach ($order['items'] as $item) {
+			if(empty($item['digital']))
+				$order_items[]=$item;
+		}
+
+		// Get the SKUs for all items in the order to match against the ship records
+		$itemSkus = Item::getSkus($order_items);
+		
+		// Retrieve all of the orders.shipped documents
+		$ship_records = $ordersShippedCollection->find(
+			array('_id' => 
+				array('$in' => 
+					$order['ship_records']
+				)
+			)
+		);
+		
+		// Remove all shipped items from the itemSkus array
+		foreach ($ship_records as $ship_record) {
+			if (isset($itemSkus[$ship_record['SKU']]))
+				unset($itemSkus[$ship_record['SKU']]);
+		}
+		
+		if (!empty($itemSkus)) {
+			// items still in itemsSkus were not shipped
+			foreach ($itemSkus as $item) {
+				$unshipped_items[] = $item['_id'];
+			}
+		}
+		
+		return $unshipped_items;
+	}
+
 	/**
 	 * Processes an order.
 	 *
@@ -181,7 +223,8 @@ class Order extends Base {
 		$data = array();
 
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
-
+		#If Digital Items, Calculate correct Amount
+		$amountToCapture = static::getAmountNotCaptured($order);
 		if ($order['total'] == 0) {
 			$data['auth_confirmation'] = $order['authKey'];
 			$data['payment_date'] = new MongoDate();
@@ -190,7 +233,7 @@ class Order extends Base {
 			$auth = $payments::capture(
 				'default',
 				$order['authKey'],
-				floor($order['total'] * 100) / 100,
+				floor($amountToCapture * 100) / 100,
 				array(
 					'processor' => isset($order['processor']) ? $order['processor'] : null,
 					'orderID' => $order['order_id']
@@ -200,6 +243,22 @@ class Order extends Base {
 				Logger::info("Order Succesfully Captured");
 				$data['auth_confirmation'] = $auth->key;
 				$data['payment_date'] = new MongoDate();
+				#Save Capture in Transactions Logs
+				$transation['authKey'] = $auth->key;
+				$transation['amount'] = $amountToCapture;
+				$transation['date_captured'] = new MongoDate();
+				#Update the Money Captured field
+				if($order['captured_amount']) {
+					$totalAmountCaptured = ($amountToCapture + $order['captured_amount']);
+				} else {
+					$totalAmountCaptured = $amountToCapture;
+				}
+				$update = static::update(
+					array('$push' => array('capture_records' => $transation),
+						  '$set' => array('captured_amount' => $totalAmountCaptured)
+					),
+					array('_id' => $orderId)
+				);
 			} elseif ($auth->errors) {
 				$data['auth_confirmation'] = -1;
 				$data['error_date'] = new MongoDate();
@@ -452,49 +511,65 @@ class Order extends Base {
 			'comment' => null,
 			'initial_credit_used' => null
 		);
-				
 		$datas_order_prices = array(
 			'total' => (float) $selected_order["total"],
 			'subTotal' => (float) $selected_order["subTotal"],
 			'handling' => (float) $selected_order["handling"],
 			'promo_discount' => (float) $selected_order["promo_discount"],
-			'promocode_disable' => $selected_order["promocode_disable"],
-			'comment' => $selected_order["comment"]
+			'promocode_disable' => $selected_order["promocode_disable"]
 		);
-		if(!empty($selected_order["overSizeHandling"])) {
+		if(static::isOnlyDigital(array('items' => $items))) {
+			$datas_order_prices['isOnlyDigital'] = true;
+		} else {
+			$datas_order_prices['isOnlyDigital'] = false;
+		}
+		if(isset($selected_order["overSizeHandling"])) {
 			$datas_order_prices['overSizeHandling'] = (float) $selected_order["overSizeHandling"];
 		}
-		if(!empty($selected_order["discount"])) {
+		if(isset($selected_order["discount"])) {
 			$datas_order_prices['discount'] = (float) $selected_order["discount"];
 		}
-		if(!empty($selected_order["handlingDiscount"])) {
+		if(isset($selected_order["handlingDiscount"])) {
 			$datas_order_prices['handlingDiscount'] = (float) $selected_order["handlingDiscount"];
 		}
-		if(!empty($selected_order["overSizeHandlingDiscount"])) {
+		if(isset($selected_order["overSizeHandlingDiscount"])) {
 			$datas_order_prices['overSizeHandlingDiscount'] = (float) $selected_order["overSizeHandlingDiscount"];
+		}
+		if(!empty($selected_order["comment"])) {
+			$datas_order_prices['comment'] = $selected_order["comment"];
 		}
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		   $datas_order_prices['original_credit_used'] = $selected_order["original_credit_used"];
 		}
-		if(!empty($selected_order["tax"])) {
+		if(isset($selected_order["tax"])) {
 			$datas_order_prices["tax"] = $selected_order["tax"];
 		}
-		if(!empty($selected_order["credit_used"])) {
+		if(isset($selected_order["credit_used"])) {
 			$datas_order_prices["credit_used"] = (float) $selected_order["credit_used"];
 		}
+		if(isset($selected_order['isOnlyDigital'])) {
+			$datas_order_prices["isOnlyDigital"] = $selected_order["isOnlyDigital"];
+		}
+		if(!empty($selected_order['payment_date'])) {
+			$datas_order_prices["payment_date"] = new MongoDate();
+		}
+		if(!empty($selected_order['auth_confirmation'])) {
+			$datas_order_prices["auth_confirmation"] = $selected_order["auth_confirmation"];
+		}		
 		/**************UPDATE TAX****************************/
+		// Is this even used?
 		extract(static::_recalculateTax($selected_order,$items,true));
 		/**************UPDATE DB****************************/
 		if (array_key_exists('original_credit_used', $selected_order)) {
 		    $new_credit = $selected_order['original_credit_used'] - (float) number_format($selected_order['credit_used'],2);
 		    $new_credit = abs((float)$selected_order['original_credit_used']) - (float) $selected_order['credit_used'];
 		}
-		if(isset($selected_order["user_total_credits"])){
+		if(isset($selected_order["user_total_credits"]) && $selected_order["user_total_credits"] != 0){
 			if (array_key_exists('original_credit_used', $selected_order)) {
-                $new_credit = $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
+                $new_credit = $selected_order['original_credit_used'] - (float) abs($selected_order['credit_used']);
                 $new_credit = abs($new_credit);
             } else {
-                $new_credit = (float) $selected_order['original_credit_used'] - (float) $selected_order['credit_used'];
+                $new_credit = (float) $selected_order['original_credit_used'] - (float) abs($selected_order['credit_used']);
                  $new_credit = abs($new_credit);
             }
             $creditReturnData = array(
@@ -505,7 +580,7 @@ class Order extends Base {
                     'amount' => (string) $new_credit,
                     'reason' => "Credit Adjustment",
                     'description' => "Credit Returned to user. Line Item(s) were cancelled from order $selected_order[order_id]."
-                );
+            );
             Credit::add($creditReturnData,array('type' => 'Credit Refund'));
 
 			if(strlen($selected_order["user_id"]) > 10){
@@ -515,17 +590,24 @@ class Order extends Base {
 			}
 			$credits_recorded = true;
 		}
+		
 		$orderCollection->update(array("_id" => new MongoId($selected_order["id"])),array('$set' => $datas_order_prices));
 		//Update Items
 		foreach($items as $item) {
+			$shortshipped = null;
+			if(!empty($item["shortshipped"])) {
+				$shortshipped = true;
+			}
 			static::changeQuantity($selected_order["id"], $item["_id"], $item["quantity"], $item["initial_quantity"]);
-			static::cancelItem($selected_order["id"], $item["_id"], $item["cancel"]);
+			static::cancelItem($selected_order["id"], $item["_id"], $item["cancel"], $shortshipped);
 		}
 		//Pushing modification datas to db
 		$modification_datas["author"] = $author;
 		$modification_datas["type"] = "items";
 		$modification_datas["date"] = new MongoDate(strtotime('now'));
-		$modification_datas["comment"] = $selected_order['comment'];
+		if (array_key_exists('comment', $selected_order)) {
+			$modification_datas["comment"] = $selected_order['comment'];
+		}
 		$result = static::collection()->update(array("_id" => new MongoId($selected_order["id"])),
 		array('$push' => array('modifications' => $modification_datas)), array('upsert' => true));
 		return compact('result', 'credits_recorded');
@@ -537,13 +619,16 @@ class Order extends Base {
 	* @param string $cart_id
 	* @param boolean $cancel
 	*/
-	public static function cancelItem($order_id, $cart_id, $cancel = true) {
+	public static function cancelItem($order_id, $cart_id, $cancel = true, $shortshipped = null) {
 		$orderCollection = static::collection();
 		$order = $orderCollection->findOne(array("_id" => new MongoId($order_id)), array('items' => 1));
 
 		foreach($order["items"] as $key => $item) {
 			if($item["_id"] == new MongoId($cart_id)) {
 				$order["items"][$key]["cancel"] = $cancel;
+				if($shortshipped) {
+					$order["items"][$key]["shortshipped"] = true;
+				}
 			}
 		}
 		return $orderCollection->update(
@@ -590,10 +675,31 @@ class Order extends Base {
 			$datas_order["items"] = $items;
 		}
 		//Get Actual Taxes and Handling
-		$handling = static::shipping($items);
-		$overSizeHandling = static::overSizeShipping($items);
-		extract(static::_recalculateTax($selected_order,$items));
+		$total = 0;
+		$afterDiscount = 0;
 
+		if(static::isOnlyDigital($datas_order)) {
+			$selected_order['handling'] = 0;
+			$selected_order['overSizeHandling'] = 0;
+			$selected_order['tax'] = 0;
+			$datas_order['overSizeHandling'] = 0;	
+			$datas_order['handling'] = 0;
+			$datas_order['tax'] = 0;
+			$datas_order['isOnlyDigital'] = true;
+			$datas_order['payment_date'] = true;
+			if($selected_order['capture_records']) {
+				$datas_order['auth_confirmation'] = $selected_order['capture_records'][0]['authKey'];
+			} else {
+   				$datas_order['auth_confirmation'] = 1;
+			}
+		} else {
+			$datas_order['handling'] = static::shipping($items);
+			$datas_order['overSizeHandling'] = static::overSizeShipping($items);
+			$selected_order['handling'] = $datas_order['handling'];
+			$selected_order['overSizeHandling'] = $datas_order['overSizeHandling'];
+			extract(static::_recalculateTax($selected_order,$items));
+			$datas_order['tax'] = $tax;
+		}
 		if ($tax instanceof Exception) {
 			/* Rethrow exceptions received while recalculating tax. */
 			throw $tax;
@@ -603,7 +709,7 @@ class Order extends Base {
             //$tax = static::tax($selected_order,$items);
             //$tax = $tax ? $tax + (($overSizeHandling + $handling) * static::TAX_RATE) : 0;
 		}
-		$subTotal = static::subTotal($items);
+		$afterDiscount = $subTotal = static::subTotal($items);
 		/************PROMOCODES TREATMENT************/
 		if(!empty($selected_order["promo_code"])){
 			//Get Actual Promocodes variables
@@ -628,7 +734,7 @@ class Order extends Base {
 				if($preAfterDiscount < 0) {
 					$preAfterDiscount = 0;
 				}
-				if ($promocode['type'] == 'free_shipping') {
+				if ($promocode['type'] == 'free_shipping' && !static::isOnlyDigital($datas_order)) {
 					$datas_order["handlingDiscount"] = $selected_order["handling"];
 					$datas_order["overSizeHandlingDiscount"] = $selected_order["overSizeHandling"];
 					$preAfterDiscount = $subTotal - $datas_order["handlingDiscount"] - $datas_order["overSizeHandlingDiscount"];
@@ -649,7 +755,14 @@ class Order extends Base {
 					$datas_order["discount"] = 0.00;
 				}
 			} else {
-				$preAfterDiscount -= $selected_order["discount"];
+				if(!static::isOnlyDigital($datas_order)) {
+					$datas_order["discount"] = (abs($datas_order['handling']) + abs($datas_order['overSizeHandling']));
+					$preAfterDiscount -= $datas_order["discount"];
+				} else {
+					$datas_order["discount"] = 0.00;
+					$datas_order["handlingDiscount"] = 0.00;
+					$datas_order["overSizeHandlingDiscount"] = 0.00;
+				}
 			}
 		}
 		/**************CREDITS TREATMENT**************/
@@ -954,13 +1067,13 @@ class Order extends Base {
 		if($order['authTotal'] != $order['total']) {
 			$status = 'Soft Authorized';
 		}
-		if($order['ship_records']) {
+		if($order['ship_records'] || $order['isOnlyDigital']) {
 			$status = 'Shipped';
 		}
 		if($order['payment_date']) {
 			$status = 'Captured but not Shipped';
 		}
-		if($order['payment_date'] && $order['ship_records']) {
+		if($order['payment_date'] && ($order['ship_records'] || $order['isOnlyDigital'])) {
 			$status = 'Shipped And Captured';
 		}
 		if($order['cancel']) {
@@ -1000,6 +1113,61 @@ class Order extends Base {
 			}
 		}
 		return $creditCard;
+	}
+	
+	/**
+	 * This function is used to send out various emails with order update or cancelation details.
+	 * The 'Order_Update' and 'Cancel_Order' templates are currently used
+	 * @param object $order
+	 * @param string $email_template
+	 * @see admin\controllers\OrdersController->manage_items()
+	 * @see admin\controllers\OrdersController->view()
+	 */
+	public static function sendEmail($order, $email_template) {
+		$userCollection = User::collection();
+		$current_user = Session::read('userLogin');
+		if(strlen($order["user_id"]) > 10){
+			$user = $userCollection->findOne(array("_id" => new MongoId($order->user_id)));
+		} else {
+			$user = $userCollection->findOne(array("_id" => $order->user_id));
+		}
+		if (is_object($order->ship_date))
+			$shipDate = $order->ship_date->sec;
+		else if (is_string($order->ship_date))
+			$shipDate = strtotime(substr($order->ship_date,0,10));
+		else 
+			$shipDate = $order->ship_date;
+		$data = array(
+			'order' => $order->data(),
+			'shipDate' => date('M d, Y', $shipDate)
+		);
+		if (Environment::get() == 'production')
+			Mailer::send($email_template, $user["email"], $data);
+		else
+			Mailer::send($email_template, $current_user["email"], $data);
+	}
+
+	/* Check if Items in Order are only Digital
+	 * @return boolean onlyDigital
+	 */
+	public static function isOnlyDigital($order) {
+		$onlyDigital = true;
+		foreach($order['items'] as $item) {
+			if(empty($item['digital']) && empty($item['cancel'])) {
+				$onlyDigital = false;
+			}
+		}
+		return $onlyDigital;
+	}
+	
+	public static function getAmountNotCaptured($order) {
+		$amountNotCaptured = 0;
+		if(!empty($order['captured_amount'])) {
+			$amountNotCaptured = ($order['total'] - $order['captured_amount']);
+		} else {
+			$amountNotCaptured = $order['total'];
+		}
+		return $amountNotCaptured;
 	}
 }
 

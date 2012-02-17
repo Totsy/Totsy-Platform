@@ -357,9 +357,6 @@ class ItemsController extends BaseController {
 			}
 
 	}
-
-
-
 }
 
 ?>
