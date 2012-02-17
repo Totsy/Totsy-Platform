@@ -120,7 +120,7 @@ if($this->_request->query['s']) {
 				?>
 			</p>
 			<br />
-			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/users/password')); ?>
+			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/users/publicpassword')); ?>
 			<input type="hidden" name="clear_token" value="<?php echo $token; ?>">
 			<div style="width:110px; float:left">	
 					<?php echo $this->form->label('new_password', 'New Password *',array('class' => 'required loginformlabel' )); ?>
