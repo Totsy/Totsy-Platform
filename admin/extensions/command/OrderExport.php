@@ -263,6 +263,8 @@ class OrderExport extends Base {
 		#Setting Production Environment
 		if (Environment::is('production')) {
 			$ReAuthorize->env = 'production';
+		} else if (Environment::is('staging')) {
+			$ReAuthorize->env = 'staging';
 		}
 		$ReAuthorize->fullAmount = true;
 		$ReAuthorize->orders = $orders;
@@ -355,7 +357,7 @@ class OrderExport extends Base {
 					    'fields' => array('email' => true)
 					    ));
 					foreach ($items as $item) {
-						if (empty($item['cancel']) || $item['cancel'] != true) {
+						if (empty($item['cancel']) && empty($item['digital'])) {
                                 $orderItem = $itemCollection->findOne(
                                     array('_id' => new MongoId($item['item_id']))
 							);
