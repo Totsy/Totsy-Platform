@@ -550,10 +550,10 @@ class Order extends Base {
 		if(isset($selected_order['isOnlyDigital'])) {
 			$datas_order_prices["isOnlyDigital"] = $selected_order["isOnlyDigital"];
 		}
-		if(isset($selected_order['payment_date'])) {
+		if(!empty($selected_order['payment_date'])) {
 			$datas_order_prices["payment_date"] = new MongoDate();
 		}
-		if(isset($selected_order['auth_confirmation'])) {
+		if(!empty($selected_order['auth_confirmation'])) {
 			$datas_order_prices["auth_confirmation"] = $selected_order["auth_confirmation"];
 		}		
 		/**************UPDATE TAX****************************/
