@@ -30,12 +30,12 @@ class BaseController extends \lithium\action\Controller {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
-		} else {
+		} else {			
 			$userInfo = Session::read('userLogin');	
-			
-			$whiteLabelSubDomain = "mamasource.totsy.com";
+
+       		$whiteLabelSubDomain = "mamasource.totsy.com";
  									
-			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {							
+			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {				
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia";
 		    } else { 
@@ -103,7 +103,6 @@ class BaseController extends \lithium\action\Controller {
         
 		$whiteLabelSubDomain = "mamasource.totsy.com";
 		$mainDomain = "totsy.com";	
-
 		 		
  		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {

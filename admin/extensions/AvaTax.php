@@ -49,7 +49,14 @@ class AvaTax extends \lithium\core\StaticObject {
 				Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 					'message' => 'Avatax system is unreachable. Can NOT process tax canselation.<br>'.
 								 'SERVER: '.php_uname('n') ,
-					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
+					'reason' => $e->getMessage(),
+					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s').
+								'<br><div style="padding-left:15px;">'.
+									'SERVER: '.php_uname('n').'<br>'.
+									'DATE: '.date('Y-m-d H:i:s').'<br>'.
+									'INFO: '.print_r($data,true).'<br>'.
+									'TRACE: '.$e->getTraceAsString().
+								'</div>',
 					'info' => $order
 				));
 				return 0;
@@ -115,7 +122,14 @@ class AvaTax extends \lithium\core\StaticObject {
 					Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 						'message' => 'Avatax system was unreachable.<br>Tax calculation was performed internally using default state tax.<br>'.
 									 'SERVER: '.php_uname('n'),
-						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
+						'reason' => $e->getMessage(),
+						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s').
+									'<br><div style="padding-left:15px;">'.
+										'SERVER: '.php_uname('n').'<br>'.
+										'DATE: '.date('Y-m-d H:i:s').'<br>'.
+										'INFO: '.print_r($data,true).'<br>'.
+										'TRACE: '.$e->getTraceAsString().
+									'</div>',
 						'info' => $data
 					));
 					return array(
@@ -127,7 +141,14 @@ class AvaTax extends \lithium\core\StaticObject {
 					Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 						'message' => 'Was unable to calculate tax. Charged $0 tax for this order.<br>'.
 									 'SERVER: '.php_uname('n'),
-						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
+						'reason' => $e->getMessage(),
+						'trace' => 'ADMIN @ '.date('Y-m-d H:i:s').
+									'<br><div style="padding-left:15px;">'.
+										'SERVER: '.php_uname('n').'<br>'.
+										'DATE: '.date('Y-m-d H:i:s').'<br>'.
+										'INFO: '.print_r($data,true).'<br>'.
+										'TRACE: '.$e->getTraceAsString().
+									'</div>',
 						'info' => $data
 					));
 					return 0;
@@ -157,7 +178,14 @@ class AvaTax extends \lithium\core\StaticObject {
 				Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 					'message' => 'Was unable to post tax.<br>'.
 								 'SERVER: '.php_uname('n'),
-					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
+					'reason' => $e->getMessage(),
+					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s').
+								'<br><div style="padding-left:15px;">'.
+									'SERVER: '.php_uname('n').'<br>'.
+									'DATE: '.date('Y-m-d H:i:s').'<br>'.
+									'INFO: '.print_r($data,true).'<br>'.
+									'TRACE: '.$e->getTraceAsString().
+								'</div>',
 					'info' => $data
 				));
 				return 0;
@@ -182,7 +210,14 @@ class AvaTax extends \lithium\core\StaticObject {
 				Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 					'message' => 'Was unable to process return tax.<br>'.
 								 'SERVER: '.php_uname('n'),
-					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
+					'reason' => $e->getMessage(),
+					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s').
+								'<br><div style="padding-left:15px;">'.
+									'SERVER: '.php_uname('n').'<br>'.
+									'DATE: '.date('Y-m-d H:i:s').'<br>'.
+									'INFO: '.print_r($data,true).'<br>'.
+									'TRACE: '.$e->getTraceAsString().
+								'</div>',
 					'info' => $data
 				));
 				return 0;
@@ -205,14 +240,21 @@ class AvaTax extends \lithium\core\StaticObject {
 				Mailer::send('TaxProcessError', static::$_settings['logEmail'], array(
 					'message' => 'Was unable to commit tax.<br>'.
 								 'SERVER: '.php_uname('n'),
-					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s'),
+					'reason' => $e->getMessage(),
+					'trace' => 'ADMIN @ '.date('Y-m-d H:i:s').
+								'<br><div style="padding-left:15px;">'.
+									'SERVER: '.php_uname('n').'<br>'.
+									'DATE: '.date('Y-m-d H:i:s').'<br>'.
+									'INFO: '.print_r($data,true).'<br>'.
+									'TRACE: '.$e->getTraceAsString().
+								'</div>',
 					'info' => $data
 				));
 				return 0;
 			}
 		}
 	}
-
+	
   	private static function totsyCalculateTax ($data) {
   		if (!array_key_exists('overShippingCost',$data)) { $data['overShippingCost'] = 0; }
   		if (!array_key_exists('shippingCost',$data)) { $data['shippingCost'] = 0; }
