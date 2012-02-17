@@ -171,6 +171,7 @@ class Item extends Base {
 		);
 	}
 
+
 	public static function generateSku($items) {
 	    $itemCollection = Item::connection()->connection->items;
 	    $i =0;
