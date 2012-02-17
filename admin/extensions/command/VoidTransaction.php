@@ -82,7 +82,8 @@ class VoidTransaction extends \lithium\console\Command {
 							'auth' => array('$exists' => true),
 							'cancel' => array('$ne' => true),
 							'total' => array('$ne' => 0),
-							'$where' => 'this.total == this.authTotal'
+							'authTotal' => array('$exists' => true),
+							'isOnlyDigital' => array('$ne' => true)
 		);
 		if($this->unitTest) {
 			$conditions['test'] = true;
@@ -151,7 +152,7 @@ class VoidTransaction extends \lithium\console\Command {
 		#Don't Void if the last Auth is an error
 		if(!empty($order['error_date'])) {
 			if($lastDate->sec < $order['error_date']->sec) {
-				$reAuth = false;
+				$toVoid = false;
 			}	
 		}
 		if(!empty($order['void_records'])) {
@@ -165,7 +166,10 @@ class VoidTransaction extends \lithium\console\Command {
 				$toVoid = false;
 			}
 		}
-		if(isset($order['authTotal']) && $order['authTotal'] != $order['total']) {
+		
+		#Check The Amount to Authorize
+		$amountToAuthorize = Order::getAmountNotCaptured($order);
+		if($order['authTotal'] != $amountToAuthorize) {
 			$toVoid = false;
 		}
 		Logger::debug('Eligible for Void: ' . $toVoid);
