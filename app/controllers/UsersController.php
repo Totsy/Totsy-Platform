@@ -599,23 +599,32 @@ class UsersController extends BaseController {
 			$email = $this->request->data['email'];
 			$firstname = $this->request->data['firstname'];
 			$lastname = $this->request->data['lastname'];
-			if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email)) {
-				if((empty($firstname)) || (empty($lastname))) {
-					$status = "name";
-				} else {
-					$user->legacy = 0;
-					$user->reset_token = '0';
-					$user->email_hash = md5($user->email);
-					if ($user->save($this->request->data, array('validate' => false))) {
-							$info = Session::read('userLogin');
-							$info['firstname'] = $this->request->data['firstname'];
-							$info['lastname'] = $this->request->data['lastname'];
-							Session::write('userLogin', $info, array('name'=>'default'));
-							$status = 'true';
-						}
-				}
+
+			if (empty($firstname) || empty($lastname)) {
+				$status = "name";
+			}
+
+			$saveOptions = array();
+			if ($email == $user['email']) {
+				// disable validation of the e-mail address
+				// only if it hasn't changed
+				$saveOptions['validate'] = false;
+			}
+
+			$user->legacy = 0;
+			$user->reset_token = '0';
+			$user->email_hash = md5($user->email);
+			if ($user->save($this->request->data, $saveOptions)) {
+				$info = Session::read('userLogin');
+				$info['firstname'] = $this->request->data['firstname'];
+				$info['lastname'] = $this->request->data['lastname'];
+				Session::write('userLogin', $info, array('name'=>'default'));
+				$status = 'true';
 			} else {
-				$status = "email";
+				$errors = $user->errors();
+				if (isset($errors['email'])) {
+					$status = 'email';
+				}
 			}
 		}
 		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
