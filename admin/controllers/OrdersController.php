@@ -10,6 +10,7 @@ use admin\models\Order;
 use admin\models\Credit;
 use admin\models\Promocode;
 use admin\controllers\BaseController;
+use lithium\action\Request;
 use lithium\storage\Session;
 use MongoCode;
 use MongoDate;
@@ -249,6 +250,45 @@ class OrdersController extends BaseController {
 	}
 
 	/**
+	 * Find orders that have items that were short shipped and cancel those items so that the order
+	 * can be billed correctly
+	 * 
+	 * @param order
+	 * @see admin\extensions\command\ProcessPayment
+	 */
+	public function cancelUnshippedItems($order) {
+		$this->request = new Request();
+		$order_data = $order;
+		$unshipped_items = Order::findUnshippedItems($order);
+		
+		if (empty($unshipped_items))
+			return $order;
+		
+		foreach ($unshipped_items as $unshipped_item) {
+			foreach($order["items"] as $key => $item) {
+				$order_data["items"][$key]['initial_quantity'] = $order_data["items"][$key]['quantity'];
+				if($item["_id"] == new MongoId($unshipped_item)) {
+					$order_data["items"][$key]["shortshipped"] = true;
+					$order_data["items"][$key]["cancel"] = true;
+				}
+			}
+		}
+		
+		$order_data['id'] = $order_data['_id'];
+		$order_data['save'] = 'false';
+		$this->request->data = $order_data;
+		
+		$order_data = $this->manage_items(false);
+		$order_data = $order_data->data();
+		$order_data['comment'] = 'Canceling unshipped items';
+		$order_data['save'] = 'true';
+		$order_data['id'] = $order_data['_id'];
+		$this->request->data = $order_data;
+		$order_data = $this->manage_items(false);
+		return $order_data;
+	}
+
+	/**
 	* The manage_items method update the temporary order.
 	* If the variable save is set to true, it apply the changes.
 	*
@@ -275,11 +315,16 @@ class OrdersController extends BaseController {
 			* before any changes are made to the credit
 			*/
 			if (!$orderClass::checkForCancellations($selected_order['order_id'])) {
-				$selected_order["original_credit_used"] = $selected_order["credit_used"];
-				$datas["original_credit_used"] = $selected_order["credit_used"];
+				if (isset($selected_order["credit_used"])) {
+					$selected_order["original_credit_used"] = $selected_order["credit_used"];
+					$datas["original_credit_used"] = $selected_order["credit_used"];
+				}
 			}
 			$datas["user_id"] = $selected_order["user_id"];
 			$datas["order_id"] = $selected_order["order_id"];
+			if(isset($selected_order["capture_records"])) {
+				$datas["capture_records"] = $selected_order["capture_records"];
+			}
 			$items = $selected_order["items"];
 
 			foreach($datas["items"] as $key => $item) {
@@ -287,6 +332,10 @@ class OrdersController extends BaseController {
 				$items[$key]["initial_quantity"] = $item["initial_quantity"];
 				$items[$key]["quantity"] = $item["quantity"];
 
+				#shortshipped
+				if (!empty($item["shortshipped"])) {
+					$items[$key]["shortshipped"] = true;
+				}
 				//Cancel Status
 				if (empty($item["cancel"])){
 					$cancelCheck = false;
@@ -348,45 +397,13 @@ class OrdersController extends BaseController {
 				));
 
 				// If the order is canceled, send an email
-				if (strlen($order_temp["user_id"]) > 10) {
-					$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
-				} else {
-					$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
-				}
-				if (!is_int($order_temp->ship_date)){
-					$shipDate = $order_temp->ship_date->sec;
-				} else {
-					$shipDate = $order_temp->ship_date;
-				}
-				$data = array(
-					'order' => $order_temp->data(),
-					'shipDate' => date('M d, Y', $shipDate)
-				);
-				if (Environment::is('production')) {
-					Mailer::send('Cancel_Order', $user["email"], $data);
-				}
+				Order::sendEmail($order_temp, 'Cancel_Order');
 			}
 
 			// If order is updated without cancel, send email
 			if (($datas["save"] == 'true') && empty($cancel_order)) {
 				$order = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
-				if(strlen($order_temp["user_id"]) > 10){
-					$user = $userCollection->findOne(array("_id" => new MongoId($order->user_id)));
-				} else {
-					$user = $userCollection->findOne(array("_id" => $order->user_id));
-				}
-				if(!is_int($order->ship_date)){
-					$shipDate = $order->ship_date->sec;
-				} else {
-					$shipDate = $order->ship_date;
-				}
-				$data = array(
-					'order' => $order->data(),
-					'shipDate' => date('M d, Y', $shipDate)
-				);
-				if (Environment::is('production')) {
-					Mailer::send('Order_Update', $user["email"], $data);
-				}
+				Order::sendEmail($order, 'Order_Update');
 			}
 		}
 		return $order_temp;
@@ -439,8 +456,7 @@ class OrdersController extends BaseController {
 			// We push the modifications datas with the old shipping.
 			$orderCollection->update(
 				array("_id" => new MongoId($id)),
-				array('$push' => array('modifications' => $modification_datas)),
-				array('upsert' => true)
+				array('$push' => array('modifications' => $modification_datas))
 			);
 			$orderCollection->update(
 				array("_id" => new MongoId($id)),
@@ -512,8 +528,7 @@ class OrdersController extends BaseController {
 				// We push the modifications datas with the old shipping.
 				$orderCollection->update(
 					array("_id" => new MongoId($id)),
-					array('$push' => array('modifications' => $modification_datas)),
-					array('upsert' => true)
+					array('$push' => array('modifications' => $modification_datas))
 				);
 				$orderCollection->update(
 					array("_id" => new MongoId($id)),
@@ -565,16 +580,15 @@ class OrdersController extends BaseController {
 				'email'     => $userInfos['email']
 
 		))));
+		$amountToCapture = Order::getAmountNotCaptured($order);
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', $order['total'], $card, array('orderID' => $order['order_id']));
+		$auth = Processor::authorize('default', $amountToCapture, $card, array('orderID' => $order['order_id']));
 		if($auth->success()) {
 			$result = Processor::profile('default', $auth, array('orderID' => $order['order_id']));
 			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
-				array('$set' => array(
-					'cyberSourceProfileId' => $profileID
-							)), array( 'upsert' => true)
+				array('$set' => array('cyberSourceProfileId' => $profileID))
 			);
 			#Setup new AuthKey
 			$update = $ordersCollection->update(
@@ -583,16 +597,16 @@ class OrdersController extends BaseController {
 						'authKey' => $auth->key,
 						'auth' => $auth->export(),
 						'processor' => $auth->adapter,
-						'authTotal' => $order['total']
+						'authTotal' => $amountToCapture
 					), '$unset' => array(
 						'error_date' => 1,
 						'auth_error' => 1
-					)), array( 'upsert' => true)
+					))
 			);
 			#Add to Auth Records Array
 			$update = $ordersCollection->update(
 					array('_id' => $order['_id']),
-					array('$push' => array('auth_records' => $newRecord)), array( 'upsert' => true)
+					array('$push' => array('auth_records' => $newRecord))
 			);
 		} else {
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
@@ -612,20 +626,22 @@ class OrdersController extends BaseController {
 				#Try To Create A New Authorization and Capture
 				$cybersource = new CyberSource(Processor::config('default'));
 				$profile = $cybersource->profile($order['cyberSourceProfileId']);
+				$amountToCapture = Order::getAmountNotCaptured($order);
 				#Create a new Transaction and Get a new Authorization Key
-				$auth = Processor::authorize('default', $order['total'], $profile, array('orderID' => $order['order_id']));
+				$auth = Processor::authorize('default', $amountToCapture, $profile, array('orderID' => $order['order_id']));
 				if ($auth->success()) {
 					$authKey = $auth->key;
 					$update = $ordersCollection->update(
 						array('_id' => $order['_id']),
 						array('$set' => array('authKey' => $auth->key,
 											  'auth' => $auth->export(),
-											  'authTotal' => $order['total'],
+											  'authTotal' => $amountToCapture,
 											  'processor' => $auth->adapter
-					) , '$unset' => array(
-						'error_date' => 1,
-						'auth_error' => 1
-					)), array( 'upsert' => true));
+						) , '$unset' => array(
+							'error_date' => 1,
+							'auth_error' => 1
+						))
+					);
 					$error = $this->captureAuthorization($order, $auth->key);
 				} else {
 					$error = implode('; ', $auth->errors);
@@ -643,10 +659,11 @@ class OrdersController extends BaseController {
 		$orderClass = $this->_classes['order'];
 		$current_user = Session::read('userLogin');
 		$ordersCollection = $orderClass::Collection();
+		$amountToCapture = Order::getAmountNotCaptured($order);
 		$auth_capture = Processor::capture(
 			'default',
 			$authKey,
-			floor($order['total'] * 100) / 100,
+			floor($amountToCapture * 100) / 100,
 			array(
 				'processor' => isset($order['processor']) ? $order['processor'] : null,
 				'orderID' => $order['order_id']
@@ -659,24 +676,30 @@ class OrdersController extends BaseController {
 			// We push the modifications datas with the old shipping.
 			$ordersCollection->update(
 				array("_id" => $order['_id']),
-				array('$push' => array('modifications' => $modification_datas)),
-				array('upsert' => true)
+				array('$push' => array('modifications' => $modification_datas))
 			);
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
 				array('$set' => array('authKey' => $auth_capture->key,
 									  'auth' => $auth_capture->export(),
-									  'authTotal' => $order['total'],
+									  'authTotal' => $amountToCapture,
 									  'processor' => $auth_capture->adapter,
 									  'payment_date' => new MongoDate(),
    									  'auth_confirmation' => $auth_capture->key
-				)), array( 'upsert' => true)
+				))
 			);
+			#Save Capture in Transactions Logs
+			$transation['authKey'] = $auth_capture->key;
+			$transation['amount'] = $amountToCapture;
+			$transation['date_captured'] = new MongoDate();
 			#Unset Old Errors fields
 			$update = $ordersCollection->update(
 				array('_id' => $order['_id']),
 				array('$unset' => array('error_date' => 1,
-										'auth_error' => 1)
+										'auth_error' => 1),					
+					'$push' => array(
+					'capture_records' => $transation
+					)
 				)
 			);
 			return false;
@@ -714,29 +737,12 @@ class OrdersController extends BaseController {
 			$this->cancel();
 			//If the order is canceled, send an email
 			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
-			
-			if(strlen($order_temp["user_id"]) > 10){
-				$user = $userCollection->findOne(array("_id" => new MongoId($order_temp->user_id)));
-			} else {
-				$user = $userCollection->findOne(array("_id" => $order_temp->user_id));
-			}
-			if (!is_int($order_temp->ship_date)){
-				$shipDate = $order_temp->ship_date->sec;
-			} else {
-				$shipDate = $order_temp->ship_date;
-			}
-			$data = array(
-				'order' => $order_temp->data(),
-				'shipDate' => date('M d, Y', $shipDate)
-			);
-			if (Environment::is('production')) {
-				Mailer::send('Cancel_Order', $user["email"], $data);
-			}
+			Order::sendEmail($order_temp, 'Cancel_Order');
 		}
 		if(!empty($datas["process-as-an-exception"])){
 			$update = $ordersCollection->update(
 					array('_id' => new MongoId($id)),
-					array('$set' => array('process-as-an-exception' => true)), array( 'upsert' => true)
+					array('$set' => array('process-as-an-exception' => true))
 			);
 			FlashMessage::write("This Order is on the queue as Dotcom Exception", array('class' => 'pass'));	
 		}
@@ -758,6 +764,7 @@ class OrdersController extends BaseController {
 
 		if ($id) {
 			$itemscanceled = true;
+			$hasDigitalItems = false;
 			$order_current = $orderClass::find('first', array('conditions' => array('_id' => $id)));
 			//Check if the order was processed and sent to Dotcom
 			$processed_count = $processedOrderColl->count(array('OrderNum' => $order_current['order_id']));
@@ -776,6 +783,9 @@ class OrdersController extends BaseController {
 						'conditions' => array('_id' => $orderItem['item_id']
 					)));
 					$sku["$orderItem[item_id]"] = $item->vendor_style;
+					if(!empty($orderItem["digital"])) {
+						$hasDigitalItems = true;
+					}
 					//Check if items are all canceled
 					if(empty($orderItem["cancel"])) {
 						$itemscanceled = false;
@@ -803,13 +813,15 @@ class OrdersController extends BaseController {
 		$orderStatus = $orderClass::getStatus($order);
 		
 		$shipDate = $this->shipDate($order);
-		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service', 'processed_count', 'orderStatus');
+
+		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count', 'orderStatus', 'hasDigitalItems');
 	}
 
 	/**
 	 * The update method captures payment and updates the order with tracking info.
 	 */
 	public function update() {
+		$current_user = Session::read('userLogin');
 		$orderClass = $this->_classes['order'];
 
 		$_shipToHeaders = array(
@@ -897,7 +909,10 @@ class OrdersController extends BaseController {
 								'email' => $shipRecord['Email'],
 								'details' => $details
 							);
-							Mailer::send('Order_Shipped', $shipRecord['Email'], $data);
+							if (Environment::get() == 'production')
+								Mailer::send('Order_Shipped', $shipRecord['Email'], $data);
+							else
+								Mailer::send('Order_Shipped', $current_user["email"], $data);
 						}
 						if ($orderClass::setTrackingNumber($order->order_id, $shipRecord['Tracking #'])){
 							if (empty($order->auth_confirmation)) {
@@ -1116,6 +1131,86 @@ class OrdersController extends BaseController {
             FlashMessage::write("No results found." . $message ,	array('class' => 'fail'));
         }
 		return compact('payments','type');
+	}
+	
+	public function digitalItemsToFulfill() {
+		$orderClass = $this->_classes['order'];
+		if($order_id = $this->request->query['updated']) {
+			FlashMessage::write("Item has been processed.", array('class' => 'pass'));
+		}
+		$ordersCollection = $orderClass::Collection();
+		$orders = $ordersCollection->find(array(
+			'items.digital' => true
+		));
+		$lineItems = null;
+		foreach($orders as $order) {
+			foreach($order['items'] as $item) {
+				$user = User::lookup($order['user_id']);
+				if($item['digital'] && !$item['digital_item_fulfilled']) {
+					$lineItem['order_id'] = $order['order_id'];
+					$lineItem['full_order_id'] = (string) $order['_id'];
+					$lineItem['date_created'] = $order['date_created'];
+					$lineItem['email'] = $user['email'];
+					$lineItem['user_id'] = $order['user_id'];
+					$lineItem['quantity'] = $item['quantity'];
+					$lineItem['description'] = $item['description'];
+					$lineItem['item_id'] = $item['item_id'];
+					$lineItems[] = $lineItem;
+				}
+			}
+		}
+		return compact('lineItems');
+	}
+	
+	public function fulfillDigitalItem() {
+		$orderClass = $this->_classes['order'];
+		$ordersCollection = $orderClass::Collection();
+		$id = $this->request->query['order_id'];
+		$item_id = $this->request->query['item_id'];
+		$order = $ordersCollection->findOne(array(
+			'_id' => new MongoId($id)
+		));
+		if($order) {
+			foreach($order['items'] as $key => $item) {
+				if($item['item_id'] == $item_id) {
+					$update = $ordersCollection->update(
+						array('_id' => new MongoId($id)),
+						array('$set' => array('items.'.$key.'.digital_item_fulfilled' => true,
+												'items.'.$key.'.digital_item_fulfilled_date' => new MongoDate())
+						)
+					);
+				}
+			}
+		}
+		$this->redirect('/orders/digitalItemsToFulfill/?updated=true');
+	}
+	
+	public function digitalItemsFulfilled() {
+		$orderClass = $this->_classes['order'];
+		$ordersCollection = $orderClass::Collection();
+		$orders = $ordersCollection->find(array(
+			'items.digital' => true,
+			'items.digital_item_fulfilled' => true
+		));
+		$lineItems = null;
+		foreach($orders as $order) {
+			foreach($order['items'] as $item) {
+				$user = User::lookup($order['user_id']);
+				if($item['digital'] && $item['digital_item_fulfilled']) {
+					$lineItem['order_id'] = $order['order_id'];
+					$lineItem['full_order_id'] = (string) $order['_id'];
+					$lineItem['date_created'] = $order['date_created'];
+					$lineItem['date_sent'] = $item['digital_item_fulfilled_date'];
+					$lineItem['email'] = $user['email'];
+					$lineItem['user_id'] = $order['user_id'];
+					$lineItem['quantity'] = $item['quantity'];
+					$lineItem['description'] = $item['description'];
+					$lineItem['item_id'] = $item['item_id'];
+					$lineItems[] = $lineItem;
+				}
+			}
+		}
+		return compact('lineItems');
 	}
 }
 
