@@ -82,6 +82,7 @@
 
 
 </div>
+
 <?php if (!empty($event->images->logo_image)): ?>
 <div class="grid_3 alpha omega" style="margin-top:10px;">
 						<!-- Display Logo Image -->
@@ -172,6 +173,7 @@
 				</div>
 				<?php $y++ ?>
 				<!-- End product item -->
+<ul class="echoShare" data-productname='<?php echo $item->description ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($item->blurb))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST'].'/image/' . $item->primary_image . 'jpg' ?>'></ul> 
 			<?php endforeach ?>
 		<?php endif ?>
 <div class="clear"></div>
