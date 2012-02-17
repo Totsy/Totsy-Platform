@@ -32,7 +32,7 @@
 							echo "<div class=\"standard-message\">Your information has been updated.</div>";
 							break;
 						case 'email' :
-							echo "<div class=\"standard-error-message\">Your current email is incorrect. Please try again.</div>";
+							echo "<div class=\"standard-error-message\">Your current email is incorrect, or already in use. Please try again.</div>";
 							break;
 						case 'name' :
 							echo "<div class=\"standard-error-message\">Your current first name and last name are incorrect. Please try again.</div>";
