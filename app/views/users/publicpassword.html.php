@@ -1,8 +1,4 @@
-<?php 
-use lithium\storage\Session; 
-use app\controllers\UsersController;
-?>
-
+<?php use lithium\storage\Session; ?>
 <style>
 h2 {
     color: #999999;
@@ -88,31 +84,67 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div style="width:350px; margin-top:28px;">
 
 <?php 
-if ($message){
-	echo $message;
-} 
-else{
-?>
 
+use app\controllers\UsersController;
 
-<h2>Reset Your Password</h2>
-<p>Please enter your email and further instructions will be provided.</p>
-											<?php echo $this->form->create(null, array('id'=>'loginForm')); ?>
+$token = "";
+$status = "";
 
-		<?php echo $this->form->label('Email Address', 'Email Address <span>*</span>', array(
-		'escape' => false,
-		'class' => 'required'
-		));
-	?>	
-	<?php echo $this->form->text('email', array('class' => "validate['required'] inputbox", 'style' => 'width:158px', 'id' => 'email')); ?>
-	<?php echo $this->form->error('email'); ?>
-
-
-													<?php echo $this->form->submit('Reset Password', array('class' => 'button fr')); ?>
-											<?php echo $this->form->end(); ?>
-<?php
+if($this->_request->query['t']) {
+	$token = $this->_request->query['t'];
 }
+
+if($this->_request->query['s']) {
+	$status = $this->_request->query['s'];
+}
+
 ?>
+<h2>Change Your Password</h2>
+	<hr />
+			<p>
+				<?php
+					switch ($status) {
+						case 'true' :
+							echo "<div class=\"standard-message\">Your information has been updated. <br /><span style='color:#999'>You can now log in with your updated password at </span> <a href='/login'>Totsy.com</a></div>";
+							break;
+						case 'false' :
+							echo "<div class=\"standard-error-message\">Your current password is incorrect. Please try again.</div>";
+							break;
+						case 'errornewpass' :
+							echo "<div class=\"standard-error-message\">Please check that your passwords match and try again.</div>";
+							break;
+						case 'shortpass' :
+							echo "<div class=\"standard-error-message\">Password must be at least 6 characters.</div>";
+							break;
+					}
+				?>
+			</p>
+			<br />
+				
+			<div>
+			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/users/password')); ?>
+				<input type="hidden" name="clear_token" value="<?php echo $token; ?>">
+			<p>	
+					<?php echo $this->form->label('new_password', 'New Password',array('class' => 'account' )); ?>
+					<?php echo $this->form->password('new_password', array(
+							'class' => 'required',
+							'style' => 'display:inline-block;'
+						))
+					;?>
+			</p>
+				<br />
+			<p>
+					<?php echo $this->form->label('password_confirm', 'Confirm Password',array('class' => 'account' )); ?>
+					<?php echo $this->form->password('password_confirm', array(
+							'class' => 'inputbox',
+							'style' => 'display:inline-block;'
+						))
+					;?>
+			</p>
+			<br />
+			<?php echo $this->form->submit('Change Password', array('class' => 'button fr')); ?>
+			<?php echo $this->form->end();?>
+			</div>
 
 
 </div>

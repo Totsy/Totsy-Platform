@@ -17,7 +17,7 @@ Auth::config(array(
 ));
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
-	$skip = array('/','login', 'logout', 'register',"register/facebook","reset", "pages/password");
+	$skip = array('/','login', 'logout', 'register',"register/facebook","reset",  "publicpassword");
 	$allowed = false;
 	$logged_in = false;
 				
@@ -52,11 +52,6 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 if(preg_match('#(feeds/keyade)#', $params['request']->url)) {
 	 	$allowed = true;
 	 }
-	 
-	#Reset password form a public page!
-	 if($params['request'] && $params['request']->params['action']=="password" && $params['request']->params['controller']=="users") {
-	 	$allowed = true;	 	
-	} 
 	 	 
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;

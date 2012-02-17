@@ -28,7 +28,7 @@ class PagesController extends BaseController {
 		} elseif ($path[0] == 'btrendie' || $path[0] == "living_social"){
 			$this->_render['layout'] = 'blank';
 		}
-		$allowed = array('terms', 'faq', 'contact', 'privacy', 'aboutus', 'btrendie', 'moms', 'testimonials', 'being_green', 'press','affiliates','living_social', 'careers', 'password');
+		$allowed = array('terms', 'faq', 'contact', 'privacy', 'aboutus', 'btrendie', 'moms', 'testimonials', 'being_green', 'press','affiliates','living_social', 'careers');
 				
 		$userCheck = Session::read('userLogin');
 						

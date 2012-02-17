@@ -48,6 +48,7 @@ Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'uns
 Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
 Router::connect('/login', 'Users::login');
+Router::connect('/publicpassword', 'Users::publicpassword');
 Router::connect('/register', 'Users::register');
 //Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');

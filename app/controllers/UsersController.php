@@ -452,6 +452,18 @@ class UsersController extends BaseController {
 
 		return compact('message', 'fbsession', 'fbconfig');
 	}
+	
+	public function publicpassword(){
+		
+		$this->password();
+		
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_login';
+		 	$this->_render['template'] = 'mobile_public_password';
+		} else {
+			$this->_render['layout'] = 'login';
+		}
+	}
 
 	protected function autoLogin() {	
 		
@@ -657,7 +669,7 @@ class UsersController extends BaseController {
 				$user->legacy = 0;
 				$user->email_hash = md5($user->email);
 												
-				$link = "http://" . $_SERVER['HTTP_HOST'] . "/pages/password/?t=" . $token;
+				$link = "http://" . $_SERVER['HTTP_HOST'] . "/publicpassword/?t=" . $token;
 				
 				if ($user->save(null, array('validate' => false))) {
 					$mailer = $this->_classes['mailer'];
@@ -849,7 +861,7 @@ class UsersController extends BaseController {
 		}
 		
 		if($publicReset) {
-			$this->redirect("/pages/password/?t=".$this->request->data['clear_token']."&s=".$status);
+			$this->redirect("/publicpassword/?t=".$this->request->data['clear_token']."&s=".$status);
 		} else {
 			return compact("user", "status");
 		}
