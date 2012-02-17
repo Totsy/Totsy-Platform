@@ -17,7 +17,7 @@ Auth::config(array(
 ));
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
-	$skip = array('/','login', 'logout', 'register',"register/facebook","reset");
+	$skip = array('/','login', 'logout', 'register',"register/facebook","reset", "pages/password");
 	$allowed = false;
 	$logged_in = false;
 				
@@ -55,19 +55,19 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 
 	#Reset password form a public page!
 	 if($params['request'] && $params['request']->params['action']=="password" && $params['request']->params['controller']=="users") {
-	 	$allowed = true;
-	 }
+	 	$allowed = true;	 	
+	} 
 	 	 
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
-	
+		
 	// check if user already logged-in
 	if(Session::check('userLogin')) {
 		$logged_in = true;		
 	}
 	
-	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
+	// in case whe have an event's landing page , will need to reditec user to proper page
 	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)) {
 		Session::write('landing',$params['request']->url);
 	}
