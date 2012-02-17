@@ -12,12 +12,22 @@ use app\models\Base;
 class Item extends Base {
 
 	protected $_meta = array('source' => 'items');
-
-
-
-
-
-
+	
+	public static function isTangible($id) {
+		$item = Item::find('first', array(
+			'conditions' => array(
+				'_id' => $id),
+			'fields' => array(
+				'event'					
+		)));
+		$event = Event::find('first', array(
+				'conditions' => array(
+					'_id' => $item['event'][0]),
+				'fields' => array(
+					'tangible'					
+			)));
+		return $event['tangible'];	
+	}
 
 	public static function filter($events_id, $departments = null, $categories = null, $ages = null, $limit = "") {
 		$itemsCollection = Item::collection();
