@@ -262,7 +262,7 @@ class OrdersController extends BaseController {
 		$unshipped_items = Order::findUnshippedItems($order);
 		
 		if (empty($unshipped_items))
-			return;
+			return $order;
 		
 		foreach ($unshipped_items as $unshipped_item) {
 			foreach($order["items"] as $key => $item) {
