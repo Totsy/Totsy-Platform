@@ -192,6 +192,37 @@ class Item extends Base {
 		return $addsku;
 	}
 
+	/**
+	 * Method to get array of skus out of the array of items for a particular order
+	 *
+	 * @param array $itms
+	 */
+	public static function getSkus ($itms){
+		$itemsCollection = Item::collection();
+
+		$ids = array();
+		$items = array();
+		$itemSkus = array();
+
+		foreach($itms as $itm){
+			$items[$itm['item_id']] = $itm;
+			$ids[] = new MongoId($itm['item_id']);
+		}
+		$iSkus = $itemsCollection->find(array('_id' => array( '$in' => $ids )));
+		unset($ids);
+		$iSs = array();
+		foreach ($iSkus as $i){
+			$iSs[ (string) $i['_id'] ] = $i;
+		}
+
+		foreach ($itms as $itm){
+			$sku = $iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ];
+			$itemSkus[ $sku ] = $itm;
+		}
+		unset($iSs);
+		unset($items);
+		return $itemSkus;
+	}
 
 }
 

@@ -306,6 +306,11 @@ class Cart extends Base {
 		if (count($cartCheck) == 1 && !Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
 			$cost = 0;
 		}
+		
+		if(static::isOnlyDigital($carts)) {
+			$cost = 0;
+		}
+		
 		return $cost;
 	}
 
@@ -323,6 +328,11 @@ class Cart extends Base {
 					$cost+= $data['shipping_rate'];
 				}
 			}
+			
+			if(static::isOnlyDigital($carts)) {
+				$cost = 0;
+			}
+
 			return $cost;
 	}
 
@@ -604,7 +614,7 @@ class Cart extends Base {
 	* Return Credit, Promo, Services Objects and the PostDiscount Total
 	* @see app/models/Cart::check()
 	*/
-	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
+	public static function getDiscount($cart, $subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
 		#Get User Infos
 		$fields = array(
 		'item_id',
@@ -677,15 +687,7 @@ class Cart extends Base {
 		if (array_key_exists('credit_amount', $data)) {
 			$credit_amount = abs($data['credit_amount']);
 		}
-		
-		/*
-		print $shippingCost. "<br>";
-		print $overShippingCost. "<br>"; 
-		print $services['tenOffFitfy']. "<br>"; 
-		print $services['freeshipping']['shippingCost']. "<br>"; 
-		print $services['freeshipping']['overSizeHandling'];
-		*/
-		
+
 		#Calculation of the subtotal with shipping and services discount
 		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
 		#Calculation After Promo
@@ -701,7 +703,43 @@ class Cart extends Base {
 		if(!empty($cartCredit->credit_amount)) {
 			$postDiscountTotal += $cartCredit->credit_amount;
 		}
-		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal');
+		#Get Amount Of Non Tangible Items
+		$nonTangibleAmount = static::getNonTangibleAmount($cart);
+
+		#Calculate amount to Capture on Non Tangible Items
+		$amountToCapture = ($nonTangibleAmount - abs($cartCredit->credit_amount) - abs($cartPromo['saved_amount']));
+		if($amountToCapture < 0) {
+			$amountToCapture = 0;
+		}
+		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal', 'amountToCapture');
+	}
+	
+	/**
+	 * Return the total amount of non tangible Items
+	 * @return captureAmount
+	 */
+	public static function getNonTangibleAmount($cart) {
+		$nonTangibleAmount = 0;
+		foreach($cart as $item) {
+			if(!Item::isTangible($item['item_id'])) {
+				$nonTangibleAmount += ($item['sale_retail'] * $item['quantity']);
+			}
+		}
+		return $nonTangibleAmount;
+	}
+	
+	/**
+	 * Check if Items in Cart are only Digital
+	 * @return boolean onlyDigital
+	 */
+	public static function isOnlyDigital($cart) {
+		$onlyDigital = true;
+		foreach($cart as $item) {
+			if(Item::isTangible($item['item_id'])) {
+				$onlyDigital = false;
+			}
+		}
+		return $onlyDigital;
 	}
 }
 
