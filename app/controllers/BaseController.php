@@ -33,13 +33,7 @@ class BaseController extends \lithium\action\Controller {
 		} else {
 			$userInfo = Session::read('userLogin');	
 			
-        	//this changes depending on whether we're on prod or not
-        	//if something's funny or not working on kkim, just update it with master        			
-        	//if(Environment::is('production')) {
-				$whiteLabelSubDomain = "evan.totsy.com";
-			/*} else {
-				$mamasourceSubDomain = "kkim.totsy.com";
-			}*/
+			$whiteLabelSubDomain = "mamasource.totsy.com";
  									
 			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {							
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
@@ -107,14 +101,9 @@ class BaseController extends \lithium\action\Controller {
         //this changes depending on whether we're on prod or not
         //if something's funny or not working on kkim, just update it with master	
         
-        //if(Environment::is('production')) {
 		$whiteLabelSubDomain = "mamasource.totsy.com";
 		$mainDomain = "totsy.com";	
-		/*
-		} else {
-			$whiteLabelSubDomain = "kkim.totsy.com";
-			$mainDomain = "evan.totsy.com";	
-		}*/
+
 		 		
  		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
