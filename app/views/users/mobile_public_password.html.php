@@ -35,7 +35,7 @@ if($this->_request->query['s']) {
 					}
 				?>
 			</div>
-			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/users/password')); ?>
+			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/users/publicpassword')); ?>
 			<div>
 				<input type="hidden" name="clear_token" value="<?php echo $token; ?>">
 					<?php echo $this->form->label('new_password', 'New Password',array('class' => 'account' )); ?>
