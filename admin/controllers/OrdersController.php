@@ -985,6 +985,10 @@ class OrdersController extends BaseController {
 					}
 					$shipDate = strtotime($date . ' +1 day');
 				}
+				if(Order::isOnlyDigital($order)) {
+					$date = date('Y-m-d', $event->end_date->sec);
+					$shipDate = strtotime($date . ' +4 day');		
+				}
 			}
 		}
 		return $shipDate;
