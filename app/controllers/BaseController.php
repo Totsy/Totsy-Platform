@@ -32,6 +32,7 @@ class BaseController extends \lithium\action\Controller {
 		 	$this->freeShippingEligible($userInfo);
 		} else {			
 			$userInfo = Session::read('userLogin');	
+
        		$whiteLabelSubDomain = "mamasource.totsy.com";
  									
 			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {				
