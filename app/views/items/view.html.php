@@ -219,7 +219,7 @@
 		</div>
 	</div>
 	<div class="clear"></div>
-		
+	
 	<ul class="echoShare" data-productname='<?php echo $item->description ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($item->blurb))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST'].'/image/' . $item->primary_image . 'jpg' ?>'></ul> 
 	
 	<div class="grid_3" style="padding-left:11px;">

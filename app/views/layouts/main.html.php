@@ -40,7 +40,9 @@ use lithium\storage\Session;
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 	
-<!-- Begin Monetate tag v6. Place at start of document head. DO NOT ALTER. --> <script type="text/javascript"> 
+<!-- Begin Monetate tag v6. Place at start of document head. DO NOT ALTER. --> 
+<!--
+<script type="text/javascript"> 
 	var monetateT = new Date().getTime(); 
 	(function() {
 var p = document.location.protocol; 
@@ -50,9 +52,10 @@ m.src = (p == "https:" ? "https://s" : "http://") + "b.monetate.net/js/1/a-6ac93
 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(m, s);
 } })();
 </script> 
+-->
 <!-- End Monetate tag. -->
 	
-	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
+	<?php //echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
 	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
 	<script>$('html').addClass('js'); /* for js-enabled - avoid FOUC */</script>
 	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements support -->
