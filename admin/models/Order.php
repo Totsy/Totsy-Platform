@@ -13,6 +13,7 @@ use admin\models\User;
 use admin\models\Item;
 use admin\models\Credit;
 use li3_payments\extensions\adapter\payment\CyberSource;
+use li3_payments\payments\Processor;
 use Exception;
 
 /**
@@ -500,6 +501,7 @@ class Order extends Base {
 		$orderCollection = static::collection();
 		$userCollection = User::collection();
 		$credits_recorded = false;
+		$payments = static::$_classes['payments'];
 		/************* PREPARING DATAS **************/
 		$selected_order += array(
 			'order_id' => null,
@@ -518,8 +520,34 @@ class Order extends Base {
 			'promo_discount' => (float) $selected_order["promo_discount"],
 			'promocode_disable' => $selected_order["promocode_disable"]
 		);
+		echo 'test0';
 		if(static::isOnlyDigital(array('items' => $items))) {
 			$datas_order_prices['isOnlyDigital'] = true;
+			#Reverse Soft Auth or Full Auth that Failed
+			$orderToVoidAuth = static::find('first', array('conditions' => array('order_id' => $selected_order['order_id'])));
+			echo 'test';
+			if(!empty($orderToVoidAuth['authKey']) && empty($orderToVoidAuth['auth_confirmation'])) {
+				echo 'test2';
+				#Save Old AuthKey with Date
+				$newRecord = array('authKey' => $orderToVoidAuth['authKey'], 'date_saved' => new MongoDate());
+				$result = Processor::void('default', $orderToVoidAuth['authKey'], array(
+					'processor' => isset($orderToVoidAuth['processor']) ? $orderToVoidAuth['processor'] : null,
+					'orderID' => $orderToVoidAuth['order_id']
+				));
+				var_dump($orderToVoidAuth['authKey']);
+				$error = implode('; ', $result->errors);
+				var_dump($error);
+				if($result->success()) {
+					echo 'test3';
+					#Add to Auth Records Array
+					$update = $ordersCollection->update(
+						array('_id' => $orderToVoidAuth['_id']),
+						array('$push' => array('auth_records' => $newRecord),
+							  '$unset' => array('authKey' => 1, 'auth' => 1, 'authTotal' => 1)
+						)
+					);
+				}
+			}
 		} else {
 			$datas_order_prices['isOnlyDigital'] = false;
 		}
