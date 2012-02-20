@@ -316,7 +316,7 @@ $currentURI  = $_SERVER['REQUEST_URI'];
 $URIArray = explode("/", $currentURI);
 $controllerName = $URIArray[1];			
 		    																	 
-if( $controllerName!=="checkout" && $controllerName!=="orders" && $controllerName!=="cart" && $isWhiteLabel==false) { 
+if( $controllerName!=="checkout" || ($controllerName!=="orders" && $URIArray[2]!=="view") || $controllerName!=="cart" || $isWhiteLabel==false) { 
 ?>
 
 <script type="text/javascript">

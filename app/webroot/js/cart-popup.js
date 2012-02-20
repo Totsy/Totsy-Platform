@@ -109,7 +109,11 @@ $(document).ready( function() {
 			url: $.base + 'cart/getCartPopupData',
 			context: document.body,
 			success: function(data) {
-				showCartPopup(data);
+				if(data){
+					showCartPopup(data);
+				} else {
+					console.log("fail");
+				}
 			}
 		});
 	};
