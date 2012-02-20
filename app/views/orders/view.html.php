@@ -199,7 +199,7 @@
 <?php
 
 $orderSubTotal = number_format($order->subTotal, 2);
-$promoDiscount = number_format($order->promo_discount, 2);
+$promoCode = $order->promo_code;
 
 ?>
 
@@ -263,7 +263,7 @@ $promoDiscount = number_format($order->promo_discount, 2);
 <?php
 
 echo("<img src='http://api.theechosystem.com/Core/Conversion/Save?echoTrackPack=" . 
-$_COOKIE['EchoTrackPack'] . "&revenue=".$orderSubTotal."&quantity=".(int)$totalQty."&promocode=".$promoDiscount."' style='width:1px;height:1px;' />");  
+$_COOKIE['EchoTrackPack'] . "&revenue=".$orderSubTotal."&quantity=".(int)$totalQty."&promocode=".$promoCode."' style='width:1px;height:1px;' />");  
 ?>
 
 <?php if ($new): ?>
