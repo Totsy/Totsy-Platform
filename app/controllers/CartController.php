@@ -66,7 +66,6 @@ class CartController extends BaseController {
 
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
-
 		$shipDate = Cart::shipDate($cart);
 		#Check Expires
 		Cart::cleanExpiredEventItems();
