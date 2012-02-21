@@ -120,31 +120,29 @@ if($this->_request->query['s']) {
 				?>
 			</p>
 			<br />
-				
-			<div>
-			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/users/password')); ?>
-				<input type="hidden" name="clear_token" value="<?php echo $token; ?>">
-			<p>	
-					<?php echo $this->form->label('new_password', 'New Password',array('class' => 'account' )); ?>
-					<?php echo $this->form->password('new_password', array(
-							'class' => 'required',
-							'style' => 'display:inline-block;'
-						))
-					;?>
-			</p>
-				<br />
-			<p>
-					<?php echo $this->form->label('password_confirm', 'Confirm Password',array('class' => 'account' )); ?>
-					<?php echo $this->form->password('password_confirm', array(
-							'class' => 'inputbox',
-							'style' => 'display:inline-block;'
-						))
-					;?>
-			</p>
-			<br />
-			<?php echo $this->form->submit('Change Password', array('class' => 'button fr')); ?>
-			<?php echo $this->form->end();?>
+			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/publicpassword')); ?>
+			<input type="hidden" name="clear_token" value="<?php echo $token; ?>">
+			<div style="width:110px; float:left">	
+					<?php echo $this->form->label('new_password', 'New Password *',array('class' => 'required loginformlabel' )); ?>
 			</div>
+			<div style="float:right">
+					<?php echo $this->form->password('new_password', array(
+							'style' => 'width:228px'
+						));?>
+			</div>
+			<div class="clear"></div>
+			<div style="width:110px; float:left">
+					<?php echo $this->form->label('password_confirm', 'Confirm Password *', array('class' => 'required loginformlabel' )); ?>
+			</div>
+			<div style="float:right">		
+					<?php echo $this->form->password('password_confirm', array(
+							'style' => 'width:228px'
+						))
+					;?>
+			</div>
+			<div class="clear"></div>
+			<?php echo $this->form->submit('Change Password', array('class' => 'button fl')); ?>
+			<?php echo $this->form->end();?>
 
 
 </div>
@@ -152,8 +150,7 @@ if($this->_request->query['s']) {
 </div>
 <!-- right side -->
 <div class="grid_6" style="margin-left:28px;">
-<div class="fr">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
-<div class="video"></div>
+
 
 </div>
 <div class="clear"></div>
