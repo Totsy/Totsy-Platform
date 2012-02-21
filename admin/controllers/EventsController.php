@@ -717,7 +717,7 @@ class EventsController extends BaseController {
 				unset($itemDetail[$key]);
 
 				if($key!=="color_description_style") {
-					$itemCleanAttributes[trim($key)] = $value;
+					$itemCleanAttributes[trim($key)] = (string)$value;
 				}
 			}
 			$item = Item::create();
