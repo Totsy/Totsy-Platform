@@ -292,7 +292,7 @@ $_COOKIE['EchoTrackPack'] . "&revenue=".$orderSubTotal."&quantity=".(int)$totalQ
 		$criteoVars = "";
 		$iCounter = 1;
 		
-		foreach($itemsByEvent as $event){
+		foreach($itemsByEvent as $event) {
 		     foreach($event as $item) {
 		     	$criteoVars .=
 		     	"&i". $iCounter ."=". (string) $item['item_id'] ."&p". $iCounter ."=". $item['sale_retail'] ."&q". $iCounter ."=". $item['quantity'];
