@@ -57,7 +57,7 @@ class Item extends Base {
 			}
 			if ($key == 'details') {
 				foreach ($value as $size => $quantity) {
-					$items['details'][$size] = (int) $quantity;
+					$items['details'][(string)$size] = (int) $quantity;
 				}
 			}
 		}
