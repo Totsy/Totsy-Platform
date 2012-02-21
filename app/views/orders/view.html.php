@@ -115,7 +115,7 @@
 													<td style="padding:5px;" title="quantity">
 														<?php 
 															  echo $item['quantity'];
-															  $totalQty.= $item['quantity'];	
+															  $totalQty += $item['quantity'];	
 														?>
 													</td>
 													<td title="subtotal" style="padding:5px; color:#009900;">

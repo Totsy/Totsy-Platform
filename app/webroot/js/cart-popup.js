@@ -111,9 +111,7 @@ $(document).ready( function() {
 			success: function(data) {
 				if(data){
 					showCartPopup(data);
-				} else {
-					console.log("fail");
-				}
+				} 
 			}
 		});
 	};
