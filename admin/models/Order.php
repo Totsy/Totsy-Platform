@@ -528,16 +528,19 @@ class Order extends Base {
 			echo 'test';
 			if(!empty($orderToVoidAuth['authKey']) && empty($orderToVoidAuth['auth_confirmation'])) {
 				echo 'test2';
+				var_dump($orderToVoidAuth['processor']);
+				var_dump($orderToVoidAuth['order_id']);
+				var_dump($orderToVoidAuth['authKey']);
 				#Save Old AuthKey with Date
 				$newRecord = array('authKey' => $orderToVoidAuth['authKey'], 'date_saved' => new MongoDate());
-				$result = Processor::void('default', $orderToVoidAuth['authKey'], array(
+				$void = $payments::void('default', $orderToVoidAuth['authKey'], array(
 					'processor' => isset($orderToVoidAuth['processor']) ? $orderToVoidAuth['processor'] : null,
 					'orderID' => $orderToVoidAuth['order_id']
 				));
-				var_dump($orderToVoidAuth['authKey']);
-				$error = implode('; ', $result->errors);
+				$error = implode('; ', $void->errors);
 				var_dump($error);
-				if($result->success()) {
+				var_dump($void->key);
+				if($void->success()) {
 					echo 'test3';
 					#Add to Auth Records Array
 					$update = $ordersCollection->update(
@@ -583,7 +586,8 @@ class Order extends Base {
 		}
 		if(!empty($selected_order['auth_confirmation'])) {
 			$datas_order_prices["auth_confirmation"] = $selected_order["auth_confirmation"];
-		}		
+		}
+		die();
 		/**************UPDATE TAX****************************/
 		// Is this even used?
 		extract(static::_recalculateTax($selected_order,$items,true));
