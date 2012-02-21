@@ -486,17 +486,18 @@ class Cart extends Base {
 		//shows calculated shipdate
 		if($normal){
 			$i = 1;
+			if(static::isOnlyDigital($cart)) {
+				$delayDelivery = 5;
+			} else {
+				$delayDelivery = static::_object()->_shipBuffer;
+			}
 			$event = static::getLastEvent($cart);
 			if (!empty($event)) {
 				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
-				if(static::isOnlyDigital($cart)) {
+				while($i < $delayDelivery) {
+					$day = date('D', $shipDate);
 					$date = date('Y-m-d', $shipDate);
-					return strtotime($date.' +4 day');		
-				}
-				while($i < static::_object()->_shipBuffer) {
-					$day = date('N', $shipDate);
-					$date = date('Y-m-d', $shipDate);
-					if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
+					if ((($day != 'Sat') && ($day != 'Sun')) && !in_array($date, static::_object()->_holidays)) {
 						$i++;
 					}
 					$shipDate = strtotime($date.' +1 day');
