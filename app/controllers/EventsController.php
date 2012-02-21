@@ -59,7 +59,7 @@ class EventsController extends BaseController {
 			}
 		}
 		//check if mobile or not
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_category';
 		}
@@ -126,7 +126,7 @@ class EventsController extends BaseController {
 		//hack to make the ages appear on top of same view file		
 		$categories = $ages;
 		$this->_render['template'] = 'category';
-		if($this->request->is('mobile')){
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 		 	$this->_render['layout'] = 'mobile_main';
 		 	$this->_render['template'] = 'mobile_age';
 		}

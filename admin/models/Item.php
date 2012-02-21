@@ -6,6 +6,8 @@ use MongoRegex;
 use MongoDate;
 use MongoId;
 use Mongo;
+use lithium\analysis\Logger;
+
 
 /**
  * The `Item` class extends the generic `lithium\data\Model` class to provide
@@ -169,7 +171,75 @@ class Item extends Base {
 		);
 	}
 
+
+	public static function generateSku($items) {
+	    $itemCollection = Item::connection()->connection->items;
+	    $i =0;
+	   // Logger::debug("Going generate skus for {$items->count()} items");
+	    foreach ($items as $item) {
+	    	Logger::debug("Generating skus for {$item['description']} ({$item['_id']}) from event {$item['event'][0]} :");
+			$i++;
+			$skulist = array();
+			$hashBySha = false;
+			$allskus = false;
+			$noTries = 0;
+			while(!$allskus) {
+				if (!empty($item['details'])) {
+					foreach ($item['details'] as $key => $value) {
+						Logger::debug("\tGenerating sku for size {$key}");
+						$sku = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'md5');
+						//Check duplicate Skus for the same item
+						if (in_array($sku, $skulist)) {
+							$sku = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'], 'sha256');
+						}
+						$skulist[$key] = $sku;
+					}
+					$items_tested = $itemCollection->find(array('skus' => array('$in' => $skulist)));
+					if (!empty($items_tested)) {
+						foreach ($items_tested as $item_test) {
+								if (($item["vendor_style"] != $item_test["vendor_style"]) || ($item["color"] != $item_test["color"])) {
+									$hashBySha = true;
+								}
+						}
+					}
+					if (!empty($hashBySha)) {
+						Logger::debug("\tGenerated sku already exists for a completely different item.  Using sha256 to make it unique");
+						foreach ($item['details'] as $key => $value) {
+							$skulist[(string)$key] = Item::sku($item['vendor'], $item['vendor_style'], $key, $item['color'],'sha256');
+						}
+					}
+					//makes sure that all item sizes have a sku
+					if (count($skulist) != count($item['details'])) {
+						++$noTries;
+						Logger::debug("\tThe amount of skus did not match the number of sizes");
+						Logger::debug("\tItems sizes: " . implode(', ', $item['detail']));
+						Logger::debug("\tItems skus sizes generated: " . implode(', ', $skulist));
+						if ($noTries == 3) {
+							//$this->sendMail($item);
+							break;
+						}
+						$allskus = false;
+					} else {
+						Logger::debug("\tThe amount of skus does match the number of sizes");
+						$allskus = true;
+					}
+				}//end of if
+			} //end of while
+
+			$itemCollection->update(
+				array('_id' => $item['_id']),
+				array('$set' => array('sku_details' => $skulist,'skus' => array_values($skulist) ))
+			);
+		}
+		//$this->item_count = $i;
+		return true;
+	}
+
 	
+
+
+
+
 	public static function generateskusbyevent($_id, $check = false){
 		//query items by eventid
 		$eventItems = Item::find('all', array('conditions' => array('event' => $_id),

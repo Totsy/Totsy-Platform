@@ -30,18 +30,12 @@ class BaseController extends \lithium\action\Controller {
 		 	$this->_render['layout'] = 'mobile_main';
 		   	$this->tenOffFiftyEligible($userInfo);
 		 	$this->freeShippingEligible($userInfo);
-		} else {
+		} else {			
 			$userInfo = Session::read('userLogin');	
-			
-        	//this changes depending on whether we're on prod or not
-        	//if something's funny or not working on kkim, just update it with master        			
-        	//if(Environment::is('production')) {
-				$whiteLabelSubDomain = "mamasource.totsy.com";
-			/*} else {
-				$mamasourceSubDomain = "kkim.totsy.com";
-			}*/
+
+       		$whiteLabelSubDomain = "mamasource.totsy.com";
  									
-			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {							
+			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {				
  		        Session::write('layout', 'mamapedia', array('name' => 'default'));
 		        $img_path_prefix = "/img/mamapedia";
 		    } else { 
@@ -107,14 +101,8 @@ class BaseController extends \lithium\action\Controller {
         //this changes depending on whether we're on prod or not
         //if something's funny or not working on kkim, just update it with master	
         
-        //if(Environment::is('production')) {
 		$whiteLabelSubDomain = "mamasource.totsy.com";
 		$mainDomain = "totsy.com";	
-		/*
-		} else {
-			$whiteLabelSubDomain = "kkim.totsy.com";
-			$mainDomain = "evan.totsy.com";	
-		}*/
 		 		
  		if ( $userInfo ) {	   		
         	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
@@ -355,25 +343,7 @@ class BaseController extends \lithium\action\Controller {
 	**/	
 	private function crossDomainAuth( $sendTo, $email, $pwd ) {
 		// delete session cookie of domain first authenticated
-		setcookie("PHPSESSID", "", time()-3600, "/"); 
-    	
-    	/*        	
-		$url = "http://".$sendTo.'/login?';
-		$fields = array( 'email'=>$email, 'password'=>$pwd );
-		    				
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);		
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_POST, count($fields));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "email=".$email."&password=".$pwd);		
-		
-		$result = curl_exec($ch);
-		
-		curl_close($ch);
-		
-		$this->redirect("http://".$sendTo."/sales");
-		*/
-		
+		setcookie("PHPSESSID", "", time()-3600, "/"); 		
 		$this->redirect("http://" . $sendTo . "/login?email=".$email."&pwd=".$pwd, array("exit"=>true)); 	
 	}
 }

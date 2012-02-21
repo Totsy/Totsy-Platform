@@ -14,6 +14,7 @@ use lithium\storage\Session;
 		$jQueryAllPath = "";
 		$titleTag = "Totsy, the private sale site for Moms";
 		$googleUACode = "UA-675412-15";
+		$isWhiteLabel =  false;
 		
 		//pick CSS for Mamasource vs Totsy based on session variable
 		if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
@@ -21,6 +22,7 @@ use lithium\storage\Session;
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
 			$googleUACode = "UA-675412-22";
 			$titleTag = "Mamasource, powered by Totsy private sale";
+			$isWhiteLabel = true;
 		} else {
 			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
 			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
@@ -37,6 +39,18 @@ use lithium\storage\Session;
 	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
+	
+<!-- Begin Monetate tag v6. Place at start of document head. DO NOT ALTER. --> <script type="text/javascript"> 
+	var monetateT = new Date().getTime(); 
+	(function() {
+var p = document.location.protocol; 
+if (p == "http:" || p == "https:") { var m = document.createElement('script'); m.type ='text/javascript'; 
+m.async = true; 
+m.src = (p == "https:" ? "https://s" : "http://") + "b.monetate.net/js/1/a-6ac93b84/p/totsy.com/" + Math.floor((monetateT + 2372868) / 3600000) + "/g";
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(m, s);
+} })();
+</script> 
+<!-- End Monetate tag. -->
 	
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
 	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
@@ -166,6 +180,7 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 		<span class="ui-icon ui-icon-circle-check"></span>
 		<?php echo $this->view()->render(array('element' => 'inviteModal')); ?>
 </div>
+
 <script>
 	$(function() {
 		$( "#dialog:ui-dialog" ).dialog( "destroy" );
@@ -295,6 +310,27 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
         };
     })();
 </script>
+<?php
+$currentURI  = $_SERVER['REQUEST_URI'];
+					
+$URIArray = explode("/", $currentURI);
+$controllerName = $URIArray[1];			
+		    																	 
+if( $controllerName!=="checkout" && $controllerName!=="orders" && $controllerName!=="cart" && $isWhiteLabel==false) { 
+?>
+<!--
+<script type="text/javascript">
+			(function () {
+				var a, b, c, d; b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
+				var e = new Date(); var f = e.getFullYear()+""+e.getMonth()+""+e.getDate()+""+e.getHours();
+				b.src = (document.location.protocol === "https:" ? "https:"  : "http:") + "//api.theechosystem.com/core/resource/getjs?antiCache="+f;
+				a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(b, a);
+			} ())
+</script>
+-->
+
+<?php }  ?>
+
 <!-- Server Name: <?php echo $_SERVER['SERVER_NAME']; ?> -->
 <!-- Host Name: <?php echo php_uname('n'); ?> -->
 <?php if(isset($version)) { echo $version; } ?>

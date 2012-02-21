@@ -411,9 +411,13 @@ class OrdersController extends BaseController {
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
 		$tax = (float) $avatax['tax'];
+		if(Cart::isOnlyDigital($cart)) {
+			$avatax = null;
+			$tax = 0.00;
+		}
 		#Get current Discount
-						
-		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
+		$cartDiscount = Cart::active();
+		$vars = Cart::getDiscount($cartDiscount, $subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
 				
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
