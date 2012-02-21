@@ -736,7 +736,7 @@ class Cart extends Base {
 	 * @return boolean onlyDigital
 	 */
 	public static function isOnlyDigital($cart) {
-		if(is_object($cart)) {
+		if($cart->items) {
 			$cart = $cart->items;
 		}
 		$onlyDigital = true;
