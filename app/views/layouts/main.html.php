@@ -318,7 +318,7 @@ $controllerName = $URIArray[1];
 		    																	 
 if( $controllerName!=="checkout" || ($controllerName!=="orders" && $URIArray[2]!=="view") || $controllerName!=="cart" || $isWhiteLabel==false) { 
 ?>
-
+<!--
 <script type="text/javascript">
 			(function () {
 				var a, b, c, d; b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
@@ -327,6 +327,7 @@ if( $controllerName!=="checkout" || ($controllerName!=="orders" && $URIArray[2]!
 				a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(b, a);
 			} ())
 </script>
+-->
 
 <?php }  ?>
 
