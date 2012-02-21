@@ -299,7 +299,6 @@ class Order extends Base {
 		if(Cart::isOnlyDigital($cart)) {
 			$shippingMethod = 'email';
 			$order->isOnlyDigital = true;
-			$shipDateInsert = time();
 		}
 		$order->save(array(
 			'total' => $vars['total'],
