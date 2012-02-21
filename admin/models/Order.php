@@ -1200,6 +1200,11 @@ class Order extends Base {
 	 */
 	public static function shipDate($order) {
 		$i = 1;
+		if(static::isOnlyDigital($order)) {
+			$delayDelivery = 5;	    
+		} else {
+			$delayDelivery = static::_object()->_shipBuffer;
+		}
 		$shipDate = null;
 		$items = (is_object($order)) ? $order->items->data() : $order['items'];
 		if (!empty($items)) {
@@ -1214,17 +1219,13 @@ class Order extends Base {
 					'order' => array('date_created' => 'DESC')
 				));
 				$shipDate = $event->end_date->sec;
-				while($i < static::_object()->_shipBuffer) {
-					$day = date('N', $shipDate);
+				while($i < $delayDelivery) {
+					$day = date('D', $shipDate);
 					$date = date('Y-m-d', $shipDate);
-					if ($day < 6 && !in_array($date, static::_object()->_holidays)){
+					if ((($day != 'Sat') && ($day != 'Sun')) && !in_array($date, static::_object()->_holidays)){
 						$i++;
 					}
 					$shipDate = strtotime($date . ' +1 day');
-				}
-				if(static::isOnlyDigital($order)) {
-					$date = date('Y-m-d', $event->end_date->sec);
-					$shipDate = strtotime($date . ' +4 day');    
 				}
 			}
 		}
