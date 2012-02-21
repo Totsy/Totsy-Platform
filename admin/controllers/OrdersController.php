@@ -56,21 +56,6 @@ class OrdersController extends BaseController {
 	);
 
 	/**
-	 * The # of business days to be added to an event to determine the estimated
-	 * ship by date. The default is 18 business days.
-	 *
-	 * @var int
-	 **/
-	protected $_shipBuffer = 15;
-
-	/**
-	 * Any holidays that need to be factored into the estimated ship date calculation.
-	 *
-	 * @var array
-	 */
-	protected $_holidays = array('2010-11-25', '2010-11-26');
-
-	/**
 	 * Main view to query for orders in the admin screen.
 	 *
 	 * @return object of orders and array of headings for view.
@@ -139,7 +124,7 @@ class OrdersController extends BaseController {
 							array('class' => 'pass')
 						);
 						$orders[] = $this->sortArrayByArray($order, $headings);
-						$shipDate["$order[_id]"] = $this->shipDate($order);
+						$shipDate["$order[_id]"] = $orderClass::shipDate($order);
 					}
 				}
 				if (empty($order)) {
@@ -812,7 +797,7 @@ class OrdersController extends BaseController {
 		
 		$orderStatus = $orderClass::getStatus($order);
 		
-		$shipDate = $this->shipDate($order);
+		$shipDate = $orderClass::shipDate($order);
 
 		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count', 'orderStatus', 'hasDigitalItems');
 	}
@@ -953,41 +938,6 @@ class OrdersController extends BaseController {
 			}
 		}
 		return compact('updated');
-	}
-
-	/**
-	 * Calculated estimated ship by date for an order.
-	 * The estimated ship-by-date is calculated based on the last event that closes.
-	 * @param object $order
-	 * @return string
-	 */
-	public function shipDate($order) {
-		$i = 1;
-		$shipDate = null;
-		$items = (is_object($order)) ? $order->items->data() : $order['items'];
-		if (!empty($items)) {
-			foreach ($items as $item) {
-				if (!empty($item['event_id'])) {
-					$ids[] = new MongoId($item['event_id']);
-				}
-			}
-			if (!empty($ids)) {
-				$event = Event::find('first', array(
-					'conditions' => array('_id' => $ids),
-					'order' => array('date_created' => 'DESC')
-				));
-				$shipDate = $event->end_date->sec;
-				while($i < $this->_shipBuffer) {
-					$day = date('N', $shipDate);
-					$date = date('Y-m-d', $shipDate);
-					if ($day < 6 && !in_array($date, $this->_holidays)){
-						$i++;
-					}
-					$shipDate = strtotime($date . ' +1 day');
-				}
-			}
-		}
-		return $shipDate;
 	}
 
 	public function taxreturn(){

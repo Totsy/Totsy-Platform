@@ -315,21 +315,18 @@ $currentURI  = $_SERVER['REQUEST_URI'];
 					
 $URIArray = explode("/", $currentURI);
 $controllerName = $URIArray[1];			
-		    																	 
-if( $controllerName!=="checkout" && $controllerName!=="orders" && $controllerName!=="cart" && $isWhiteLabel==false) { 
-?>
-<!--
-<script type="text/javascript">
-			(function () {
-				var a, b, c, d; b = document.createElement("script"); b.type = "text/javascript"; b.async = true;
-				var e = new Date(); var f = e.getFullYear()+""+e.getMonth()+""+e.getDate()+""+e.getHours();
-				b.src = (document.location.protocol === "https:" ? "https:"  : "http:") + "//api.theechosystem.com/core/resource/getjs?antiCache="+f;
-				a = document.getElementsByTagName("script")[0]; a.parentNode.insertBefore(b, a);
-			} ())
-</script>
--->
 
-<?php }  ?>
+//disable for checkout pages except order/view, and for Mamasource		    		
+if( $controllerName=="checkout" || ($controllerName=="orders" && $URIArray[2]=="view") || $controllerName=="cart" || $isWhiteLabel==true || $controllerName=="pages") { 
+?>
+<script type="text/javascript">
+//code for disabling echoSahre
+var ECHO_SYSTEM_SETTINGS = { socialCenter: { enabled: false }};
+</script>
+<?php }
+	//code for including echoShare
+	echo $this->html->script(array('echoshare_flyout.js')); 
+?>
 
 <!-- Server Name: <?php echo $_SERVER['SERVER_NAME']; ?> -->
 <!-- Host Name: <?php echo php_uname('n'); ?> -->
