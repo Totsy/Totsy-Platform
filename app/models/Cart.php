@@ -489,6 +489,10 @@ class Cart extends Base {
 			$event = static::getLastEvent($cart);
 			if (!empty($event)) {
 				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
+				if(static::isOnlyDigital($cart)) {
+					$date = date('Y-m-d', $shipDate);
+					return strtotime($date.' +4 day');		
+				}
 				while($i < static::_object()->_shipBuffer) {
 					$day = date('N', $shipDate);
 					$date = date('Y-m-d', $shipDate);
@@ -516,9 +520,8 @@ class Cart extends Base {
 				}
 			}
 		}
-		return $shipDate;
-		
-		
+
+		return $shipDate;		
 	}
 
 	/**
@@ -733,6 +736,9 @@ class Cart extends Base {
 	 * @return boolean onlyDigital
 	 */
 	public static function isOnlyDigital($cart) {
+		if(is_object($cart)) {
+			$cart = $cart->items;
+		}
 		$onlyDigital = true;
 		foreach($cart as $item) {
 			if(Item::isTangible($item['item_id'])) {
