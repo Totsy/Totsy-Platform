@@ -1,5 +1,6 @@
 <?php $this->title("Order Confirmation"); ?>
 <?php
+	$totalQty = 0;
 	$brandNew = ($order->date_created->sec > (time() - 10)) ? true : false;
 	$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 
@@ -112,7 +113,10 @@
 														$<?php echo number_format($item['sale_retail'],2); ?>
 													</td>
 													<td style="padding:5px;" title="quantity">
-														<?php echo $item['quantity']?>
+														<?php 
+															  echo $item['quantity'];
+															  $totalQty += $item['quantity'];	
+														?>
 													</td>
 													<td title="subtotal" style="padding:5px; color:#009900;">
 														$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
@@ -192,6 +196,13 @@
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
 </div>
+<?php
+
+$orderSubTotal = number_format($order->subTotal, 2);
+$promoCode = $order->promo_code;
+
+?>
+
 <!--- ECOMMERCE TRACKING -->
 <?php if ($brandNew): ?>
 	<script type="text/javascript">
@@ -249,6 +260,12 @@
 	// -->
 </script>
 
+<?php
+
+echo("<img src='http://api.theechosystem.com/Core/Conversion/Save?echoTrackPack=" . 
+$_COOKIE['EchoTrackPack'] . "&revenue=".$orderSubTotal."&quantity=".(int)$totalQty."&promocode=".$promoCode."' style='width:1px;height:1px;' />");  
+?>
+
 <?php if ($new): ?>
 	<!-- Google Code for acheteurs Remarketing List -->
 	<script type="text/javascript">
@@ -275,7 +292,7 @@
 		$criteoVars = "";
 		$iCounter = 1;
 		
-		foreach($itemsByEvent as $event){
+		foreach($itemsByEvent as $event) {
 		     foreach($event as $item) {
 		     	$criteoVars .=
 		     	"&i". $iCounter ."=". (string) $item['item_id'] ."&p". $iCounter ."=". $item['sale_retail'] ."&q". $iCounter ."=". $item['quantity'];
@@ -283,7 +300,7 @@
 		    }
 		}
 	?>
-	
+		
 	<script type="text/javascript">
 	
 		var criteoVars = "<?php echo $criteoVars?>";
