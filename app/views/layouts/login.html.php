@@ -99,6 +99,15 @@ $titleTag = "Totsy, the private sale site for Moms";
 
 	</script>
 	
+	<script type="text/javascript">
+	//code for disabling echoshare Social Center flyout
+		var ECHO_SYSTEM_SETTINGS = { socialCenter: { enabled: false }};
+	</script>
+	<?php 
+		//code for including echoShare core
+		echo $this->html->script(array('echoshare_flyout.js')); 
+	?>
+	
 	<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
 	
 	<script>
