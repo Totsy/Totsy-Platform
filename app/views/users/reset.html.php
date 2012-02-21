@@ -1,4 +1,8 @@
-<?php use lithium\storage\Session; ?>
+<?php 
+use lithium\storage\Session; 
+use app\controllers\UsersController;
+?>
+
 <style>
 h2 {
     color: #999999;

@@ -11,11 +11,11 @@
 				<?=$this->form->select('issue_type' , $issue_list, array('id' => 'issue_type'));?>
 
 				<label>Search By:</label>
-				<?=$this->form->select('search_by',array('','date' => 'date range', 'month'=>'month', 'email' => 'email'), array('id' => 'search_by'));?>
+				<?=$this->form->select('search_by',array('','date' => 'date range', 'month'=>'month', 'email' => 'email', 'keyword' => 'keyword'), array('id' => 'search_by'));?>
 				<span id="search_by_field"></span>
 
 				<label>Limit:</label>
-				<?=$this->form->select('limit_by',array('10' => '10','25'=>'25','50' => '50', '100'=>'100'), array('id' => 'limit_by'));?>
+				<?=$this->form->select('limit_by',array('10' => '10','25'=>'25','50' => '50', '100'=>'100', '500' => '500'), array('id' => 'limit_by'));?>
 				<?=$this->form->submit('Search');?>
 			<?=$this->form->end();?>
 		</fieldset>
@@ -31,9 +31,10 @@
 			echo "Issue type: " . $search_criteria['issue_type'] . "  Search by: " . $search_criteria['search_by'] . " ";
 			switch($search_criteria['search_by']) {
 				case 'email':
+				case 'keyword':
 					echo $search_criteria['search_by_value'];
 					break;
-					case 'month':
+				case 'month':
 					echo date('F', mktime(0,0,0,(int)$search_criteria['search_by_value'] + 1));
 					break;
 				case 'date':
@@ -54,15 +55,24 @@
 		}
 	?>
 	<?=$this->form->create(null, array('id' => 'ticket_form'));?>
+		
 		<?php
 			if($count != 0) {
 				echo $this->form->button('Send selected to LivePerson', array('id' => 'liveperson', 'name' => 'send_button', 'value' => 'selected'));
 				echo $this->form->button("Send all {$count} to LivePerson", array('id' => 'liveperson', 'name' => 'send_button','value' => 'all'));
 			}
 		?>
-
+		&nbsp;&nbsp;
+		Sort By : <?=$this->form->select('sort_by',array('user.email' => 'email', 'date_created' => 'date', 'status' => 'status', 'issue.issue_type' => 'issue'), array('value' => $sort_by));?>
+		<?=$this->form->select('order_by',array('1' => 'ascending', '-1' => 'descending'),array('value' => $order_by));?>
+		<?=$this->form->button('sort',array('value' => 'sort', 'name' => 'sort'));?>
 		<div style='float: right'>
 			 <?php $limit = round($count/(int)$search_criteria['limit_by']); ?>
+			  <?php 
+				  if ($limit <= 0){
+				  	$limit = 1;
+				  }
+			  ?>
 			 Page : <?=$getNext;?> of <?php echo $limit; ?>
 			 <?php if ($getNext > 1):?>
 				 	 <?=$this->form->button('Prev batch', array('value' => $getNext, 'name' => 'goBack'));?>
@@ -132,7 +142,10 @@ $().ready(function(){
 				"<option value='11'>December</option>" +
 				"</select>" ;
 			$('#search_by_field').append(html);		
-		} else {
+		} else if ($(this).val() == 'keyword') {
+			$('#search_by_field').html("");	
+			$('#search_by_field').append("<label>Keyword</label> <input type='text' name='keyword'/>");
+		}else {
 			$('#search_by_field').html("");	
 			$('#search_by_field').append("<label>Start Date</label> <input type='text' name='start_date' class='date'>  <label>End Date</label>  <input type='text' name='end_date' class='date'>");
 			jQuery(function($){
