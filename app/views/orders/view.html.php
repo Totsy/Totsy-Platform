@@ -45,8 +45,10 @@
 						</div>
 						<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;">
 							<h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?php echo $order->order_id;?></span>
+							<br /><span style="float:right;">Estimated Delivery Date: <?php echo date('m-d-Y', $shipDate) ?></span><br />
 							</h2>
 						</div>
+						 
 						<div style="clear:both;"></div>
 						</td>
 					</tr>
@@ -65,15 +67,6 @@
 													<?php echo $orderEvents[$key]['ship_message']?>
 												</td>
 											<?php endif ?>
-											<td colspan="3" style="padding:5px; text-align:right;">
-												Estimated Delivery Date:
-												<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
-													<?php echo date('M d, Y', strtotime($orderEvents[$key]['ship_date'])); ?>
-													
-												<?php else: ?>
-													<?php echo date('m-d-Y', $shipDate) ?>
-												<?php endif ?>
-											</td>
 										</tr>
 										<tr style="background:#ddd;">
 											<td style="padding:5px; width:70px;"><strong>Item</strong></td>
