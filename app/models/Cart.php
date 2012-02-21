@@ -742,7 +742,7 @@ class Cart extends Base {
 		}
 		$onlyDigital = true;
 		foreach($cart as $item) {
-			if(Item::isTangible($item['item_id'])) {
+			if(Item::isTangible($item['item_id']) && empty($item['cancel'])) {
 				$onlyDigital = false;
 			}
 		}
