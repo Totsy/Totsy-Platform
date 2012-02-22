@@ -125,16 +125,7 @@ class AvaTax {
 	
   	public static function postTax($data,$tryNumber=0){
   		$settings = Environment::get(Environment::get());
-  		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
-			$data['items'] = static::getCartItems($data['cartByEvent']);
-			static::shipping($data);
-		}  	
 
-		if (empty($data['items']) && !empty($data['recordedItems']) ){
-			$data['items'] = static::getRecordedItems($data['recordedItems']);
-			static::shipping($data);
-		}
-		
 		if (!empty($data['vars']) && !empty($data['vars']['billingAddr'])){
 			$data['billingAddr'] = $data['vars']['billingAddr'];
 		}
@@ -149,6 +140,16 @@ class AvaTax {
 		}
 		if (!empty($data['vars'])){
 			unset($data['vars']);
+		}
+		
+		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
+			$data['items'] = static::getCartItems($data['cartByEvent']);
+			static::shipping($data);
+		}
+		
+		if (empty($data['items']) && !empty($data['recordedItems']) ){
+			$data['items'] = static::getRecordedItems($data['recordedItems']);
+			static::shipping($data);
 		}
 		
 		if (is_array($data) && array_key_exists('cart',$data)){
@@ -202,15 +203,14 @@ class AvaTax {
 	
 	protected static function getRecordedItems($recordedItems){
 		$items = array();
-		if (is_array($recordedItems)){
-			foreach ($recordedItems as $i){
-				if (is_object($i) && get_class($i) == 'lithium\data\entity\Document'){
-					$items[] = $i->data();
-				} else {
-					$items[] = $i;
-				}
+		foreach ($recordedItems as $i){
+			if (is_object($i) && get_class($i) == 'lithium\data\entity\Document'){
+				$items[] = $i->data();
+			} else {
+				$items[] = $i;
 			}
 		}
+		return $items;
 	}
 	
 	protected static function shipping (&$data){
