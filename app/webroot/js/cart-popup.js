@@ -88,10 +88,9 @@ $(document).ready( function() {
 		cartItemsTimer();
 		
 		if( cartObj.itemCount > 0 ) {
-			
 			//set these
 			$("#savings").text(cartObj.savings.items.toFixed(2));
-			$("#cart_popup").fadeIn(500);
+			$("#cart_popup").fadeIn(100);			
 		
 			//set the popup to timeout after 8 seconds
 			timeout = setTimeout(function() {
@@ -145,7 +144,7 @@ $(document).ready( function() {
 	var closeCartPopup = function() { 
 		isCollapsed = false;
 		//set isCollapsed to false so that the link doesn't appear on re-open
-		$("#cart_popup").fadeOut(500); 
+		$("#cart_popup").fadeOut(200); 
 	}; 
 	
 	//make popup disappear 8 seconds after their mouse leaves it  
