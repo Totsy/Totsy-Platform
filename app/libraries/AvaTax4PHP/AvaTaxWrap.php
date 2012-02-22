@@ -8,10 +8,10 @@ abstract class AvaTaxWrap {
 	protected static $_retriesNumber = 2;
 	
 	public static function __init($env,$config){
-		static::registerAutoload();
-		static::$_environment = $env;
-		static::$_config = $config['avatax'];
-		static::__getConfig();
+		self::registerAutoload();
+		self::$_environment = $env;
+		self::$_config = $config['avatax'];
+		self::__getConfig();
 	}
 	
 	public static function autoload ($class_name){
@@ -38,11 +38,11 @@ abstract class AvaTaxWrap {
 	
   	public static function cancelTax($invoice){
   		
-  		$client = new TaxServiceSoap(static::$_environment);
+  		$client = new TaxServiceSoap(self::$_environment);
   		$request= new CancelTaxRequest();
 		$request->setDocCode($invoice);
 		$request->setDocType('SalesInvoice');
-		$request->setCompanyCode(static::$_config['companyCode']); 
+		$request->setCompanyCode(self::$_config['companyCode']); 
 		$request->setCancelCode( CancelCode::$DocDeleted );
 		
 		try {
@@ -58,32 +58,32 @@ abstract class AvaTaxWrap {
 					throw new Exception ($str);
 			}
 	    } catch ( Exception $e ) {
-			throw new Exception ('tax process error',0,$e);
+			throw new Exception ('tax process (cancel) error',0,$e);
 		}
 		return $return;
   	}
   	
   	public static function getAndCommitTax($data){
-  		static::$_tax = null; // just in case ;)
+  		//static::$_tax = null; // just in case ;)
   		$data['doctype'] = 'record';
   		$data['date'] = date('Y-m-d',time());
   		
-  		static::getTax($data);  
-  		static::postTax();
-
-  	 	if (isset(static::$_tax['totalTax'])) return static::$_tax['totalTax'];
+  		self::getTax($data);  
+  		self::postTax();
+		
+  	 	if (isset(self::$_tax['totalTax'])) return self::$_tax['totalTax'];
   		else return 0;
   	}
   	
   	public static function commitTax($invoice = null){
-  		if (is_null($invoice)) $invoice = static::$_tax['DocCode'];
+  		if (is_null($invoice)) $invoice = self::$_tax['DocCode'];
   		
-		$client = new TaxServiceSoap(static::$_environment);
+		$client = new TaxServiceSoap(self::$_environment);
 		$request= new CommitTaxRequest();
 		$request->setDocCode($invoice);
 		$request->setDocType('SalesInvoice');
-		$request->setCompanyCode(static::$_config['companyCode']); 
-
+		$request->setCompanyCode(self::$_config['companyCode']); 
+		
 		try{
 			$result = $client->commitTax($request);
 			if ($result->getResultCode() == SeverityLevel::$Success) {
@@ -97,49 +97,48 @@ abstract class AvaTaxWrap {
 				
 			}
 	    } catch ( Exception $e ) {
-			throw new Exception ('tax process error',0,$e);
+			throw new Exception ('tax process (commit) error',0,$e);
 		}
 
 		return $return;
   	}
   	
   	public static function postTax(){
-  		$client = new TaxServiceSoap(static::$_environment);
+  		$client = new TaxServiceSoap(self::$_environment);
   		$request= new PostTaxRequest();
   		
-  		$request->setDocCode(static::$_tax['DocCode']);		
+  		$request->setDocCode(self::$_tax['DocCode']);		
 		$request->setDocType('SalesInvoice');
-		$request->setCompanyCode(static::$_config['companyCode']);
-		$request->setTotalAmount(static::$_tax['totalAmount']);
-		$request->setTotalTax(static::$_tax['totalTax']);
-	    $request->setDocDate(static::$_tax['date']);
-	    	    
+		$request->setCompanyCode(self::$_config['companyCode']);
+		$request->setTotalAmount(self::$_tax['totalAmount']);
+		$request->setTotalTax(self::$_tax['totalTax']);
+	    $request->setDocDate(self::$_tax['date']);
 	    $result = $client->postTax($request);
   		
 	    try{    
-		    if ($result->getResultCode()==SeverityLevel::$Success){
+	    	if ($result->getResultCode()==SeverityLevel::$Success){
 		    	$return = true;	
 		    } else {
-				$str = '';
 				foreach($result->getMessages() as $msg) {
 					$str.= $msg->getName().": ".$msg->getSummary()."\n";
 				}
-				throw new Exception (print_r(SeverityLevel::$Success,true).' --- '.$result->getResultCode());
+				throw new Exception ($result->getResultCode().': '.$str);
 			}
-	    } catch ( Exception $e ) {
-			throw new Exception ('tax process error',0,$e);
+			
+	    } catch ( Exception $e ) {    	
+			throw new Exception ('tax process (post) error: '.$e->getMessage(),0,$e);
 		}		    
 		return $return;
   	}
   	
   	public static function returnTax($data){
   		$data['doctype'] = 'return';
-  		static::getTax($data);
-		static::commitTax($data['order']['order_id']);
+  		self::getTax($data);
+		self::commitTax($data['order']['order_id']);
   	}
   	
 	public static function sender(){
-		return static::__addresser( array(
+		return self::__addresser( array(
 			'address' => '300 Nixon Line',
 			'address_2' => '',
 			'city' => "Edisson",
@@ -154,25 +153,24 @@ abstract class AvaTaxWrap {
 		if (!array_key_exists('items',$data)) return 0;
 		if (!is_array($data['items'])) return 0;
 		if (count($data['items']) == 0) return 0;
-
+		
 		if(array_key_exists('shippingAddr',$data) )$shipping = $data['shippingAddr'];
 		else if (is_array($data['order']) && array_key_exists('shipping',$data['order']) ) $shipping = $data['order']['shipping'];
-		
+
 		if (array_key_exists('doctype',$data) && $data['doctype'] == 'record' )
 			$DocType = DocumentType::$SalesInvoice;
 		else if (array_key_exists('doctype',$data) && $data['doctype'] == 'return' )
 			$DocType = DocumentType::$ReturnInvoice;
 		else $DocType = DocumentType::$SalesOrder;
 		
-		
-		$client = new TaxServiceSoap(static::$_environment);
+		$client = new TaxServiceSoap(self::$_environment);
 		$request= new GetTaxRequest();
 		
-		$request->setOriginAddress(static::sender()); // Origin Address
-		$request->setDestinationAddress	(static::__addresser($shipping)); // Desctionation Address
-		$request->setCompanyCode(static::$_config['companyCode']);
+		$request->setOriginAddress(self::sender()); // Origin Address
+		$request->setDestinationAddress	(self::__addresser($shipping)); // Desctionation Address
+		$request->setCompanyCode(self::$_config['companyCode']);
 		$request->setDocType($DocType); 
-		$request->setLines(static::__liner($data['items']));
+		$request->setLines(self::__liner($data['items']));
 		
 		$dateTime=new DateTime();
 		if (array_key_exists('order',$data)) {
@@ -211,27 +209,29 @@ abstract class AvaTaxWrap {
 	    //Summary or Document or Line or Tax or Diagnostic
 	    $request->setDetailLevel(DetailLevel::$Tax);
 	    $request->setLocationCode("");        //string Optional - aka outlet id for tax forms
-		
+	    
+	    self::$_tax = null; // just in case ;)
+	    
 	    try{
 			$getTaxResult = $client->getTax($request);
 			
 			if ($getTaxResult->getResultCode() == SeverityLevel::$Success) {
 		        //throw new Exception ($getTaxResult->getTotalTax());
-				static::$_tax['DocCode'] = $request->getDocCode();
-				static::$_tax['totalAmount'] = $getTaxResult->getTotalAmount();
-				static::$_tax['totalTax'] = $getTaxResult->getTotalTax();
-				static::$_tax['shippingTax'] = 0;
-				static::$_tax['date'] = date_format($dateTime,"Y-m-d");
+				self::$_tax['DocCode'] = $request->getDocCode();
+				self::$_tax['totalAmount'] = $getTaxResult->getTotalAmount();
+				self::$_tax['totalTax'] = $getTaxResult->getTotalTax();
+				self::$_tax['shippingTax'] = 0;
+				self::$_tax['date'] = date_format($dateTime,"Y-m-d");
 				foreach($getTaxResult->getTaxLines() as $ctl)
 				{
 					if ( trim($ctl->getTaxCode()) == 'FR020100'){
-						static::$_tax['shippingTax']  = $ctl->getTax();
+						self::$_tax['shippingTax']  = $ctl->getTax();
 					}
 				}
-				
+
 				if ($shipping > 0 ){
-					$return = static::$_tax['totalTax'] - static::$_tax['shippingTax'];
-				} else { $return = static::$_tax['totalTax']; }
+					$return = self::$_tax['totalTax'] - self::$_tax['shippingTax'];
+				} else { $return = self::$_tax['totalTax']; }
 			} else {
 				$str = '';
 				foreach($getTaxResult->getMessages() as $msg) {
@@ -315,12 +315,13 @@ abstract class AvaTaxWrap {
 		$iterator = 0;
 		
 			foreach ($items as $item){
+				$item = EnsureIsArray($item);
 			    $lines[$iterator] = new Line();
 			    //string  // line Number of invoice
 			    $lines[$iterator]->setNo ($iterator)
 			    	  //string SKU
 			    	  //->setItemCode($item['sku_details'][$item['size']])
-			    	  ->setItemCode($item['item_id'])
+			    	  ->setItemCode( (string) $item['item_id'] )
 			    	  //string
 			    	  ->setDescription($item['description'])
 			    	  // System or Custom Tax Code
@@ -353,12 +354,12 @@ abstract class AvaTaxWrap {
 	
 	
 	protected static function __getConfig (){
-		new ATConfig(static::$_environment, 
+		new ATConfig(self::$_environment, 
 			array(
-				'url' => static::$_config['url'],
-				'account' => static::$_config['account'],
-				'license' => static::$_config['license'],
-				'trace' => static::$_config['trace']
+				'url' => self::$_config['url'],
+				'account' => self::$_config['account'],
+				'license' => self::$_config['license'],
+				'trace' => self::$_config['trace']
 			)
 		);
 	}
