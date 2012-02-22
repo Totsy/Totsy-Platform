@@ -130,6 +130,11 @@ class AvaTax {
 			static::shipping($data);
 		}  	
 
+		if (empty($data['items']) && !empty($data['recordedItems']) ){
+			$data['items'] = static::getRecordedItems($data['recordedItems']);
+			static::shipping($data);
+		}
+		
 		if (!empty($data['vars']) && !empty($data['vars']['billingAddr'])){
 			$data['billingAddr'] = $data['vars']['billingAddr'];
 		}
@@ -193,6 +198,19 @@ class AvaTax {
 			}
 		}
 		return $items;
+	}
+	
+	protected static function getRecordedItems($recordedItems){
+		$items = array();
+		if (is_array($recordedItems)){
+			foreach ($recordedItems as $i){
+				if (is_object($i) && get_class($i) == 'lithium\data\entity\Document'){
+					$items[] = $i->data();
+				} else {
+					$items[] = $i;
+				}
+			}
+		}
 	}
 	
 	protected static function shipping (&$data){
