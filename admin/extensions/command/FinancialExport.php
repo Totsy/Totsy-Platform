@@ -477,7 +477,7 @@ class FinancialExport extends Base  {
 
 	    if ($this->historical == 'true') {
 	        $this->yesterday_max = mktime(23,59,59,date('m') - 1,24,date('Y'));
-	         $conditions = array('$or' =>
+	         $conditions = array('$or' => array(
 	         array('modifications' => array('$elemMatch' => array(
                 'date' => array(
                     '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
@@ -502,11 +502,11 @@ class FinancialExport extends Base  {
                     '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
                     '$lte' => new MongoDate($this->yesterday_max)
                 ))))
-            );
+            ));
 	    } else {
 	        $this->yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
             $this->yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
-            $conditions = array('$or' =>
+            $conditions = array('$or' =>array(
             	array('modifications' => array('$elemMatch' => array(
 	                'date' => array(
 	                    '$gte' => new MongoDate($this->yesterday_min),
@@ -531,7 +531,7 @@ class FinancialExport extends Base  {
                     '$gte' => new MongoDate($this->yesterday_min),
 	                '$lte' => new MongoDate($this->yesterday_max)
                 ))))
-            ,
+            ),
              'order_id' => array('$nin' => array_unique($orderids))
             );
 	    }
