@@ -67,6 +67,7 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	if(Session::check('userLogin')) {
 		$logged_in = true;	
 		
+		//if user is authenticated and the URI is root, redirect them to /sales
 		if($params['request']->url=="/"){
 			return new Response(array('location' => 'Events::index'));
 		}	
