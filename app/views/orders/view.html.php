@@ -1,5 +1,6 @@
 <?php $this->title("Order Confirmation"); ?>
 <?php
+	$totalQty = 0;
 	$brandNew = ($order->date_created->sec > (time() - 10)) ? true : false;
 	$new = ($order->date_created->sec > (time() - 120)) ? true : false;
 
@@ -44,8 +45,10 @@
 						</div>
 						<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;">
 							<h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?php echo $order->order_id;?></span>
+							<br /><span style="float:right;">Estimated Delivery Date: <?php echo date('m-d-Y', $shipDate) ?></span><br />
 							</h2>
 						</div>
+						 
 						<div style="clear:both;"></div>
 						</td>
 					</tr>
@@ -64,15 +67,6 @@
 													<?php echo $orderEvents[$key]['ship_message']?>
 												</td>
 											<?php endif ?>
-											<td colspan="3" style="padding:5px; text-align:right;">
-												Estimated Delivery Date:
-												<?php if (!empty($orderEvents[$key]['ship_date'])): ?>
-													<?php echo date('M d, Y', strtotime($orderEvents[$key]['ship_date'])); ?>
-													
-												<?php else: ?>
-													<?php echo date('m-d-Y', $shipDate) ?>
-												<?php endif ?>
-											</td>
 										</tr>
 										<tr style="background:#ddd;">
 											<td style="padding:5px; width:70px;"><strong>Item</strong></td>
@@ -112,7 +106,10 @@
 														$<?php echo number_format($item['sale_retail'],2); ?>
 													</td>
 													<td style="padding:5px;" title="quantity">
-														<?php echo $item['quantity']?>
+														<?php 
+															  echo $item['quantity'];
+															  $totalQty += $item['quantity'];	
+														?>
 													</td>
 													<td title="subtotal" style="padding:5px; color:#009900;">
 														$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
@@ -192,6 +189,13 @@
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
 </div>
+<?php
+
+$orderSubTotal = number_format($order->subTotal, 2);
+$promoCode = $order->promo_code;
+
+?>
+
 <!--- ECOMMERCE TRACKING -->
 <?php if ($brandNew): ?>
 	<script type="text/javascript">
@@ -249,6 +253,12 @@
 	// -->
 </script>
 
+<?php
+
+echo("<img src='http://api.theechosystem.com/Core/Conversion/Save?echoTrackPack=" . 
+$_COOKIE['EchoTrackPack'] . "&revenue=".$orderSubTotal."&quantity=".(int)$totalQty."&promocode=".$promoCode."' style='width:1px;height:1px;' />");  
+?>
+
 <?php if ($new): ?>
 	<!-- Google Code for acheteurs Remarketing List -->
 	<script type="text/javascript">
@@ -275,7 +285,7 @@
 		$criteoVars = "";
 		$iCounter = 1;
 		
-		foreach($itemsByEvent as $event){
+		foreach($itemsByEvent as $event) {
 		     foreach($event as $item) {
 		     	$criteoVars .=
 		     	"&i". $iCounter ."=". (string) $item['item_id'] ."&p". $iCounter ."=". $item['sale_retail'] ."&q". $iCounter ."=". $item['quantity'];
@@ -283,7 +293,7 @@
 		    }
 		}
 	?>
-	
+		
 	<script type="text/javascript">
 	
 		var criteoVars = "<?php echo $criteoVars?>";
