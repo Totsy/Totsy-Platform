@@ -294,10 +294,26 @@ class Item extends Base {
 					$iSs[ $itm['item_id'] ]['color'],
 					'md5');
 
+				// Check for duplicate sku
+				$temp = $itemsCollection->find(array(
+				        'skus' => array('$in' => array($sku)),
+				        'vendor_style' => array('$ne' => $iSs[ $itm['item_id'] ]['vendor_style'])
+			    	));
+				$count = $temp->count();
+
+				if ($count > 0)
+					$sku = Item::sku(
+						$iSs[ $itm['item_id'] ]['vendor'],
+						$iSs[ $itm['item_id'] ]['vendor_style'],
+						$itm['size'],
+						$iSs[ $itm['item_id'] ]['color'],
+						'sha256');
+
 				$iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ] = $sku;
 
 				$skuList = array();
 				$skuList[ $itm['size'] ] = $sku;
+				$skuList = array_merge($iSs[ $itm['item_id'] ]['sku_details'], $skuList);
 				$result = $itemsCollection->update(
 					array('_id' => new MongoId($itm['item_id'])),
 					array('$set' => array('sku_details' => $skuList,'skus' => array_values($skuList) ))
