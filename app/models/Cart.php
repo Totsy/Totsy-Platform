@@ -329,7 +329,7 @@ class Cart extends Base {
 				}
 			}
 			
-			if(static::isOnlyDigital($carts)) {
+			if(static::isOnlyDigital($cart)) {
 				$cost = 0;
 			}
 
