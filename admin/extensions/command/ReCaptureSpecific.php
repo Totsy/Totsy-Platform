@@ -123,7 +123,7 @@ class ReCaptureSpecific extends \lithium\console\Command {
 				'amount' => $orderToCapture['specific_amount'],
 				'date' => new MongoDate()
 			);
-			$update = $ordersCollection->update(
+			$ordersCollection->update(
 					array('_id' => $order['_id']),
 					array('$push' => array('specific_authorization' => $specificAuth
 					))
@@ -138,7 +138,7 @@ class ReCaptureSpecific extends \lithium\console\Command {
 				'error' => $error,
 				'date' => new MongoDate()
 			);
-			$update = $ordersCollection->update(
+			$ordersCollection->update(
 					array('_id' => $order['_id']),
 					array('$push' => array('specific_authorization_error' => $specificAuth_Error
 					))
@@ -174,7 +174,7 @@ class ReCaptureSpecific extends \lithium\console\Command {
 			$transation['authKey'] = $auth_capture->key;
 			$transation['amount'] = $orderToCapture['specific_amount'];
 			$transation['date_captured'] = new MongoDate();
-			$update = $ordersCollection->update(
+			$ordersCollection->update(
 				array('_id' => $order['_id']),
 				array(
 					'$push' => array(
@@ -184,7 +184,7 @@ class ReCaptureSpecific extends \lithium\console\Command {
 				)
 			);
 			if(($orderToCapture['specific_amount'] == (float) $order['total']) || empty($order['total'])) {
-				$update = $ordersCollection->update(
+				$ordersCollection->update(
 				array('_id' => $order['_id']),
 				array('$set' => array(
 									'payment_date' => new MongoDate(),
@@ -210,7 +210,7 @@ class ReCaptureSpecific extends \lithium\console\Command {
 				'error' => $error,
 				'date' => new MongoDate()
 			);
-			$update = $ordersCollection->update(
+			$ordersCollection->update(
 					array('_id' => $order['_id']),
 					array('$push' => array('specific_capture_error' => $specificCapt_Error))
 			);
