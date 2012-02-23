@@ -258,6 +258,7 @@ class OrderExport extends Base {
 			'cancel' => array('$ne' => true),
 			'error_date' => array('$exists' => false)
 		));
+		
 		$this->log('Calling Reauthorize Command');
 		#Reauthorize Orders with Total Full Amount
 		$ReAuthorize = new ReAuthorize();
