@@ -91,6 +91,14 @@ class ReAuthorize extends \lithium\console\Command {
 				$order_ids[] = $value['order_id'];
 			}
 		}
+		if($report['errors']) {
+			foreach($report['errors'] as $value) {
+				$order_ids_errors[] = $value['order_id'];
+			}
+		}
+		if(!empty($order_ids_errors)) {
+			$order_ids = array_diff($order_ids, $order_ids_errors);
+		}
 		if($order_ids) {
 			$conditions = array('order_id' => array('$in' => $order_ids));
 			$fields = array(
