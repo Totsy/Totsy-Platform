@@ -41,6 +41,13 @@
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order has been canceled
 									</p><br />
+									<div style="text-align:center;"><button id="uncancel_button" style="font-weight:bold;font-size:14px;text-align: center;"> UnCancel Order</button></div>
+									<div id="uncancel_form" style="display:none">
+										<?php echo $this->form->create(null ,array('id'=>'uncancelForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+										<?php echo $this->form->hidden('uncancel_action', array('class' => 'inputbox', 'id' => 'uncancel_action', 'value' => 1)); ?>
+										<?php echo $this->form->end();?>
+									</div>
 								<?php else: ?>
 
 									<div id='confirm_cancel_div' style="display:none">
@@ -100,6 +107,7 @@
 										<?php echo $this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
 										<?php echo $this->form->end();?>
 									</div>
+	
 									<div id="capture_form" style="display:none">
 										<?php echo $this->form->create(null ,array('id'=>'captureForm','enctype' => "multipart/form-data")); ?>
 										<?php echo $this->form->hidden('capture_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
@@ -682,6 +690,9 @@ $(document).ready(function(){
 			$("#confirm_cancel_div").show("slow");
 			$("#normal").slideUp();
 		}
+	});
+	$("#uncancel_button").click(function () {
+		$('#uncancelForm').submit();
 	});
 	$("#capture_button").click(function () {
 		if (confirm('Are you sure to capture this order ?')) {
