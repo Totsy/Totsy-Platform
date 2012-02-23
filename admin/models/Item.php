@@ -286,9 +286,31 @@ class Item extends Base {
 		}
 
 		foreach ($itms as $itm){
-			$sku = $iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ];
+			// If the SKU does not exist for this item generate it now and update the item document
+			if (!isset($iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ])) {
+				$sku = Item::sku(
+					$iSs[ $itm['item_id'] ]['vendor'],
+					$iSs[ $itm['item_id'] ]['vendor_style'],
+					$itm['size'],
+					$iSs[ $itm['item_id'] ]['color'],
+					'md5');
+
+				$iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ] = $sku;
+
+				$skuList = array();
+				$skuList[ $itm['size'] ] = $sku;
+				$result = $itemsCollection->update(
+					array('_id' => new MongoId($itm['item_id'])),
+					array('$set' => array('sku_details' => $skuList,'skus' => array_values($skuList) )),
+					array('upsert' => true)
+				);
+			}
+			else
+				$sku = $iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ];
+
 			$itemSkus[ $sku ] = $itm;
 		}
+
 		unset($iSs);
 		unset($items);
 		return $itemSkus;
