@@ -255,8 +255,10 @@ class OrderExport extends Base {
 		}
 		$orders = $orderCollection->find(array(
 			'items.event_id' => array('$in' => $this->orderEvents),
-			'cancel' => array('$ne' => true)
+			'cancel' => array('$ne' => true),
+			'error_date' => array('$exists' => false)
 		));
+		
 		$this->log('Calling Reauthorize Command');
 		#Reauthorize Orders with Total Full Amount
 		$ReAuthorize = new ReAuthorize();
