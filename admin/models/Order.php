@@ -337,6 +337,34 @@ class Order extends Base {
 		$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
 		return $orders->find(array('$or' => $conditions) + $date)->sort(array('date_created' => 1));
 	}
+	
+	public static function uncancel($order_id, $author) {
+		//Get the actual datas of the order
+		$result = static::find('first', array('conditions' => array(
+			'_id' => $order_id instanceof MongoId ? $order_id : new MongoId($order_id)
+		)));
+		$order = $result->data();
+		$modification_datas["author"] = $author;
+		$modification_datas["date"] = new MongoDate(strtotime('now'));
+		$modification_datas["type"] = "uncancel";
+		$items = $order["items"];
+		$item_names = array();
+		foreach($order["items"] as $key => $item) {
+			$items[$key]["cancel"] = false;
+			//Reattribute original quantity
+			$item_amount += $item['sale_retail'];
+			$item_names[] = $item['description'];
+			if(!empty($items[$key]["initial_quantity"])) {
+				$items[$key]["quantity"] = $items[$key]["initial_quantity"];
+			}
+		}
+		static::collection()->update(
+			array('_id' => new MongoId($order_id)),
+			array('$set' => array('items' => $items, 'cancel'=>false),
+				'$push' => array('modifications' => $modification_datas)
+			)
+		);
+	}
 
 	/**
 	 * Cancel an order.
