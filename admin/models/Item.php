@@ -166,8 +166,7 @@ class Item extends Base {
 	    $itemCollection = Item::connection()->connection->items;
 		return $itemCollection->update(
 			array('_id' => $_id),
-			array('$set' => array('sku_details' => $sku_details,'skus' => array_values($skus) )),
-			array('upsert' => true)
+			array('$set' => array('sku_details' => $sku_details,'skus' => array_values($skus) ))
 		);
 	}
 
@@ -286,9 +285,46 @@ class Item extends Base {
 		}
 
 		foreach ($itms as $itm){
-			$sku = $iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ];
+			// If the SKU does not exist for this item generate it now and update the item document
+			if (!isset($iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ])) {
+				$sku = Item::sku(
+					$iSs[ $itm['item_id'] ]['vendor'],
+					$iSs[ $itm['item_id'] ]['vendor_style'],
+					$itm['size'],
+					$iSs[ $itm['item_id'] ]['color'],
+					'md5');
+
+				// Check for duplicate sku
+				$temp = $itemsCollection->find(array(
+				        'skus' => array('$in' => array($sku)),
+				        'vendor_style' => array('$ne' => $iSs[ $itm['item_id'] ]['vendor_style'])
+			    	));
+				$count = $temp->count();
+
+				if ($count > 0)
+					$sku = Item::sku(
+						$iSs[ $itm['item_id'] ]['vendor'],
+						$iSs[ $itm['item_id'] ]['vendor_style'],
+						$itm['size'],
+						$iSs[ $itm['item_id'] ]['color'],
+						'sha256');
+
+				$iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ] = $sku;
+
+				$skuList = array();
+				$skuList[ $itm['size'] ] = $sku;
+				$skuList = array_merge($iSs[ $itm['item_id'] ]['sku_details'], $skuList);
+				$result = $itemsCollection->update(
+					array('_id' => new MongoId($itm['item_id'])),
+					array('$set' => array('sku_details' => $skuList,'skus' => array_values($skuList) ))
+				);
+			}
+			else
+				$sku = $iSs[ $itm['item_id'] ]['sku_details'][ $itm['size'] ];
+
 			$itemSkus[ $sku ] = $itm;
 		}
+
 		unset($iSs);
 		unset($items);
 		return $itemSkus;
