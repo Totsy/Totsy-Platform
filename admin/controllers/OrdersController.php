@@ -718,6 +718,28 @@ class OrdersController extends BaseController {
 		if ($this->request->data) {
 		 	$datas = $this->request->data;
 		}
+		if (!empty($datas["uncancel_action"])) {
+			$current_user = Session::read('userLogin');
+			#Uncancel Order
+			$orderClass::uncancel(
+				$datas["id"],
+				$current_user["email"]
+			);
+			#Refresh Total
+			$order_temp = $orderClass::find('first', array('conditions' => array('_id' => new MongoId($datas["id"]))));
+			
+			$order_data = $order_temp->data();
+			$order_data['id'] = $datas["id"];
+			$this->request->data = $order_data;
+			$order_temp = $this->manage_items();
+			
+			$order_data = $order_temp->data();
+			$order_data['id'] = $datas["id"];
+			$order_data['save'] = 'true';
+			$this->request->data = $order_data;
+			
+			$order_temp = $this->manage_items();
+		}
 		if (!empty($datas["cancel_action"])){
 			$this->cancel();
 			//If the order is canceled, send an email
