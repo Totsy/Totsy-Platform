@@ -166,8 +166,7 @@ class Item extends Base {
 	    $itemCollection = Item::connection()->connection->items;
 		return $itemCollection->update(
 			array('_id' => $_id),
-			array('$set' => array('sku_details' => $sku_details,'skus' => array_values($skus) )),
-			array('upsert' => true)
+			array('$set' => array('sku_details' => $sku_details,'skus' => array_values($skus) ))
 		);
 	}
 
@@ -301,8 +300,7 @@ class Item extends Base {
 				$skuList[ $itm['size'] ] = $sku;
 				$result = $itemsCollection->update(
 					array('_id' => new MongoId($itm['item_id'])),
-					array('$set' => array('sku_details' => $skuList,'skus' => array_values($skuList) )),
-					array('upsert' => true)
+					array('$set' => array('sku_details' => $skuList,'skus' => array_values($skuList) ))
 				);
 			}
 			else
