@@ -186,7 +186,7 @@ class Order extends Base {
 		
 		// Remove digital items and canceled items
 		foreach ($order['items'] as $item) {
-			if(empty($item['digital']) && (!isset($item['cancel']) || $item['cancel']!=true))
+			if(empty($item['digital']) && empty($item['cancel']))
 				$order_items[]=$item;
 		}
 
