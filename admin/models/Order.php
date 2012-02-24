@@ -210,8 +210,10 @@ class Order extends Base {
 		
 		if (!empty($itemSkus)) {
 			// items still in itemsSkus were not shipped
-			foreach ($itemSkus as $item) {
-				$unshipped_items[] = $item['_id'];
+			foreach ($itemSkus as $sku => $item) {
+				// If the sku is empty we can't trust the data and skip this item
+				if (!empty($sku))
+					$unshipped_items[] = $item['_id'];
 			}
 		}
 		
