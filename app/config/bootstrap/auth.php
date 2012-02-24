@@ -17,10 +17,10 @@ Auth::config(array(
 ));
 
 Dispatcher::applyFilter('_call', function($self, $params, $chain) {
-	$skip = array('/','login', 'logout', 'register',"register/facebook","reset");
+	$skip = array('/','login', 'logout', 'register',"register/facebook","reset",  "publicpassword");
 	$allowed = false;
 	$logged_in = false;
-		
+				
 	#dynamic affiliate pages
 	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
 		 $allowed = true;
@@ -58,16 +58,27 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 	$allowed = true;
 	 }
 	 
+	if(strpos($_SERVER['HTTP_USER_AGENT'],"Sailthru Content Spider Totsy/320b7f9e5affcdb166265d6b8797445f")>-1) {
+	 	if (preg_match('#(sale/)#', $params['request']->url) || strpos('sales', $params['request']->url)>-1){
+	 		$allowed = true;
+	 	}	 	 	
+	} 
+	 	 
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
-	
+		
 	// check if user already logged-in
 	if(Session::check('userLogin')) {
-		$logged_in = true;		
+		$logged_in = true;	
+		
+		//if user is authenticated and the URI is root, redirect them to /sales
+		if($params['request']->url=="/"){
+			return new Response(array('location' => 'Events::index'));
+		}	
 	}
 	
-	// in case whe have an evnt's landing page , will nedd to reditec user to proper page
+	// in case whe have an event's landing page , will need to reditec user to proper page
 	if ( !$logged_in && preg_match('(/sale/)','/'.$params['request']->url)) {
 		Session::write('landing',$params['request']->url);
 	}

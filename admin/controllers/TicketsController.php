@@ -18,7 +18,7 @@ class TicketsController extends BaseController {
 		if($this->request->data) {
 			$data = $this->request->data;
 			$condition = array();
-			if(Session::check('search_criteria') && (array_key_exists('getNext', $data) || array_key_exists('goBack', $data) || array_key_exists('send_button', $data))){
+			if(Session::check('search_criteria') && (array_key_exists('getNext', $data) || array_key_exists('goBack', $data) || array_key_exists('send_button', $data) || array_key_exists('sort', $data))){
 				$search_criteria = Session::read('search_criteria');
 				$data = $data + $search_criteria;
 
@@ -43,6 +43,13 @@ class TicketsController extends BaseController {
 			}else {
 				$getNext = 1;
 			}
+			if(array_key_exists('sort_by', $data)) {
+				$sort_by = $data['sort_by'];
+				$order_by = (int)$data['order_by'];
+			}else {
+				$sort_by = "date_created";
+				$order_by = -1;
+			}
 			$search_criteria['limit_by'] = $data['limit_by'];
 
 			if(array_key_exists('send_button', $data)) {
@@ -52,10 +59,10 @@ class TicketsController extends BaseController {
 
 			Session::write('search_criteria', $search_criteria);
 			$ticketsCol = Ticket::collection();
-			$tickets = $ticketsCol->find($condition)->limit($data['limit_by'])->skip($skip);
+			$tickets = $ticketsCol->find($condition)->limit($data['limit_by'])->skip($skip)->sort(array($sort_by => $order_by));
 
 		}
-		return compact('issue_list', 'tickets', 'search_criteria', 'getNext');
+		return compact('issue_list', 'tickets', 'search_criteria', 'getNext','sort_by','order_by');
 	}
 }
 

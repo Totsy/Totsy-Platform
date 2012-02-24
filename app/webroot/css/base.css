@@ -2600,6 +2600,7 @@ html {
 
 body.login {
 	height:100%;
+	min-height: 600px; /* keep signin button in view in IE8 and below… and other browsers that may choke on 100% height layout */
 }
 
 #featured-brands-box {
@@ -2913,6 +2914,8 @@ label.required {
 	background:#f7f7f7;
 	font-weight:bold;
 	color:#ff0000;
+	background-color: pink;
+	border: solid 1px #ff0000;
 }
 
 .cart-message {
@@ -4712,6 +4715,7 @@ nav .haschild li a:hover {
 	background-color:rgba(218,80,77,1);
 	color:#fff;
 }
+.modal .btn {background-color:#DA504D;}
 #userUtils .checkout strong,
 .modal .btn strong,
 #jojoLoggedOut .btn strong {

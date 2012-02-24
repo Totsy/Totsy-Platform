@@ -50,6 +50,7 @@ Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'uns
 Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
 Router::connect('/login', 'Users::login');
+Router::connect('/publicpassword', 'Users::publicpassword');
 Router::connect('/register', 'Users::register');
 //Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');
@@ -67,6 +68,8 @@ Router::connect('/brands/{:args}', 'Brands::view');
 
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
+/*Router::connect('/pages/password', 'Users::password');*/
+
 Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
 Router::connect('/blog', 'Blog::index');
 Router::connect('/feeds/{:args}', 'Feeds::home');

@@ -41,6 +41,13 @@
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order has been canceled
 									</p><br />
+									<div style="text-align:center;"><button id="uncancel_button" style="font-weight:bold;font-size:14px;text-align: center;"> UnCancel Order</button></div>
+									<div id="uncancel_form" style="display:none">
+										<?php echo $this->form->create(null ,array('id'=>'uncancelForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+										<?php echo $this->form->hidden('uncancel_action', array('class' => 'inputbox', 'id' => 'uncancel_action', 'value' => 1)); ?>
+										<?php echo $this->form->end();?>
+									</div>
 								<?php else: ?>
 
 									<div id='confirm_cancel_div' style="display:none">
@@ -65,9 +72,11 @@
 											The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
 										</p>
 										<p style="text-align:center;">
+										<?php if(!$hasDigitalItems): ?>
+											<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+										<?php endif ?>
 											<!--<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>-->
 											<!--<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>-->
-											<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
 										<?php if(empty($order['payment_date']) && empty($order['cancel']) && ($order['authTotal'] == $order['total'])) : ?>
 											<button id="capture_button" style="font-weight:bold;font-size:14px;">Capture Full Order Amount</button>
 										<?php endif; ?>
@@ -98,6 +107,7 @@
 										<?php echo $this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
 										<?php echo $this->form->end();?>
 									</div>
+	
 									<div id="capture_form" style="display:none">
 										<?php echo $this->form->create(null ,array('id'=>'captureForm','enctype' => "multipart/form-data")); ?>
 										<?php echo $this->form->hidden('capture_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
@@ -466,8 +476,10 @@
 													} while ($i <= $limit)
 													?>
 													<?php echo $this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
+												
 													<?php echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
 													?>
+													
 													<?php if ($return_q>0){?>
 													<?php echo $return_q; ?> return(s)
 													<?php }?>
@@ -475,6 +487,7 @@
 												<td title="subtotal" style="padding:5px; color:#009900;">
 													$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
 												</td>
+												<?php if(empty($item["digital"])){ ?>
 												<td>
 													<div style="text-align:center;">
 														<?php if($item["cancel"] == true){ ?>
@@ -486,6 +499,7 @@
 														<?php }//endelse?>
 													</div>
 												</td>
+												<?php }//endelse?>
 											<?php endforeach ?>
 											</tr>
 
@@ -517,6 +531,9 @@
 <?php echo $this->form->hidden("original_credit_used", array('class' => 'inputbox', 'id' => "original_credit_used", 'value' => $order->original_credit_used)); ?>
 <?php echo $this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
 <?php echo $this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
+<?php echo $this->form->hidden("isOnlyDigital", array('class' => 'inputbox', 'id' => "isOnlyDigital", 'value' => $order->isOnlyDigital )); ?>
+<?php echo $this->form->hidden("payment_date", array('class' => 'inputbox', 'id' => "payment_date", 'value' => $order->payment_date )); ?>
+<?php echo $this->form->hidden("auth_confirmation", array('class' => 'inputbox', 'id' => "auth_confirmation", 'value' => $order->auth_confirmation )); ?>
 									<!--- END HIDDEN DATAS - ITEMS -->
 									<?php if(empty($order->cancel)): ?>
 									<table style="width:250px; float: right;">
@@ -673,6 +690,9 @@ $(document).ready(function(){
 			$("#confirm_cancel_div").show("slow");
 			$("#normal").slideUp();
 		}
+	});
+	$("#uncancel_button").click(function () {
+		$('#uncancelForm').submit();
 	});
 	$("#capture_button").click(function () {
 		if (confirm('Are you sure to capture this order ?')) {

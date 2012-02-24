@@ -82,7 +82,6 @@ class EventsController extends BaseController {
 		}
 		exit();
 
-
 	}
 
 
@@ -107,7 +106,14 @@ class EventsController extends BaseController {
 
 	public function regeneratesku($_id = null) {
 	    $this->_render['layout'] = false;
-		return Item::generateskusbyevent($_id, true);
+		//return Item::generateskusbyevent($_id, true);
+		//query items by eventid
+		$eventItems = Item::find('all', array('conditions' => array('event' => $_id),
+				'order' => array('created_date' => 'ASC')
+			));
+
+		return Item::generateSku($eventItems);
+
 	}
 
 	public function generatesku($_id = null) {
@@ -116,7 +122,7 @@ class EventsController extends BaseController {
 		return Item::generateskusbyevent($_id);
 	}
 
-	
+
 	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
 	    $this->_render['layout'] = false;
 
@@ -711,7 +717,7 @@ class EventsController extends BaseController {
 				unset($itemDetail[$key]);
 
 				if($key!=="color_description_style") {
-					$itemCleanAttributes[trim($key)] = $value;
+					$itemCleanAttributes[trim($key)] = (string)$value;
 				}
 			}
 			$item = Item::create();

@@ -1,4 +1,4 @@
-<?php if ($message){ echo $message; } ?>
+<?php use lithium\storage\Session; ?>
 <style>
 h2 {
     color: #999999;
@@ -27,11 +27,11 @@ padding: 4px 0 0 22px;
 font-size:16px; color:#999999; font-weight:normal;
 }
 
-div.rollover_img {
+.rollover_img {
 width: 108px;
 height: 108px;
 background-image: url(/img/freeShip-badge.png);
-position: absolute; right:-73px; top:406px;
+position: absolute; right:-73px; top:454px;
 }
 
 .rollover_img a {
@@ -59,18 +59,6 @@ display: block;
 
 .video { margin-top: 97px;] }
 
-.loginformlabel{
-	width:50px;
-}
-
-.inputbox{
-	float:left;
-}
-
-.button{
-	width:120px;
-}
-
 .gradient {background: #ffffff; /* Old browsers */
 background: -moz-linear-gradient(top, #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f5f5)); /* Chrome,Safari4+ */
@@ -81,46 +69,101 @@ background: linear-gradient(top, #ffffff 0%,#f5f5f5 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
 }
 </style>
-<div class="container_16 round_clear pushy" style="width:720px; height:473px; float:left; margin:85px 0px 0px 85px;">
-<div class="round gradient"  style="background:#ffffff; height:445px;">
-
+<div class="container_16 round_clear pushy" style="width:771px; float:left; margin:135px 0px 0px 85px;">
+<div class="round gradient">
 <!-- left side -->
-<div class="grid_6" style="float:left;width:315px;">
-<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
-<div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:310px; margin-top:8px;">
+<div class="grid_6">
 
-<h2 style="width:300px; text-align:center; font-weight:bold; padding-top:10px; padding-bottom:20px; margin-bottom:10px;  border-bottom:1px #cccccc solid;">Member Sign in</h2>
+<?php if (Session::read("layout", array("name"=>"default"))!=="mamapedia") { 
+	echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false));
+	} else {
+	echo $this->html->link($this->html->image('mamapedia/logo.png', array('width'=>'479')), '', array('escape'=> false));} 
+?>
 
 
-<?php echo $this->view()->render(array('element' => 'loginForm')); ?>
+<div style="width:350px; margin-top:28px;">
+
+<?php 
+
+use app\controllers\UsersController;
+
+$token = "";
+$status = "";
+
+if($this->_request->query['t']) {
+	$token = $this->_request->query['t'];
+}
+
+if($this->_request->query['s']) {
+	$status = $this->_request->query['s'];
+}
+
+?>
+<h2>Change Your Password</h2>
+	<hr />
+			<p>
+				<?php
+					switch ($status) {
+						case 'true' :
+							echo "<div class=\"standard-message\">Your information has been updated. <br /><span style='color:#999'>You can now log in with your updated password at </span> <a href='/login'>Totsy.com</a></div>";
+							break;
+						case 'false' :
+							echo "<div class=\"standard-error-message\">Your current password is incorrect. Please try again.</div>";
+							break;
+						case 'errornewpass' :
+							echo "<div class=\"standard-error-message\">Please check that your passwords match and try again.</div>";
+							break;
+						case 'shortpass' :
+							echo "<div class=\"standard-error-message\">Password must be at least 6 characters.</div>";
+							break;
+					}
+				?>
+			</p>
+			<br />
+
+			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/publicpassword')); ?>
+			<input type="hidden" name="clear_token" value="<?php echo $token; ?>">
+			<div style="width:110px; float:left">	
+					<?php echo $this->form->label('new_password', 'New Password *',array('class' => 'required loginformlabel' )); ?>
+			</div>
+			<div style="float:right">
+					<?php echo $this->form->password('new_password', array(
+							'style' => 'width:228px'
+						));?>
+			</div>
+			<div class="clear"></div>
+			<div style="width:110px; float:left">
+					<?php echo $this->form->label('password_confirm', 'Confirm Password *', array('class' => 'required loginformlabel' )); ?>
+			</div>
+			<div style="float:right">		
+					<?php echo $this->form->password('password_confirm', array(
+							'style' => 'width:228px'
+						))
+					;?>
+			</div>
+			<div class="clear"></div>
+			<?php echo $this->form->submit('Change Password', array('class' => 'button fl')); ?>
+			<?php echo $this->form->end();?>
+
+
 </div>
 <div class="clear"></div>
 </div>
-
-
-
 <!-- right side -->
-
-<div class="grid_6" style="float:right; ">
-<div class="fr" style="padding-right:20px;padding-top:10px;">Not a member yet? <a href="/register" title="Sign In">Join now!</a></div>
-<div class="round gradient" style="border:1px #eeeeee solid; height:330px; width:300px; margin-top:83px;margin-left:20px;">
-<img src="/img/logos_home_right.jpg">
-</div>
-
-<div class="free_shipping_banner_reg_new rollover_img" style="margin-top:0px;"><a href="javascript:;" title="Free Shipping"><span></span></a></div>
-</div>
-
-
+<div class="grid_6" style="margin-left:28px;">
 
 
 </div>
 <div class="clear"></div>
-<?php //echo $this->html->image('featured_brands_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+
+
+<?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+
 <div class="clear"></div>
+</div>
 </div>
 <div id="footer">
 <?php echo $this->view()->render(array('element' => 'footerNavPublic')); ?>
-</div>
 </div>
 
 <!-- Google Code for Homepage Remarketing List -->
@@ -145,7 +188,7 @@ var google_conversion_value = 0;
 <script>
 //your fb login function
 function fblogin() {
-FB.login(function(response) {
+FB.login( function(response) {
 }, {perms:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
 }
 </script>

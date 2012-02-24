@@ -66,7 +66,6 @@ class CartController extends BaseController {
 
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
-
 		$shipDate = Cart::shipDate($cart);
 		#Check Expires
 		Cart::cleanExpiredEventItems();
@@ -120,7 +119,7 @@ class CartController extends BaseController {
 			$shipping = 0;
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount($subTotal, $shipping, $overShippingCost, $this->request->data);
+		$vars = Cart::getDiscount($cart, $subTotal, $shipping, $overShippingCost, $this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
@@ -147,8 +146,29 @@ class CartController extends BaseController {
 		 	$this->_render['template'] = 'mobile_view';
 		}
 
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'serviceAvailable');
-}
+		return $vars + compact(
+			'cart',
+			'user',
+			'message',
+			'subTotal',
+			'services',
+			'total',
+			'shipDate',
+			'promocode',
+			'savings',
+			'shipping_discount',
+			'credits',
+			'cartItemEventEndDates',
+			'cartExpirationDate',
+			'promocode_disable',
+			'itemCount',
+			'returnUrl',
+			'shipping',
+			'overShippingCost',
+			'serviceAvailable'
+		);
+	}
+
 	/**
 	 * The add method increments the quantity of one item.
 	 *
@@ -183,7 +203,8 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'vendor_style',
-					'discount_exempt'
+					'discount_exempt',
+					'event'
 			)));
 
 			#Get Item from Cart if already added

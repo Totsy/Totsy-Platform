@@ -16,7 +16,7 @@ use MongoDate;
  * This Script Recapture all orders that has been shipped and that got Capture Errors
  * 
  */
-class ReCapture extends \lithium\console\Command {
+class ReCaptureSpecific extends \lithium\console\Command {
 		
 	/**
 	 * The environment to use when running the command. 'production' is the default.
@@ -38,22 +38,10 @@ class ReCapture extends \lithium\console\Command {
 	 *
 	 * @var string
 	 */
-	public $ordersIdFile = "capture_errors.csv";
+	public $ordersIdFile = "capture_specific.csv";
 	
-	/**
-	 * Creating new auth during recapture process
-	 *
-	 * @var string
-	 */
-	public $createNewAuth = true;
+	public $forceCapture = false;
 	
-	/**
-	 * Creating only a reauth during recapture process
-	 *
-	 * @var string
-	 */
-	public $onlyReauth = false;
-
 	/**
 	 * Instances
 	 */
@@ -67,33 +55,26 @@ class ReCapture extends \lithium\console\Command {
 		$report = array();
 		$report[0] = array('error_type', 'error_message', 'order_id','authKey','total');
 		$reportCounter = 1;
-		$orderIds = $this->parseOrderIdsFromCSV();
-		if(!empty($orderIds)) {
-			foreach($orderIds as $orderId) {
-				Logger::debug('Processing Order Id : ' . $orderId);
-				$conditions = array('order_id' => $orderId,
-									'total' => array('$ne' => 0),
-									'cancel' => array('$ne' => true),
-									'payment_captured' => array('$exists' => false),
-									'cancel' => array('$ne' => true),
-									'isOnlyDigital' => array('$ne' => true)
-									);
+		$ordersToCapture = $this->parseOrderIdsFromCSV();
+		if(!empty($ordersToCapture)) {
+			foreach($ordersToCapture as $orderToCapture) {
+				Logger::debug('Processing Order Id : ' . $orderToCapture['order_id']);
+				$conditions = array('order_id' => $orderToCapture['order_id']);
+				if(!$this->forceCapture) {
+					$conditions['payment_captured_specific_amount'] = array('$exists' => false);
+				}
 				$order = $ordersCollection->findOne($conditions);
 				if(!empty($order)) {		
-					if(!empty($order['cyberSourceProfileId']) && !empty($this->createNewAuth)) {
-						$authKeyAndReport = $this->authorize($order);
+					if(!empty($order['cyberSourceProfileId'])) {
+						$authKeyAndReport = $this->authorize($order, $orderToCapture);
 						if(!empty($authKeyAndReport['reportAuthorize'])) {
 							$report[$reportCounter] = $authKeyAndReport['reportAuthorize'];
 							$reportCounter++;
 						}
 						Logger::debug('New Authorize Key : ' . $authKeyAndReport['authKey']);
-					} else {
-						if($order['authKey']) {
-							$authKeyAndReport['authKey'] = $order['authKey'];
-						}
 					}
-					if(!empty($authKeyAndReport['authKey']) && empty($this->onlyReauth)) {
-						$reportCapture = $this->capture($authKeyAndReport['authKey'], $order);
+					if(!empty($authKeyAndReport['authKey'])) {
+						$reportCapture = $this->capture($authKeyAndReport['authKey'], $order, $orderToCapture);
 						if(!empty($reportCapture)) {
 							$report[$reportCounter] = $reportCapture;
 							$reportCounter++;
@@ -112,14 +93,16 @@ class ReCapture extends \lithium\console\Command {
 		$orderIds = null;
 		if (($handle = fopen(LITHIUM_APP_PATH . $this->source . $this->ordersIdFile, "r")) !== FALSE) {
 		    while (($line = fgetcsv($handle, 1000, ",")) !== FALSE) {
-				$orderIds[] = $line[0];
+		    	$infos['order_id'] = $line[0];
+		    	$infos['specific_amount'] = (float) $line[1];
+				$orderIds[] = $infos;
 		    }
 		    fclose($handle);
 		}
 		return $orderIds;
 	}
 
-	public function authorize($order = null) {
+	public function authorize($order = null, $orderToCapture = null) {
 		Logger::debug('Authorize');
 		$ordersCollection = Order::Collection();
 		$report = null;
@@ -131,41 +114,46 @@ class ReCapture extends \lithium\console\Command {
 		#If Digital Items, Calculate correct Amount
 		$amountToAuthorize = Order::getAmountNotCaptured($order);
 		#Create a new Transaction and Get a new Authorization Key
-		$auth = Processor::authorize('default', $amountToAuthorize, $profile, array('orderID' => $order['order_id']));
+		$auth = Processor::authorize('default', $orderToCapture['specific_amount'], $profile, array('orderID' => $order['order_id']));
 		if ($auth->success()) {
 			Logger::debug('Authorize Complete: ' . $auth->key);
 			$authKey = $auth->key;
-			if(!empty($this->onlyReauth)) {
-				$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$set' => array('authKey' => $auth->key,
-											  'auth' => $auth->export(),
-											  'authTotal' => $amountToAuthorize,
-											  'processor' => $auth->adapter
-						)), array( 'upsert' => true)
-				);
-			}
+			$specificAuth = array(
+				'authKey' => $auth->key,
+				'amount' => $orderToCapture['specific_amount'],
+				'date' => new MongoDate()
+			);
+			$ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$push' => array('specific_authorization' => $specificAuth
+					))
+			);
 		} else {
 			#Record errors in DB
 			$error = implode('; ', $auth->errors);
 			Logger::debug('Authorize Error: ' . $error);
-			$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$set' => array('error_date' => new MongoDate(),
-											  'auth_error' => $error
-						)), array( 'upsert' => true)
+			$specificAuth_Error = array(
+				'authKey' => $auth->key,
+				'amount' => $orderToCapture['specific_amount'],
+				'error' => $error,
+				'date' => new MongoDate()
+			);
+			$ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$push' => array('specific_authorization_error' => $specificAuth_Error
+					))
 			);
 			#Include errors in Report
 			$reportAuthorize[] = 'authorize_error';
 			$reportAuthorize[] = $error;
 			$reportAuthorize[] = $order['order_id'];
 			$reportAuthorize[] = $order['authKey'];
-			$reportAuthorize[] = $amountToAuthorize;
+			$reportAuthorize[] = $orderToCapture['specific_amount'];
 		}
 		return compact('authKey', 'reportAuthorize');
 	}
 	
-	public function capture($authKey = null, $order = null) {
+	public function capture($authKey = null, $order = null, $orderToCapture = null) {
 		Logger::debug('Capture');
 		$ordersCollection = Order::Collection();
 		$report = null;
@@ -174,7 +162,7 @@ class ReCapture extends \lithium\console\Command {
 		$auth_capture = Processor::capture(
 				'default',
 				$authKey,
-				floor($amountToCapture * 100) / 100,
+				floor($orderToCapture['specific_amount'] * 100) / 100,
 				array(
 					'processor' => isset($order['processor']) ? $order['processor'] : null,
 					'orderID' => $order['order_id']
@@ -182,58 +170,56 @@ class ReCapture extends \lithium\console\Command {
 		);
 		if ($auth_capture->success()) {
 			Logger::debug('Capture Succeeded: ' . $auth_capture->key);
-			$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$set' => array('authKey' => $auth_capture->key,
-											  'auth' => $auth_capture->export(),
-											  'authTotal' => $amountToCapture,
-											  'processor' => $auth_capture->adapter,
-											  'payment_date' => new MongoDate(),
-           									  'auth_confirmation' => $auth_capture->key,
-           									  'payment_captured' => true
-						)), array( 'upsert' => true)
-			);
 			#Save Capture in Transactions Logs
 			$transation['authKey'] = $auth_capture->key;
-			$transation['amount'] = $amountToCapture;
+			$transation['amount'] = $orderToCapture['specific_amount'];
 			$transation['date_captured'] = new MongoDate();
-			$update = $ordersCollection->update(
+			$ordersCollection->update(
 				array('_id' => $order['_id']),
 				array(
 					'$push' => array(
-					'capture_records' => $transation
-					)
+						'capture_records' => $transation
+					),
+					'$set' => array('payment_captured_specific_amount' => true)
 				)
 			);
+			if(($orderToCapture['specific_amount'] == (float) $order['total']) || empty($order['total'])) {
+				$ordersCollection->update(
+				array('_id' => $order['_id']),
+				array('$set' => array(
+									'payment_date' => new MongoDate(),
+           							'auth_confirmation' => $auth_capture->key																		
+						)
+					)
+				);
+			}
 			#Unset Old Errors fields
-			$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$unset' => array('error_date' => 1,
-												'auth_error' => 1
-			)));
 			$report[] = 'capture_succeeded';
 			$report[] = '';
 			$report[] = $order['order_id'];
 			$report[] = $authKey;
-			$report[] = $amountToCapture;
+			$report[] = $orderToCapture['specific_amount'];
 			Logger::debug('Order Document Updated!');
 		} else {
 			#Record errors in DB
 			$error = implode('; ', $auth_capture->errors);
 			Logger::debug('Capture Error: ' .$error);
-			$update = $ordersCollection->update(
-						array('_id' => $order['_id']),
-						array('$set' => array('error_date' => new MongoDate(),
-											  'auth_error' => $error,
-											  'auth_confirmation' => -1
-						)), array( 'upsert' => true)
+			$specificCapt_Error = array(
+				'authKey' => $auth_capture->key,
+				'amount' => $orderToCapture['specific_amount'],
+				'error' => $error,
+				'date' => new MongoDate()
+			);
+			$ordersCollection->update(
+					array('_id' => $order['_id']),
+					array('$push' => array('specific_capture_error' => $specificCapt_Error))
 			);
 			#Include errors in Report
 			$report[] = 'capture_error';
 			$report[] = $error;
 			$report[] = $order['order_id'];
 			$report[] = $order['authKey'];
-			$report[] = $amountToCapture;
+			$report[] = $orderToCapture['specific_amount'];
 		}
 		return $report;
 	}
@@ -246,7 +232,7 @@ class ReCapture extends \lithium\console\Command {
 		$month = date("m",$now["0"]);
 		$day = date("d",$now["0"]);
 		$year = date("Y",$now["0"]);
-		$myFile =  "Log_Recapture_" . $month .'_'. $day . "_" . $year . "_" . $now["0"] . ".csv";
+		$myFile =  "Log_Recapture_Specific_" . $month .'_'. $day . "_" . $year . "_" . $now["0"] . ".csv";
 		$myFilePath = LITHIUM_APP_PATH . $this->source . $myFile;
 		$fh = fopen($myFilePath, 'wb');
 		if(!empty($report)) {
