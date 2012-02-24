@@ -285,7 +285,7 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
 	});
 </script>
 
-<!-- Sailthru Horizon -->
+<!-- Sailthru Horizon -
 <script type="text/javascript">
     (function() {
         function loadHorizon() {
@@ -310,6 +310,7 @@ if ('/sales?req=invite' == $_SERVER['REQUEST_URI']) {
         };
     })();
 </script>
+-->
 <?php
 $currentURI  = $_SERVER['REQUEST_URI'];
 					
