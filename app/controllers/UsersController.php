@@ -906,7 +906,7 @@ class UsersController extends BaseController {
 			extract(UsersController::registration($data + $additionalData));
 		}
 
-		return compact('user', 'fbuser');
+		return compact('user', 'fbuser', 'saved');
 	}
 
 	/**
