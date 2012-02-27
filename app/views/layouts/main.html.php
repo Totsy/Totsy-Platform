@@ -1,6 +1,7 @@
 <?php 
 use lithium\net\http\Router; 
 use lithium\storage\Session;
+use app\models\Event;
 ?>
 <?php $request = $this->request(); ?>
 <!doctype html>
@@ -84,7 +85,13 @@ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(m,
 				$tags .= ', ' . implode(', ', $itemData['categories']);
 			}
 			if (count($itemData['ages'])) {
-				$tags .= ', ' . implode(', ', $itemData['ages']);
+				$ts = array();
+				foreach ($itemData['ages'] as $a){
+					$ts[] = Event::mapCat2Url('age',$a);
+				}
+				if (sizeof($ts)>0){
+					$tags .= ', ' . implode(', ', $ts);
+				}
 			}
 		} else if (isset($event)) {
 			$eventData = $event->data();
