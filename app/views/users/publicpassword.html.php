@@ -120,6 +120,7 @@ if($this->_request->query['s']) {
 				?>
 			</p>
 			<br />
+
 			<?php echo $this->form->create(null, array('class' => "fl", 'url'=>'/publicpassword')); ?>
 			<input type="hidden" name="clear_token" value="<?php echo $token; ?>">
 			<div style="width:110px; float:left">	

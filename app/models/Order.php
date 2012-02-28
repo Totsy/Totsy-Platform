@@ -235,12 +235,14 @@ class Order extends Base {
 			}
 		}
 		#Save Tax Infos
-		if($avatax === true){
+		if($avatax['avatax'] === true){
 			$tax::postTax(compact(
 				'order', 'cartByEvent',
 				'billingAddr',
-				'shippingAddr', 'shippingCost', 'overShippingCost'
-			));
+				'shippingAddr', 
+				'shippingCost', 'overShippingCost',
+				'vars'
+			)+array('recordedItems'=>$items));
 		}
 		#Shipping Method - By Default UPS
 		$shippingMethod = 'ups';
@@ -299,7 +301,6 @@ class Order extends Base {
 		if(Cart::isOnlyDigital($cart)) {
 			$shippingMethod = 'email';
 			$order->isOnlyDigital = true;
-			$shipDateInsert = time();
 		}
 		$order->save(array(
 			'total' => $vars['total'],

@@ -83,6 +83,21 @@ class Order extends Base {
 		'authKey' => 'Could not secure payment.',
 	);
 
+	/**
+	 * The # of business days to be added to an event to determine the estimated
+	 * ship by date. The default is 18 business days.
+	 *
+	 * @var int
+	 **/
+	protected $_shipBuffer = 15;
+	
+	/**
+	 * Any holidays that need to be factored into the estimated ship date calculation.
+	 *
+	 * @var array
+	 */
+	protected $_holidays = array('2010-11-25', '2010-11-26');
+	
 	public static function dates($name) {
 		return new MongoDate(time() + static::_object()->_dates[$name]);
 	}
@@ -196,8 +211,10 @@ class Order extends Base {
 		
 		if (!empty($itemSkus)) {
 			// items still in itemsSkus were not shipped
-			foreach ($itemSkus as $item) {
-				$unshipped_items[] = $item['_id'];
+			foreach ($itemSkus as $sku => $item) {
+				// If the sku is empty we can't trust the data and skip this item
+				if (!empty($sku))
+					$unshipped_items[] = $item['_id'];
 			}
 		}
 		
@@ -322,6 +339,34 @@ class Order extends Base {
 		$orders = static::collection();
 		$date = array('date_created' => array('$gt' => new MongoDate(strtotime('August 3, 2010'))));
 		return $orders->find(array('$or' => $conditions) + $date)->sort(array('date_created' => 1));
+	}
+	
+	public static function uncancel($order_id, $author) {
+		//Get the actual datas of the order
+		$result = static::find('first', array('conditions' => array(
+			'_id' => $order_id instanceof MongoId ? $order_id : new MongoId($order_id)
+		)));
+		$order = $result->data();
+		$modification_datas["author"] = $author;
+		$modification_datas["date"] = new MongoDate(strtotime('now'));
+		$modification_datas["type"] = "uncancel";
+		$items = $order["items"];
+		$item_names = array();
+		foreach($order["items"] as $key => $item) {
+			$items[$key]["cancel"] = false;
+			//Reattribute original quantity
+			$item_amount += $item['sale_retail'];
+			$item_names[] = $item['description'];
+			if(!empty($items[$key]["initial_quantity"])) {
+				$items[$key]["quantity"] = $items[$key]["initial_quantity"];
+			}
+		}
+		static::collection()->update(
+			array('_id' => new MongoId($order_id)),
+			array('$set' => array('items' => $items, 'cancel'=>false),
+				'$push' => array('modifications' => $modification_datas)
+			)
+		);
 	}
 
 	/**
@@ -553,6 +598,13 @@ class Order extends Base {
 			}
 		} else {
 			$datas_order_prices['isOnlyDigital'] = false;
+		}
+		#Refreshing Shipdate depending of the order type (Digital/Physical)
+		if($items) {
+			$shipDate = static::shipDate(array('items' => $items));
+			if(!empty($shipDate)) {
+				$datas_order_prices['ship_date'] = $shipDate;
+			}
 		}
 		if(isset($selected_order["overSizeHandling"])) {
 			$datas_order_prices['overSizeHandling'] = (float) $selected_order["overSizeHandling"];
@@ -1200,6 +1252,46 @@ class Order extends Base {
 			$amountNotCaptured = $order['total'];
 		}
 		return $amountNotCaptured;
+	}
+	
+	/**
+	 * Calculated estimated ship by date for an order.
+	 * The estimated ship-by-date is calculated based on the last event that closes.
+	 * @param object $order
+	 * @return string
+	 */
+	public static function shipDate($order) {
+		$i = 1;
+		if(static::isOnlyDigital($order)) {
+			$delayDelivery = 5;	    
+		} else {
+			$delayDelivery = static::_object()->_shipBuffer;
+		}
+		$shipDate = null;
+		$items = (is_object($order)) ? $order->items->data() : $order['items'];
+		if (!empty($items)) {
+			foreach ($items as $item) {
+				if (!empty($item['event_id'])) {
+					$ids[] = new MongoId($item['event_id']);
+				}
+			}
+			if (!empty($ids)) {
+				$event = Event::find('first', array(
+					'conditions' => array('_id' => $ids),
+					'order' => array('date_created' => 'DESC')
+				));
+				$shipDate = $event->end_date->sec;
+				while($i < $delayDelivery) {
+					$day = date('D', $shipDate);
+					$date = date('Y-m-d', $shipDate);
+					if ((($day != 'Sat') && ($day != 'Sun')) && !in_array($date, static::_object()->_holidays)){
+						$i++;
+					}
+					$shipDate = strtotime($date . ' +1 day');
+				}
+			}
+		}
+		return $shipDate;
 	}
 }
 

@@ -329,7 +329,7 @@ class Cart extends Base {
 				}
 			}
 			
-			if(static::isOnlyDigital($carts)) {
+			if(static::isOnlyDigital($cart)) {
 				$cost = 0;
 			}
 
@@ -486,13 +486,18 @@ class Cart extends Base {
 		//shows calculated shipdate
 		if($normal){
 			$i = 1;
+			if(static::isOnlyDigital($cart)) {
+				$delayDelivery = 5;
+			} else {
+				$delayDelivery = static::_object()->_shipBuffer;
+			}
 			$event = static::getLastEvent($cart);
 			if (!empty($event)) {
 				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
-				while($i < static::_object()->_shipBuffer) {
-					$day = date('N', $shipDate);
+				while($i < $delayDelivery) {
+					$day = date('D', $shipDate);
 					$date = date('Y-m-d', $shipDate);
-					if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
+					if ((($day != 'Sat') && ($day != 'Sun')) && !in_array($date, static::_object()->_holidays)) {
 						$i++;
 					}
 					$shipDate = strtotime($date.' +1 day');
@@ -516,9 +521,8 @@ class Cart extends Base {
 				}
 			}
 		}
-		return $shipDate;
-		
-		
+
+		return $shipDate;		
 	}
 
 	/**
@@ -733,9 +737,12 @@ class Cart extends Base {
 	 * @return boolean onlyDigital
 	 */
 	public static function isOnlyDigital($cart) {
+		if($cart->items) {
+			$cart = $cart->items;
+		}
 		$onlyDigital = true;
 		foreach($cart as $item) {
-			if(Item::isTangible($item['item_id'])) {
+			if(Item::isTangible($item['item_id']) && empty($item['cancel'])) {
 				$onlyDigital = false;
 			}
 		}

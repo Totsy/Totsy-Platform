@@ -159,6 +159,6 @@ function fblogin() {
 			window.location.reload();    
   		}	
 	}, 		 
-	{ scope:'email,user_birthday,user_location,publish_stream,xmpp_login'} );
+	{ scope:'email'} );
 }
 </script>

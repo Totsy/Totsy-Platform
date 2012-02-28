@@ -185,12 +185,7 @@ class AffiliatesController extends BaseController {
 				$fbCancelFlag = $this->request->query['fbcancel'];
 			}
 
-			// Facebook user authenticated and already exists on Totsy
-			if ($success) {
-				$this->redirect($urlredirect);
-
-			// user requires a new Totsy account
-			} else if ((!empty($userfb) && !$fbCancelFlag) || $pdata) {
+			if ((!empty($userfb) && !$fbCancelFlag) || $pdata) {
 				$affiliateData = array('invited_by' => $affiliate);
 				if (preg_match('/^keyade/i', $affiliate)) {
 					$affiliateData['keyade_user_id'] = 0;

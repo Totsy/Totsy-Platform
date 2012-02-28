@@ -201,7 +201,8 @@ class FinancialExport extends Base  {
 		'avatax',
 		'savings',
 		'auth',
-		'void_records'
+		'void_records',
+		'capture_records'
 	);
 
 	/**
@@ -252,7 +253,8 @@ class FinancialExport extends Base  {
 			"cancel",
 			'auth',
 			'auth_records',
-			'void_records'
+			'void_records',
+			'capture_records'
 		);
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
@@ -475,21 +477,62 @@ class FinancialExport extends Base  {
 
 	    if ($this->historical == 'true') {
 	        $this->yesterday_max = mktime(23,59,59,date('m') - 1,24,date('Y'));
-	         $conditions = array('modifications' => array('$elemMatch' => array(
+	         $conditions = array('$or' => array(
+	         array('modifications' => array('$elemMatch' => array(
                 'date' => array(
                     '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
                     '$lte' => new MongoDate($this->yesterday_max)
-                )
-            )));
+                )))),
+              array('payment_date' => array(
+                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$lte' => new MongoDate($this->yesterday_max)
+                )),
+              array('auth_records' => array('$elemMatch' => array(
+                'date_saved' => array(
+                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$lte' => new MongoDate($this->yesterday_max)
+                )))),
+              array('void_records' => array('$elemMatch' => array(
+                'date_saved' => array(
+                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$lte' => new MongoDate($this->yesterday_max)
+                )))),
+              array('capture_records' => array('$elemMatch' => array(
+                'date_captured' => array(
+                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$lte' => new MongoDate($this->yesterday_max)
+                ))))
+            ));
 	    } else {
 	        $this->yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
             $this->yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
-            $conditions = array('modifications' => array('$elemMatch' => array(
-                'date' => array(
+            $conditions = array('$or' =>array(
+            	array('modifications' => array('$elemMatch' => array(
+	                'date' => array(
+	                    '$gte' => new MongoDate($this->yesterday_min),
+	                    '$lte' => new MongoDate($this->yesterday_max)
+	                )))),
+              array('payment_date' => array(
                     '$gte' => new MongoDate($this->yesterday_min),
-                    '$lte' => new MongoDate($this->yesterday_max)
-                ))),
-                'order_id' => array('$nin' => array_unique($orderids))
+	                '$lte' => new MongoDate($this->yesterday_max)
+                )),
+              array('auth_records' => array('$elemMatch' => array(
+                'date_saved' => array(
+                    '$gte' => new MongoDate($this->yesterday_min),
+	                '$lte' => new MongoDate($this->yesterday_max)
+                )))),
+              array('void_records' => array('$elemMatch' => array(
+                'date_saved' => array(
+                    '$gte' => new MongoDate($this->yesterday_min),
+	                '$lte' => new MongoDate($this->yesterday_max)
+                )))),
+              array('capture_records' => array('$elemMatch' => array(
+                'date_captured' => array(
+                    '$gte' => new MongoDate($this->yesterday_min),
+	                '$lte' => new MongoDate($this->yesterday_max)
+                ))))
+            ),
+             'order_id' => array('$nin' => array_unique($orderids))
             );
 	    }
 	    $this->orders = Order::collection()->find($conditions, $this->fields);
@@ -732,6 +775,15 @@ class FinancialExport extends Base  {
                     $tmp = array();
 					foreach($order['auth_records'] as $auth_record) {
 					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
+					    $tmp[] = $auth_record;
+					}
+
+					$order['auth_records'] = $tmp;
+				}
+				if (array_key_exists('capture_records', $order) && array_key_exists('auth', $order)) {
+                    $tmp = array();
+					foreach($order['auth_records'] as $auth_record) {
+					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_captured']->sec );
 					    $tmp[] = $auth_record;
 					}
 

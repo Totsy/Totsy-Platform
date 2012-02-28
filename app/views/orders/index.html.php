@@ -73,7 +73,7 @@
 						<?php endforeach ?>
 						</td>
 						<td>
-							<?php if (!empty($trackingNumbers) || !empty($order->tracking_numbers)): ?>
+							<?php if (!empty($trackingNumbers["$order->_id"]) || !empty($order->tracking_numbers)): ?>
 								Tracking Number(s):
 								<?php if ($trackingNumbers): ?>
 									<?php if (!empty($trackingNumbers["$order->_id"])): ?>

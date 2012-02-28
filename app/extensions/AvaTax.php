@@ -89,9 +89,9 @@ class AvaTax {
 						'reason' => $e->getMessage(),
 						'result' => 'Tax calculation was performed internally using default state tax.',
 						'trace' => '<br><div style="padding-left:15px;">'.
-										'SERVER: '.php_uname('n').'<br>'.
-										'DATE: '.date('Y-m-d H:i:s').'<br>'.
-										'INFO: '.print_r($data,true).'<br>'.
+										'SERVER: '.php_uname('n').'<br><br>'.
+										'DATE: '.date('Y-m-d H:i:s').'<br><br>'.
+										'INFO: '.print_r($data,true).'<br><br>'.
 										'TRACE: '.$e->getTraceAsString().
 									'</div>'
 					));
@@ -125,10 +125,6 @@ class AvaTax {
 	
   	public static function postTax($data,$tryNumber=0){
   		$settings = Environment::get(Environment::get());
-  		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
-			$data['items'] = static::getCartItems($data['cartByEvent']);
-			static::shipping($data);
-		}  	
 
 		if (!empty($data['vars']) && !empty($data['vars']['billingAddr'])){
 			$data['billingAddr'] = $data['vars']['billingAddr'];
@@ -144,6 +140,16 @@ class AvaTax {
 		}
 		if (!empty($data['vars'])){
 			unset($data['vars']);
+		}
+		
+		if (is_array($data) && array_key_exists('cartByEvent',$data) ){
+			$data['items'] = static::getCartItems($data['cartByEvent']);
+			static::shipping($data);
+		}
+		
+		if (empty($data['items']) && !empty($data['recordedItems']) ){
+			$data['items'] = static::getRecordedItems($data['recordedItems']);
+			static::shipping($data);
 		}
 		
 		if (is_array($data) && array_key_exists('cart',$data)){
@@ -190,6 +196,18 @@ class AvaTax {
 		foreach ($cartByEvent as $key => $event){
 			foreach ($event as $item){
 				$items[]=$item;
+			}
+		}
+		return $items;
+	}
+	
+	protected static function getRecordedItems($recordedItems){
+		$items = array();
+		foreach ($recordedItems as $i){
+			if (is_object($i) && get_class($i) == 'lithium\data\entity\Document'){
+				$items[] = $i->data();
+			} else {
+				$items[] = $i;
 			}
 		}
 		return $items;
