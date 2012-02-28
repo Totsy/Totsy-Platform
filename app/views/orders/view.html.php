@@ -253,13 +253,12 @@ $promoCode = $order->promo_code;
 	// -->
 </script>
 
-<?php
-
-echo("<img src='http://api.theechosystem.com/Core/Conversion/Save?echoTrackPack=" . 
-$_COOKIE['EchoTrackPack'] . "&revenue=".$orderSubTotal."&quantity=".(int)$totalQty."&promocode=".$promoCode."' style='width:1px;height:1px;' />");  
+<?php if ($new): ?>
+	<?php
+		//converion tracking for Echosystem: a 3rd party JS conversion tracking tool 
+		echo("<img src='http://api.theechosystem.com/Core/Conversion/Save?echoTrackPack=" . $_COOKIE['EchoTrackPack'] . "&revenue=".$orderSubTotal."&quantity=".(int)$totalQty."&promocode=".$promoCode."' style='width:1px;height:1px;' />");  
 ?>
 
-<?php if ($new): ?>
 	<!-- Google Code for acheteurs Remarketing List -->
 	<script type="text/javascript">
 		/* <![CDATA[ */
