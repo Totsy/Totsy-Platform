@@ -152,7 +152,7 @@ class ItemsController extends BaseController {
 				$newsize = $this->request->data['item_new_size'];
 				
 				//make a sku
-				$newsku = Item::sku($item->vendor, $item->vendor_style, $newsize, $item->color, $hash = 'md5');
+				$newsku = Item::getUniqueSku($item->vendor, $item->vendor_style, $newsize, $item->color);
 			
 				//update skus
 				$data['skus'] = $item->skus;
