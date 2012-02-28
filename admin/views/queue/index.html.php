@@ -37,9 +37,9 @@
 						    <center><input type="checkbox" name="orders[]" value="<?=$event->_id?>" /></center>
 						</td>
 						<td>
-						<?php if (in_array((string) $event->_id, $processedOrders)): ?>
-							<center>Processed</center>
-						<?php endif ?>
+							<?php if (in_array((string) $event->_id, $processedOrders)): ?>
+								<center>Processed</center>
+							<?php endif ?>
 						</td>
 						<td>
 						    <center><input type="checkbox" name="pos[]" value="<?=$event->_id?>" /></center>
