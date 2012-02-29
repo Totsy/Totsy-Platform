@@ -44,7 +44,7 @@
 		    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
 		    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter"></span>
 		    	</span>
-		    	<span style="float:right">Estimated Delivery Date: <br>
+		    	<span style="float:right">Estimated Ship Date: <br>
 		    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
 		    	</span>
 		    </div>
