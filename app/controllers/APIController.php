@@ -598,7 +598,7 @@ class APIController extends  \lithium\action\Controller {
 				$to = strtotime($to. ' 23:59:59');
 			}
 		}
-		$code = 'keydae';
+		$code = 'keyade';
 		if (array_key_exists('code',$this->request->query)){
 			$code = $this->request->query['code'];
 		}
