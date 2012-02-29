@@ -1246,9 +1246,9 @@ class Order extends Base {
 			if (!empty($ids)) {
 				$event = Event::find('first', array(
 					'conditions' => array('_id' => $ids),
-					'order' => array('date_created' => 'DESC')
+					'order' => array('end_date' => 'DESC')
 				));
-				$shipDate = $event->end_date->sec;
+				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 				while($i < $delayDelivery) {
 					$day = date('D', $shipDate);
 					$date = date('Y-m-d', $shipDate);

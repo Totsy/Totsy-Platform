@@ -145,7 +145,7 @@
 		<?php foreach ($cartByEvent as $key => $event): ?>
 			<tr>
 				<td colspan="3" style="vertical-align:bottom; font-weight:bold; font-size:18px;"><?php echo $orderEvents[$key]['name']?> <td>
-				<td colspan="3"><div class='fr' style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Delivery Date: <?php echo date('m-d-Y', $shipDate)?></div></td>
+				<td colspan="3"><div class='fr' style="padding:10px; background:#fffbd1; border-left:1px solid #D7D7D7; border-right:1px solid #D7D7D7; border-top:1px solid #D7D7D7;">Estimated Ship Date: <?php echo date('m-d-Y', $shipDate)?></div></td>
 			</tr>
 			<tr>
 				<th>Item</th>
