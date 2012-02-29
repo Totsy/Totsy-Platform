@@ -50,7 +50,7 @@ class OrdersController extends BaseController {
 		'Shipping Info',
 		'Order Cost',
 		'Tracking Info',
-		'Estimated Delivery Date',
+		'Estimated Ship Date',
 		'Errors/Message',
 		'Customer Profile'
 	);
