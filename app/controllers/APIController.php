@@ -598,12 +598,16 @@ class APIController extends  \lithium\action\Controller {
 				$to = strtotime($to. ' 23:59:59');
 			}
 		}
+		$code = 'keydae';
+		if (array_key_exists('code',$this->request->query)){
+			$code = $this->request->query['code'];
+		}
 		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
 			return ApiHelper::errorCodes(416);
 		}
 		
 		$options = array(
-			'invited_by' => 'keyade',
+			'invited_by' => $code,
 			'keyade_user_id' => array( '$exists' => true ),
 			'created_date' =>  array(
 			 '$gte' => new MongoDate($from),
