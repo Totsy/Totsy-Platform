@@ -184,9 +184,9 @@ class Order extends Base {
 		$ordersShippedCollection = OrderShipped::collection();
 		$order_items = array();
 		
-		// Remove digital items
+		// Remove digital items and canceled items
 		foreach ($order['items'] as $item) {
-			if(empty($item['digital']))
+			if(empty($item['digital']) && empty($item['cancel']))
 				$order_items[]=$item;
 		}
 
