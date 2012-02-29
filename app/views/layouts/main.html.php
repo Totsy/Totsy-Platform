@@ -41,16 +41,8 @@ use app\models\Event;
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
 	<!-- end jQuery / jQuery UI -->
 	
-<!-- Begin Monetate tag v6. Place at start of document head. DO NOT ALTER. --> <script type="text/javascript"> 
-	var monetateT = new Date().getTime(); 
-	(function() {
-var p = document.location.protocol; 
-if (p == "http:" || p == "https:") { var m = document.createElement('script'); m.type ='text/javascript'; 
-m.async = true; 
-m.src = (p == "https:" ? "https://s" : "http://") + "b.monetate.net/js/1/a-6ac93b84/p/totsy.com/" + Math.floor((monetateT + 2372868) / 3600000) + "/g";
-var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(m, s);
-} })();
-</script> 
+ <!-- Begin Monetate tag v6. Place at start of document head. DO NOT ALTER. -->
+    <?php echo $this->html->script(array('monetate.js')); ?>
 <!-- End Monetate tag. -->
 	
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>

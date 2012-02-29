@@ -172,6 +172,9 @@ class User extends Base {
 
 	public static function log($ipaddress) {
 		$user = static::getUser();
+		if (!$user) {
+			return;
+		}
 		++$user->logincounter;
 		$user->lastip = $ipaddress;
 		$user->lastlogin = new MongoDate();
