@@ -131,14 +131,14 @@ class Api extends \lithium\data\Model {
 	}
 	
 	public static function authorizeTokenize ($query){
-		/*if (!is_array($query)) { return ApiHelper::errorCodes(407); }		
+		if (!is_array($query)) { return ApiHelper::errorCodes(407); }		
 		if (array_key_exists('auth_token', $query)){
 			return self::doAuthorization($query);
 		} else if (array_key_exists('token', $query)) {
 			return self::doTokenization($query);
 		} else {
 			return ApiHelper::errorCodes(198);
-		}*/
+		}
 	}
 	
 	private static function doAuthorization($query){
