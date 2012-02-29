@@ -183,17 +183,17 @@ class Item extends Base {
 			#get sizes
 			$sizes = array_keys($item['details']);
 			foreach($sizes as $size) {
-				$sku = getUniqueSku($item['vendor'], $item['vendor_style'], $size, $item['color']);
+				$sku = Item::getUniqueSku($item['vendor'], $item['vendor_style'], $size, $item['color']);
 				$sku_details[$size] = $sku;
 				$skus[] = $sku;
 			}	
 			$itemCollection->update(
 				array('_id' => $item['_id']),
-				array('$set' => array('sku_details' => $skulist,'skus' => array_values($skulist) ))
+				array('$set' => array('sku_details' => $sku_details ))
 			);
 			$itemCollection->update(
 				array('_id' => $item['_id']),
-				array('$set' => array('skus' => array_values($skulist) ))
+				array('$set' => array('skus' => $skus ))
 			);
 		}
 		return true;
@@ -222,13 +222,13 @@ class Item extends Base {
 			while (static::skuExists($vendor_style, $sku)) {
 				#if we already tried the sha256 and the sku still isn't unique
 				if($shacount >= 1) {
-					$vendor_style .= hash($item['vendor_style'],  'sha256');
-					$sku = static::sku($item['vendor'], $vendor_style, $size, $item['color'],'sha256');
+					$sha_vendor_style .= hash($vendor_style, 'sha256');
+					$sku = static::sku($vendor, $vendor_style, $size, $color,'sha256');
 					++$shacount;
 					Logger::debug("\tFirst Sha256 failed to generate unique sku vendor style {$vendor_style} , size {$size}. \n\t Retry Round# {$shacount} using {$vendor_style} as vendor_style");
 				} else {
 					Logger::debug("\tMD5 version already exists for vendor style {$vendor_style} , size {$size}");
-					$sku = static::sku($item['vendor'], $item['vendor_style'], $size, $item['color'],'sha256');
+					$sku = static::sku($vendor, $vendor_style, $size, $color,'sha256');
 					++$shacount;
 				}
 			}
@@ -236,10 +236,10 @@ class Item extends Base {
 			#record the sku in the skus records collection
 			$skus_record->save(array(
 				'sku' => $sku,
-				'vendor' => $item['vendor'],
-				'vendor_style' => $item['vendor_style'],
+				'vendor' => $vendor,
+				'vendor_style' => $vendor_style,
 				'size' => $size,
-				'color' => $item['color']
+				'color' => $color
 				));
 			#return Base source to normal
 			Base::collections('bases');
@@ -255,7 +255,7 @@ class Item extends Base {
 	**/
 	public static function skuExists($vendor_style, $sku) {
 		$skus_record = static::collections('skus_record'); 
-		$items = static::collection('items');
+		$items = static::collections('items');
 
 		#check if this sku exists already for a different item in skus_record
 		$record = $skus_record->findOne(array(
@@ -263,7 +263,7 @@ class Item extends Base {
 			'sku'=> $sku
 		));
 		#check if this sku exists already for a different item
-		$item_record = $item->findOne(array(
+		$item_record = $items->findOne(array(
 			'vendor_style' => array('$ne' => $vendor_style),
 			'skus'=> array('$in' => array($sku))
 		));
@@ -276,10 +276,9 @@ class Item extends Base {
 	}
 
 	public static function generateskusbyevent($_id, $check = false){
+		$items = static::collections('items');
 		//query items by eventid
-		$eventItems = Item::find('all', array('conditions' => array('event' => $_id),
-				'order' => array('created_date' => 'ASC')
-			));
+		$eventItems = $items->find( array('event' => $_id))->sort(array('created_date' => 1));
 
 		//loop through items
 		foreach($eventItems as $item){
