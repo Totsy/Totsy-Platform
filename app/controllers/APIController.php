@@ -613,8 +613,7 @@ class APIController extends  \lithium\action\Controller {
 			 '$gte' => new MongoDate($from),
              '$lte' => new MongoDate($to)
 			)
-		);
-		
+		);		
 		// Run that sucker!
 		$cursor = User::collection()->find( $options );
 		$this->setView(1);
@@ -631,6 +630,10 @@ class APIController extends  \lithium\action\Controller {
 		if (is_array($data) && array_key_exists('error', data)) {
 			return $data;
 		}
+		$code = 'keyade';
+		if (array_key_exists('code',$this->request->query)){
+			$code = $this->request->query['code'];
+		}
 		$from = $to = null;
 		if (array_key_exists('from',$this->request->query)){
 			$from = $this->request->query['from'];
@@ -644,6 +647,7 @@ class APIController extends  \lithium\action\Controller {
 				$to = strtotime($to. ' 23:59:00');
 			}
 		}
+
 		if ((!isset($from) || empty($from)) && (!isset($to) || empty($to))){
 			return ApiHelper::errorCodes(416);
 		}
