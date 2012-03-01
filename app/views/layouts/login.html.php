@@ -37,6 +37,10 @@ $titleTag = "Totsy, the private sale site for Moms";
 	<script> google.load("jquery", "1.6.1", {uncompressed:true});</script>
 	<script> google.load("jqueryui", "1.8.13", {uncompressed:true});</script>
     <!-- end jQuery / jQuery UI -->
+    
+    <!-- Begin Monetate tag v6. Place at start of document head. DO NOT ALTER. -->
+    <?php echo $this->html->script(array('monetate.js')); ?>
+<!-- End Monetate tag. -->
             
     <?php echo $this->html->script(array('jquery.backstretch.min.js', 'jquery.uniform.min.js' )); ?>
     

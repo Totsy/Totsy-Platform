@@ -185,9 +185,9 @@ class Order extends Base {
 		$ordersShippedCollection = OrderShipped::collection();
 		$order_items = array();
 		
-		// Remove digital items
+		// Remove digital items and canceled items
 		foreach ($order['items'] as $item) {
-			if(empty($item['digital']))
+			if(empty($item['digital']) && empty($item['cancel']))
 				$order_items[]=$item;
 		}
 
@@ -1278,9 +1278,9 @@ class Order extends Base {
 			if (!empty($ids)) {
 				$event = Event::find('first', array(
 					'conditions' => array('_id' => $ids),
-					'order' => array('date_created' => 'DESC')
+					'order' => array('end_date' => 'DESC')
 				));
-				$shipDate = $event->end_date->sec;
+				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
 				while($i < $delayDelivery) {
 					$day = date('D', $shipDate);
 					$date = date('Y-m-d', $shipDate);
