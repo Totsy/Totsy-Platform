@@ -4938,3 +4938,10 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #badges > div {display:inline-block; margin-left:5px;}
 #badges > div:first-child {margin-left:0;}
 #badges .truste {position: relative; top:-16px; margin-right:2px;}
+
+/* credits on my account */
+table.credits {border-bottom:1px solid #ddd;}
+table.credits tfoot td {border-top:1px solid #ddd; color:#009900;}
+.credit-pos {color:#009900;}
+.credit-neg {color:red;}
+.credit-total {padding:10px 10px 10px 5px; color:#009900; font-weight: bold;}
