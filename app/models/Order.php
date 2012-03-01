@@ -126,8 +126,8 @@ class Order extends Base {
 			if($authorizationTransaction->success()) {
 				$captureTransaction = $payments::capture('default', $authorizationTransaction->key, floor($amountToCapture * 100) / 100,
 					array(
-						'processor' =>$authorizationTransaction->adapter,
-						'orderID' => $order['order_id']
+						'processor' => $authorizationTransaction->adapter,
+						'orderID' => $order->order_id
 					)
 				);
 				if($captureTransaction->success()) { 
@@ -151,9 +151,7 @@ class Order extends Base {
 				$transactions['softAuth'] = $softAuthorizationTransaction;
 			} else {
 				if(!empty($transactions['capture'])) {
-					$payments::void('default', $transactions['capture']->key, array(
-						'processor' => $transactions['capture']->adapter
-					));
+					$payments::credit('default', $transactions['capture']->key, floor($amountToCapture * 100) / 100);
 				}
 				#Reverse Transaction that Failed
 				$payments::void('default', $softAuthorizationTransaction->key, array(
@@ -170,6 +168,7 @@ class Order extends Base {
 	 * @return redirect
 	 */
 	public static function recordOrder($vars, $cart, $order, $avatax, $transactions, $items, $authTotalAmount, $creditCard) {
+		$payments = static::$_classes['payments'];
 		$tax = static::$_classes['tax'];
 		$user = Session::read('userLogin');
 		$service = Session::read('services', array('name' => 'default'));
@@ -184,6 +183,31 @@ class Order extends Base {
 			$items[] = $item;
 			++$inc;
 		}
+		#Check in which case to store profile with token in Cybersource 
+		$userInfos = User::lookup($user['_id']);
+		#Get current credit cards to compare to this card
+		if($userInfos['cyberSourceProfiles']) {
+			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
+		}
+		if(empty($cyberSourceProfile)) {
+			$vars['savedByUser'] = false;
+			$vars['order_id'] = $order->order_id;
+			$vars['auth'] = $transactions['softAuth'];
+			$cyberSourceProfile = CreditCard::add($vars);
+		}
+		if(!empty($cyberSourceProfile->errors)) {
+			if(!empty($transactions['capture'])) {
+				$payments::credit('default', $transactions['capture']->key, floor($vars['amountToCapture'] * 100) / 100);
+			}
+			if(!empty($transactions['softAuth']) && !empty($authTotalAmount)) {
+				$payments::void('default', $transactions['softAuth']->key, array(
+					'processor' => $transactions['softAuth']->adapter
+				));
+			}
+			Session::write('cc_error', implode('; ', $cyberSourceProfile->errors));
+			return false;
+		}
+		$order->cyberSourceProfileId = $cyberSourceProfile['profileID'];
 		#Save Credits Used
 		if ($vars['cartCredit']->credit_amount) {
 			User::applyCredit($user['_id'], $vars['cartCredit']->credit_amount);
@@ -249,19 +273,6 @@ class Order extends Base {
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];	
-		#Check in which case to store profile with token in Cybersource 
-		$userInfos = User::lookup($user['_id']);
-		#Get current credit cards to compare to this card
-		if($userInfos['cyberSourceProfiles']) {
-			$cyberSourceProfile = User::hasCyberSourceProfile($userInfos['cyberSourceProfiles'], $creditCard);
-		}
-		if(empty($cyberSourceProfile)) {
-			$vars['savedByUser'] = false;
-			$vars['order_id'] = $order->order_id;
-			$vars['auth'] = $transactions['softAuth'];
-			$cyberSourceProfile = CreditCard::add($vars);
-		}
-		$order->cyberSourceProfileId = $cyberSourceProfile['profileID'];
 		$cart = Cart::active();
 		#Save Order Infos
 		$shipDate = Cart::shipDate($cart);
