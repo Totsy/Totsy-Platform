@@ -23,7 +23,7 @@ class BaseController extends \lithium\action\Controller {
 		$vars = get_class_vars('\lithium\action\Controller');
 		$this->_classes += $vars['_classes'];
 		$userInfo = Array();
-				
+		$userInfo = Session::read('userLogin');
 		parent::__construct($config);
 						
 		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
@@ -233,7 +233,6 @@ class BaseController extends \lithium\action\Controller {
                 if ( (($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
                     (strtotime("now") < $dayThirty)) ) {
-                    
                     //checks if the user ever made a purchase
                     if ($user->purchase_count < 1 ) {
                         $sessionServices = Session::read('services', array('name' => 'default'));
