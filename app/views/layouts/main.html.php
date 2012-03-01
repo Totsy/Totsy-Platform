@@ -66,6 +66,11 @@ use app\models\Event;
 			}
 		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
 			$title = $tags = $categories;
+			$ts = array();
+			$ts[] = Event::mapCat2Url('age',$tags);
+			if (sizeof($ts)>0){
+				$tags = implode(', ', $ts);
+			}
 		} else if (isset($item)) {
 			$itemData = $item->data();
 			$title = $tags = $itemData['description'];
@@ -91,9 +96,6 @@ use app\models\Event;
 
 			if (count($eventData['departments'])) {
 				$tags .= ', ' . implode(', ', $eventData['departments']);
-			}
-			if (count($eventData['tags'])) {
-				$tags .= ', ' . implode(', ', $eventData['tags']);
 			}
 		}
 

@@ -16,29 +16,41 @@
 	<hr />
 	<?php if (!empty($credit)) { ?>
 		<div id="name" style="padding:10px 10px 10px 5px; color:#009900;" class="order-table">
-			<strong class="fl">Total Credits: $<?=$credit?></strong>
+			<strong class="fl">Total Credits: $<?php echo number_format($credit,2)?></strong>
 			<div style="clear:both;"></div>
 		</div>
-		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table" style="margin-top:10px;">
+		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table credits" style="margin-top:10px;">
+			<thead>
 			<tr>
 				<th>Date</th>
 				<th>Amount</th>
-				
 			</tr>
-			<?php foreach ($credits as $credit): ?>
-			<tr>
-			<td><?= date('Y-m-d', $credit->_id->getTimestamp());?></td>
-			<td>
-			<?php if (!empty($credit->credit_amount)) { ?>
-					<?php echo "$".number_format(abs($credit->credit_amount),2); ?>
-				<?php  } else {  ?>
-					<?php echo "$".number_format(abs($credit->amount),2); ?>
-			<?php } ?>
-			</td>
-			
-			<tr>
+			</thead>
+			<tbody>
+			<?php foreach ($credits as $thecredit): ?>
+				<tr>
+				<td><?= date('Y-m-d', $thecredit->_id->getTimestamp());?></td>
+				<td>
+				<?php if (!empty($thecredit->credit_amount)) { 
+				
+						$creditAmount = $thecredit->credit_amount;
+						
+						// positive amount
+						if ($creditAmount > 0) {
+							echo "<span class='credit-pos'>+ $". number_format($creditAmount,2) . "</span>";
+						}
+						// is it negative amount?
+						elseif ($creditAmount < 0 ) {
+							$creditAmount = abs($creditAmount);
+							echo "<span class='credit-neg'>&minus; $" . number_format($creditAmount,2) . "</span>";
+						}
+					}
+				?>
+				</td>
 			<?php endforeach ?>
+			</tbody>
 		</table>
+		<div class="credit-total">Total Credits: $<?php echo number_format($credit,2)?></div>
 		<?php } else { ?>
 		<center><strong>Earn credits by <a href="/users/invite" title="inviting your friends and family">inviting your friends and family.</a></strong></center>
 			<br />
