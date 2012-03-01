@@ -66,10 +66,13 @@ use app\models\Event;
 			}
 		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
 			$title = $tags = $categories;
-			$ts = array();
-			$ts[] = Event::mapCat2Url('age',$tags);
-			if (sizeof($ts)>0){
-				$tags = implode(', ', $ts);
+
+			$ts = Event::mapCat2Url('age',$tags);
+			if (!empty($ts)>0){ $tags = $ts; }
+			
+			$ts = Event::mapCat2Url('category',$tags);
+			if (!empty($ts)>0){
+				$tags = $ts;
 			}
 		} else if (isset($item)) {
 			$itemData = $item->data();
