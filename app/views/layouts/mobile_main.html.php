@@ -1,4 +1,8 @@
-<?php use lithium\net\http\Router; ?>
+<?php 
+use lithium\net\http\Router; 
+use lithium\storage\Session;
+use app\models\Event;
+?>
 <?php $request = $this->request(); ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -9,10 +13,61 @@
 	<title>
 		<?php echo $this->title() ?: 'Totsy'; ?>
 	</title>
-	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
-    <meta name="description"
-          content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
+	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
+	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
+	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
+
+		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
+
+			$title = 'Totsy Sales';
+			$tags = 'Sales';
+			if (array_key_exists ('args',$request->params) && isset($request->params['args'][0])){
+				$tags =  $request->params['args'][0];
+			}
+		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
+				$title = $tags = $categories;
+				$ts = array();
+				$ts[] = Event::mapCat2Url('age',$tags);
+				if (sizeof($ts)>0){
+					$tags = implode(', ', $ts);
+				}
+			} else if (isset($item)) {
+				$itemData = $item->data();
+				$title = $tags = $itemData['description'];
+			
+			if (count($itemData['departments'])) {
+				$tags .= ', ' . implode(', ', $itemData['departments']);
+			}
+			if (count($itemData['categories'])) {
+				$tags .= ', ' . implode(', ', $itemData['categories']);
+			}
+			if (count($itemData['ages'])) {
+				$ts = array();
+				foreach ($itemData['ages'] as $a){
+					$ts[] = Event::mapCat2Url('age',$a);
+				}
+				if (sizeof($ts)>0){
+					$tags .= ', ' . implode(', ', $ts);
+				}
+			}
+		} else if (isset($event)) {
+			$eventData = $event->data();
+			$title = $tags = $eventData['name'];
+
+			if (count($eventData['departments'])) {
+				$tags .= ', ' . implode(', ', $eventData['departments']);
+			}
+			if (count($eventData['tags'])) {
+				$tags .= ', ' . implode(', ', $eventData['tags']);
+			}
+		}
+
+	?>
+	<?php if (isset($title) && isset($tags)){ ?>
+	<meta name="sailthru.title" content="<?php echo strip_tags($title); ?>" />
+	<meta name="sailthru.tags" content="<?php echo strip_tags($tags); ?>" />
+	<?php } ?>
 	<meta id="view-lock" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<meta content="yes" name="apple-mobile-web-app-capable" />
 	
@@ -142,6 +197,32 @@ if (deleteFBCookies()==true) {
 window.location = logoutURL;
 }
 }
+</script>
+
+<!-- Sailthru Horizon -->
+<script type="text/javascript">
+    (function() {
+        function loadHorizon() {
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = ('https:' == location.protocol ? 'https://dyrkrau635c04.cloudfront.net' : 'http://cdn.sailthru.com') + '/horizon/v1.js';
+            var x = document.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
+        }
+        loadHorizon();
+        var oldOnLoad = window.onload;
+        window.onload = function() {
+            if (typeof oldOnLoad === 'function') {
+                oldOnLoad();
+            }
+            Sailthru.setup({
+                domain: 'horizon.totsy.com',
+                spider: true,
+                concierge: false,
+            });
+        };
+    })();
 </script>
 </body>
 </html>
