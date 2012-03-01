@@ -70,7 +70,11 @@ class Ticket extends Base {
 					));
 			}*/
 		}
-		exec("(cd ../; li3 send-pending-tickets --env='production') &> /dev/null &");
+		$env = 'production';
+		if (!Environment::is('production')) {
+			$env = 'development';
+		}
+		exec("(cd ../; li3 send-pending-tickets --env={$env}) &> /dev/null &");
 	}
 
 	public static function getConditions($request, $search_criteria = array()) {
