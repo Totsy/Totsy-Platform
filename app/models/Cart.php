@@ -540,7 +540,7 @@ class Cart extends Base {
 		if (!empty($ids)) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $ids),
-				'order' => array('created_date' => 'DESC')
+				'order' => array('end_date' => 'DESC')
 			));
 		}
 		return $event;
