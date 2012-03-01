@@ -380,7 +380,7 @@ class OrderExport extends Base {
                                     $orderItem = Item::find('first', array(
                                         'conditions' => array('_id' => $orderItem['_id']),
                                         'fields' => array('sku_details' => true)
-                                        ));
+                                    ));
                                 }
                             }
                             $sku = $orderItem['sku_details'][$item['size']];
@@ -401,7 +401,7 @@ class OrderExport extends Base {
 							$orderFile[$inc]['OrderNum'] = $order['order_id'];
 							$orderFile[$inc]['SKU'] = $sku;
 							if (empty($sku)) {
-								$orderFile[$inc]['SKU'] = Item::sku($orderItem['vendor'], $orderItem['vendor_style'], $item['size'], $item['color']);
+								$orderFile[$inc]['SKU'] = Item::getUniqueSku($orderItem['vendor'], $orderItem['vendor_style'], $item['size'], $item['color']);
 							}
 							$orderFile[$inc]['Qty'] = $item['quantity'];
 							$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
@@ -661,7 +661,7 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
 									$purchaseOrder[$inc]['SKU'] = $eventItem['sku_details'][$item['size']];
 									if (empty($eventItem['sku_details'][$item['size']])) {
-										$purchaseOrder[$inc]['SKU'] = Item::sku($eventItem['vendor'], $eventItem['vendor_style'], (string)$item['size'], $item['color']);
+										$purchaseOrder[$inc]['SKU'] = Item::getUniqueSku($eventItem['vendor'], $eventItem['vendor_style'], (string)$item['size'], $item['color']);
 									}
 									if (empty($purchaseOrder[$inc]['Qty'])) {
 										$purchaseOrder[$inc]['Qty'] = $item['quantity'];
