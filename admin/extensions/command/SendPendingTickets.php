@@ -52,6 +52,7 @@ class SendPendingTickets extends \lithium\console\Command {
 			$ticket['date_created'] = date('m/d/Y H:i:s', $ticket['date_created']->sec);
 			$status = Mailer::send('Tickets', $email, $ticket, $options);
 			if (array_key_exists('error', $status)) {
+				Logger::debug('Error : ' . $status);
 				Ticket::collection()->update(array('_id' => $ticket['_id']),array(
 						'$set' => array('status' => 'Pending')
 					));
