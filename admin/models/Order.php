@@ -565,30 +565,21 @@ class Order extends Base {
 			'promo_discount' => (float) $selected_order["promo_discount"],
 			'promocode_disable' => $selected_order["promocode_disable"]
 		);
-		echo 'test0';
 		if(static::isOnlyDigital(array('items' => $items))) {
 			$datas_order_prices['isOnlyDigital'] = true;
 			#Reverse Soft Auth or Full Auth that Failed
-			$orderToVoidAuth = static::find('first', array('conditions' => array('order_id' => $selected_order['order_id'])));
-			echo 'test';
+			$dbQuery = static::find('first', array('conditions' => array('order_id' => $selected_order['order_id'])));
+			$orderToVoidAuth = $dbQuery->data();
 			if(!empty($orderToVoidAuth['authKey']) && empty($orderToVoidAuth['auth_confirmation'])) {
-				echo 'test2';
-				var_dump($orderToVoidAuth['processor']);
-				var_dump($orderToVoidAuth['order_id']);
-				var_dump($orderToVoidAuth['authKey']);
 				#Save Old AuthKey with Date
 				$newRecord = array('authKey' => $orderToVoidAuth['authKey'], 'date_saved' => new MongoDate());
-				$void = $payments::void('default', $orderToVoidAuth['authKey'], array(
+				$void = $payments::void('default', $orderToVoidAuth['auth'], array(
 					'processor' => isset($orderToVoidAuth['processor']) ? $orderToVoidAuth['processor'] : null,
 					'orderID' => $orderToVoidAuth['order_id']
 				));
-				$error = implode('; ', $void->errors);
-				var_dump($error);
-				var_dump($void->key);
 				if($void->success()) {
-					echo 'test3';
 					#Add to Auth Records Array
-					$update = $ordersCollection->update(
+					$update = $orderCollection->update(
 						array('_id' => $orderToVoidAuth['_id']),
 						array('$push' => array('auth_records' => $newRecord),
 							  '$unset' => array('authKey' => 1, 'auth' => 1, 'authTotal' => 1)

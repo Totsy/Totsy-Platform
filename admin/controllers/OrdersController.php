@@ -311,7 +311,6 @@ class OrdersController extends BaseController {
 				$datas["capture_records"] = $selected_order["capture_records"];
 			}
 			$items = $selected_order["items"];
-
 			foreach($datas["items"] as $key => $item) {
 				//Quantity
 				$items[$key]["initial_quantity"] = $item["initial_quantity"];

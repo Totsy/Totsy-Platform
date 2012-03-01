@@ -476,10 +476,12 @@
 													} while ($i <= $limit)
 													?>
 													<?php echo $this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
-												
-													<?php echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
+													 <?php if(!empty($item["digital"])) { 
+															 echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'disabled' => 'disabled'));
+													} else {
+															 echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
+													}
 													?>
-													
 													<?php if ($return_q>0){?>
 													<?php echo $return_q; ?> return(s)
 													<?php }?>
