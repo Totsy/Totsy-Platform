@@ -90,7 +90,7 @@
 							<?php else: ?>
 								<?php if ($shipDate["$order->_id"] > time()): ?>
 
-									Estimated Delivery Date: <br/><?php echo date('M d, Y', $shipDate["$order->_id"]); ?>
+									Estimated Ship Date: <br/><?php echo date('M d, Y', $shipDate["$order->_id"]); ?>
 								<?php else: ?>
 									-
 								<?php endif ?>
