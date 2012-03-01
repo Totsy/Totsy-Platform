@@ -16,7 +16,7 @@ use app\models\Event;
 	<meta property="og:site_name" content="Totsy"/>
 	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
 	<meta name="description" content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
-	<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
+		<meta name="sailthru.date" content="<?php echo date('r')?>" /><?php
 
 		if(substr($request->url,0,5) == 'sales' || $_SERVER['REQUEST_URI'] == '/') {
 
@@ -26,16 +26,19 @@ use app\models\Event;
 				$tags =  $request->params['args'][0];
 			}
 		} else if (substr($request->url,0,8) == 'category' || substr($request->url,0,3) == 'age') {
-				$title = $tags = $categories;
-				$ts = array();
-				$ts[] = Event::mapCat2Url('age',$tags);
-				if (sizeof($ts)>0){
-					$tags = implode(', ', $ts);
-				}
-			} else if (isset($item)) {
-				$itemData = $item->data();
-				$title = $tags = $itemData['description'];
+			$title = $tags = $categories;
+
+			$ts = Event::mapCat2Url('age',$tags);
+			if (!empty($ts)>0){ $tags = $ts; }
 			
+			$ts = Event::mapCat2Url('category',$tags);
+			if (!empty($ts)>0){
+				$tags = $ts;
+			}
+		} else if (isset($item)) {
+			$itemData = $item->data();
+			$title = $tags = $itemData['description'];
+
 			if (count($itemData['departments'])) {
 				$tags .= ', ' . implode(', ', $itemData['departments']);
 			}
@@ -57,9 +60,6 @@ use app\models\Event;
 
 			if (count($eventData['departments'])) {
 				$tags .= ', ' . implode(', ', $eventData['departments']);
-			}
-			if (count($eventData['tags'])) {
-				$tags .= ', ' . implode(', ', $eventData['tags']);
 			}
 		}
 
