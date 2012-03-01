@@ -45,7 +45,7 @@
 						</div>
 						<div style="background:#f7f7f7; padding:10px; border:1px solid #ddd;">
 							<h2>Thank you! Your order has been successfully placed! <span style="float:right;">Order #<?php echo $order->order_id;?></span>
-							<br /><span style="float:right;">Estimated Delivery Date: <?php echo date('m-d-Y', $shipDate) ?></span><br />
+							<br /><span style="float:right;">Estimated Ship Date: <?php echo date('m-d-Y', $shipDate) ?></span><br />
 							</h2>
 						</div>
 						 
