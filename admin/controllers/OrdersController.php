@@ -570,29 +570,34 @@ class OrdersController extends BaseController {
 		$auth = Processor::authorize('default', $amountToCapture, $card, array('orderID' => $order['order_id']));
 		if($auth->success()) {
 			$result = Processor::profile('default', $auth, array('orderID' => $order['order_id']));
-			$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
-			$update = $ordersCollection->update(
-				array('_id' => $order['_id']),
-				array('$set' => array('cyberSourceProfileId' => $profileID))
-			);
-			#Setup new AuthKey
-			$update = $ordersCollection->update(
+			if($result->success()) {
+				$profileID = $result->response->paySubscriptionCreateReply->subscriptionID;
+				$update = $ordersCollection->update(
 					array('_id' => $order['_id']),
-					array('$set' => array(
-						'authKey' => $auth->key,
-						'auth' => $auth->export(),
-						'processor' => $auth->adapter,
-						'authTotal' => $amountToCapture
-					), '$unset' => array(
-						'error_date' => 1,
-						'auth_error' => 1
-					))
-			);
-			#Add to Auth Records Array
-			$update = $ordersCollection->update(
-					array('_id' => $order['_id']),
-					array('$push' => array('auth_records' => $newRecord))
-			);
+					array('$set' => array('cyberSourceProfileId' => $profileID))
+				);
+				#Setup new AuthKey
+				$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$set' => array(
+							'authKey' => $auth->key,
+							'auth' => $auth->export(),
+							'processor' => $auth->adapter,
+							'authTotal' => $amountToCapture
+						), '$unset' => array(
+							'error_date' => 1,
+							'auth_error' => 1
+						))
+				);
+				#Add to Auth Records Array
+				$update = $ordersCollection->update(
+						array('_id' => $order['_id']),
+						array('$push' => array('auth_records' => $newRecord))
+				);
+			} else {
+				$message  = "CyberSource Profile Creation failed for order id `{$order['order_id']}`:";
+				$message .= $error = implode('; ', $result->errors);
+			}
 		} else {
 			$message  = "Authorize failed for order id `{$order['order_id']}`:";
 			$message .= $error = implode('; ', $auth->errors);
