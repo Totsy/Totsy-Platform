@@ -106,7 +106,7 @@ class EventsController extends BaseController {
 
 	public function regeneratesku($_id = null) {
 	    $this->_render['layout'] = false;
-	    $items = static::collections('items');
+	    $items = Item::collections('items');
 		//query items by eventid
 		$eventItems = $items->find( array('event' => $_id))->sort(array('created_date' => 1));
 		//return Item::generateskusbyevent($_id, true);

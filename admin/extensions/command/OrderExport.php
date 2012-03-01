@@ -380,7 +380,7 @@ class OrderExport extends Base {
                                     $orderItem = Item::find('first', array(
                                         'conditions' => array('_id' => $orderItem['_id']),
                                         'fields' => array('sku_details' => true)
-                                        ));
+                                    ));
                                 }
                             }
                             $sku = $orderItem['sku_details'][$item['size']];
