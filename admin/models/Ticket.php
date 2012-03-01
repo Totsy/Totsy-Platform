@@ -2,6 +2,7 @@
 
 namespace admin\models;
 
+use lithium\core\Environment;
 use admin\extensions\Mailer;
 use MongoDate;
 use MongoId;
