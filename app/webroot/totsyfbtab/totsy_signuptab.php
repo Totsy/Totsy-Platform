@@ -7,15 +7,16 @@ xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 	include("../../libraries/li3_facebook/libraries/facebook-sdk/src/facebook.php"); 
 	
 	$signedRequest = "";
+	$appId = "130085027045086";
 	
 	$facebook = new Facebook( Array(
-  		'appId' => '130085027045086',
+  		'appId' => $appId,
 		'secret' => '33a18cebb0ac415c6bddf28cebb48e96'
 	));
 	
-	if($_SERVER['HTTP_HOST']=="facebook.com"){
-		$signedRequest = $facebook->getSignedRequest();
-	}
+	//if($_SERVER['HTTP_HOST']=="facebook.com"){
+	$signedRequest = $facebook->getSignedRequest();
+	//}
 	
 	$appData = Array();
 	$affiliateCode = "";
@@ -33,7 +34,7 @@ xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <title>Totsy Registration</title>
     <script src="http://connect.facebook.net/en_US/all.js" language="Javascript" type="text/javascript"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta property="fb:app_id" content="130085027045086"/>
+	<meta property="fb:app_id" content="<?php echo $appId; ?>"/>
 
 <style type="text/css">
 .form:focus {
@@ -76,11 +77,12 @@ padding: 0;
 <script>	
 	
 	var submitted = false;
+	var appId = "<?php echo $appId; ?>";
 	var affiliateCode = "<?php echo $affiliateCode; ?>";
 	
     window.fbAsyncInit = function() {
         FB.init({
-        	appId   : '130085027045086',
+        	appId   : appId,
         	oauth	: true, 
         	status  : true, // check login status
         	cookie  : true, // enable cookies to allow the server to access the session
@@ -123,8 +125,6 @@ padding: 0;
 <div style="background-image:url(http://www.etiquettecreative.com/totsy/signuptab.jpg); background-repeat:no-repeat; text-align:left; min-height:350px; padding:160px 0px 0px 0px; -moz-border-radius: 5px;-webkit-border-radius: 5px;">
 <!-- TOTSY SIGN UP FORM -->
 <div style="width:520px; padding:5px 5px 5px 0px;">
-
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {window.location='<?php echo $_SERVER['HTTP_HOST']; ?>/totsyfbtab/totsy_confirmtab.html';}"></iframe>
 
    <h2 style="margin-bottom:20px;">Register with Facebook</h2>
 	<a href="javascript:;" onclick="fbLogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
