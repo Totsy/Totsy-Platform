@@ -5066,7 +5066,7 @@ ul.bp-events li:nth-of-type(3n) img {
 }
 
 /* transitions and hover states
-@TODO:  likely Creative/Craig will put the kabosh on these… just playing around, trying stuff, remove follow two declarations as needed*/
+@TODO: … just playing around, trying stuff. IF Creative/Craig put the kabosh on these, remove follow two declarations as needed */
 ul.bp-events li a img {
 	-moz-transition: all 0.4s linear;
 	-ms-transition: all 0.4s linear;
@@ -5122,3 +5122,10 @@ ul.bp-events li a:hover img {
 	background:url(../img/btn-arrow-lg.png) 100% 25% no-repeat;
 	font-weight: 500; letter-spacing: 0.025em;
 }
+
+/* credits on my account */
+table.credits {border-bottom:1px solid #ddd;}
+table.credits tfoot td {border-top:1px solid #ddd; color:#009900;}
+.credit-pos {color:#009900;}
+.credit-neg {color:red;}
+.credit-total {padding:10px 10px 10px 5px; color:#009900; font-weight: bold;}

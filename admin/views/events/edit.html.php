@@ -270,7 +270,7 @@ div.xls_cell:hover{
 					<?php echo $this->form->textarea('ship_message', array('value' => $event->ship_message)); ?>
 				</div>
 				<div id="shipDateOverride">
-					<?php echo $this->form->label('Estimated Delivery Date'); ?>
+					<?php echo $this->form->label('Estimated Ship Date'); ?>
 					<p>This date will override the calcualted ship date for orders.</p>
 					<?php echo $this->form->text('ship_date', array('id' => 'ship_date', 'value' => $event->ship_date)); ?>
 				</div>
@@ -497,7 +497,7 @@ function deleteitems(){
 		<div id="event_inventory">
 			<h2>Event Inventory</h2>
 			Actions - 
-			<a href="#" id="generateskulink" name="generateskulink">Generate SKUS (replaces all skus)</a> |
+			<a href="#" id="generateskulink" name="generateskulink">Generate SKUS (replaces all skus)</a> | 
 			<a href="#" id="regenerateskulink" name="regenerateskulink">ReGenerate SKUS (replaces only incomplete/blank skus)</a> |
 
 			<iframe id="inventoryIframe" src="" style="width:900px; height:400px;"></iframe>
@@ -514,6 +514,7 @@ $(document).ready(function() {
 	//generate skus link
 	$('#generateskulink').click(function() {
 		var eventid = '<?php echo $event->_id; ?>';
+		$("#inventoryIframe").attr('src', "/img/spinner.gif");
 
 		$.post('/events/generatesku/'+eventid, function(result) {
 			$("#inventoryIframe").attr('src', "/events/inventory/"+eventid);
@@ -524,6 +525,7 @@ $(document).ready(function() {
 	//regenerate skus link
 	$('#regenerateskulink').click(function() {
 		var eventid = '<?php echo $event->_id; ?>';
+		$("#inventoryIframe").attr('src', "/img/spinner.gif");
 
 		$.post('/events/regeneratesku/'+eventid, function(result) {
 			$("#inventoryIframe").attr('src', "/events/inventory/"+eventid);

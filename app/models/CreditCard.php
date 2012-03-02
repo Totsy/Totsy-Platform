@@ -186,7 +186,7 @@ class CreditCard extends \lithium\data\Model {
 				);
 				return $newCyberSourceProfile;
 			} else { //return an error
-				return "error";
+				return $result;
 			} //end of error / success
 		} //end of duplicate check bracket
 	}

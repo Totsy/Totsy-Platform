@@ -17,7 +17,9 @@
                 </tr>
             </thead>
             <tbody id="queue_body">
-                <td colspan="8"><center>Loading...</center></td>
+                <tr>
+                    <td colspan="8"><center>Loading...</center></td>
+                </tr>
             </tbody>
         </table>
 	</div>
@@ -69,11 +71,11 @@ function updateCurrentQueue() {
                     body.append(table);
                 }
                 if (index == 0 ) {
-                    table += "<td colspan=\"8\"><center>Nothing in the queue!</center></td>";
+                    table += "<tr><td colspan=\"8\"><center>Nothing in the queue!</center></td></tr>";
                      body.append(table);
                 }
             } else {
-                table += "<td colspan=\"8\"><center>Nothing in the queue!</center></td>";
+                table += "<tr><td colspan=\"8\"><center>Nothing in the queue!</center></td></tr>";
                 body.append(table);
             }
         }
