@@ -42,7 +42,7 @@ xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 	outline: none;
 }
 
-h2{
+h2 {
 color: #999;
 font-size: 18px;
 font-weight: normal;
