@@ -69,15 +69,27 @@ padding: 0;
 
 <script type="text/javascript">
 
-	function fblogin() {
+	function fbLogin() {
 		FB.login(function(response) {
 	    	if (response.authResponse) {
-    			window.open("evan.totsy.com");
+	    		if(getUrlVars()["a"]){
+    				window.open("evan.totsy.com/a/" + getUrlVars()["a"]);
+    			} else {
+    				window.open("evan.totsy.com");
+    			}
 	    	}	
 		}, 		 
 			{ scope:'email' } 
 		);
 		submitted = true;
+	}
+	
+	function getUrlVars() {
+    	var vars = {};
+    	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    	});
+    	return vars;
 	}
 
 </script>
@@ -93,7 +105,7 @@ padding: 0;
 <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {window.location='<?php echo $_SERVER['HTTP_HOST']; ?>/totsyfbtab/totsy_confirmtab.html';}"></iframe>
 
    <h2 style="margin-bottom:20px;">Register with Facebook</h2>
-	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
+	<a href="javascript:;" onclick="fbLogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
 <!-- </form>-->
 </div>
 <!-- END TOTSY SIGN UP FORM -->
