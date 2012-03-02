@@ -6,6 +6,7 @@ use app\controllers\BaseController;
 use app\models\Event;
 use app\models\Item;
 use app\models\Banner;
+use MongoId;
 use MongoDate;
 use lithium\storage\Session;
 use app\models\Affiliate;
@@ -23,14 +24,17 @@ class BrandsController extends BaseController {
 	public function view() {
 		$datas = $this->request->args;
 		
-		$openEventsData = Event::open()->data();
-		$openEvents = array_slice($openEventsData,0,$this->showEvents,true);
+		//hardcoded array of event ids for jojo
+		$eventids[] = new MongoId("4f4d69071d5ecb2653000039");
+		$eventids[] = new MongoId("4f4e3b5a1d5ecbd179000010");
+		$eventids[] = new MongoId("4f4e3e2f1d5ecb6079000052");
+		$eventids[] = new MongoId("4f4e829d1d5ecb790a00008d");
+		$eventids[] = new MongoId("4f4e4d121d5ecbe47d000019");
+		$eventids[] = new MongoId("4f4e47b81d5ecb047c000061");	
+
+		//query of these six events
+		$openEvents = Event::find('all', array('conditions' => array('_id' => array('$in' => $eventids))));
 		
-	
-			//if($this->request->is('mobile')){
-		// 	$this->_render['layout'] = 'mobile_main';
-		// 	$this->_render['template'] = 'mobile_age';
-	//	}
 		return compact('openEvents');
 	}
 
