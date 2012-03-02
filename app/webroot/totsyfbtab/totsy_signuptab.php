@@ -2,6 +2,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml" 
 xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
+
+<?php 
+	include("../../libraries/li3_facebook/libraries/facebook-sdk/src/facebook.php"); 
+	
+	$facebook = new Facebook( Array(
+  		'appId' => '130085027045086',
+		'secret' => '33a18cebb0ac415c6bddf28cebb48e96'
+	));
+	
+	if($_SERVER['HTTP_HOST']=="facebook.com"){
+		$signedRequest = $facebook->getSignedRequest();
+	}
+	
+	$appData = Array();
+	$affiliateCode = "";
+	
+	if (!empty($signedRequest) && !empty($signedRequest['app_data'])) {
+  		$appData = json_decode($signedRequest['app_data'], true);
+  		
+  		if(!empty($appData['a'])) {	
+  			$affiliateCode = $appData['a'];
+  		}
+	}
+?>
+
+
 <title>Totsy Registration</title>
     <script src="http://connect.facebook.net/en_US/all.js" language="Javascript" type="text/javascript"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -23,8 +49,8 @@ padding: 0;
 </style>
 
 	<script src="http://www.google.com/jsapi"></script>
-	<script> google.load("jquery", "1.6.1", {uncompressed:true});</script>
-	<script> google.load("jqueryui", "1.8.13", {uncompressed:true});</script>
+	<script> google.load("jquery", "1.6.1", { uncompressed:true });</script>
+	<script> google.load("jqueryui", "1.8.13", { uncompressed:true });</script>
 
 <!-- ETIQUETTE GA TRACKING CODE -->
 <script type="text/javascript">
@@ -44,9 +70,11 @@ padding: 0;
 
 <body>
 <div id="fb-root"></div>
+
 <script>	
 	
 	var submitted = false;
+	var affiliateCode = "<?php echo $affiliateCode; ?>";
 	
     window.fbAsyncInit = function() {
         FB.init({
@@ -72,10 +100,10 @@ padding: 0;
 	function fbLogin() {
 		FB.login(function(response) {
 	    	if (response.authResponse) {
-	    		if(getUrlVars()["a"]){
-    				window.open("evan.totsy.com/a/" + getUrlVars()["a"]);
+	    		if(affiliateCode) {
+    				window.open("/a/" + affiliateCode);
     			} else {
-    				window.open("evan.totsy.com");
+    				window.open("/sales");
     			}
 	    	}	
 		}, 		 
@@ -84,14 +112,6 @@ padding: 0;
 		submitted = true;
 	}
 	
-	function getUrlVars() {
-    	var vars = {};
-    	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    	});
-    	return vars;
-	}
-
 </script>
 
 <div style="width:520px; -moz-border-radius: 5px;-webkit-border-radius: 5px; overflow:hidden;">
