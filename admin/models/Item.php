@@ -223,7 +223,7 @@ class Item extends Base {
 				#if we already tried the sha256 and the sku still isn't unique
 				if($shacount >= 1) {
 					$sha_vendor_style .= hash($vendor_style, 'sha256');
-					$sku = static::sku($vendor, $vendor_style, $size, $color,'sha256');
+					$sku = static::sku($vendor, $sha_vendor_style, $size, $color,'sha256');
 					++$shacount;
 					Logger::debug("\tFirst Sha256 failed to generate unique sku vendor style {$vendor_style} , size {$size}. \n\t Retry Round# {$shacount} using {$vendor_style} as vendor_style");
 				} else {
