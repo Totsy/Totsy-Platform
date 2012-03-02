@@ -6,6 +6,8 @@ xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <?php 
 	include("../../libraries/li3_facebook/libraries/facebook-sdk/src/facebook.php"); 
 	
+	$signedRequest = "";
+	
 	$facebook = new Facebook( Array(
   		'appId' => '130085027045086',
 		'secret' => '33a18cebb0ac415c6bddf28cebb48e96'
