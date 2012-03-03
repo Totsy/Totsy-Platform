@@ -2,7 +2,6 @@
 
 namespace admin\extensions\command;
 use admin\models\Item;
-use admin\models\Base;
 use lithium\analysis\Logger;
 use lithium\core\Environment;
 
@@ -35,7 +34,8 @@ class MakeSku extends \lithium\console\Command  {
             array('sku_details' => array('$exists' => false ))
         ));
         $items = $itemCollection->find($conditions);
-        Item::generateSku($items);
+        $makeSkus = new Item();
+       	$makeSkus->generateSku($items);
 		$end = time();
 		$time = $end - $start;
 	}
