@@ -75,7 +75,7 @@ class Ticket extends Base {
 		if (!Environment::is('production')) {
 			$env = 'development';
 		}
-		exec("(cd ../; li3 send-pending-tickets --env={$env}) &> /dev/null &");
+		exec("(cd /var/www/current/admin; /usr/local/lithium/console/li3 send-pending-tickets --env={$env}) &> /dev/null &");
 	}
 
 	public static function getConditions($request, $search_criteria = array()) {
