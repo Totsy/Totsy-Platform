@@ -375,7 +375,7 @@ class OrderExport extends Base {
                             if (!array_key_exists('sku_details', $orderItem)){
                                 $sku = $this->findSku(String::asciiClean($description), $item["size"]);
                                 if (!($sku)) {
-                                    $makeSku = new MakeSku();
+                                    $makeSku = new Item();
                                     $makeSku->generateSku(array($orderItem));
                                     $orderItem = Item::find('first', array(
                                         'conditions' => array('_id' => $orderItem['_id']),
@@ -533,7 +533,7 @@ class OrderExport extends Base {
 					        $sku = $this->findSku(String::asciiClean($description), $key);
 
 					        if (!$sku) {
-					            $makeSku = new MakeSku();
+					            $makeSku = new Item();
 					            $makeSku->generateSku(array($eventItem));
                               $eventItem = Item::find('first', array(
                                     'conditions' => array('_id' => $eventItem['_id']),
