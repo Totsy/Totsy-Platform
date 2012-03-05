@@ -25,6 +25,15 @@
 			}
 		});
 	});
+	$(document).ready(function(){
+		$('#ReportSearchType').change(function(){
+			if($(this).val() == 'Bounces' && $('#subaffiliate_show_wrapper').is(':hidden') ){
+				$('#subaffiliate_show_wrapper').show();
+			} else if ($('#subaffiliate_show_wrapper').is(':visible')){
+				$('#subaffiliate_show_wrapper').hide();
+			}
+		});
+	});
 </script>
 <div class="grid_6">
     <br/>
@@ -45,8 +54,19 @@
 				        }else{
 				            $checked = '';
 				        }
+				        if(($criteria) && (bool)$criteria['show_subaffiliate']){
+				        	$show_checked = 'checked';
+				        }else{
+				        	$show_checked = '';
+				        }
 				    ?>
-				    <?php echo $this->form->label('Subaffiliates included'); ?>  <?php echo $this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?> <br/>
+				    <?php echo $this->form->label('Subaffiliates included'); ?>  <?php echo $this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?>
+				    <br>
+				<div style="display: inline" >
+				    <div id="subaffiliate_show_wrapper" <?php if ($show_checked!='checked'){?>style="display: none;"<?php } ?>>
+				    <?php echo $this->form->label('Show subaffiliate'); ?>  <?php echo $this->form->checkbox('show_subaffiliate', array('checked' => $show_checked, 'value' => '1'));?> <br/>
+				    </div>
+				</div>
 				<p>
 					<?php echo $this->form->label('Minimum Seach Date'); ?>
 					<?php echo $this->form->text('min_date', array('id' => 'min_date'));?>
@@ -76,7 +96,7 @@
     <?php if ($searchType == "Effective") :?>
     <p style="font-size:12px"><strong>Number in parentheses show number of people made at least one purchase</strong></p>
     <?php endif;?>
-    <?=$this->affiliates->build($results,array("type" => $searchType)); ?>
+    <?=$this->affiliates->build($results,array("type" => $searchType,'criteria'=> $criteria)); ?>
 </div>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {

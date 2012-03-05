@@ -98,7 +98,7 @@
 				<?php $y = -1; ?>
 			<?php endif ?>
 					<li>
-					<a href="#" onclick="window.location.href='/sale/<?php echo $event->url; ?>';return false;"><h3 style="margin:0.8em 0!important;"><?php echo $event->name; ?></h3><p style="color:#999; font-size:12px;">Sale opens in 3 Days, 18:21:07</p></a>
+					<a href="#" onclick="window.location.href='/sale/<?php echo $event->url; ?>';return false;"><h3 style="margin:0.8em 0!important;"><?php echo $event->name; ?></h3><p style="color:#999; font-size:12px;"><span id="<?php echo "futuresplash$x"; ?>" title="<?php echo $date = $event->start_date->sec * 1000; ?>" class="counter start"></span></p></a>
 					</li>
 			<?php $x++; ?>
 			<?php $y++; ?>
