@@ -238,7 +238,7 @@ class Order extends Base {
 		$orderId = new MongoId($order['_id']);
 		$error = null;
 		$data = array();
-
+		$successfullyCaptured = null;
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
 		#If Digital Items, Calculate correct Amount
 		$amountToCapture = static::getAmountNotCaptured($order);
@@ -247,7 +247,7 @@ class Order extends Base {
 			$data['payment_date'] = new MongoDate();
 			Logger::error("Can't capture because total is zero.");
 		} else {
-			$auth = $payments::capture(
+			$capture = $payments::capture(
 				'default',
 				$order['authKey'],
 				floor($amountToCapture * 100) / 100,
@@ -256,16 +256,55 @@ class Order extends Base {
 					'orderID' => $order['order_id']
 				)
 			);
-			if ($auth->success()) {
+			if ($capture->errors) {
+				if($auth->reasonCode == '102' && !empty($order['cyberSourceProfileId'])) {
+					$cybersource = new CyberSource(Processor::config('default'));
+					$profile = $cybersource->profile($order['cyberSourceProfileId']);
+					$authorization = Processor::authorize('default', $amountToCapture, $profile, array('orderID' => $order['order_id']));
+					if($authorization->success()) {
+						$update = static::update(
+							array('$set' => array('authKey' => $authorization->key,
+												  'auth' => $authorization->export(),
+												  'authTotal' => $amountToCapture,
+												  'processor' => $authorization->adapter
+							)),
+							array('_id' => $order['_id'])
+						);
+						$capture = $payments::capture(
+							'default',
+							$authorization->key,
+							floor($amountToCapture * 100) / 100,
+							array(
+								'processor' => isset($order['processor']) ? $order['processor'] : null,
+								'orderID' => $order['order_id']
+							)
+						);
+						if($capture->sucess()) {
+							$successfullyCaptured = true;
+						} else {
+							$successfullyCaptured = false;
+							$errors_message = $authorization->errors;
+						}
+					} else {
+						$errors_message = $capture->errors;
+					}
+				} else {
+					$successfullyCaptured = false;
+				}
+			} else {
+				$successfullyCaptured = true;
+				$errors_message = $capture->errors;
+			}
+			if ($successfullyCaptured) {
 				Logger::info("Order Succesfully Captured");
-				$data['auth_confirmation'] = $auth->key;
+				$data['auth_confirmation'] = $capture->key;
 				$data['payment_date'] = new MongoDate();
 				#Save Capture in Transactions Logs
-				$transation['authKey'] = $auth->key;
+				$transation['authKey'] = $capture->key;
 				$transation['amount'] = $amountToCapture;
 				$transation['date_captured'] = new MongoDate();
 				#Update the Money Captured field
-				if($order['captured_amount']) {
+				if(!empty($order['captured_amount'])) {
 					$totalAmountCaptured = ($amountToCapture + $order['captured_amount']);
 				} else {
 					$totalAmountCaptured = $amountToCapture;
@@ -276,19 +315,15 @@ class Order extends Base {
 					),
 					array('_id' => $orderId)
 				);
-			} elseif ($auth->errors) {
-				$data['auth_confirmation'] = -1;
-				$data['error_date'] = new MongoDate();
-
-				$message  = "Processing of payment for order id `{$order['_id']}` failed:";
-				$message .= $error = implode('; ', $auth->errors);
-				Logger::info($message);
 			} else {
 				$data['auth_confirmation'] = -1;
 				$data['error_date'] = new MongoDate();
-				$error = 'Unknown error.';
-
-				$message = "Processing of payment for order id `{$order['_id']}` failed.";
+				$message  = "Processing of payment for order id `{$order['_id']}` failed:";
+				if($errors_message) {
+					$message .= $error = $errors_message;
+				} else {
+					$error = 'Unknown error.';
+				}
 				Logger::info($message);
 			}
 		}
