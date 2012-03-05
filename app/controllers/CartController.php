@@ -130,7 +130,7 @@ class CartController extends BaseController {
 		}
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
-			$shipping_discount = $shipping;
+			$shipping_discount = 7.95;
 		}
 		
 		#Get Total of The Cart after Discount

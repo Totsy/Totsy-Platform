@@ -431,7 +431,7 @@ class OrdersController extends BaseController {
 		
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
-			$shipping_discount = $shippingCost + $overShippingCost;
+			$shipping_discount = 7.95;
 		}
 				
 		#Calculate Order Total

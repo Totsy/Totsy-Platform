@@ -18,7 +18,9 @@ class Service extends Base {
     public static function freeShippingCheck($shippingCost = 7.95, $overSizeHandling = 0.00) {
         $enable = false;
         $service = Session::read('services', array('name' => 'default'));
-				
+		#Never Apply FreeShipping to Large Items
+		$shippingCost = 7.95;
+		$overSizeHandling = 0.00;
 		if(Session::read('layout', array('name'=>'default'))!=="mamapedia") {
 			if ( $service && array_key_exists('freeshipping', $service)) {
 			    if ($service['freeshipping'] === 'eligible') {
