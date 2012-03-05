@@ -45,6 +45,13 @@ class Affiliates extends \lithium\template\Helper {
 				break;
 			case 'Bounces':
 				$heading = $this->_bounceHeading;
+				if ((bool)$options['criteria']['show_subaffiliate'] == true ){
+        	$heading = array_merge(
+        			array_slice($this->_bounceHeading,0,1),
+        			array('Invited By'),
+        			array_slice($this->_bounceHeading,1)
+        	);
+				}
 				break;
 			default:
 				break;
@@ -96,6 +103,9 @@ class Affiliates extends \lithium\template\Helper {
 		        if (($key !== "total")) {
                         $html .= "<tr>";
                         $html .= "<td>" . $key ."</td>";
+											if ((bool)$options['criteria']['show_subaffiliate'] == true ){
+                        $html .= "<td> " . $value['invited_by'] ."</td>";	
+                      }
                         $html .= "<td> " . $value['bounce_type'] ."</td>";
                         $html .= "<td> ".  $value['created_date']."</td>";
                         $html .= "<td> ".  $value['report_date']."</td>";
