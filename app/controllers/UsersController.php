@@ -1,5 +1,6 @@
 <?php
 
+
 namespace app\controllers;
 
 use app\models\User;
@@ -10,6 +11,8 @@ use lithium\security\Auth;
 use lithium\storage\Session;
 use app\extensions\Mailer;
 use app\extensions\Keyade;
+use FacebookApiException;
+use lithium\analysis\Logger;
 use MongoDate;
 use li3_facebook\extension\FacebookProxy;
 
@@ -53,8 +56,10 @@ class UsersController extends BaseController {
 		$currentURI = $parsedURI['path'];
 
 		$eventName = "";
+		
+		$urlBase = Array("sale", "category", "age");
 
-		if (preg_match("(/sale)", $currentURI)) {
+		if (in_array("/".$currentURI, $urlBase)) {
 		    $URIArray = explode("/", $currentURI);
 		    $eventName = $URIArray[2];
 		}
@@ -62,12 +67,12 @@ class UsersController extends BaseController {
 		if ($eventName) {
            //write event name to the session
            Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
-       }
+       	}
 
-       //redirect to login ONLY if the user is coming from an email
-       if ($this->request->query["gotologin"]=="true") {
-           $this->redirect("/login");
-       }
+       	//redirect to login ONLY if the user is coming from an email
+       	if ($this->request->query["gotologin"]=="true") {
+       	    $this->redirect("/login");
+       	}
 
 		$this->_render['layout'] = 'login';
 		$message = false;
@@ -470,6 +475,7 @@ class UsersController extends BaseController {
 		$redirect = '/sales';		
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		$message = "";
 
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 
@@ -479,14 +485,18 @@ class UsersController extends BaseController {
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-		//autogenerate password here, just fbregister($data) instead, bypassing that form	
+		//autogenerate password here, just fbregister($data) instead, bypassing that form		
 		if ($success) {
 			$this->redirect('Events::index');
 		} else {
 			if (!empty($userfb)) {
 				if (!$fbCancelFlag) {
-					$this->fbregister();
-					$this->redirect('/sales?req=invite');
+					if($this->fbregister()) {
+						$this->redirect('/sales?req=invite');
+					} else {
+						$message = "Facebook appears to be experiencing issues at the moment. You can login natively using your Totsy account";
+						return compact('message');
+					}
 				}
 			}
 		}
@@ -584,7 +594,6 @@ class UsersController extends BaseController {
 				$connected = false;
 			}
 		}
-
 
 		if(FacebookProxy::getUser()){
 			$fbsession = FacebookProxy::getUser();
@@ -884,15 +893,20 @@ class UsersController extends BaseController {
 	 */
 	public function fbregister(array $additionalData = array()) {
 		Session::delete('landing', array('name'=>'default'));
-
-		$fbuser = FacebookProxy::api("/me");
 		
+		try{
+			throw new FacebookApiException();
+			//$fbuser = FacebookProxy::api("/me");			
+		} catch (FacebookApiException $e) {
+			Logger::error($e->getMessage());
+			return false;				
+		}					
+			
 		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
-        		$affiliate = new AffiliatesController(array('request' => $this->request));
-        		//this will call Users::registration
-        		$affiliate->register("mamasource");
-        } else {
-						    				
+        	$affiliate = new AffiliatesController(array('request' => $this->request));
+        	//this will call Users::registration
+        	$affiliate->register("mamasource");
+        } else {		    				
 			$data   = array(
 				'email'					=> $fbuser['email'],
 				'confirmemail'			=> $fbuser['email'],
