@@ -245,7 +245,7 @@ class Order extends Base {
 		if ($order['total'] == 0) {
 			$data['auth_confirmation'] = $order['authKey'];
 			$data['payment_date'] = new MongoDate();
-			Logger::error("Can't capture because total is zero.");
+			Logger::info("Can't capture because total is zero.");
 		} else {
 			$capture = $payments::capture(
 				'default',
@@ -257,12 +257,18 @@ class Order extends Base {
 				)
 			);
 			if ($capture->errors) {
-				if($auth->reasonCode == '102' && !empty($order['cyberSourceProfileId'])) {
-					$cybersource = new CyberSource(Processor::config('default'));
+				#If Errors due to absence of original Full-Auth, Re-Authorize and capture
+				# 235 => 'The requested capture amount exceeds the originally authorized amount.'
+				# 102 => 'One or more fields in the request contains invalid data: "{:invalidField}."'
+				# 239 => 'The requested transaction amount must match the previous transaction amount.'
+				if($capture->response->reasonCode == (102 || 235 || 239) && !empty($order['cyberSourceProfileId'])) {
+					Logger::info("Order being Re-Authorized...");
+					$cybersource = new CyberSource($payments::config('default'));
 					$profile = $cybersource->profile($order['cyberSourceProfileId']);
-					$authorization = Processor::authorize('default', $amountToCapture, $profile, array('orderID' => $order['order_id']));
+					$authorization = $payments::authorize('default', $amountToCapture, $profile, array('orderID' => $order['order_id']));
 					if($authorization->success()) {
-						$update = static::update(
+						Logger::info("Order Re-Authorized!");
+						static::update(
 							array('$set' => array('authKey' => $authorization->key,
 												  'auth' => $authorization->export(),
 												  'authTotal' => $amountToCapture,
@@ -273,27 +279,28 @@ class Order extends Base {
 						$capture = $payments::capture(
 							'default',
 							$authorization->key,
-							floor($amountToCapture * 100) / 100,
+							$amountToCapture,
 							array(
 								'processor' => isset($order['processor']) ? $order['processor'] : null,
 								'orderID' => $order['order_id']
 							)
 						);
-						if($capture->sucess()) {
+						if($capture->success()) {
 							$successfullyCaptured = true;
 						} else {
 							$successfullyCaptured = false;
-							$errors_message = $authorization->errors;
+							$errors_message = $capture->errors;
 						}
 					} else {
-						$errors_message = $capture->errors;
+						$successfullyCaptured = false;
+						$errors_message = $authorization->errors;
 					}
 				} else {
 					$successfullyCaptured = false;
+					$errors_message = $capture->errors;
 				}
 			} else {
 				$successfullyCaptured = true;
-				$errors_message = $capture->errors;
 			}
 			if ($successfullyCaptured) {
 				Logger::info("Order Succesfully Captured");
