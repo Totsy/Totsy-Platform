@@ -204,6 +204,13 @@ $<?php echo number_format($savings,2)?>
 				    	</span>
 				    	<span style="float:right">$<?php echo number_format(abs($shipping),2)?></span>
 					<?php endif ?>
+					<?php if (!empty($overShippingCost)):?>
+			    		<div style="clear:both"></div>
+			    		<div class="subtotal">
+    		        		<span style="float: left;">Oversize Shipping:</span> 
+    		        		<span style="float:right">$<?php echo number_format($overShippingCost,2)?></span>
+    		    		</div>
+   			    	<?php endif ?>
 				</div>
 				
 				<?php if (!empty($shipping_discount)):?>
