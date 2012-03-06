@@ -521,9 +521,7 @@ class OrderExport extends Base {
 					* Checking if sku exists, if not find it in the item master
 					* If not in item master create one
 					**/
-				    if (array_key_exists('sku_details', $eventItem)){
-				        $sku = $eventItem['sku_details'][$key];
-				    } else {
+				    if (!array_key_exists('sku_details', $eventItem)){
 				    	$this->log("Item {$eventItem['_id']} doesn't have sku_details.  Generating.");
 				          $makeSku = new Item();
 				          $makeSku->generateSku(array($eventItem));
@@ -542,7 +540,6 @@ class OrderExport extends Base {
                                     'details' => true
                                 )
                             ));
-                            $sku = $eventItem['sku_details'][$key];
 				    }
 					foreach ($eventItem['details'] as $key => $value) {
 					    $description = implode(' ', array(
@@ -550,6 +547,7 @@ class OrderExport extends Base {
 								$key,
 								$eventItem['description']
 							));
+					    $sku = $eventItem['sku_details'][$key];
 						$conditions = array('SKU' => $sku, 'style' => $eventItem['vendor_style']);
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
