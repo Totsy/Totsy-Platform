@@ -78,7 +78,7 @@ class UsersController extends BaseController {
 		$tmp = $this->autoLogin();
 		
 		if ($tmp=="fberror") {
-			$message = "Facebook.com appears to be having issues. Please try our native registration form below in the meantime.";
+			$message = "<div class='error_flash'>Facebook.com appears to be having issues. Please try our native registration form below in the meantime.</div>";
 			return compact('message');
 		}
 									
@@ -897,7 +897,8 @@ class UsersController extends BaseController {
 		Session::delete('landing', array('name'=>'default'));
 		
 		try {
-			$fbuser = FacebookProxy::api("/me");			
+			throw new FacebookApiException();
+			//$fbuser = FacebookProxy::api("/me");			
 		} catch (FacebookApiException $e) {
 			Logger::error($e->getMessage());
 			return false;	
