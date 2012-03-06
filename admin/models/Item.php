@@ -186,7 +186,8 @@ class Item extends Base {
 				$sku = Item::getUniqueSku($item['vendor'], $item['vendor_style'], $size, $item['color']);
 				$sku_details[$size] = $sku;
 				$skus[] = $sku;
-			}	
+			}
+			Logger::debug("Saving sku details and skus");
 			$itemCollection->update(
 				array('_id' => $item['_id']),
 				array('$set' => array('sku_details' => $sku_details ))
