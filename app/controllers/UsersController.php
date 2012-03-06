@@ -54,12 +54,10 @@ class UsersController extends BaseController {
 
 		$parsedURI = parse_url($this->request->env("REQUEST_URI"));
 		$currentURI = $parsedURI['path'];
-
+		$message = "";
 		$eventName = "";
 		
-		$urlBase = Array("sale", "category", "age");
-
-		if (in_array("/".$currentURI, $urlBase)) {
+		if (preg_match("(/sale)", $currentURI)) {
 		    $URIArray = explode("/", $currentURI);
 		    $eventName = $URIArray[2];
 		}
@@ -73,19 +71,24 @@ class UsersController extends BaseController {
        	if ($this->request->query["gotologin"]=="true") {
        	    $this->redirect("/login");
        	}
-
+       	       	
 		$this->_render['layout'] = 'login';
-		$message = false;
 		$data = $this->request->data;
-		$this->autoLogin();
-
+		
+		$tmp = $this->autoLogin();
+		
+		if ($tmp=="fberror") {
+			$message = "Facebook.com appears to be having issues. Please try our native registration form below in the meantime.";
+			return compact('message');
+		}
+									
 		/*
 		* redirects to the affiliate registration page if the left the page
 		* and then decided to register afterwards.
 		*/
 		
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
+		if($cookie && preg_match('(/a/)', $cookie['landing_url'])) {
 			return $this->redirect($cookie['landing_url']);
 		}
 		$referer = parse_url($this->request->env('HTTP_REFERER')) + array('host' => null);
@@ -197,11 +200,10 @@ class UsersController extends BaseController {
 				} else {
 					return $this->redirect('/sales?req=invite');
 				}
-
 			} else {
 				if ($this->request->data) {
 					$message = '<div class="error_flash">Error in registering your account</div>';
-				} 
+				}			
 			}
 		}
 
@@ -458,7 +460,7 @@ class UsersController extends BaseController {
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 	
-	public function publicpassword(){
+	public function publicpassword() { 
 		
 		$this->password();
 		
@@ -485,22 +487,22 @@ class UsersController extends BaseController {
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
+		
 		//autogenerate password here, just fbregister($data) instead, bypassing that form		
 		if ($success) {
 			$this->redirect('Events::index');
 		} else {
 			if (!empty($userfb)) {
-				if (!$fbCancelFlag) {
-					if($this->fbregister()) {
+				if (!$fbCancelFlag) {					
+					if($this->fbregister()) { 
 						$this->redirect('/sales?req=invite');
 					} else {
-						$message = "Facebook appears to be experiencing issues at the moment. You can login natively using your Totsy account";
-						return compact('message');
+						return 'fberror';
 					}
 				}
-			}
+			} 
 		}
-		
+				
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
@@ -519,7 +521,7 @@ class UsersController extends BaseController {
 						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
 						unset($cookie['redirect']);
 					}
-					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));						
+					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));	
 						
 					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {	 
 						$this->redirect($this->request->url);
@@ -894,14 +896,13 @@ class UsersController extends BaseController {
 	public function fbregister(array $additionalData = array()) {
 		Session::delete('landing', array('name'=>'default'));
 		
-		try{
-			throw new FacebookApiException();
-			//$fbuser = FacebookProxy::api("/me");			
+		try {
+			$fbuser = FacebookProxy::api("/me");			
 		} catch (FacebookApiException $e) {
 			Logger::error($e->getMessage());
-			return false;				
-		}					
-			
+			return false;	
+		}
+					
 		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
         	$affiliate = new AffiliatesController(array('request' => $this->request));
         	//this will call Users::registration

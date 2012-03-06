@@ -1,6 +1,5 @@
 <?php use lithium\storage\Session; ?>
 
-<?php if ($message){ echo $message; } ?>
 <style>
 h2 {
     color: #999999;
@@ -101,6 +100,12 @@ if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
 
 </div>
 <div class="clear"></div>
+
+<?php if($message): ?>	
+<div class="standard-message">
+	<?php echo $message; ?> 
+</div>
+<?php endif ?>
 
 <div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
