@@ -630,7 +630,6 @@ class Order extends Base {
 		if(!empty($selected_order['auth_confirmation'])) {
 			$datas_order_prices["auth_confirmation"] = $selected_order["auth_confirmation"];
 		}
-		die();
 		/**************UPDATE TAX****************************/
 		// Is this even used?
 		extract(static::_recalculateTax($selected_order,$items,true));

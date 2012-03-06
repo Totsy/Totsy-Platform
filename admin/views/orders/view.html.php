@@ -477,7 +477,8 @@
 													?>
 													<?php echo $this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
 													 <?php if(!empty($item["digital"])) { 
-															 echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'disabled' => 'disabled'));
+															 echo $this->form->select('items_' .$key, $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'value' => $item['quantity'], 'disabled' => 'disabled'));
+											 				echo $this->form->hidden("items[".$key."][quantity]", array('class' => 'inputbox', 'id' => 'dd_qty', 'value' => $item['quantity'] )); 
 													} else {
 															 echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
 													}

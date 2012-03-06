@@ -315,7 +315,6 @@ class OrdersController extends BaseController {
 				//Quantity
 				$items[$key]["initial_quantity"] = $item["initial_quantity"];
 				$items[$key]["quantity"] = $item["quantity"];
-
 				#shortshipped
 				if (!empty($item["shortshipped"])) {
 					$items[$key]["shortshipped"] = true;
