@@ -255,10 +255,11 @@ class Affiliate extends Base {
         $cursor = User::collection()->
                             find($conditions)->
                             fields(array(
-                                'email'=>true,
-                                'email_engagement'=>true,
-                                'created_date' => true
-                            ));
+															'email'=>true,
+															'email_engagement'=> true,
+															'created_date' => true,
+															'invited_by' => true
+														));
         $total = $cursor->count();
         $bounces = array();
 
@@ -268,6 +269,7 @@ class Affiliate extends Base {
             $bounces[$value['email']]['report_date'] = date('m/d/Y',$value['email_engagement']['date']->sec);
             $bounces[$value['email']]['delivery_date'] = date('m/d/Y',$value['email_engagement']['delivery']['status_time']->sec);
             $bounces[$value['email']]['delivery_message'] = $value['email_engagement']['delivery']['message'];
+            $bounces[$value['email']]['invited_by'] = $value['invited_by'];
         }
         $bounces['total'] = count($bounces);
         return $bounces;
