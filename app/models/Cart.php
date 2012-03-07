@@ -309,7 +309,7 @@ class Cart extends Base {
 		}
 		
 		foreach($cartCheck as $item) {
-			if (!Item::first($item['item_id'])->shipping_oversize ) {
+			if (!Item::first($item['item_id'])->shipping_oversize && Item::isTangible($item['item_id'])) {
 				$cost = 7.95;
 			}
 		}
