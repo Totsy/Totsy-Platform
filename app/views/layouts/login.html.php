@@ -1,4 +1,6 @@
-<?php use lithium\net\http\Router; 
+<?php 
+use lithium\net\http\Router; 
+use lithium\storage\Session;
 ?>
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -6,40 +8,55 @@
       xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 	<?php echo $this->html->charset();?>
-	<title>Totsy, the private sale site for Moms</title>
-	<meta property="fb:app_id" content="181445585225391"/>
+	<?php
+
+$baseCSSPath = "";
+$jQueryAllPath = "";
+$googleUACode = "UA-675412-15";
+$titleTag = "Totsy, the private sale site for Moms";
+	
+	if (Session::read("layout", array("name"=>"default"))=="mamapedia") {
+			$baseCSSPath = "/css/base_mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/base.css");
+			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.mamapedia.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.mamapedia.css");	
+			$googleUACode = "UA-675412-22";
+			$titleTag = "Mamasource, powered by Totsy private sale";
+		} else {
+			$baseCSSPath = "/css/base.css?" . filemtime(LITHIUM_APP_PATH. "/webroot/css/base.css");
+			$jQueryAllPath = "/css/jquery_ui_custom/jquery.ui.all.css?" . filemtime(LITHIUM_APP_PATH . "/webroot/css/jquery_ui_custom/jquery.ui.all.css");
+		}
+?>
+<title><?php echo $titleTag ?></title>
+	<meta property="fb:app_id" content="<?php echo $fbconfig['appId']; ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
     <meta name="description"
           content="Totsy has this super cool find available now and so much more for kids and moms! Score the best brands for your family at up to 90% off. Tons of new sales open every day. Membership is FREE, fast and easy. Start saving now!"/>
 	
-	<?php echo $this->html->style(array('base.css', '960.css', 'jquery_ui_custom/jquery.ui.all.css'), array('media' => 'screen')); ?>
-	
+	<?php echo $this->html->style(array($baseCSSPath, '960.css', $jQueryAllPath), array('media' => 'screen')); ?>
+		
 	<script src="http://www.google.com/jsapi"></script>
-	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
-	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
+	<script> google.load("jquery", "1.6.1", {uncompressed:true});</script>
+	<script> google.load("jqueryui", "1.8.13", {uncompressed:true});</script>
     <!-- end jQuery / jQuery UI -->
+    
+    <!-- Begin Monetate tag v6. Place at start of document head. DO NOT ALTER. -->
+    <?php echo $this->html->script(array('monetate.js')); ?>
+<!-- End Monetate tag. -->
             
     <?php echo $this->html->script(array('jquery.backstretch.min.js', 'jquery.uniform.min.js' )); ?>
     
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
 	
-	<script type="text/javascript">
-		function deleteFBCookie(name) {
-			document.cookie = name +'=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			//window.location = "http://evan.totsy.com/login";
-		} 
-	</script>
 	
 	<script type="text/javascript">
 		//this is used for swapping backgrounds on registration pages that pass in affiliate codes	
 		var affBgroundImage = "";
 	</script>
 	
-		<script type="text/javascript">	
-
+	<script type="text/javascript">	
+	  var googleUACode = '<?php echo $googleUACode; ?>';
 	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-675412-15']);
+	  _gaq.push(['_setAccount', googleUACode]);
 	  _gaq.push(['_trackPageview']);
 
 	  (function() {
@@ -85,15 +102,21 @@
 	    });
 
 	</script>
+	
+	<?php $logout = ($fblogout) ? $fblogout : 'Users::logout' ?>
+	
 	<script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId   : <?php echo $fbconfig['appId']; ?>,
-          session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
-          oauth	  : true, 
-          status  : true, // check login status
-          cookie  : true, // enable cookies to allow the server to access the session
-          xfbml   : true // parse XFBML
+		var fbLogout = "<?php echo $logout; ?>";	
+	
+      	window.fbAsyncInit = function() {
+        	FB.init({
+        	  appId   : <?php echo $fbconfig['appId']; ?>,
+        	  session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
+        	  oauth	  : true, 
+        	  status  : true, // check login status
+        	  cookie  : true, // enable cookies to allow the server to access the session
+        	  oauth   : true, 
+        	  xfbml   : true // parse XFBML
         });
 
         // whenever the user logs in, we refresh the page
@@ -101,13 +124,11 @@
           window.location.reload();
         });
         
-        /*
-        FB.Event.subscribe('auth.logout', function(response) {
-		    window.location.href='/logout';
- 		});
- 		*/
+         FB.Event.subscribe('auth.logout', function() {
+          window.location.reload();
+        });
         
-      };
+       };
 
       (function() {
         var e = document.createElement('script');

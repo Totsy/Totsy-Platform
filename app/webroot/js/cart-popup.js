@@ -49,7 +49,9 @@ $(document).ready( function() {
 		$("#order_total_num").html("");
 		$("#order_total_num").text("$" + cartObj.subTotal.toFixed(2) + "");
 		
+		//nav header variables
 		$("#cart-count").text(cartObj.itemCount);
+		$("#cart-subtotal").text(cartObj.subTotal.toFixed(2));
 		
 		//set var for cart timer
 		var cartExpirationDate = new Date(cartObj.cartExpirationDate * 1000);
@@ -76,6 +78,7 @@ $(document).ready( function() {
 		$("#template").tmpl(visibleItems).appendTo("#cart_item");
 		
 		if (invisibleItemCount > 0) {
+			isCollapsed = true;
 		    addScrollBar();
 		}
 			
@@ -85,10 +88,9 @@ $(document).ready( function() {
 		cartItemsTimer();
 		
 		if( cartObj.itemCount > 0 ) {
-			
 			//set these
 			$("#savings").text(cartObj.savings.items.toFixed(2));
-			$("#cart_popup").fadeIn(500);
+			$("#cart_popup").fadeIn(100);			
 		
 			//set the popup to timeout after 8 seconds
 			timeout = setTimeout(function() {
@@ -106,7 +108,9 @@ $(document).ready( function() {
 			url: $.base + 'cart/getCartPopupData',
 			context: document.body,
 			success: function(data) {
-				showCartPopup(data);
+				if(data){
+					showCartPopup(data);
+				} 
 			}
 		});
 	};
@@ -125,8 +129,14 @@ $(document).ready( function() {
 			url: $.base + 'cart/add',
 			data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 			context: document.body,
-			success: function(data) {
-				showCartPopup(data);
+			success: function(data) {	
+				if(data!=="noPopup") {
+					//tracking add to cart in GA
+					showCartPopup(data);
+					_gaq.push(['_trackEvent', 'Cart', 'Add', 'Add to Cart', 1]);
+				} else {
+					window.location = "/cart/view";
+				}
 			}
 		});
 	};
@@ -134,7 +144,7 @@ $(document).ready( function() {
 	var closeCartPopup = function() { 
 		isCollapsed = false;
 		//set isCollapsed to false so that the link doesn't appear on re-open
-		$("#cart_popup").fadeOut(500); 
+		$("#cart_popup").fadeOut(200); 
 	}; 
 	
 	//make popup disappear 8 seconds after their mouse leaves it  
@@ -153,7 +163,6 @@ $(document).ready( function() {
 	}); 
 	
 	$(".cart_icon").mouseover( function(){
-	
 		//if there is an active timeout, clear it
 		if (timeout) {
 			clearTimeout(timeout);
@@ -163,8 +172,7 @@ $(document).ready( function() {
 	
 	//toggle items for carts with more than 3 different types of items
 	var addScrollBar = function() {
-		if (isCollapsed == false) {
-			isCollapsed = true; 
+		if (isCollapsed) {
 			//add a scrollbar
 			$("#cart_item").css({
 				"overflow-y": "scroll",
@@ -176,7 +184,6 @@ $(document).ready( function() {
 			//add all items to template
 			$("#template").tmpl(invisibleItems).appendTo("#cart_item");
 		} else {
-			isCollapsed = false; 
 			//remove scrollbar
 			$("#cart_item").css({
 				"overflow-y": "hidden",

@@ -87,7 +87,7 @@ class Items extends \lithium\template\Helper {
 		$all_items = $this->dropDownText($itemRecords);
 
 		if (!empty($itemRecords)) {
-			$html .= "<table id='itemtable'";
+			$html .= '<table id=\'itemtable\'>';
 			//We need the thead for jquery datatables
 			$html .=  '<thead>';
 			$html .= '<tr>';
@@ -106,8 +106,8 @@ class Items extends \lithium\template\Helper {
 
 			//Lets start building the data fields
 			foreach ($itemRecords as $item) {
-				$html .= "<tr class=''>";
-				$html .= "<td width='400px'>";
+				$html .= "<tr>";
+				$html .= "<td width='200px'>";
 				
 				//make mini array of color/description
 				$isurlduplicate = false;
@@ -146,20 +146,16 @@ class Items extends \lithium\template\Helper {
 					$image = "/img/no-image-small.jpeg";
 				}
 
-				$html .= "<td width='100'><img src=$image/ width='75'></td>";
+				$html .= "<td><img src=$image width='75'></td>";
 				
-				$html .= "<td width='200'><a href=\"/items/edit/$item->_id\">$item->description</a><br />
+				$html .= "<td><a href=\"/items/edit/$item->_id\">$item->description</a><br />
 				Color: $item->color <br />
 				Vendor Style: $item->vendor_style
 				</td>";
-				$html .= "<td height='100' width='100'><textarea rows='5' cols='20' name='$item->_id' id='$item->_id'>$item->blurb</textarea></td>";
-				$html .= "<td width='30'>$item->enabled<br>";
+				$html .= "<td><textarea rows='5' cols='20' name='$item->_id' id='$item->_id' class='mceSimple'>$item->blurb</textarea></td>";
+				$html .= "<td>$item->enabled<br>";
 				
 
-				if($item->miss_christmas){
-					$html .= "wont ship for xmas";				
-				}
-				
 				//check to show flag for duplicate color/description url
 				if($isurlduplicate){
 					$html .= "<br><span style='color:#ff0000;'>color and/or description are duplicated!</span>";

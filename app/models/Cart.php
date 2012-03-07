@@ -286,8 +286,7 @@ class Cart extends Base {
 		// $cost =  $result ?: 7.95;
 		$cost = 7.95;
 		$cartCheck = $carts->data();
-
-		if (count($cartCheck) == 1 && Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
+		if (Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
 			$cost = 0;
 		} else {
 		    $exempt = true;
@@ -302,10 +301,23 @@ class Cart extends Base {
 		        $cost = 0;
 		    }
 		}
-
-		if (count($cartCheck) == 1 && !Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
+		
+		foreach($cartCheck as $item) {
+			if (!Item::first($item['item_id'])->shipping_exempt && Item::first($item['item_id'])->shipping_oversize ) {
+				$cost = 0;
+			}
+		}
+		
+		foreach($cartCheck as $item) {
+			if (!Item::first($item['item_id'])->shipping_oversize && Item::isTangible($item['item_id'])) {
+				$cost = 7.95;
+			}
+		}
+		
+		if(static::isOnlyDigital($carts)) {
 			$cost = 0;
 		}
+		
 		return $cost;
 	}
 
@@ -320,9 +332,14 @@ class Cart extends Base {
 				$info= Item::find($item['item_id']);
 				if(array_key_exists('shipping_oversize', $info->data())){
 					$data= $info->data();
-					$cost+= $data['shipping_rate'];
+					$cost+= ($data['shipping_rate'] * $item['quantity']);
 				}
 			}
+			
+			if(static::isOnlyDigital($cart)) {
+				$cost = 0;
+			}
+
 			return $cost;
 	}
 
@@ -471,18 +488,23 @@ class Cart extends Base {
 	 * @param object $order
 	 * @return string
 	 */
-	public static function shipDate($cart, $normal=false) {
+	public static function shipDate($cart, $normal=true) {
 
 		//shows calculated shipdate
 		if($normal){
 			$i = 1;
+			if(static::isOnlyDigital($cart)) {
+				$delayDelivery = 5;
+			} else {
+				$delayDelivery = static::_object()->_shipBuffer;
+			}
 			$event = static::getLastEvent($cart);
 			if (!empty($event)) {
 				$shipDate = is_object($event->end_date) ? $event->end_date->sec : $event->end_date;
-				while($i < static::_object()->_shipBuffer) {
-					$day = date('N', $shipDate);
+				while($i < $delayDelivery) {
+					$day = date('D', $shipDate);
 					$date = date('Y-m-d', $shipDate);
-					if ($day < 6 && !in_array($date, static::_object()->_holidays)) {
+					if ((($day != 'Sat') && ($day != 'Sun')) && !in_array($date, static::_object()->_holidays)) {
 						$i++;
 					}
 					$shipDate = strtotime($date.' +1 day');
@@ -506,9 +528,8 @@ class Cart extends Base {
 				}
 			}
 		}
-		return $shipDate;
-		
-		
+
+		return $shipDate;		
 	}
 
 	/**
@@ -526,7 +547,7 @@ class Cart extends Base {
 		if (!empty($ids)) {
 			$event = Event::find('first', array(
 				'conditions' => array('_id' => $ids),
-				'order' => array('created_date' => 'DESC')
+				'order' => array('end_date' => 'DESC')
 			));
 		}
 		return $event;
@@ -604,7 +625,7 @@ class Cart extends Base {
 	* Return Credit, Promo, Services Objects and the PostDiscount Total
 	* @see app/models/Cart::check()
 	*/
-	public static function getDiscount($subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
+	public static function getDiscount($cart, $subTotal, $shippingCost = 7.95, $overShippingCost = 0, $data, $tax = 0.00) {
 		#Get User Infos
 		$fields = array(
 		'item_id',
@@ -626,8 +647,18 @@ class Cart extends Base {
 		/** Services, Promocodes,Credits Management **/
 		#Apply Services
 		$services = array();
-		$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
-		$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
+		
+		$isOnlyDigital = static::isOnlyDigital($cart);
+		
+		if (Session::read('layout', array('name'=>'default'))!=="mamapedia") {
+			$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost, $isOnlyDigital);
+				
+			$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
+		} else {
+			unset($services['freeshipping']);
+			unset($services['tenOffFitfy']);
+		}
+				
 		#Apply Promocodes
 		$cartPromo = Promotion::create();
 		$promo_code = null;
@@ -645,14 +676,15 @@ class Cart extends Base {
 			Session::delete('service_available');
 		}
 		if (!empty($promo_code)) {
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'), $isOnlyDigital);
 		}
 		#Disable Service if Promocode Used
 		if(!empty($cartPromo['saved_amount'])) {
-			if($services['freeshipping']['enable']) {
+			if($services['freeshipping']['enable']) {			
 				$services['freeshipping'] = array('shippingCost' => 0, 'overSizeHandling' => 0, 'enable' => false);
 				$serviceName = 'Free Shipping';
 			}
+			
 			if(!empty($services['tenOffFitfy'])) {
 				$services['tenOffFitfy'] = 0.00;
 				$serviceName = '$10 Off $50';
@@ -666,22 +698,63 @@ class Cart extends Base {
 		$credit_amount = null;
 		$cartCredit = Credit::create();
 		if (array_key_exists('credit_amount', $data)) {
-			$credit_amount = $data['credit_amount'];
+			$credit_amount = abs($data['credit_amount']);
 		}
 		#Calculation of the subtotal with shipping and services discount
 		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
 		#Calculation After Promo
 		$postDiscountTotal = ($postSubtotal + $cartPromo['saved_amount']);
+		#Subtotal for Credits Calculation
+		$preCreditsTotal = ($subTotal + $tax + $cartPromo['saved_amount']);
 		#Avoid Negative Total
 		if($postDiscountTotal < 0.00) {
 			$postDiscountTotal = 0.00;
 		}
-		$cartCredit->checkCredit($credit_amount, $postDiscountTotal, $userDoc);
+		$cartCredit->checkCredit($credit_amount, $preCreditsTotal, $userDoc);
 		#Apply credit to the Total
 		if(!empty($cartCredit->credit_amount)) {
 			$postDiscountTotal += $cartCredit->credit_amount;
 		}
-		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal');
+		#Get Amount Of Non Tangible Items
+		$nonTangibleAmount = static::getNonTangibleAmount($cart);
+
+		#Calculate amount to Capture on Non Tangible Items
+		$amountToCapture = ($nonTangibleAmount - abs($cartCredit->credit_amount) - abs($cartPromo['saved_amount']));
+		if($amountToCapture < 0) {
+			$amountToCapture = 0;
+		}
+		return compact('cartPromo', 'cartCredit', 'services', 'postDiscountTotal', 'amountToCapture');
+	}
+	
+	/**
+	 * Return the total amount of non tangible Items
+	 * @return captureAmount
+	 */
+	public static function getNonTangibleAmount($cart) {
+		$nonTangibleAmount = 0;
+		foreach($cart as $item) {
+			if(!Item::isTangible($item['item_id'])) {
+				$nonTangibleAmount += ($item['sale_retail'] * $item['quantity']);
+			}
+		}
+		return $nonTangibleAmount;
+	}
+	
+	/**
+	 * Check if Items in Cart are only Digital
+	 * @return boolean onlyDigital
+	 */
+	public static function isOnlyDigital($cart) {
+		if($cart->items) {
+			$cart = $cart->items;
+		}
+		$onlyDigital = true;
+		foreach($cart as $item) {
+			if(Item::isTangible($item['item_id']) && empty($item['cancel'])) {
+				$onlyDigital = false;
+			}
+		}
+		return $onlyDigital;
 	}
 }
 

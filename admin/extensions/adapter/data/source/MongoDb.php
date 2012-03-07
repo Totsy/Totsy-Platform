@@ -40,7 +40,7 @@ class MongoDb extends \lithium\data\source\MongoDb {
 			'password'   => null,
 			'host'       => Mongo::DEFAULT_HOST . ':' . Mongo::DEFAULT_PORT,
 			'database'   => null,
-			'timeout'    => 100,
+			'timeout'    => 5000,
 			'replicaSet' => false,
 			'schema'     => null,
 			'gridPrefix' => 'fs'

@@ -1,5 +1,31 @@
 <script type="text/javascript">
+		function fadeOut_CCForm() {
+			$('#credit_card_form').hide();
+		}
+		
+		function fadeOut_BillingAddressForm() {
+			$('#billing_address_form').hide();
+		}
+		
+		function fadeOut_saved_CCs() {
+			$('#saved_credit_cards').hide();
+		}
+		
+		function fadeIn_saved_CCs() {
+			$('#saved_credit_cards').show();
+		}
+		
+		function fadeIn_CCForm() {
+			$('input[name=savedCreditCard]').attr('checked', false);
+			$('#credit_card_form').show();
+		}
+		
+		function fadeIn_BillingAddressForm() {
+			$('#billing_address_form').show();
+		}
+
 	$( function () {
+
 	    var itemExpires = new Date(<?php echo ($cartExpirationDate  * 1000)?>);
 		var now = new Date();
 		$('#itemCounter').countdown( {until: itemExpires, onExpiry: refreshCart, expiryText: "<div class='over' style='color:#EB132C; padding:5px;'>no longer reserved</div>", layout: '{mnn}{sep}{snn} minutes'} );
@@ -10,12 +36,17 @@
 			window.location.reload(true);
 		}
 	});
+	
+
+
 </script>
 
 <script type="text/javascript">
 var paymentForm = new Object();
+var billingAddresses = new Object();
 </script>
 <?php
+	use lithium\storage\Session;
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
@@ -49,10 +80,12 @@ var paymentForm = new Object();
     	//highlight the invalid fields and show a prompt for the first of those highlighted
     	$("#paymentForm").submit(function() {
 
-    		if(validCC()==false) {
+			var savedCreditCard = $('input:radio[name=savedCreditCard]:checked').val();
+
+    		if(validCC()==false && savedCreditCard === undefined) {
 				return false;
 			}
-
+			
     		paymentForm.submitted = true;
     		paymentForm.form = $(this).serializeArray();
 
@@ -63,13 +96,13 @@ var paymentForm = new Object();
     		$("#paymentForm").validationEngine('init', { promptPosition : "centerRight", scroll: false } );
 
     		$.each(	paymentForm.form, function(i, field) {
-    		    if(	field.value=="" &&
-    		    	field.name!=="address2" &&
+    		    if( savedCreditCard === undefined && field.value=="" &&
+    		    	field.name!=="address_2" &&
     		    	field.name!=="opt_submitted" &&
     		    	field.name!=="opt_shipping" &&
     		    	field.name!=="opt_shipping_select" &&
     		    	field.name!=="card_valid" &&
-    		    	field.name!=="opt_save"
+    		    	field.name!=="paymentInfosSave"
     		    	) {
 
     		 		if(set_bubble==false) {
@@ -105,6 +138,7 @@ var paymentForm = new Object();
     });
 
 </script>
+
 <?php  if(empty($cartEmpty)): ?>
 
 <div style="margin:10px;">
@@ -112,10 +146,10 @@ var paymentForm = new Object();
 	<div style="float:left">
 		<h2 class="page-title gray">
 			<span class="cart-step-status gray" style="font-weight:bold">Payment</span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps3.png"></span>
-			<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+			<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_completed.png"></span>
+			<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps3.png"></span>
+			<span class="cart-step-status"><img src="<?=$img_path_prefix?>/cart_steps_remaining.png"></span>
 		</h2>
 		<?php if (!empty($error)) { ?>
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2><hr /></div>
@@ -133,8 +167,85 @@ var paymentForm = new Object();
 
 <div class="grid_16" style=" width:935px !important">
 				<hr /><br />
-				<h3>Pay with Credit Card :</h3>
+<?php
+ 
+if ($cyberSourceProfiles) { 
+	if (sizeof($cyberSourceProfiles->data()) > 0) { 
+?>
+<h3 style="margin-bottom: 11px;">Pay with a saved Credit Card: </h3>
+<div id="saved_credit_cards" style="display: block;">
+<table width="500px" border="0" cellspacing="0" cellpadding="0">
+
+<?php
+	$i = 0;
+	foreach ($cyberSourceProfiles as $cyberSourceProfile):
+		if($cyberSourceProfile[savedByUser]) :
+?>
+<tr>
+	<td align="right">
+		<input type="radio" name="savedCreditCard" value="<?php print $cyberSourceProfile[profileID];?>" onclick="fadeOut_BillingAddressForm(); fadeOut_CCForm();" <?php if ($i == 0) print 'checked'; ?>>
+	</td>
+	<td align="middle">
+		<img src="<?php
+switch ($cyberSourceProfile[creditCard][type]) {
+	case 'visa': 
+		print "/img/cc_visa.gif"; 
+		$cc_name = "Visa";
+	break;
+	case 'mastercard': 
+		print "/img/cc_mastercard.gif"; 
+		$cc_name = "MasterCard";
+	break;
+	case 'mc': 
+		print "/img/cc_mastercard.gif"; 
+		$cc_name = "MasterCard";
+	break;
+	case 'amex': 
+		print "/img/cc_amex.gif"; 
+		$cc_name = "American Express";
+	break;
+}	?>">
+	</td>
+	<td align="left">
+		<?php echo ucfirst($cc_name);?> ending in <?php echo $cyberSourceProfile[creditCard][number]; ?>
+	</td>
+	<!-- <td>
+		<?php echo $cyberSourceProfile[billing][firstname]." ".$cyberSourceProfile[billing][lastname];?>
+	</td> -->
+	<td>
+		Expires on <?php echo $cyberSourceProfile[creditCard][month];?> / <?php echo $cyberSourceProfile[creditCard][year];?>
+	</td>
+</tr>
+<?php
+	$i++;
+	endif;
+endforeach;
+?>
+</table>
+</div>
+<h3 style="margin-top: 11px"><a href="#" onclick="fadeIn_saved_CCs(); fadeIn_CCForm(); fadeIn_BillingAddressForm();" style="text-decoration:underline;">Add New Card</a></h3>
+<?php 
+}
+} else {
+?>
+<h3>Pay with a Credit Card</h3>
+<?php
+}
+?> 
+
+				<?php 
+					$display = 'block'; 
+					if ($cyberSourceProfiles) { 
+						if (sizeof($cyberSourceProfiles->data() ) > 0) {
+							if(!$creditCardError) {
+									$display = 'none'; 
+							}
+						} 
+					}
+				?>
 				<hr />
+				
+				<div id="credit_card_form" style="display: <?php echo $display; ?>;">				
 				<span class="cart-select">
 				<?php echo $this->form->error('cc_error'); ?>
 				<?php echo $this->form->hidden('opt_submitted', array('class'=>'inputbox', 'id' => 'opt_submitted')); ?>
@@ -182,12 +293,16 @@ var paymentForm = new Object();
 				}
 				?>
 				</span>
+				</div>
 				<br />
 				<br />
+				<div id="billing_address_form" style="display: <?php echo $display ?>;">				
 				<h3>Billing Address</h3>
 				<hr />
-				<?php if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
-					Choose your address :<?php echo $this->form->select('addresses', $addresses_ddwn, array("id" => 'addresses', 'value' => $selected));?>
+				<?php 
+				if(!empty($addresses_ddwn) && (count($addresses_ddwn) > 1)) : ?>
+					Choose your address :
+					<?php echo $this->form->select('addresses', $addresses_ddwn, array("id" => "addresses", "class"=>"validate[required] inputbox"));?>					
 					<div style="clear:both"></div>
 				<hr />
 				<?php endif ?>
@@ -208,8 +323,8 @@ var paymentForm = new Object();
 				<?php echo $this->form->text('address', array('class' => 'validate[required] inputbox', 'id'=>'address')); ?>
 				<?php echo $this->form->error('address'); ?>
 				<div style="clear:both"></div>
-				<?php echo $this->form->label('address2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
-				<?php echo $this->form->text('address2', array('class' => 'inputbox', 'id'=>'address2')); ?>
+				<?php echo $this->form->label('address_2', 'Street Address 2', array('escape' => false,'class' => 'required')); ?>
+				<?php echo $this->form->text('address_2', array('class' => 'inputbox', 'id'=>'address_2')); ?>
 				<div style="clear:both"></div>
 				<?php echo $this->form->label('city', 'City <span>*</span>', array('escape' => false,'class' => 'required')); ?>
 				<?php echo $this->form->text('city', array('class' => 'validate[required] inputbox', 'id'=>'city')); ?>
@@ -225,7 +340,7 @@ var paymentForm = new Object();
 				<?php echo $this->form->text('zip', array('class' => 'validate[required] inputbox', 'id' => 'zip')); ?>
 				<div style="clear:both"></div>
 				<div>
-					Save this address <?php echo $this->form->checkbox("opt_save", array('id' => 'opt_save')) ?>
+					Save this credit card and billing address <?php echo $this->form->checkbox("paymentInfosSave", array('id' => 'paymentInfosSave', 'checked' => false)); ?>
 				</div>
 				<?php echo $this->form->hidden('opt_description', array('id' => 'opt_description' , 'value' => 'billing')); ?>
 				<?php echo $this->form->hidden('opt_shipping_select', array('id' => 'opt_shipping_select')); ?>
@@ -242,46 +357,22 @@ var paymentForm = new Object();
 			<span class="page-title gray" style="padding:0px 0px 10px 0px;">Your shopping cart is empty</span>
 			<a href="/sales" title="Continue Shopping">Continue Shopping</a/></h1>
 	</div>
+	
 <?php endif ?>
+</div>
 <?php echo $this->form->end();?>
 
-
 <div class="clear"></div>
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-				
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				* Your items will arrive safely, but after 12/25.
-				
-				<?php
-				}
-				else{
-				?>
-				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-				
-				<?php
-				}
-				?>
-				
-</div>
-
-
 
 <div id="address_form" style="display:none">
 	<?php echo $this->form->create(null ,array('id'=>'selectForm')); ?>
 	<?php echo $this->form->hidden('address_id', array('class' => 'inputbox', 'id' => 'address_id')); ?>
 	<?php echo $this->form->end();?>
 </div>
-<script>
+<script type="text/javascript">
 
-var shippingAddress = <?php echo $shipping; ?>
+var shippingAddress = <?php echo $shipping; ?>;
+var billingAddresses = <?php echo json_encode($billingAddresses); ?>;
 
 //validate card number when a correct card is entered
 $("#card_number").blur( function(){
@@ -314,6 +405,18 @@ function replace_address() {
     }
 };
 
+function pickBillingAddress(selectedAddressIndex) {
+	$.each( billingAddresses[selectedAddressIndex], function (k, v) {
+    	if(k!=="user_id" && k!=="type" && k!=="_id" && k!=="addresses") {
+    		if(k=="state") {
+				$("#" + k + 'option:selected').next('option').attr('selected', 'selected');
+  			} else {
+    			$("#" + k + "").val(v);
+    		}
+    	}    	
+	});	
+};
+
 function isValidCard(cardNumber) {
 	var ccard = new Array(cardNumber.length);
 	var i = 0;
@@ -339,7 +442,7 @@ function isValidCard(cardNumber) {
 		}
 	}
 
-	for(i = 0; i < cardNumber.length; i++){
+	for(i = 0; i < cardNumber.length; i++) {
 		sum = sum + ccard[i];
 	}
 
@@ -353,7 +456,6 @@ function isValidCard(cardNumber) {
 		return ((sum%10) == 0);
 	}
 }
-
 
 function validCC() {
 	var test = isValidCard($("#card_number").val());
@@ -371,11 +473,11 @@ function validCC() {
 }
 
 </script>
-<script>
-$(document).ready(function(){
+<script type="text/javascript">
+$(document).ready(function() {
 	$("#addresses").change(function () {
-		$("#address_id").val($("#addresses option:selected").val());
-		$("#selectForm").submit();
+		var selectedAddressIndex = $("#addresses option:selected").val();			
+		pickBillingAddress(selectedAddressIndex);
 	});
 });
 </script>

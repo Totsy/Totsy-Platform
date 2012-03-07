@@ -88,6 +88,37 @@ tinyMCE.init({
 		$('#Short').focusout(function(){
 			return limitTextArea($(this),$('#short_description_characters_counter'),limit);
 		});
+
+		$('#eventForm').submit(function() {
+			var eventName  = document.getElementById('Name').value,
+				eventCount = 0;
+
+			if (eventName.length > 32) {
+				alert("The event name '" + eventName + "' is too long. Event names cannot exceed 32 characters.");
+				return false;
+			}
+
+			$.ajax({
+				url: 'find',
+				dataType: 'json',
+				data: {
+					name: eventName
+				},
+				async: false,
+				success: function(data, status) {
+					if ('success' == status) {
+						eventCount = data.total;
+					}
+				}
+			});
+
+			if (eventCount > 0) {
+			 	alert("An event with the name '" + eventName + "' already exists. Please use another event name.");
+			 	return false;
+			 }
+
+			return true;
+		});
 	});
 
 	function limitTextArea(text,info,limiter){
@@ -101,6 +132,7 @@ tinyMCE.init({
 			return true;
 		}
 	}
+
 </script>
 <div class="grid_16">
 	<h2 id="page-heading">Add an Event</h2>
@@ -111,7 +143,7 @@ tinyMCE.init({
 	</p>
 </div>
 <h2 id="event_description">Event Description</h2>
-<?php echo $this->form->create(null, array('enctype' => "multipart/form-data")); ?>
+<?php echo $this->form->create(null, array('enctype' => "multipart/form-data", 'id' => 'eventForm')); ?>
     <?php echo $this->form->field('name', array('class' => 'general'));?>
     <?php echo $this->form->field('blurb', array('type' => 'textarea', 'name' => 'content'));?>
     <div style="width:450px;">
@@ -127,6 +159,15 @@ tinyMCE.init({
 		<h2 id="event_type">Event Type</h2>
 		<input type="radio" name="tangible" value="1" id="tangible" checked> Tangible <br>
 		<input type="radio" name="tangible" value="0" id="tangible"> Non Tangible
+	</div>
+	<div id="event_status_update">
+		<h2 id="event_status_upadte">Event Status Update</h2>
+		<input type="radio" name="status_update" value="none" id="status_update"> None <br>
+		<input type="radio" name="status_update" value="stock_added" id="status_update"> Stock Added <br>
+		<input type="radio" name="status_update" value="styles_added" id="status_update"> Styles Added <br>
+		<input type="radio" name="status_update" value="blowout" id="status_update"> Blowout <br>
+		<input type="radio" name="status_update" value="charity" id="status_update"> Charity Eevent <br>
+		<input type="radio" name="status_update" value="sold_out" id="status_update"> Sold Out 
 	</div>
 	<div id="event_viewlive">
 		<h2 id="event_type">View Live Anyway</h2>

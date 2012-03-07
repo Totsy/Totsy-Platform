@@ -15,18 +15,24 @@ class Service extends Base {
     * @param float order sized handling
     * @return array of shipping and oversized handling
     **/
-    public static function freeShippingCheck($shippingCost = 7.95, $overSizeHandling = 0.00) {
+    public static function freeShippingCheck($shippingCost = 7.95, $overSizeHandling = 0.00, $isOnlyDigital = false) {
         $enable = false;
         $service = Session::read('services', array('name' => 'default'));
-		if ( $service && array_key_exists('freeshipping', $service)) {
-		    if ($service['freeshipping'] === 'eligible') {
-		    	Cart::updateSavings(null, 'services', ($shippingCost + $overSizeHandling));
-				$enable = true;
-			} else {
-				$shippingCost = 0;
-				$overSizeHandling = 0;
+		#Never Apply FreeShipping to Large Items
+		$shippingCost = 7.95;
+		$overSizeHandling = 0.00;
+		if(Session::read('layout', array('name'=>'default'))!=="mamapedia") {
+			if ( $service && array_key_exists('freeshipping', $service)) {
+			    if ($service['freeshipping'] === 'eligible' && !$isOnlyDigital) {
+			    	Cart::updateSavings(null, 'services', ($shippingCost + $overSizeHandling));
+					$enable = true;
+				} else {
+					$shippingCost = 0;
+					$overSizeHandling = 0;
+				}			
 			}
-		}
+		} 		 
+		
 		return compact('shippingCost', 'overSizeHandling', 'enable');
     }
 
@@ -35,21 +41,23 @@ class Service extends Base {
     * @param float subtotal
     * @return float
     **/
-    public static function tenOffFiftyCheck($subTotal){
+    public static function tenOffFiftyCheck($subTotal) {
         $savings = 0.00;
         $service = Session::read('services', array('name' => 'default'));
-		if ( $service && array_key_exists('10off50', $service)) {
-		    if ($service['10off50'] === 'eligible') {
-		        if ((float) $subTotal >= 50.00) {
-		            $savings = 10.00;
-		            Cart::updateSavings(null, 'services', $savings);
-		        }
+                
+		if(Session::read('layout', array('name'=>'default'))!=="mamapedia") {
+			if ( $service && array_key_exists('10off50', $service)) {
+			    if ($service['10off50'] === 'eligible') {
+			        if ((float) $subTotal >= 50.00) {
+			            $savings = 10.00;
+			            Cart::updateSavings(null, 'services', $savings);
+			        }
+				}
 			}
 		}
 		return $savings;
     }
 
 }
-
 
 ?>

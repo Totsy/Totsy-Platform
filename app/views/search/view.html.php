@@ -1,31 +1,21 @@
-<?php $this->title("Page Not Found"); ?>
+<?php $this->title("Oops - Page Not Found - Totsy [404]"); ?>
 
-<div class="grid_16">
-<h2 class="page-title gray">We're sorry, we couldn't find what you were looking for.</h2>
-<hr />
-
-<p>Please continue browsing <a href="/sales" title="Totsy's Sales">Today's Sales</a></p>
-<br/><br/>
-
-<!-- 
-<h3>Other Products You May Enjoy</h3>
-<hr/>
-<div style="height:400px;">
-	<div style="background:#f2f2f2; width:120px; height:120px; border:1px solid #ddd; display: block; float:left; margin:0px 10px 10px 0px;">
-	</div>
-	<div style="background:#f2f2f2; width:120px; height:120px; border:1px solid #ddd; display: block; float:left; margin:0px 10px 10px 0px;">
-	</div>
-	<div style="background:#f2f2f2; width:120px; height:120px; border:1px solid #ddd; display: block; float:left; margin:0px 10px 10px 0px;">
-	</div>
-	<div style="background:#f2f2f2; width:120px; height:120px; border:1px solid #ddd; display: block; float:left; margin:0px 10px 10px 0px;">
-	</div>
-	<div style="background:#f2f2f2; width:120px; height:120px; border:1px solid #ddd; display: block; float:left; margin:0px 10px 10px 0px;">
-	</div>
-	<div style="background:#f2f2f2; width:120px; height:120px; border:1px solid #ddd; display: block; float:left; margin:0px 10px 10px 0px;">
-	</div>
-	<div style="background:#f2f2f2; width:120px; height:120px; border:1px solid #ddd; display: block; float:left; margin:0px 0px 10px 0px;">
-	</div>
--->
-
-<div align="center"><img src="/img/error-img.png" alt="" /></div>
+<div id="p-status-404" class="grid_16">
+	<section>
+		<h2>Oops - We're sorry, we couldn't find what you were looking for.</h2>
+		<p>The page you’re looking for can’t be found or no longer exists.</p>
+		<p>Visit the <a href="/sales" title="Totsy's Sales">Home Page</a> or check out our latest sales:</p>
+		<ul class="group">
+			<?php $x = 0; ?>
+			<?php foreach ($openEvents as $event): ?>
+				<li>
+					<a href="<?php echo '/sale/' . $event['url'];?>" title="Go to <?php echo $event['name']; ?> sale">
+						<img src="/image/<?php echo $event['event_image']; ?>.jpg" alt="<?php echo $event['name']; ?>" />
+						<em><?php echo $event['name']; ?></em>
+					</a>
+				</li>
+			<?php $x++; ?>
+			<?php endforeach; ?>
+		</ul>
+	</section>	
 </div>

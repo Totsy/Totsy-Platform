@@ -18,11 +18,10 @@
 	position: absolute;
 	right: .6em;
 	top: 50%;
-	width: 19px;
+	width: 60px;
 	margin: -10px 0 0 0;
 	padding: 0px;
-	height: 45px;
-	text-indent: -9999px!important;
+	height: 27px;
 }
 .ui-dialog .ui-dialog-titlebar-close span
 {

@@ -1,5 +1,6 @@
 <?php
 $itemscount = count($eventItems);
+$outout="";
 //foreach($thisitem as $itemkey => $itemvalue){
 for($i=0;$i<$itemscount;$i++){
 	$vendorstyle = $eventItems[$i]['vendor_style'];
@@ -23,6 +24,9 @@ for($i=0;$i<$itemscount;$i++){
 	
 	//details size=>sku
 	$sku_details = $eventItems[$i]['sku_details'];
+	
+	//details size=>sku
+	$skus = $eventItems[$i]['skus'];
 
 	//count
 	$skucount = count($eventItems[$i]['sku_details']);
@@ -30,9 +34,17 @@ for($i=0;$i<$itemscount;$i++){
 	$j=0;
 
 	//for($i=0;$i<$skucount;$i++){
-	foreach($sku_details as $thiskeyvalue => $thisitemvalue){
+	foreach($details as $thiskeyvalue => $thisitemvalue){
 	
 		$sold_quantity = $sale_details[$thiskeyvalue]['sale_count'];
+		$sku = $sku_details[$thiskeyvalue];
+	
+		if($sku_details[$thiskeyvalue]){
+			$sku = $sku_details[$thiskeyvalue];
+		}
+		else{
+			$sku = "<font color=ff0000>NO SKU ALERT!!!!</font>";
+		}
 	
 		$output .= "<tr>";
 		$output .= "<td>$event->name</td>";
@@ -41,7 +53,7 @@ for($i=0;$i<$itemscount;$i++){
 		$output .= "<td>$description</td>";
 		$output .= "<td>$color</td>";
 		$output .= "<td>$sale_whol</td>";
-		$output .= "<td>$thisitemvalue</td>";
+		$output .= "<td>$sku</td>";
 		$output .= "<td>$thiskeyvalue</td>";
 		$output .= "<td>$details[$thiskeyvalue]</td>";
 		$output .= "<td>$sold_quantity</td>";

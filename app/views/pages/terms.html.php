@@ -1,5 +1,5 @@
+<?php use lithium\storage\Session; ?>
 <?php $this->title("Terms Of Use"); ?>
-
 <div class="grid_16">
 	<h2 class="page-title gray">About Us</h2>
 	<hr />
@@ -14,6 +14,12 @@
 
 	<h2 class="page-title gray">Terms Of Use</h2>
 	<hr />
+	
+	<?php if(Session::read("layout", array("name"=>"default"))=="mamapedia"): ?>
+	<p>Mamasource abides by the same terms of use as its partner and provider Totsy.</p>
+	<hr />
+	<?php endif ?>
+
 	<p>By clicking on the "I AGREE" button below, you (referred in this document as the "Member" or "you", or "You") agree to be irrevocably bound with TOTSY by the following terms and conditions of sale and service (the "Terms of Service"), which are incorporated in each and every sale transaction made on the website Totsy.com, a proprietary domain name of My Baby VIP LLC (hereinafter referred to as "TOTSY"), and govern all aspects of the relationship between TOTSY and its Members.</p>
 
 	<p>Please contact us at <a href="mailto:support@totsy.com">support@totsy.com</a></p>

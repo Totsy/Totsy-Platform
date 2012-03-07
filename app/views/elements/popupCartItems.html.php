@@ -32,55 +32,44 @@
  		    <span class="cart-review-color-size">Size:</span> ${size}
  		</div>
  		{{/if}}
- 		{{if miss_christmas}}
-            {{if miss_christmas>0}}
-            <div>
-                <span class="shippingalert">This item is not guaranteed to be delivered on or before 12/25.*</span>
-            </div>
-            {{/if}}
-            {{if miss_christmas<1}}
-            <div>
-                Item will be delivered on or before December 23.*
-            </div>
-            {{/if}}
- 		{{/if}}
+
  	</div>
  </div>
  <div style="clear:both"></div>
 </script>
-<div style="position:relative">
-<div id="cart_popup" class="grid_16 roundy glow" style="display:none">
-	<div id="cart_popup_header">
-	    <div id="cart_popup_timer">
-	    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
-	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter"></span>
-	    	</span>
-	    	<span style="float:right">Estimated Delivery Date: <br>
-	    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
-	    	</span>
-	    </div>
-	    <div id="cart_popup_close_button">
-	    	<a href="#">
-	    		<img src="/img/popup_cart_close.jpg" style="width:20px; height:20px">
-	    	</a>
-	    </div>
-	</div>
-	<div style="clear:both"></div>
-	<div id="cart_item"></div>
-	<div style="clear:both"></div>
-	<div style="clear:both"></div>
-	<div><hr></div>
-	<div id="cart_popup_breakdown">
-	   <div class="cart-savings">Your Savings: $<span id="savings"></span></div>
-	   <div id="cart_popup_order_total">
-	   	<span class="cart-order-total">Subtotal: </span>
-	       <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
-	   </div>
-	</div>
-	<div style="clear:both"></div>
-	<div id="cart_popup_checkout_buttons" class="cart-button fr">
-	   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>
-	   <a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
-	</div>
-</div>
+<div id="cart_popup_wrap">
+	<div id="cart_popup" class="grid_16 roundy glow" style="display:none">
+		<div id="cart_popup_header">
+		    <div id="cart_popup_timer">
+		    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
+		    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter"></span>
+		    	</span>
+		    	<span style="float:right">Estimated Ship Date: <br>
+		    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
+		    	</span>
+		    </div>
+		    <div id="cart_popup_close_button">
+		    	<a href="#">
+		    		<img src="/img/popup_cart_close.jpg" style="width:20px; height:20px">
+		    	</a>
+		    </div>
+		</div>
+		<div style="clear:both"></div>
+		<div id="cart_item"></div>
+		<div style="clear:both"></div>
+		<div style="clear:both"></div>
+		<div><hr></div>
+		<div id="cart_popup_breakdown">
+		   <div class="cart-savings">Your Savings: $<span id="savings"></span></div>
+		   <div id="cart_popup_order_total">
+		   	<span class="cart-order-total">Subtotal: </span>
+		       <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
+		   </div>
+		</div>
+		<div style="clear:both"></div>
+		<div id="cart_popup_checkout_buttons" class="cart-button fr">
+		   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>
+		   <a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
+		</div>
+	</div><!-- /#cart_popup -->
 </div>

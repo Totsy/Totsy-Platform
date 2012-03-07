@@ -120,7 +120,7 @@
     <div class="faq_answer"><a id="20"></a><strong>Q:</strong> Does Totsy charge sales tax?</div>
     <div class="faq_question"><strong>A: </strong> Yes, Totsy charges tax on all taxable items in every state. </div>
     <div class="faq_answer"><a id="21"></a><strong>Q:</strong> How and when is my credit card charged for my order?</div>
-    <div class="faq_question"><strong>A: </strong> When you place your order with Totsy, we immediately reserve your funds from your account to ensure that the funds are available. We are not charging you yet, simply reserving the necessary funds. Totsy does not actually charge your account until your order ships. </div>
+    <div class="faq_question"><strong>A: </strong> When you place your order with Totsy, we do not immediately charge your credit card. Once your items arrive at our warehouse, we’ll reserve funds in the amount of your order from your credit card account. We'll charge your credit card in full once the shipping process begins. </div>
     <div class="faq_answer"><a id="22"></a><strong>Q:</strong> Why have I only received certain items from my order and not others?</div>
     <div class="faq_question"><strong>A: </strong> Items purchased from different sales events ship separately because they are received at the Totsy warehouse from each manufacturer at different times. </div>
     <div class="faq_answer"><a id="23"></a><strong>Q:</strong> Why does my order say pending?</div>

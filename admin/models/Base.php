@@ -2,6 +2,7 @@
 
 namespace admin\models;
 use MongoDate;
+use lithium\data\Connections;
 use lithium\storage\Session as Session;
 
 class Base extends \lithium\data\Model {
@@ -42,6 +43,15 @@ class Base extends \lithium\data\Model {
 	public static function createdBy() {
 		$user = Session::read('userLogin');
 		return $user['_id'];
+	}
+
+	public static function idToString($array) {
+	    $ids = array();
+
+	    foreach($array as $id) {
+	        $ids[] = (string) $id;
+	    }
+	    return $ids;
 	}
 
 }

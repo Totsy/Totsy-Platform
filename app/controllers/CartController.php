@@ -63,12 +63,9 @@ class CartController extends BaseController {
 		$i = 0;
 		$subTotal = 0;
 		$itemCount = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 
 		#Count of how many items in the cart are exempt of shipping cost
 		$exemptCount = 0;
-
 		$shipDate = Cart::shipDate($cart);
 		#Check Expires
 		Cart::cleanExpiredEventItems();
@@ -89,16 +86,6 @@ class CartController extends BaseController {
 
 			$events = Event::find('all', array('conditions' => array('_id' => $item->event[0])));
 			$itemInfo = Item::find('first', array('conditions' => array('_id' => $item->item_id)));
-
-
-			//miss chrismtas stuff to be removed later
-			$item->miss_christmas = $itemInfo->miss_christmas;
-			if($item->miss_christmas){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
 
 			#Get Event End Date
 			$cartItemEventEndDates[$i] = is_object($events[0]->end_date) ? $events[0]->end_date->sec : $events[0]->end_date;
@@ -132,7 +119,7 @@ class CartController extends BaseController {
 			$shipping = 0;
 		}
 		#Get current Discount
-		$vars = Cart::getDiscount($subTotal, $shipping, $overShippingCost, $this->request->data);
+		$vars = Cart::getDiscount($cart, $subTotal, $shipping, $overShippingCost, $this->request->data);
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
@@ -143,16 +130,47 @@ class CartController extends BaseController {
 		}
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
-			$shipping_discount = $shipping;
+			if(!Cart::isOnlyDigital($cart)) {
+				$shipping_discount = 7.95;
+			} else {
+				$shipping_discount = 0.00;
+			}
 		}
+		
 		#Get Total of The Cart after Discount
 		$total = round(floatval($vars['postDiscountTotal']),2);
+		
 		#Check if Services
 		$serviceAvailable = false;
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
+		}		
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
 		}
-		return $vars + compact('cart', 'user', 'message', 'subTotal', 'services', 'total', 'shipDate', 'promocode', 'savings','shipping_discount', 'credits', 'cartItemEventEndDates', 'cartExpirationDate', 'promocode_disable','itemCount', 'returnUrl','shipping','overShippingCost', 'missChristmasCount','notmissChristmasCount', 'serviceAvailable');
+
+		return $vars + compact(
+			'cart',
+			'user',
+			'message',
+			'subTotal',
+			'services',
+			'total',
+			'shipDate',
+			'promocode',
+			'savings',
+			'shipping_discount',
+			'credits',
+			'cartItemEventEndDates',
+			'cartExpirationDate',
+			'promocode_disable',
+			'itemCount',
+			'returnUrl',
+			'shipping',
+			'overShippingCost',
+			'serviceAvailable'
+		);
 	}
 
 	/**
@@ -174,7 +192,6 @@ class CartController extends BaseController {
 				"no size": $data['item_size'];
 
 
-			//added miss_christmas, to be removed
 			$item = Item::find('first', array(
 				'conditions' => array(
 					'_id' => "$itemId"),
@@ -190,13 +207,13 @@ class CartController extends BaseController {
 					'product_weight',
 					'event',
 					'vendor_style',
-					'miss_christmas',
-					'discount_exempt'
+					'discount_exempt',
+					'event'
 			)));
 
 			#Get Item from Cart if already added
 			$cartItem = Cart::checkCartItem($itemId, $size);
-			$avail = $item->details->{$size} - Cart::reserved($itemId, $size);
+			$avail = $item->details[$size] - Cart::reserved($itemId, $size);
 
 			#Condition if Item Already in your Cart
 			if (!empty($cartItem)) {
@@ -216,6 +233,7 @@ class CartController extends BaseController {
 						$cartItem->save();
 						//calculate savings
 						$item[(string) $item['_id']] = $cartItem->quantity;
+
 						Cart::updateSavings($item,'add');
 					} else {
 						$cartItem->error = 'You can’t add this quantity in your cart. <a href="faq">Why?</a>';
@@ -248,9 +266,15 @@ class CartController extends BaseController {
 				}
 			}
 		}
-		//call the cart popup
-		$this->getCartPopupData();
+		if($this->request->is('mobile')==1 && Session::read('layout', array('name' => 'default'))=='mamapedia') {
+			echo "noPopup";
+			exit();
+		} elseif(!$this->request->is('mobile')) {
+			$this->getCartPopupData();
+		}
 	}
+	
+
 
 	/**
 	* Method for sending all required cart data to Ajax driven cart popup.
@@ -301,11 +325,13 @@ class CartController extends BaseController {
 			$cartData['eventURL'] = "sale";
 		}
 
+
 		//get user savings. they were just put there by updateSavings()
 		$cartData['savings'] = Session::read('userSavings');
 		//get the ship date
-		//$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
-		$cartData['shipDate'] = Cart::shipDate(Cart::active());
+
+		$cartData['shipDate'] = date('m-d-Y', Cart::shipDate(Cart::active()));
+		//$cartData['shipDate'] = Cart::shipDate(Cart::active());
 		//get the amount of items in the cart
 		$cartData['itemCount'] = Cart::itemCount();
 

@@ -25,8 +25,18 @@
 			}
 		});
 	});
+	$(document).ready(function(){
+		$('#ReportSearchType').change(function(){
+			if($(this).val() == 'Bounces' && $('#subaffiliate_show_wrapper').is(':hidden') ){
+				$('#subaffiliate_show_wrapper').show();
+			} else if ($('#subaffiliate_show_wrapper').is(':visible')){
+				$('#subaffiliate_show_wrapper').hide();
+			}
+		});
+	});
 </script>
 <div class="grid_6">
+    <br/>
 	<div class="box">
 	<h2>
 		<a href="#" id="toggle-forms">Query for Affiliate Order/Count Totals</a>
@@ -44,8 +54,19 @@
 				        }else{
 				            $checked = '';
 				        }
+				        if(($criteria) && (bool)$criteria['show_subaffiliate']){
+				        	$show_checked = 'checked';
+				        }else{
+				        	$show_checked = '';
+				        }
 				    ?>
-				    <?php echo $this->form->label('Subaffiliates included'); ?>  <?php echo $this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?> <br/>
+				    <?php echo $this->form->label('Subaffiliates included'); ?>  <?php echo $this->form->checkbox('subaffiliate', array('checked' => $checked, 'value' => '1'));?>
+				    <br>
+				<div style="display: inline" >
+				    <div id="subaffiliate_show_wrapper" <?php if ($show_checked!='checked'){?>style="display: none;"<?php } ?>>
+				    <?php echo $this->form->label('Show subaffiliate'); ?>  <?php echo $this->form->checkbox('show_subaffiliate', array('checked' => $show_checked, 'value' => '1'));?> <br/>
+				    </div>
+				</div>
 				<p>
 					<?php echo $this->form->label('Minimum Seach Date'); ?>
 					<?php echo $this->form->text('min_date', array('id' => 'min_date'));?>
@@ -59,7 +80,8 @@
 					<?php echo $this->form->select('search_type', array(
 						'Revenue' => 'Total Revenue',
 						'Registrations' => 'Total Registrations',
-						'Bounces' => 'Total Bounces'
+						'Bounces' => 'Total Bounces',
+						'Effective' => 'Effective Co-Reg'
 						));
 					?>
 				</p>
@@ -70,119 +92,12 @@
 	</div>
 </div>
 <div class="clear"></div>
-<?php if (!empty($results)): ?>
-	<div class="grid_16">
-			<table id="report" class="datatable" border="1">
-				<thead>
-					<tr>
-						<th>Month/Year</th>
-						<th>Total - <?php echo $searchType?></th>
-						<?php if ($searchType == 'Registrations'): ?>
-						<th>Total - Bounced</th>
-						<?php endif; ?>
-					</tr>
-				</thead>
-				<tbody>
-				    <?php
-				        if(($criteria) && (bool)$criteria['subaffiliate']):
-				            $reports = array();
-				            foreach ($results['retval'] as $result){
-				                $reports[$result['Date']][] = $result;
-				            }
-				            $results['retval'] = $reports;
-				            foreach($results['retval'] as $month => $values):
-
-				    ?>
-				        <tr>
-				            <td colspan = "2"><?php echo date('F',  mktime(0, 0, 0, ($month + 1)))?></td>
-				        <tr>
-
-				    <?php
-				                foreach($values as $value):
-				    ?>
-				        <tr>
-				                <td><?php echo $value['subaff']?></td>
-                                <?php if ($searchType == 'Revenue'): ?>
-                                    <td>$<?php echo number_format($value['total'], 2)?></td>
-                                <?php else: ?>
-                                    <td><?php echo $value['total']?></td>
-                                <?php endif ?>
-                                <?php if ($searchType == 'Registrations'): ?>
-                                	<td><?php echo $value['bounced']?></td>
-                                <?php endif; ?>
-                                
-                        </tr>
-					<?php
-					            endforeach;
-					        endforeach;
-					?>
-
-					<?php
-					    else:
-					    foreach ($results['retval'] as $result):
-					?>
-						<tr>
-							<td><?php echo date('F/Y',  mktime(0, 0, 0, ($result['Date'] + 1),30,($result['Year'])))?></td>
-							<?php if ($searchType == 'Revenue'): ?>
-								<td>$<?php echo number_format($result['total'], 2)?></td>
-							<?php else: ?>
-								<td><?php echo $result['total']?></td>
-							<?php endif ?>
-                            <?php if ($searchType == 'Registrations'): ?>
-                               	<td><?php echo $result['bounced']?></td>
-                            <?php endif; ?>
-
-						</tr>
-					<?php
-					        endforeach;
-					    endif;
-					?>
-
-				</tbody>
-
-				<?php if ($results['total'] != '$0' && $results['total'] != '0'): ?>
-				<tfooter>
-					<tr>
-						<th>Grand Total<?php echo " - ".$searchType; ?> : </th>
-						<th> <?php echo $results['total'] ?></th>
-                    <?php if ($searchType == 'Registrations'): ?>
-                        <th><?php echo $results['bounced']?></th>
-                    <?php endif; ?>
-					</tr>
-				</tfooter>
-				<?php endif ?>
-			</table>
-	</div>
-<?php endif ?>
-
-<?php if (!empty($cursor) && !empty($total)):?>
-	<div class="grid_16">
-		<table id="report" class="datatable" border="1">
-			<thead>
-				<tr>
-					<th>Email</th>
-					<th>Bounce Type</th>
-					<th>Created Date</th>
-					<th>Report Date</th>
-					<th>Delivery Date</th>
-					<th>Delivery Message</th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php foreach ($cursor as $row): ?>
-				<tr>
-					<td><?php echo $row['email'];?></td>
-					<td><?php echo $row['email_engagement']['type'];?></td>
-					<td><?php echo date('m/d/Y',$row['created_date']->sec);?></td>
-					<td><?php echo date('m/d/Y',$row['email_engagement']['date']->sec);?></td>
-					<td><?php echo date('m/d/Y',$row['email_engagement']['delivery']['status_time']->sec);?></td>
-					<td><?php echo $row['email_engagement']['delivery']['message'];?></td>
-				</tr>
-			<?php endforeach;?>
-			</tbody>
-		</table>
-	</div>
-<?php endif ?>
+<div class="grid_16">
+    <?php if ($searchType == "Effective") :?>
+    <p style="font-size:12px"><strong>Number in parentheses show number of people made at least one purchase</strong></p>
+    <?php endif;?>
+    <?=$this->affiliates->build($results,array("type" => $searchType,'criteria'=> $criteria)); ?>
+</div>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";

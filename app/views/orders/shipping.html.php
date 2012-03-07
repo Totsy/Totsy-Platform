@@ -16,6 +16,7 @@
 var addressForm = new Object();
 </script>
 <?php
+	use lithium\storage\Session;
 	use app\models\Address;
 	$this->html->script('application', array('inline' => false));
 	$this->form->config(array('text' => array('class' => 'inputbox')));
@@ -62,7 +63,12 @@ var addressForm = new Object();
     		 		$('#' + field.name + "").attr('style', 'background: #FFFFC5 !important');
     		 		
     		 		invalid_count++;
-    		 	} 
+    		 	}
+
+                if (field.name == 'zip' && !field.value.match(/^\d{5}$/)) {
+                    $('#' + field.name).validationEngine('showPrompt', 'Enter a numeric ZIP code.');
+                    invalid_count++;
+                }
 			});
 						
 			if(invalid_count > 0 ) {
@@ -90,10 +96,10 @@ var addressForm = new Object();
 		<div style="float:left">
 			<h2 class="page-title gray">
 				<span class="cart-step-status gray" style="font-weight:bold">Shipping Information</span>
-				<span class="cart-step-status"><img src="/img/cart_steps_completed.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps2.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
-				<span class="cart-step-status"><img src="/img/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?php echo $img_path_prefix; ?>/cart_steps_completed.png"></span>
+				<span class="cart-step-status"><img src="<?php echo $img_path_prefix; ?>/cart_steps2.png"></span>
+				<span class="cart-step-status"><img src="<?php echo $img_path_prefix; ?>/cart_steps_remaining.png"></span>
+				<span class="cart-step-status"><img src="<?php echo $img_path_prefix; ?>/cart_steps_remaining.png"></span>
 			</h2>
 			<?php if (!empty($error)) { ?>
 			<div class="checkout-error"><h2>Uh Oh! Please fix the errors below:</h2></div>
@@ -156,16 +162,6 @@ var addressForm = new Object();
 				<?php echo $this->form->submit('Continue', array('class' => 'button fr', 'style'=>'margin-right:10px;')); ?>
 		</div>	
 
-
-
-
-
-
-
-
-
-
-
 	</div>
 
 <?php echo $this->form->end();?> 
@@ -174,28 +170,7 @@ var addressForm = new Object();
 
 <div class="clear"></div>
 <div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($missChristmasCount>0&&$notmissChristmasCount>0){
-				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions. 
-				
-				<?php
-				}
-				elseif($missChristmasCount>0){
-				?>
-				* Your items will arrives safely, but after 12/25.
-				
-				<?php
-				}
-				else{
-				?>
-				
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-				
-				<?php
-				}
-				?>
-				
+	* Our delivery guarantee does not apply when transportation networks are affected by weather.	
 </div>
 
 

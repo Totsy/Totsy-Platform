@@ -45,6 +45,11 @@ Router::connect('/users/accountStatus/{:args}', 'Users::accountStatus');
 Router::connect('/select/event/{:args}', 'Base::selectEvent');
 Router::connect('/items/preview/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::preview');
 
+Router::connect('promocodes/massPromocodes/{:parent_id:[a-z0-9]+}',array(
+    'Promocodes::massPromocodes',
+    'type' => 'csv'
+));
+
 Router::connect('/pages/{:args}', 'Pages::view');
 
 if (!Environment::is('production')) {

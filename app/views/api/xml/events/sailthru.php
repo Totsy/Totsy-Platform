@@ -1,21 +1,47 @@
 <?php echo '<?xml version="1.0"?>'; ?>
-<root>
+<root xmlns:tns="http://totsy.com/totsy-xml-rss-name-space">
 <?php if (isset($token)){ ?>
 	<token><?php echo $token?></token>
 <?php } ?>
 <?php if (is_array($events)){ ?>
 	<events>
 	<?php foreach($events as $event){ ?>
-		<event>
+		<event id="<?php echo $event['_id']; ?>">
 			<name><?php echo htmlspecialchars($event['name']) ?></name>
 			<description><?php echo htmlspecialchars( sailthru_xml_cut_string($event['blurb'],90) ) ?></description>
-			<short><?php echo (empty($event['short'])) ? sailthru_xml_cut_string($event['blurb'],45) : $event['short']; ?></short>
+			<short><?php echo (empty($event['short'])) ? htmlspecialchars(sailthru_xml_cut_string($event['blurb'],45)) : htmlspecialchars($event['short']); ?></short>
 			<availableItems><?php echo $event['available_items']==true?'YES':'NO';?></availableItems>
 			<brandName><?php echo htmlspecialchars($event['vendor']);?></brandName>
 			<image><?php echo $event['event_image']; ?></image>
+			<image_small><?php echo $event['event_image_small']; ?></image_small>
 			<discount><?php echo number_format($event['maxDiscount'],2); ?></discount>
 			<url><?php echo $base_url.'sale/'.$event['url']; ?></url>
-			
+			<categories><?php
+			if (count($event['groups']['categories'])>0){
+				foreach ($event['groups']['categories'] as $c){
+				?>
+				<category><?php echo $c; ?></category><?php		
+				}
+			} 
+			?>
+			</categories>
+			<ages><?php
+			if (count($event['groups']['ages'])>0){
+				foreach ($event['groups']['ages'] as $a){
+				?>
+				<age><?php echo $a; ?></age><?php		
+				}
+			} 
+			?>
+			</ages>
+			<tns:tag><?php echo implode(',',$event['tags']['ages']); ?></tns:tag>
+			<tns:items>
+<?php   if (!empty($event['items'])){
+			foreach($event['items'] as $item) { ?>
+				<tns:item id="<?php echo $item; ?>" />
+<?php		}
+		} ?>
+			</tns:items>
 		</event>
 	<?php }?>
 	</events>

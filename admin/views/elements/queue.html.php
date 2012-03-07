@@ -8,14 +8,18 @@
                 <tr>
                     <th>#</th>
                     <th>Date</th>
+                    <th>Queue ID</th>
                     <th>Event Orders Queued</th>
                     <th>Event POs Queued</th>
                     <th>Expected Order/Line Count </th>
                     <th>Current Status</th>
+                    <th>No of times the batch ran</th>
                 </tr>
             </thead>
             <tbody id="queue_body">
-                <td colspan="5"><center>Loading...</center></td>
+                <tr>
+                    <td colspan="8"><center>Loading...</center></td>
+                </tr>
             </tbody>
         </table>
 	</div>
@@ -46,6 +50,7 @@ function updateCurrentQueue() {
                     var table = "<tr>" +
                         "<td>" + (index +1) + "</td>" +
                         "<td>" + queue[index].created_date + "</td>" +
+                        "<td>" + queue[index]._id + "</td>" +
                         "<td>" + queue[index].orders + "</td>" +
                         "<td>" + queue[index].purchase_orders + "</td>" +
                         "<td>" + queue[index].order_count + "/" +
@@ -56,16 +61,21 @@ function updateCurrentQueue() {
                     } else{
                          table = table +  "<td></td>";
                     }
+                    if (queue[index].run_amount) {
+                        table = table + "<td>" + queue[index].run_amount + "</td>";
+                    } else{
+                         table = table +  "<td></td>";
+                    }
                     table += "</tr>";
 
                     body.append(table);
                 }
                 if (index == 0 ) {
-                    table += "<td colspan=\"5\"><center>Nothing in the queue!</center></td>";
+                    table += "<tr><td colspan=\"8\"><center>Nothing in the queue!</center></td></tr>";
                      body.append(table);
                 }
             } else {
-                table += "<td colspan=\"5\"><center>Nothing in the queue!</center></td>";
+                table += "<tr><td colspan=\"8\"><center>Nothing in the queue!</center></td></tr>";
                 body.append(table);
             }
         }

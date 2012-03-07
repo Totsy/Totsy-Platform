@@ -141,7 +141,10 @@ class FinancialExport extends Base  {
 		'ship_records',
 		'cancel',
 		'gross_revenue',
-		'net_revenue'
+		'net_revenue',
+		'merchantReferenceCode',
+		'process_by',
+		'auth_records'
 	);
 
 	/**
@@ -196,7 +199,10 @@ class FinancialExport extends Base  {
 		'ship_date',
 		'modifications',
 		'avatax',
-		'savings'
+		'savings',
+		'auth',
+		'void_records',
+		'capture_records'
 	);
 
 	/**
@@ -244,7 +250,11 @@ class FinancialExport extends Base  {
 			'payment_date',
 			'service',
 			'shipping',
-			"cancel"
+			"cancel",
+			'auth',
+			'auth_records',
+			'void_records',
+			'capture_records'
 		);
 	/**
 	 * Find all the orders that haven't been shipped which have stock status.
@@ -467,21 +477,62 @@ class FinancialExport extends Base  {
 
 	    if ($this->historical == 'true') {
 	        $this->yesterday_max = mktime(23,59,59,date('m') - 1,24,date('Y'));
-	         $conditions = array('modifications' => array('$elemMatch' => array(
+	         $conditions = array('$or' => array(
+	         array('modifications' => array('$elemMatch' => array(
                 'date' => array(
                     '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
                     '$lte' => new MongoDate($this->yesterday_max)
-                )
-            )));
+                )))),
+              array('payment_date' => array(
+                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$lte' => new MongoDate($this->yesterday_max)
+                )),
+              array('auth_records' => array('$elemMatch' => array(
+                'date_saved' => array(
+                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$lte' => new MongoDate($this->yesterday_max)
+                )))),
+              array('void_records' => array('$elemMatch' => array(
+                'date_saved' => array(
+                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$lte' => new MongoDate($this->yesterday_max)
+                )))),
+              array('capture_records' => array('$elemMatch' => array(
+                'date_captured' => array(
+                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$lte' => new MongoDate($this->yesterday_max)
+                ))))
+            ));
 	    } else {
 	        $this->yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
             $this->yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
-            $conditions = array('modifications' => array('$elemMatch' => array(
-                'date' => array(
+            $conditions = array('$or' =>array(
+            	array('modifications' => array('$elemMatch' => array(
+	                'date' => array(
+	                    '$gte' => new MongoDate($this->yesterday_min),
+	                    '$lte' => new MongoDate($this->yesterday_max)
+	                )))),
+              array('payment_date' => array(
                     '$gte' => new MongoDate($this->yesterday_min),
-                    '$lte' => new MongoDate($this->yesterday_max)
-                ))),
-                'order_id' => array('$nin' => array_unique($orderids))
+	                '$lte' => new MongoDate($this->yesterday_max)
+                )),
+              array('auth_records' => array('$elemMatch' => array(
+                'date_saved' => array(
+                    '$gte' => new MongoDate($this->yesterday_min),
+	                '$lte' => new MongoDate($this->yesterday_max)
+                )))),
+              array('void_records' => array('$elemMatch' => array(
+                'date_saved' => array(
+                    '$gte' => new MongoDate($this->yesterday_min),
+	                '$lte' => new MongoDate($this->yesterday_max)
+                )))),
+              array('capture_records' => array('$elemMatch' => array(
+                'date_captured' => array(
+                    '$gte' => new MongoDate($this->yesterday_min),
+	                '$lte' => new MongoDate($this->yesterday_max)
+                ))))
+            ),
+             'order_id' => array('$nin' => array_unique($orderids))
             );
 	    }
 	    $this->orders = Order::collection()->find($conditions, $this->fields);
@@ -597,6 +648,11 @@ class FinancialExport extends Base  {
 	    while ($this->orders->hasNext()){
 	           $order = $this->orders->getNext();
                 $orderItems = $order['items'];
+
+                if (array_key_exists('tax', $order) ){
+					$order['tax'] = (float) $order['tax'];
+                }
+
                 if (array_key_exists('authKey', $order)) {
                    $order['authKey'] = $order['authKey'];
                 } else {
@@ -642,11 +698,7 @@ class FinancialExport extends Base  {
                     $order['overSizeHandling'] = 0;
                 }
                 $order['order_date'] = date('m/d/Y', $order['date_created']->sec);
-                if (!empty($order['payment_date'])) {
-                    $order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
-                } else {
-                    $order['payment_date'] = 0;
-                }
+                
                 if (array_key_exists('ship_date', $order)) {
                     $order['estimated_ship_date'] =
                         (is_int($order['ship_date'])) ? date('m/d/Y', $order['ship_date']) : date('m/d/Y', $order['ship_date']->sec);
@@ -694,6 +746,62 @@ class FinancialExport extends Base  {
                 $order['gross_revenue'] = number_format((float)Item::calculateProductGross($order['items']), 2);
                 $order['net_revenue'] = $order['gross_revenue'] + $order['handling'] + $order['overSizeHandling'];
                 $order['net_revenue'] = number_format($order['net_revenue'] , 2);
+                $order['merchantReferenceCode'] = "";
+                $order['process_by'] = "AuthorizeNet";
+                if (array_key_exists('auth', $order)) {
+                	$order['merchantReferenceCode'] = $order['auth']['response']['merchantReferenceCode'];
+                	$order['process_by'] = $order['auth']['adapter'];
+                }
+
+                if (array_key_exists('auth_records', $order) && array_key_exists('auth', $order)) {
+                    $tmp = array();
+					foreach($order['auth_records'] as $auth_record) {
+					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
+					    $tmp[] = $auth_record;
+					}
+					$tmp[] = array(
+							'authKey' => $order['authKey'],
+							'date_saved' => date("m/d/Y h:i:s A", strtotime($order['auth']['response']['ccAuthReply']['authorizedDateTime']))
+						);
+					$order['auth_records'] = $tmp;
+				} else {
+					$order['auth_records'] = array(
+						array(
+							'authKey' => $order['authKey'],
+							'date_saved' => date("m/d/Y h:i:s A", $order['date_created']->sec)
+						)); 
+				}
+				if (array_key_exists('void_records', $order) && array_key_exists('auth', $order)) {
+                    $tmp = array();
+					foreach($order['auth_records'] as $auth_record) {
+					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
+					    $tmp[] = $auth_record;
+					}
+
+					$order['auth_records'] = $tmp;
+				}
+				if (array_key_exists('capture_records', $order) && array_key_exists('auth', $order)) {
+                    $tmp = array();
+					foreach($order['auth_records'] as $auth_record) {
+					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_captured']->sec );
+					    $tmp[] = $auth_record;
+					}
+
+					$order['auth_records'] = $tmp;
+				}
+
+				if(!empty($order['payment_date']) && ($order['payment_date'] !== 'none')){
+					$order['auth_records'][] = array(
+							'authKey' => $order['auth_confirmation'],
+							'date_saved' =>  date('m/d/Y h:i:s A',$order['payment_date']->sec)
+						);
+				}
+				if (!empty($order['payment_date'])) {
+                    $order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
+                } else {
+                    $order['payment_date'] = 0;
+                }
+
                 /*
                 * Get credit, promocodes,  and oversize handling information
                 */
@@ -712,7 +820,7 @@ class FinancialExport extends Base  {
                 $shipRecord = $ordersShipped->findOne(array('$or' => array(
                     array('OrderNum' => $order['order_id'])
                 )));
-                if (array_key_exists('ship_records', $order)) {
+                if ($order && array_key_exists('ship_records', $order)) {
                     $order['ship_records'] = "Yes";
                 } else {
                     $order['ship_records'] = "No";
@@ -778,7 +886,7 @@ class FinancialExport extends Base  {
 		$ordered = array();
 		foreach($orderArray as $key) {
 			if(array_key_exists($key,$array)) {
-				$ordered[$key] = (string) $array[$key];
+				$ordered[$key] = $array[$key];
 				unset($array[$key]);
 			}
 		}
@@ -804,74 +912,60 @@ class FinancialExport extends Base  {
 	 * @param
 	 */
 	private function exportFiles() {
-	    $processed = LITHIUM_APP_PATH . $this->processed_dir;
-	    $source = $this->tmp;
-	    $finished = false;
-	    $reporting = array(
-	        'success' => true,
-	        'error' => array(),
-	        'files_sent' => array(),
-	        'files_failed' => array()
-	    );
-	    $obj = $this;
-	    $error_handling = function ($errno, $errstr,$errfile) use ($obj, &$reporting) {
-	       $obj->log($errstr);
-	       $reporting['success'] = false;
-           $reporting['error'][] = $errstr;
-	    };
-	    set_error_handler($error_handling, E_WARNING);
+            $processed = LITHIUM_APP_PATH . $this->processed_dir;
+            $source = $this->tmp;
+            $finished = false;
+            $reporting = array(
+                'success' => true,
+                'error' => array(),
+                'files_sent' => array(),
+                'files_failed' => array()
+            );
+            $obj = $this;
 
-	    $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
-	   $headers = "From: reports@totsy.com";
-	   echo "Exporting Files";
-	    $this->log("Exporting to Accounting Server...");
-	    $directory = $this->directory;
+            $To = "lhanson@totsy.com,scott.fisher@yourtechso.com,sadler@totsy.com,rminns@totsy.com";
+            //$To = "lhanson@totsy.com";
+            $headers = "From: reports@totsy.com";
+            echo "Exporting Files \n\r";
+            $this->log("Exporting to Accounting Server...");
+            $directory = $this->directory;
+            $output = "";
 
-            $localDirectory = opendir($source);
             if (is_dir($source)) {
-                if($localDirectory) {
-                    while(($file = readdir($localDirectory)) !== false) {
-                        $length = strlen($file);
-                       if (substr($file,$length - 4, $length) == ".xml") {
-                         $success = true;
-                         $connection = ssh2_connect('accounting.totsy.com',50220);
-                            if (!$connection) {
-                                $this->log("Fail: Unable to establish a connection.");
-                                $reporting['success'] = false;
-                                $reporting['error'][] = "Fail: Unable to establish a connection.";
-                            } else{
-                               if (!ssh2_auth_password($connection, 'administrator', 'accounting6N1Wlm5Ig')) {
-                                    $this->log("Fail: Unable to authenticate.");
-                                    $reporting['success'] = false;
-                                    $reporting['error'][] = "Fail: Unable to authenticate.";
-                                }else{
-                                    $this->log("You are logged in.");
-                                    $this->log("Uploading " . $source.$file . " to accounting server");
-                                    $success = ssh2_scp_send($connection, $source.$file, "/C/$directory/$file", 0644);
-                                     if (!$success) {
-                                        $reporting['success'] = false;
-                                        $reporting['error'][] = "Fail: transfer failed.";
-                                        $reporting['files_failed'][] = $file . " " . filesize($source.$file) . " Bytes" ;
-                                        echo "transfer failed.\r\n";
-                                        $this->log("Fail: Unable to transfer " . $source.$file . " to Accounting Server.");
-                                     } else {
-                                        $reporting['success'] = true;
-                                        $this->log("Moving " . $source.$file . " to processed folder.");
-                                        $reporting['files_sent'][] = $file . " " . filesize($source.$file) . " Bytes" ;
-                                        rename($source.$file,$processed.$file);
-                                     }
-                                     sleep(10);
-                                     ssh2_exec($connection, 'exit');
-                                }
+                $cmd = "scp -F ~/.ssh/config {$source}*.xml accounting.totsy.com:/C/$directory";
+                #This grabs the output when the command has run
+                $proc = proc_open($cmd, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes);
+                fwrite($pipes[0], $input); fclose($pipes[0]);
+                $stdout = stream_get_contents($pipes[1]);fclose($pipes[1]);
+                $stderr = stream_get_contents($pipes[2]);fclose($pipes[2]);
+                $rtn = proc_close($proc);
+
+                if ($rtn == 0) {
+                        $reporting['success'] = true;
+                        foreach(glob("{$source}*.xml") as $file) {
+                            $filename = preg_split("#($source)#", $file);
+                            $this->log("Moving " . $filename[1] . " to processed folder.");
+                            $reporting['files_sent'][] = $filename[1] . " " . filesize($file) . " Bytes" ;
+                            if (!is_dir($processed)) {
+                                mkdir($processed, 0777, true);
                             }
-                       }
-                    }
+                            rename($file,$processed.$filename[1]);
+                        }
+                } else {
+                        $this->log("Fail: " .  print_r($stderr, true));
+                        $reporting['success'] = false;
+                        $reporting['error'][] = "Fail: " .  print_r($stderr, true);
+                        $this->log("Fail: File upload error.");
                 }
             }
+
             $subject = "Accounting Auto Reporting Job - Report";
-            $message = "Automating reporting results: \r\n";
+
             if (!$reporting['success']) {
+                $message = "Automating reporting results - FAILED: \r\n";
                 $message .= implode("\r\n", $reporting['error']);
+            } else {
+                 $message = "Automating reporting results - SUCCESS: \r\n";
             }
             if (!empty($reporting['files_failed'])) {
                 $message .= "The following files failed to transfer: \r\n";
@@ -883,14 +977,12 @@ class FinancialExport extends Base  {
             }
             $this->log("Sending out email");
             mail($To , $subject , $message , $headers);
-            restore_error_handler();
 	}
 
 	/**
 	* Creates XML from data passed in
 	* @param string $type type of information: used for the root tags of the xml file
 	* @param array $records multidimensional array holding the records to converted to xml
-	* @param string $filename name of the xm file
 	**/
 	private function createXMLDoc($type, $record) {
 	    if ($this->xml == null) {
@@ -900,8 +992,22 @@ class FinancialExport extends Base  {
         $recordTag = $this->xml->addChild('record');
         foreach($record as $key => $value) {
             //SimpleXMLElement doesn't like ampersand for some reason so I am replacing it with 'and'
-           $record[$key] = preg_replace('/&/','and',$record[$key]);
-            $recordTag->addChild($key, $record[$key]);
+            if (is_array($value) && ($key == "auth_records")) {
+				$auth_records = $recordTag->addChild($key);
+				foreach($value as $sub_key => $sub_value) {
+					$auth = $auth_records->addChild('auth');
+                    if (is_array($sub_value)) {
+                        foreach($sub_value as $k => $v) {
+                            $auth->addChild($k, $v);
+                        }
+                    } else {
+                        $auth->addChild($sub_key, $sub_value);
+                    }
+				}
+		   } else {
+				$record[$key] = preg_replace('/&/','and',$record[$key]);
+				$recordTag->addChild($key, (string)$record[$key]);
+			}
         }
 	}
 

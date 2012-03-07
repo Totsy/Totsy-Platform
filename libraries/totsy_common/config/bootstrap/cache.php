@@ -14,6 +14,7 @@ use lithium\storage\Cache;
 use lithium\core\Libraries;
 use lithium\action\Dispatcher;
 use lithium\storage\cache\adapter\XCache;
+use lithium\core\Environment;
 
 if (PHP_SAPI === 'cli') {
 	return;

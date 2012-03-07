@@ -1,4 +1,14 @@
+<?php use lithium\storage\Session; ?>
 <?php $this->title("Account Information"); ?>
+<?php
+	$brandName = "Totsy";
+	$fbConnectBlurb = "Connect your Facebook Account with Totsy";
+	
+	if(Session::read("layout", array("name"=>"default"))=="mamapedia") {
+		$brandName = "Mamasource";
+		$fbConnectBlurb = "Connect your Facebook Account";
+	} 
+?>
 
 <div class="grid_16">
 	<h2 class="page-title gray">Account Information</h2>
@@ -22,7 +32,7 @@
 							echo "<div class=\"standard-message\">Your information has been updated.</div>";
 							break;
 						case 'email' :
-							echo "<div class=\"standard-error-message\">Your current email is incorrect. Please try again.</div>";
+							echo "<div class=\"standard-error-message\">Your current email is incorrect, or already in use. Please try again.</div>";
 							break;
 						case 'name' :
 							echo "<div class=\"standard-error-message\">Your current first name and last name are incorrect. Please try again.</div>";
@@ -61,21 +71,21 @@
 						))
 					;?>
 				</div>
-
+				
 			<?php echo $this->form->submit('Update', array('class' => 'button fr')); ?>
 			<?php echo $this->form->end();?>
 		</fieldset>
 	</div>
 <div style="width:48%; margin-left:10px; float:left;">
 	<?php if ($connected): ?>
-		<h2 class="gray mar-b">You're Connected With Totsy</h2>
+		<h2 class="gray mar-b">You're Connected With <?php echo $brandName; ?></h2>
 		<hr />
 		<img src="https://graph.facebook.com/<?php echo $user->facebook_info['id']?>/picture">
 		<br /><b><?php echo $user->facebook_info['name']?></b>
 	<?php else: ?>
-		<h2 class="gray mar-b">Connect your Facebook Account with Totsy</h2>
+		<h2 class="gray mar-b"><?php echo $fbConnectBlurb; ?></h2>
 		<hr />
-		<fb:login-button perms="email,publish_stream, offline_access" size="large" length="long" v="2" style="text-align:center;">Connect With Facebook</fb:login-button>
+		<fb:login-button scope="email" size="large" length="long" v="2" style="text-align:center;">Connect With Facebook</fb:login-button>
 		<div id="fb-root"></div>
 	<?php endif ?>
 </div>

@@ -37,21 +37,17 @@
 						    <center><input type="checkbox" name="orders[]" value="<?=$event->_id?>" /></center>
 						</td>
 						<td>
-						<?php if (in_array((string) $event->_id, $processedOrders)): ?>
-							<center>Processed</center>
-						<?php else: ?>
-
-						<?php endif ?>
+							<?php if (in_array((string) $event->_id, $processedOrders)): ?>
+								<center>Processed</center>
+							<?php endif ?>
 						</td>
 						<td>
 						    <center><input type="checkbox" name="pos[]" value="<?=$event->_id?>" /></center>
 						</td>
 						<td>
-						<?php if (in_array((string) $event->_id, $processedPOs)): ?>
-							<center>Processed</center>
-						<?php else: ?>
-
-						<?php endif ?>
+							<?php if (in_array((string) $event->_id, $processedPOs)): ?>
+								<center>Processed</center>
+							<?php endif ?>
 						</td>
 					</tr>
 				<?php endforeach ?>
@@ -79,6 +75,7 @@
 				<thead>
 				<tr>
 					<th>Date</th>
+					<th>Queue Id </th>
 					<th>Orders Processed</th>
 					<th>Order Lines</th>
 					<th># POs Processed</th>
@@ -90,7 +87,8 @@
 			<?php foreach ($recent as $data): ?>
 				<?php $i++?>
 					<tr>
-						<td><?=date('m-d-Y', $data['processed_date']->sec)?></td>
+					<td><?=date('m-d-Y', $data['processed_date']->sec)?></td> 
+						<td><?=$data["_id"];?></td>
 						<?php if (!empty($data['summary']['order']['count'])): ?>
 							<td><?=$data['summary']['order']['count']?></td>
 						<?php else: ?>
@@ -123,26 +121,6 @@
 	</div>
 	</div>
 </div>
-
-<!-- <div class="grid_6">
-	<div class="box">
-	<h2>
-		<a href="#" id="toggle-order-search">Event Search</a>
-	</h2>
-	<div class="block" id="order-search">
-		<fieldset>
-			<p>Search for a specific event(s)</p>
-			<?=$this->form->create(); ?>
-				<?=$this->form->text('search', array(
-					'id' => 'search',
-					'style' => 'float:left; width:200px; margin: 0px 10px 0px 0px;'
-					));
-				?>
-				<?=$this->form->submit('Search'); ?>
-			<?=$this->form->end(); ?>
-		</fieldset>
-	</div>
-	</div> -->
 </div>
 
 
@@ -151,6 +129,7 @@
 <div id="clear"></div>
 
 <script type="text/javascript" charset="utf-8">
+    TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 	$(document).ready(function() {
 		$('#eventTable').dataTable({
 			"sDom": 'T<"clear">lfrtip'
@@ -159,6 +138,7 @@
 	} );
 </script>
 <script type="text/javascript" charset="utf-8">
+	TableToolsInit.sSwfPath = "/img/flash/ZeroClipboard.swf";
 	$(document).ready(function() {
 		$('#summary_table').dataTable({
 			"sDom": 'T<"clear">lfrtip'

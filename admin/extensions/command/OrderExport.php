@@ -187,9 +187,13 @@ class OrderExport extends Base {
 					$this->time = date('ymdHis');
 					$queueData = $queue->data();
 					$this->queue = $queue;
+					if($this->queue->run_amount) {
+						$this->queue->run_amount += 1;
+					} else {
+						$this->queue->run_amount = 1;
+					}
 					if ($queueData['orders']) {
-					    $this->queue->status = "Processing Order File";
-					    $this->queue->save();
+
 						$this->orderEvents = $queueData['orders'];
 						$this->_orderGenerator();
 					}
@@ -251,17 +255,24 @@ class OrderExport extends Base {
 		}
 		$orders = $orderCollection->find(array(
 			'items.event_id' => array('$in' => $this->orderEvents),
-			'cancel' => array('$ne' => true)
+			'cancel' => array('$ne' => true),
+			'error_date' => array('$exists' => false)
 		));
+		
 		$this->log('Calling Reauthorize Command');
 		#Reauthorize Orders with Total Full Amount
 		$ReAuthorize = new ReAuthorize();
 		#Setting Production Environment
 		if (Environment::is('production')) {
 			$ReAuthorize->env = 'production';
+		} else if (Environment::is('staging')) {
+			$ReAuthorize->env = 'staging';
 		}
 		$ReAuthorize->fullAmount = true;
 		$ReAuthorize->orders = $orders;
+		$this->queue->status = "Authorizing Full Amount on orders";
+		 $this->queue->percent = null;
+		$this->queue->save();
 		$this->log('Starting Full Reauthorize');
 		$orders = $ReAuthorize->run();
 		//total same until here 345pm
@@ -315,7 +326,8 @@ class OrderExport extends Base {
 			}
 			$orderArray = array();
 			$ecounter = 0;
-
+            $this->queue->status = "Processing Order Files";
+		    $this->queue->save();
 			//new counts for email breakdown
 			$allitems = 0;
 			$unprocessed_orders = 0;
@@ -347,7 +359,7 @@ class OrderExport extends Base {
 					    'fields' => array('email' => true)
 					    ));
 					foreach ($items as $item) {
-						if (empty($item['cancel']) || $item['cancel'] != true) {
+						if (empty($item['cancel']) && empty($item['digital'])) {
                                 $orderItem = $itemCollection->findOne(
                                     array('_id' => new MongoId($item['item_id']))
 							);
@@ -363,12 +375,12 @@ class OrderExport extends Base {
                             if (!array_key_exists('sku_details', $orderItem)){
                                 $sku = $this->findSku(String::asciiClean($description), $item["size"]);
                                 if (!($sku)) {
-                                    $makeSku = new MakeSku();
+                                    $makeSku = new Item();
                                     $makeSku->generateSku(array($orderItem));
                                     $orderItem = Item::find('first', array(
                                         'conditions' => array('_id' => $orderItem['_id']),
                                         'fields' => array('sku_details' => true)
-                                        ));
+                                    ));
                                 }
                             }
                             $sku = $orderItem['sku_details'][$item['size']];
@@ -388,6 +400,9 @@ class OrderExport extends Base {
 							$orderFile[$inc]['Country'] = '';
 							$orderFile[$inc]['OrderNum'] = $order['order_id'];
 							$orderFile[$inc]['SKU'] = $sku;
+							if (empty($sku)) {
+								$orderFile[$inc]['SKU'] = Item::getUniqueSku($orderItem['vendor'], $orderItem['vendor_style'], $item['size'], $item['color']);
+							}
 							$orderFile[$inc]['Qty'] = $item['quantity'];
 							$orderFile[$inc]['CompanyOrName'] = $order['shipping']['firstname'].' '.$order['shipping']['lastname'];
 							$orderFile[$inc]['Email'] = (!empty($user->email)) ? $user->email : '';
@@ -502,44 +517,45 @@ class OrderExport extends Base {
 				$eventItems = $this->_getOrderItems($eventId);
 				$this->log("Event $eventId has " . count($eventItems) . " items");
 				foreach ($eventItems as $eventItem) {
+					/**
+					* Checking if sku exists, if not find it in the item master
+					* If not in item master create one
+					**/
+				    if (!array_key_exists('sku_details', $eventItem)){
+				    	$this->log("Item {$eventItem['_id']} doesn't have sku_details.  Generating.");
+				          $makeSku = new Item();
+				          $makeSku->generateSku(array($eventItem));
+                          $eventItem = Item::find('first', array(
+                                'conditions' => array('_id' => $eventItem['_id']),
+                                'fields' => array(
+                                    'sale_whol' => true,
+                                    'category' => true,
+                                    'orig_whol' => true,
+                                    '_id' => true,
+                                    'color' => true,
+                                    'product_weight' => true,
+                                    'vendor_style' => true,
+                                    'sku_details' => true,
+                                    'description' => true,
+                                    'details' => true
+                                )
+                            ));
+				    }
 					foreach ($eventItem['details'] as $key => $value) {
 					    $description = implode(' ', array(
 								$eventItem['color'],
 								$key,
 								$eventItem['description']
 							));
-						/**
-						* Checking if sku exists, if not find it in the item master
-						* If not in item master create one
-						**/
-					    if (array_key_exists('sku_details', $eventItem)){
-					        $sku = $eventItem['sku_details'][$key];
-					    } else {
-					        $sku = $this->findSku(String::asciiClean($description), $key);
-					        if (!($sku)) {
-					            $makeSku = new MakeSku();
-					            $makeSku->generateSku(array($eventItem));
-                              $eventItem = Item::find('first', array(
-                                    'conditions' => array('_id' => $eventItem['_id']),
-                                    'fields' => array(
-                                        'sale_whol' => true,
-                                        'category' => true,
-                                        'orig_whol' => true,
-                                        '_id' => true,
-                                        'color' => true,
-                                        'product_weight' => true,
-                                        'vendor_style' => true,
-                                        'sku_details' => true,
-                                        'description' => true,
-                                        'details' => true
-                                    )
-                                ));
-					        }
-					    }
-						$conditions = array('SKU' => $sku);
+					    $sku = $eventItem['sku_details'][$key];
+						$conditions = array('SKU' => $sku, 'style' => $eventItem['vendor_style']);
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
 							$fields[$inc]['SKU'] = $sku;
+							if(!empty($sku)) {
+								$fields[$inc]['SKU'] = Item::getUniqueSku($eventItem['vendor'], $eventItem['vendor_style'], $key, $eventItem['color']);
+							}
+							 
 							if ($this->verbose == 'true') {
 								$this->log("Adding SKU: $sku to $handle");
 							}
@@ -565,8 +581,8 @@ class OrderExport extends Base {
 							}
 							fputcsv($fp, $productFile[$inc]);
 						}
-						++$inc;
 					}
+					++$inc;
 				}
 			    if ($event_count != 0) {
                     $this->queue->percent = (float)number_format((($inc/$event_count) * 100), 2);
@@ -619,12 +635,13 @@ class OrderExport extends Base {
 			$this->log("Opening PO file $handle");
 			$fp = fopen($handle, 'w');
 			$this->summary['purchase_orders'][] = $filename;
-
+			
 			$purchaseOrder = array();
 			$inc = 0;
 			foreach ($eventItems as $eventItem) {
 				foreach ($eventItem['details'] as $key => $value) {
-					$orders = $orderCollection->find(array(
+					$this->log("{$eventItem['_id']} size {$key} value {$value}");
+					$orders = $orderCollection->find( array(
 						'items.item_id' => (string) $eventItem['_id'],
 						'items.size' => (string) $key,
 						'items.status' => array('$ne' => 'Order Canceled'),
@@ -641,6 +658,9 @@ class OrderExport extends Base {
 									$purchaseOrder[$inc]['Supplier'] = $eventItem['vendor'];
 									$purchaseOrder[$inc]['PO # / RMA #'] = $poNumber;
 									$purchaseOrder[$inc]['SKU'] = $eventItem['sku_details'][$item['size']];
+									if (empty($eventItem['sku_details'][$item['size']])) {
+										$purchaseOrder[$inc]['SKU'] = Item::getUniqueSku($eventItem['vendor'], $eventItem['vendor_style'], (string)$item['size'], $item['color']);
+									}
 									if (empty($purchaseOrder[$inc]['Qty'])) {
 										$purchaseOrder[$inc]['Qty'] = $item['quantity'];
 									} else {
@@ -748,16 +768,15 @@ class OrderExport extends Base {
 	 * Return all the items of an event.
 	 */
 	protected function _getOrderItems($eventId = null) {
+		$itemCollection = Item::collection();
 		$items = null;
 		if ($eventId) {
-			$items = Item::find('all', array(
-				'conditions' => array(
+			$items = $itemCollection->find(array(
 					'event' => array('$in' => array($eventId)
-			    )
-			)));
-			$items = $items->data();
+					)));
 		}
 		return $items;
 	}
 
 }
+?>

@@ -5,10 +5,46 @@
 	var item_id = "<?php echo $item->_id?>";
 </script>
 
-<?php echo $this->html->script(array('cart-timer.js?v=007', 'cart-items-timer.js?v=007', 'cart-popup.js?v=007'));?>
+<?php echo $this->html->script(array('cart-timer.js?v='.filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-timer.js'), 'cart-items-timer.js?v='. filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-items-timer.js'), 'cart-popup.js?v=' . filemtime(LITHIUM_APP_PATH . '/webroot/js/cart-popup.js')));?>
 
 <!-- template used for items on cart. jquery.tmpl.js driven -->
 <?php echo $this->view()->render( array('element' => 'popupCartItems') ); ?>
+
+<div style="position:relative">
+<div id="cart_popup" class="grid_16 roundy glow" style="display:none">
+	<div id="cart_popup_header">
+	    <div id="cart_popup_timer">
+	    	<span style="float:right; margin-left: 30px">Item Reserved For:<br>
+	    		<span style="color:#009900; font-weight:bold;font-size:14px" id="itemCounter"></span>
+	    	</span>
+	    	<span style="float:right">Estimated Shipping Date: <br>
+	    		 <span id="ship_date" style="font-weight:bold; color:#009900; font-size:14px"></span>
+	    	</span>
+	    </div>
+	    <div id="cart_popup_close_button">
+	    	<a href="#">
+	    	<img src="<?=$img_path_prefix?>popup_cart_close.jpg" style="width:20px; height:20px"></a>
+	    </div>
+	</div>
+	<div style="clear:both"></div>
+	<div id="cart_item"></div>
+	<div style="clear:both"></div>
+	<div style="clear:both"></div>
+	<div><hr></div>
+	<div id="cart_popup_breakdown">
+	   <div class="cart-savings">Your Savings: $<span id="savings"></span></div>
+	   <div id="cart_popup_order_total">
+	   	<span class="cart-order-total">Subtotal: </span>
+	       <span id="order_total_num" style="font-weight:bold !important; color:#009900 !important; font-size:14px !important"></span>
+	   </div>
+	</div>
+	<div style="clear:both"></div>
+	<div id="cart_popup_checkout_buttons" class="cart-button fr">
+	   <a id="cart_popup_cont_shop" class="button_border" href="#">Continue Shopping</a>
+	   <a id="cart_popup_checkout" class="button" href="/checkout/view">Checkout</a>
+	</div>
+</div>
+</div>
 
 <div class="grid_16">
 	<h2 class="page-title gray"><span class="red"><a href="/sales" title="Sales">Today's Sales</a> /</span> <a href="/sale/<?php echo $event->url?>" title="<?php echo $event->name?>"><?php echo $event->name?></a><div id="listingCountdown" class="listingCountdown" style="float:right;"></div></h2>
@@ -178,53 +214,21 @@
 				</span>
 				<div id="all-reserved"></div>
 
-				<?php
-				if($item->miss_christmas){
-				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#ff0000; font-size:11px;text-align:left;">
-				<img src="/img/truck_grey.png">
-				This item is not guaranteed to be delivered on or before 12/25.*
-				</div>
-				<?php
-				}
-				else{
-				?>
-				<div style="margin-top:10px;line-height:12px;font-weight:bold; color:#999999; font-size:11px;text-align:left;">
-				<img src="/img/truck_grey.png">
-				This item will be delivered on or before 12/23*
-				</div>
-
-
-				<?php
-				}
-				?>
 
 			<?php endif ?>
 		</div>
 	</div>
-	<div style="padding: 10px 0px; text-align: center ! important; position: absolute; top: 253px; right: 153px;">
+	<div class="clear"></div>
+		
+	<ul class="echoShare" data-productname='<?php echo $item->description ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($item->blurb))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST'].'/image/' . $item->primary_image . 'jpg' ?>'></ul> 
+	
+	<div class="grid_3" style="padding-left:11px;">
+		
 	    <?php echo $spinback_fb; ?>
 	</div>
 </div>
 <div class="clear"></div>
 
-<div style="color:#707070; font-size:12px; font-weight:bold; padding:10px;">
-				<?php
-				if($item->miss_christmas){
-				?>
-				* Totsy ships all items together. If you would like the designated items in your cart delivered on or before 12/23, please ensure that any items that are not guaranteed to ship on or before 12/25 are removed from your cart and purchased separately. Our delivery guarantee does not apply when transportation networks are affected by weather. Please contact our Customer Service department at 888-247-9444 or email <a href="mailto:support@totsy.com">support@totsy.com</a> with any questions.
-				<?php
-				}
-				else{
-				?>
-
-				* Our delivery guarantee does not apply when transportation networks are affected by weather.
-
-				<?php
-				}
-				?>
-
-</div>
 </div>
 
 <div id="modal" style="background:#fff!important; z-index:999!important;"></div>
@@ -262,7 +266,7 @@ $(document).ready(function() {
 	            url: $.base + 'items/available',
 	            data: "item_id=" + item_id + "&" + "item_size=" + item_size,
 	            context: document.body,
-	            success: function(data){
+	            success: function(data) {
 	                if (data == 'false') {
 	                    $('#all-reserved').show();
 	                    $('.button').hide();
@@ -322,4 +326,3 @@ c+='&cb='+Math.floor(Math.random()*99999999999);try{c+='&ref='+encodeURIComponen
 c+='&sc_r='+encodeURIComponent(screen.width+'x'+screen.height);}catch(e){}try{c+='&sc_d='+encodeURIComponent(screen.colorDepth);}catch(e){}b.Load(function(){
 a(c.substring(0,2000))})}}}();CRITEO.Load(document.location.protocol+'//dis.us.criteo.com/dis/dis.aspx?');
 </script>
-

@@ -7,14 +7,20 @@ if (isset($token)){
 
 if (is_array($events)){ 
 	foreach($events as $event){ 
+		$evnt['id'] = $event['_id'];
 		$evnt['name'] = $event['name'];
 		$evnt['description'] = sailthru_json_cut_string($event['blurb'],90);
 		$evnt['short'] = isset($event['short'])?$event['short']:sailthru_json_cut_string($event['blurb'],45);
 		$evnt['availableItems'] = $event['available_items']==true?'YES':'NO';
 		$evnt['brandName'] = $event['vendor'];
 		$evnt['image'] = $event['event_image'];
+		$evnt['image_small'] = $event['event_image_small'];
 		$evnt['discount'] = floor($event['maxDiscount']);
 		$evnt['url'] = $base_url.'sale/'.$event['url']."?gotologin=true";
+		$evnt['categories'] = $event['groups']['categories'];
+		$evnt['ages'] = $event['groups']['ages'];
+		$evnt['items'] = $event['items'];
+		$evnt['tag'] = implode(',',$event['tags']['ages']);
 		$out['events'][] = $evnt;
 	}
 }

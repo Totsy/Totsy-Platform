@@ -3,18 +3,40 @@
 namespace admin\tests\cases\models;
 
 use admin\models\Order;
+use admin\models\OrderShipped;
 use admin\tests\mocks\models\OrderMock;
 use admin\tests\mocks\payments\ProcessorMock;
 use admin\models\User;
 use admin\models\Item;
 use li3_payments\payments\TransactionResponse;
 use li3_payments\exceptions\TransactionException;
+use li3_payments\payments\Processor;
+use li3_payments\extensions\adapter\payment\CyberSource;
 use MongoId;
 use MongoDate;
+use lithium\analysis\Logger;
 
 class OrderTest extends \lithium\test\Unit {
 
 	public $user;
+	
+	protected $_AmexCustomer = null;
+	
+	protected $_AmexCustomerId = null;
+	
+	protected $_AmexCard = null;
+	
+	protected $_VisaCustomer = null;
+	
+	protected $_VisaCustomerId = null;
+	
+	protected $_VisaCard = null;
+	
+	protected $_MasterCardCustomer = null;
+	
+	protected $_MasterCardCustomerId = null;
+	
+	protected $_MasterCard = null;
 
 	protected $_backup = array();
 
@@ -30,6 +52,105 @@ class OrderTest extends \lithium\test\Unit {
 		$this->user->save($data, array('validate' => false));
 
 		$this->_delete[] = $this->user;
+		
+			$this->_AmexCard = array( 
+			'type' => 'amex',
+			'number' => '378282246310005',
+			'month' => 4,
+			'year' => 2014,
+			'code' => 123 
+		);
+		$this->_VisaCard = array( 
+			'type' => 'visa',
+			'number' => '4111111111111111',
+			'month' => 4,
+			'year' => 2014,
+			'code' => 123 
+		);
+		$this->_MasterCard = array( 
+			'type' => 'mc',
+			'number' => '5555555555554444',
+			'month' => 2,
+			'year' => 2016,
+			'code' => 177 
+		);
+		$this->_billingAddress = array(
+				'firstname' => 'Tomfsfdsd',
+				'lastname' => 'Royerdfsfsdf',
+				'address' => '143 roebling street',
+				'address2' => 'apt1',
+				'city' => 'Brooklyn',
+				'state' => 'NY',
+				'zip' => '11211',
+				'country' => 'US',
+				'email' => 'gsdgfdfgdsfg@sdfsdfsd.com'
+		);
+		
+		$this->_VisaCustomer = Processor::create('test', 'customer', array(
+			'firstName' => 'TomTest',
+			'lastName' => 'DevTest',
+			'email' => 'devtest@totsy.com',
+			'payment' => Processor::create('test', 'creditCard', $this->_VisaCard),
+			'billing' => Processor::create('test', 'address', array(
+				'firstName' => 'Tomfsfdsd',
+				'lastName' => 'Royerdfsfsdf',
+				'address' => '100 test street',
+				'address2' => 'APT1',
+				'city' => 'Brooklyn',
+				'state' => 'NY',
+				'zip' => '11211',
+				'country' => 'US',
+				'email' => 'devtest@totsy.com'
+			))
+		));
+		
+		$resultVisa = $this->_VisaCustomer->save();
+		
+		$this->_VisaCustomerId = $resultVisa->response->paySubscriptionCreateReply->subscriptionID;
+		
+		$this->_AmexCustomer = Processor::create('test', 'customer', array(
+			'firstName' => 'TomTest',
+			'lastName' => 'DevTest',
+			'email' => 'devtest@totsy.com',
+			'payment' => Processor::create('test', 'creditCard', $this->_AmexCard),
+			'billing' => Processor::create('test', 'address', array(
+				'firstName' => 'Tomfsfdsd',
+				'lastName' => 'Royerdfsfsdf',
+				'address' => '100 test street',
+				'address2' => 'APT1',
+				'city' => 'Brooklyn',
+				'state' => 'NY',
+				'zip' => '11211',
+				'country' => 'US',
+				'email' => 'devtest@totsy.com'
+			))
+		));
+		
+		$resultAmex = $this->_AmexCustomer->save();
+		
+		$this->_AmexCustomerId = $resultAmex->response->paySubscriptionCreateReply->subscriptionID;
+	
+		$this->_MasterCardCustomer = Processor::create('test', 'customer', array(
+			'firstName' => 'TomTest',
+			'lastName' => 'DevTest',
+			'email' => 'devtest@totsy.com',
+			'payment' => Processor::create('test', 'creditCard', $this->_MasterCard),
+			'billing' => Processor::create('test', 'address', array(
+				'firstName' => 'Tomfsfdsd',
+				'lastName' => 'Royerdfsfsdf',
+				'address' => '100 test street',
+				'address2' => 'APT1',
+				'city' => 'Brooklyn',
+				'state' => 'NY',
+				'zip' => '11211',
+				'country' => 'US',
+				'email' => 'devtest@totsy.com'
+			))
+		));
+		
+		$resultMasterCard = $this->_MasterCardCustomer->save();
+		
+		$this->_MasterCardCustomerId = $resultMasterCard->response->paySubscriptionCreateReply->subscriptionID;
 	}
 
 	public function tearDown() {
@@ -42,6 +163,331 @@ class OrderTest extends \lithium\test\Unit {
 	public function testDates() {
 		$result = OrderMock::dates('now');
 		$this->assertTrue(is_a($result, 'MongoDate'));
+	}
+	
+	/*
+	 * Test findUnshippedItems method 
+	 * Given an order with X unshipped items the function will return X item _ids
+	 * Can't use fixtures because ship_records need to be MongoIds
+	 */
+	public function testFindUnshippedItems() {
+		//configuration
+		$order_id = new MongoId();
+		$ship_record_one_id = new MongoId();
+		$ship_record_two_id = new MongoId();
+		$ship_record_three_id = new MongoId();
+		//Create temporary documents
+		$remote = new Order();
+		$order_datas = 
+		array(
+		  '_id' => $order_id,
+		  'authKey' => '3789571045', 
+		  'auth_confirmation' => '3789571045', 
+		  'auth_error' => null,
+		  'avatax' => true,
+		  'billing' => 
+		    array(
+		      '_id' => '4e4293975899efaa5c0000bb' ,
+		      'description' => 'Home' ,
+		      'firstname' => 'Maria' ,
+		      'lastname' => 'Tommasi' ,
+		      'telephone' => '' ,
+		      'address' => '37 Columbia Court' ,
+		      'address_2' => '' ,
+		      'city' => 'North Haledon' ,
+		      'state' => 'NJ' ,
+		      'zip' => '07508' ,
+		      'isAjax' => '1' ,
+		      'user_id' => '4d503feb5389266501000034'),
+		  'card_number' => '6840' ,
+		  'card_type' => 'visa' ,
+		  'date_created' => '2011-08-10T14: 20: 19.0Z' ,
+		  'handling' => 7.95,
+		  'items' => 
+		    array(
+		      "0" => 
+		        array(
+		          '_id' => '4e429272974f5bb36a0064e7' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Blue' ,
+		          'description' => 'Trunki Terrance' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c000115' ,
+		          'primary_image' => '4dbb2ec1d6b0259742000075' ,
+		          'product_weight' => 3.8,
+		          'quantity' => 1,
+		          'sale_retail' => 28,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-terrance-blue' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 0,
+		          'status' => 'Order Placed' ),
+		      "1" => 
+		        array(
+		          '_id' => '4e4292de5899ef675d0000b3' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Red' ,
+		          'description' => 'Trunki Ruby' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c000118' ,
+		          'primary_image' => '4dbb2e64d6b025994200006a' ,
+		          'product_weight' => 3.8,
+		          'quantity' => 4,
+		          'sale_retail' => 28,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-ruby-red' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 1,
+		          'status' => 'Order Placed' ),
+		      "2" => 
+		        array(
+		          '_id' => '4e429238d6b02585160000e3' ,
+		          'category' => 'Accessories' ,
+		          'color' => '' ,
+		          'description' => 'Trunki Alphabet Stickers' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c00011d' ,
+		          'primary_image' => '4dbb2dbbd6b025ca3f000074' ,
+		          'product_weight' => 0.05,
+		          'quantity' => 2,
+		          'sale_retail' => 1.4,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-alphabet-stickers' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 2,
+		          'status' => 'Order Placed' ),
+		      "3" => 
+		        array(
+		          '_id' => '4e429250d6b0256416001eb6' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Blue' ,
+		          'description' => 'Trunki Saddlebag ' ,
+		          'digital' => true,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149615899efe21c00011c' ,
+		          'primary_image' => '4dbb2ddcd6b0258842000073' ,
+		          'product_weight' => 0.45,
+		          'quantity' => 1,
+		          'sale_retail' => 10.5,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-saddlebag-blue' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 3,
+		          'status' => 'Order Placed' ),
+		      "4" => 
+		        array(
+		          '_id' => '4e42925cd6b0256416001eb7' ,
+		          'category' => 'Accessories' ,
+		          'color' => 'Orange/Red' ,
+		          'description' => 'Trunki Saddlebag' ,
+		          'discount_exempt' => false,
+		          'expires' => '',
+		          'item_id' => '4e4149625899efe21c000120' ,
+		          'primary_image' => '4dbb2d1cd6b0258d4200006a' ,
+		          'product_weight' => 0.45,
+		          'quantity' => 4,
+		          'sale_retail' => 10.5,
+		          'size' => 'no size' ,
+		          'url' => 'trunki-saddlebag-orange-red' ,
+		          'event_name' => 'Trunki by Melissa and Doug' ,
+		          'event_id' => '4e402aa55899efad12000014' ,
+		          'line_number' => 4,
+		          'status' => 'Order Placed')),
+		  'modifications' => 
+		    array(
+		    	"0" =>
+		        array(
+		          'author' => null,
+		          'type' => 'items' ,
+		          'date' => '2011-09-12T16: 10: 28.0Z' ,
+		          'comment' => 'Canceling unshipped items')),
+		  'order_id' => null,
+		  'overSizeHandling' => 0,
+		  'payment_date' => '2011-08-25T12: 14: 00.753Z' ,
+		  'promo_code' => '' ,
+		  'promo_discount' => '' ,
+		  'promocode_disable' => true,
+		  'service' => 
+		    array(),
+		  'ship_date' => '2011-09-06T04: 00: 00.0Z' ,
+		  'ship_records' => 
+		    array(
+		      "0" => $ship_record_one_id ,
+		      "1" => $ship_record_two_id ,
+		      "2" => $ship_record_three_id),
+		  'shipping' => 
+		    array(
+		      '_id' => '4e4293975899efaa5c0000bb' ,
+		      'description' => 'Home' ,
+		      'firstname' => 'Maria' ,
+		      'lastname' => 'Tommasi' ,
+		      'telephone' => '' ,
+		      'address' => '37 Columbia Court' ,
+		      'address_2' => '' ,
+		      'city' => 'North Haledon' ,
+		      'state' => 'NJ' ,
+		      'zip' => '07508' ,
+		      'isAjax' => '1' ,
+		      'user_id' => '4d503feb5389266501000034'),
+		  'shippingMethod' => 'ups' ,
+		  'subTotal' => 195.3,
+		  'tax' => 14.2,
+		  'total' => 198.1,
+		  'user_id' => null
+		);
+		$order = Order::create();
+		$order->save($order_datas);
+		
+		$ship_record_one_data = 
+		array(
+			'_id'=> $ship_record_one_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-846-B1C-959',
+			'Weight'=> '1.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000242'),
+			'hash'=> '1a6d6010c78f36dbd6b9634de832752a',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:07'))
+		);
+		$ship_record_one = OrderShipped::create();
+		$ship_record_one->save($ship_record_one_data);
+		
+		$ship_record_two_data = 
+		array(
+			'_id'=> $ship_record_two_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-4DB-B1C-D41',
+			'Weight'=> '2.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d1000024a'),
+			'hash'=> '2d3a802ce868a693431951f39ecc5608',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:13'))
+		);
+		$ship_record_two = OrderShipped::create();
+		$ship_record_two->save($ship_record_two_data);
+		
+		$ship_record_three_data = 
+		array(
+			'_id'=> $ship_record_three_id,
+			'ShipDate'=> new MongoDate(strtotime('2011-08-22 04:00:00')),
+			'ShipDC'=> 'DOT',
+			'OrderNum'=> '4E4293A3BA16',
+			'Tracking #'=> '1ZX782400371155853',
+			'DC'=> 'TOT',
+			'SKU'=> 'MEL-56D-B1C-959',
+			'Weight'=> '1.00',
+			'ContactName'=> 'Maria Tommasi',
+			'Address1'=> '37 Columbia Court',
+			'City '=> 'North Haledon',
+			'StateOrProvince'=> 'NJ',
+			'Zip'=> '07508',
+			'Email'=> 'chachibean44@yahoo.com',
+			'Tel'=> '9999999999',
+			'OrderId'=> new MongoId('4e4293a3974f5ba1660000b8'),
+			'ItemId'=> new MongoId('4dbb2b045899ef5d10000249'),
+			'hash'=> 'dad03956e3fcae78d55360b6bcc97808',
+			'created_date'=> new MongoDate(strtotime('2011-08-23 12:50:15'))
+		);
+		$ship_record_three = OrderShipped::create();
+		$ship_record_three->save($ship_record_three_data);
+		
+		$orderCollection = Order::collection();
+		$order = $orderCollection->findOne(array('_id' => $order_id));
+		
+		$unshippedItems = Order::findUnshippedItems($order);
+
+		//Delete Temporary Documents
+		Order::remove(array("_id" => $order_id));
+		OrderShipped::remove(array("_id" => $ship_record_one_id));
+		OrderShipped::remove(array("_id" => $ship_record_two_id));
+		OrderShipped::remove(array("_id" => $ship_record_three_id));
+		
+		$this->assertEqual('4e4292de5899ef675d0000b3', $unshippedItems[0]);
+		$this->assertEqual(2, count($unshippedItems));
+	}
+
+	public function testProcessFunctionality() {
+		#Test Process with Amex
+		$this->Process($this->_AmexCustomerId, 'amex', '0005', 100, 100);
+		#Test Process with Visa
+		$this->Process($this->_VisaCustomerId, 'visa', '1111', 100, 100);
+		#Test Process with MasterCard
+		$this->Process($this->_MasterCardCustomerId, 'mc', '4444', 100, 100);
+		#Test Process with Amex and SoftAuth
+		$this->Process($this->_AmexCustomerId, 'amex', '0005', 100, 1);
+		#Test Process with Visa and SoftAuth
+		$this->Process($this->_VisaCustomerId, 'visa', '1111', 100, 0);
+		#Test Process with MasterCard and SoftAuth
+		$this->Process($this->_MasterCardCustomerId, 'mc', '4444', 100, 1);
+	}
+	
+	public function Process($customerId, $type, $card_number, $total, $authTotal) {
+		Logger::debug('Process Method Test');
+		Logger::debug('Credit Card Type: ' . $type);
+		Logger::debug('Total : ' . $total);
+		Logger::debug('AuthTotal : ' . $authTotal);
+		$ordersCollection = Order::Collection();
+		#Create Temporary order
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$cybersource = new CyberSource(Processor::config('test'));
+		$profile = $cybersource->profile($customerId);
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', $authTotal, $profile, array('orderID' => $order->order_id));
+		$this->assertTrue($authorizeObject->success());
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));	
+		$order->save(array(
+				'total' => $total,
+				'card_type' => $type,
+				'card_number' => $card_number,
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'cyberSourceProfileId' => $customerId,
+				'authTotal' => $authTotal,
+				'billing' => $this->_billingAddress
+		));
+
+		$result = Order::process($order);		
+
+		$orderModified = $ordersCollection->findOne(array('_id' => $order->_id));
+		$this->assertTrue($result);
+		$this->assertFalse(empty($orderModified['payment_date']));
+		$this->assertFalse(empty($orderModified['capture_records']));
+		$this->assertNull($orderModified['auth_error']);
+		$this->assertFalse($orderModified['auth_confirmation'] == -1);	
+		Order::remove(array("_id" => $order->_id));
+		Logger::debug('End Process Method Test');
 	}
 
 	public function testLookup() {
@@ -80,16 +526,27 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testVoidWithTotalPositive() {
-		$data = array(
-			'total' => 1.23,
-			'authKey' => '090909099909',
-			'auth' => array(
-				'key' => '090909099909',
-				'type' => 'authorize'
-			)
-		);
-		$order = OrderMock::create($data);
-		$order->save();
+		$ordersCollection = Order::Collection();
+		#Create Temporary order
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$cybersource = new CyberSource(Processor::config('test'));
+		$profile = $cybersource->profile($customerId);
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', 100, $profile, array('orderID' => $order->order_id));
+		$this->assertTrue($authorizeObject->success());
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));	
+		$order->save(array(
+				'total' => 100,
+				'card_type' => $type,
+				'card_number' => $card_number,
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'cyberSourceProfileId' => $customerId,
+				'authTotal' => 100,
+				'billing' => $this->_billingAddress
+		));
 
 		$result = OrderMock::void($order->data());
 		$this->assertTrue($result);
@@ -118,16 +575,30 @@ class OrderTest extends \lithium\test\Unit {
 	}
 
 	public function testVoidFailingWithTotalZero() {
-		$data = array(
-			'total' => 0,
-			'authKey' => '090909099909',
-			'auth' => array(
-				'key' => '090909099909',
-				'type' => 'authorize'
-			)
-		);
-		$order = OrderMock::create($data);
-		$order->save();
+		$ordersCollection = Order::Collection();
+		#Create Temporary order
+		$order = Order::create(array('_id' => new MongoId()));
+		$order->order_id = strtoupper(substr((string)$order->_id, 0, 8) . substr((string)$order->_id, 13, 4));
+		$cybersource = new CyberSource(Processor::config('test'));
+		$profile = $cybersource->profile($customerId);
+		#Create Transaction initial Transaction in CyberSource
+		$authorizeObject = Processor::authorize('test', 0, $profile, array('orderID' => $order->order_id));
+		$this->assertTrue($authorizeObject->success());
+		$order->date_created = new MongoDate(mktime(0, 0, 0, date("m"), date("d"), date("Y")));	
+		$order->save(array(
+				'total' => 0,
+				'card_type' => $type,
+				'card_number' => $card_number,
+				'authKey' => $authorizeObject->key,
+				'auth' => $authorizeObject->export(),
+				'processor' => $authorizeObject->adapter,
+				'cyberSourceProfileId' => $customerId,
+				'authTotal' => 0,
+				'billing' => $this->_billingAddress
+		));
+
+		$result = OrderMock::void($order->data());
+		$this->assertTrue($result);
 
 		$result = OrderMock::void($order->data());
 		$this->assertFalse($result);
@@ -150,78 +621,6 @@ class OrderTest extends \lithium\test\Unit {
 		$this->assertTrue($result);
 
 		$result = ProcessorMock::$void;
-		$this->assertFalse($result);
-
-		$order->delete();
-	}
-
-	public function testProcess() {
-		$data = array(
-			'total' => 1.23,
-			'authKey' => '090909099909',
-			'auth' => array(
-				'key' => '090909099909',
-				'type' => 'authorize'
-			)
-		);
-		$order = OrderMock::create($data);
-		$result = $order->save();
-		$this->assertTrue($result);
-
-		$result = OrderMock::process($order);
-		$this->assertTrue($result);
-
-		$order = OrderMock::first(array(
-			'conditions' => array('_id' => $order->_id)
-		));
-
-		$result = $order->payment_date;
-		$this->assertTrue($result);
-
-		$result = $order->auth_error;
-		$this->assertFalse($result);
-
-		$expected = 'transaction id';
-		$result = $order->auth_confirmation;
-		$this->assertEqual($expected, $result);
-
-		$expected = array('key' => '090909099909', 'type' => 'authorize');
-		$result = ProcessorMock::$capture[1];
-		$this->assertEqual($expected, $result);
-
-		$order->delete();
-	}
-
-	public function testProcessFailingWithTotalZero() {
-		$data = array(
-			'total' => 0,
-			'authKey' => '090909099909',
-			'auth' => array(
-				'key' => '090909099909',
-				'type' => 'authorize'
-			)
-		);
-		$order = OrderMock::create($data);
-		$order->save();
-
-		$result = OrderMock::process($order->data());
-		$this->assertFalse($result);
-
-		$order = OrderMock::first((string) $order->_id);
-
-		$expected = '090909099909';
-		$result = $order->authKey;
-		$this->assertEqual($expected, $result);
-
-		$expected = "Can't capture because total is zero.";
-		$result = $order->auth_error;
-		$this->assertEqual($expected, $result);
-
-		$result = $order->auth_confirmation;
-		$expected = -1;
-		$this->assertEqual($expected, $result);
-
-		$result = ProcessorMock::$capture;
 		$this->assertFalse($result);
 
 		$order->delete();

@@ -29,7 +29,10 @@ class CreditsController extends BaseController
 						array('customer_id' => $userInfo['_id'])
 			))));
 		}
-
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
+		}
 		return compact('user', 'credits', 'userInfo');
 	}
 }

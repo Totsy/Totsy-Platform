@@ -40,17 +40,6 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 	));
 });
 
-/*
- * The following allows up to serve images right out of mongodb.
- * This needs to be first so that we don't get a controller error.
- */
-Router::connect("/image/{:id:[0-9a-f]{24}}.gif", array(), function($request) {
-     return new Response(array(
-          'type' => 'image/gif',
-          'body' => File::first($request->id)->file->getBytes()
-     ));
-});
-
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
@@ -59,8 +48,9 @@ Router::connect('/unsubcentral/unsubscribed/{:args}', array('controller' => 'uns
 Router::connect('/unsubcentral/del', array('controller' => 'unsubcentral', 'action' => 'del'));
 
 Router::connect('/login', 'Users::login');
+Router::connect('/publicpassword', 'Users::publicpassword');
 Router::connect('/register', 'Users::register');
-Router::connect('/register/facebook', 'Users::fbregister');
+//Router::connect('/register/facebook', 'Users::fbregister');
 Router::connect('/momoftheweek', 'MomOfTheWeeks::index');
 Router::connect('/momoftheweek/fbml', 'MomOfTheWeeks::fbml');
 Router::connect('/surveys', 'Surveys::index');
@@ -69,8 +59,13 @@ Router::connect('/join/{:args}', 'Users::register');
 Router::connect('/affiliate/{:args}', 'Affiliates::registration');
 Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/]+}', 'Affiliates::register');
 
+Router::connect('/category/{:args}', 'Events::category');
+Router::connect('/age/{:args}', 'Events::age');
+
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
+/*Router::connect('/pages/password', 'Users::password');*/
+
 Router::connect('/livingsocial', array('Pages::view', 'args' => array('living_social')));
 Router::connect('/blog', 'Blog::index');
 Router::connect('/feeds/{:args}', 'Feeds::home');
@@ -95,6 +90,10 @@ Router::connect('/events/view/{:item:[a-z0-9\-]+}', 'Events::view');
 Router::connect('/welcome', 'Users::affiliate');
 Router::connect('/sale/{:event:[a-z0-9\-]+}', 'Events::view');
 Router::connect('/sale/{:event:[a-z0-9\-]+}/{:item:[a-z0-9\-]+}', 'Items::view');
+Router::connect('/feeds/{:partner:[a-z0-9\-]+}',array(
+    'Feeds::home',
+    'type' => 'xml'
+));
 /**
 * Taking this route out, as the menu helper is not ready
 * for custom routes.

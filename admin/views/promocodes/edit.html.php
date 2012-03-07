@@ -32,8 +32,12 @@
 	<h2 id="page-heading">Promocode Edit Panel</h2>
 </div>
 <?php if ($promocode->parent): ?>
-    Editing this will change all associated Unique promocode created using the generator.<br/>
-    <strong> Note: </strong> uniqueness has not been affected.<br/>
+    <div class="grid_16 box">
+        <h2><a href="#" id="toggle-tables">Directions</a></h2>
+        <p style="font-size:13px">Editing this will change all associated Unique promocode created using the generator.<br/>
+        <strong> Note: </strong> uniqueness has not been affected.</p>
+        Use the <strong>Promo Search</strong> to search and disable individual promocodes.
+    </div>
 <?php endif;?>
 
 <div class='grid_3 menu'>
@@ -53,6 +57,9 @@
 			<tr>
 				<td><?php echo $this->html->link('View Promotions', 'promocodes/report'); ?></td>
 			</tr>
+			 <tr>
+                <td><?php echo $this->html->link('Generate Promocodes', 'promocodes/generator'); ?></td>
+            </tr>
 		</tbody>
 	</table>
 </div>
@@ -73,6 +80,8 @@
 			Enable: <?php echo $this->form->checkbox( 'enabled', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
 			<?php if ($promocode->parent): ?>
                 Number of associated promocodes: <?php echo $promocode->no_of_promos;?> <br/>
+                Retrieve promocodes :  <?=$this->html->link('Retrieve Promocodes',"promocodes/massPromocodes/{$promocode->_id}");?>
+                <br/>
             <?php endif; ?>
            Code: <?php echo $this->form->text('code', array( 'value' => $promocode->code ) ); ?><br>
 
@@ -92,9 +101,9 @@
            <?php echo $this->form->label('Minimum Purchase:'); ?>
            <?php echo $this->form->text('minimum_purchase', array( 'value' => $promocode->minimum_purchase)); ?><br>
 
-           <?php  $enable= (($promocode->limited_use))? 'checked' : '' ?>
+           <?php  $enable = (($promocode->limited_use))? 'checked' : '' ?>
 			<?php echo $this->form->label('Assign by email:'); ?>
-			<?php echo $this->form->checkbox( 'limited_use', array( 'checked'=>$enable, 'value' => '1' ) ); ?> <br>
+			<?php echo $this->form->checkbox( 'limited_use', array( 'checked'=> $enable, 'value' => '1' ) ); ?> <br>
 
            <?php echo $this->form->label('Enter maximum individual use:'); ?>
            <?php echo $this->form->text( 'max_use', array( 'value' => $promocode->max_use) ); ?><br><br>
@@ -114,6 +123,24 @@
         </fieldset>
     </div>
 </div>
+<?php if ($promocode->parent): ?>
+<div class="grid_6 box">
+    <h2>
+        <a href="#" id="toggle-forms">Promo Search</a>
+    </h2>
+    <div class="block">
+        This section is used to deactivate SPECIFIC promocodes related to <?=$promocode->code?>.
+        <?=$this->form->create(null, array('id' => 'searchForm'));?>
+            <?=$this->form->label("Search Codes");?>
+            <?=$this->form->text('code_search');?>
+            <?=$this->html->link('Find',"#", array('id' => 'search', 'target' => '#codes'));?>
+        <?=$this->form->end();?>
+    </div>
+    <div class="block">
+        <span id="codes"></span>
+    </div>
+</div>
+<?php endif; ?>
 <script type="text/javascript" >
 $('#type').change(function() {
 	if($('#type').val() == 'free_shipping') {
@@ -121,5 +148,23 @@ $('#type').change(function() {
 	} else {
 		$("#discount").show("slow");
 	};
+});
+
+$('#search').click(function(){
+    var code_search = $("input[name=code_search]").val();
+    var parent_id = "<?=$promocode->_id;?>";
+    var dataString = 'code_search='+ code_search + '&parent_id=' + parent_id;
+    var item = $(this);
+	var target = $(item.attr('target'));
+
+    $.ajax({
+      type: "POST",
+      url: "/promocodes/findPromo",
+      data: dataString,
+      success: function(data) {
+        target.html(data);
+      }
+    });
+    return false;
 });
 </script>

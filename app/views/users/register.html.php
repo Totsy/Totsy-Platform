@@ -1,3 +1,4 @@
+<?php use lithium\storage\Session; ?>
 <?php if ($message){ echo $message; } ?>
 <style>
 h2 {
@@ -71,16 +72,34 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="round">
 <!-- left side -->
 <div class="grid_6">
-<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+
+<?php
+
+$brandLogo = "logo_reg_new.png";
+
+if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+	$brandLogo = "mamapedia/logo.png";
+}
+
+?>
+
+<?php echo $this->html->link($this->html->image( $brandLogo, array('style'=>'width:auto; height:auto')), '', array('escape'=> false)); ?>
+
 </div>
 <!-- right side -->
 <div class="grid_6" style="margin-left:28px;">	
 <div class="fr">Already a member? <a href="/login" title="Sign In">Sign In</a></div>
-		<div class="free_shipping_banner_reg_new rollover_img" ><a href="javascript:;" title="Free Shipping"><span></span></a></div>
+
+<?php if (Session::read('layout', array('name' => 'default'))!=='mamapedia') { ?>
+	<div class="free_shipping_banner_reg_new rollover_img" >
+	    <a href="javascript:;" title="Free Shipping">
+	    <span></span>
+	    </a>
+	</div>
+<?php } ?>
+
 </div>
 <div class="clear"></div>
-
-
 <div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
 	<div class="grid_6" style="float:left;">	
@@ -140,6 +159,6 @@ function fblogin() {
 FB.login(function(response) {
 	if (response.authResponse) {
 		window.location.reload();    
-  }}, {scope:'publish_stream,email,user_about_me,user_activities,user_birthday,user_groups,user_interests,user_location'});
+  }}, {scope:'email'});
 }
 </script>

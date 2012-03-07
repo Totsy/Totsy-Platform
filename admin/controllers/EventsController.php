@@ -5,9 +5,12 @@ namespace admin\controllers;
 use admin\controllers\BaseController;
 use admin\models\Event;
 use admin\models\User;
+use admin\models\Order;
 use admin\models\Item;
 use lithium\storage\Session;
+use MongoCode;
 use MongoDate;
+use MongoRegex;
 use MongoId;
 use Mongo;
 use PHPExcel_IOFactory;
@@ -36,6 +39,51 @@ class EventsController extends BaseController {
 		'enabled'
 	);
 
+	public function combineskus($id = null) {
+	    $this->_render['layout'] = false;
+
+		//books event id hardcoded
+		$_id = (string)"4ee6437f943e83b010000007";
+
+		//items and orders collection calls
+		$itemsCollection = Item::Collection();
+		$ordersCollection = Order::collection();
+
+		//blank array for items
+		$items = array();
+
+		//query events table for items
+		$eventItems = Item::find('all', array('conditions' => array('event' => array($_id))));
+
+		foreach ($eventItems as $item) {
+			//add item ids to items array
+			$items[] = (string) $item['_id'];
+		}
+
+		//mongo query to get orders with these items
+		$orders = $ordersCollection->find(array('items' => array('$elemMatch' => array('item_id' => array('$in' => $items)))));
+
+		foreach ($orders as $order) {
+			//total items in order
+			$orderitemCount = count($order['items']);
+
+			//loop through items in order
+			for($i=0; $i<$orderitemCount; $i++){
+				//check it size is NULL
+				if($order['items'][$i]['size']=="NULL"){
+					//set size to 'no size'
+					$order['items'][$i]['size'] = "no size";
+
+					//save revised order
+					$ordersCollection->save($order);
+
+				}
+			}
+		}
+		exit();
+
+	}
+
 
 	public function view($id = null) {
 		$event = Event::find($id);
@@ -46,33 +94,107 @@ class EventsController extends BaseController {
 		return compact('event');
 	}
 
-	public function uploadcheck_clearance() {
+	//public function uploadcheck_clearance() {
+	public function uploadcheck() {
 	    $this->_render['layout'] = false;
+	    unset($branch);
+		//$this->_render['head'] = true;
+		$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
+		return Event::check_spreadsheet($fullarray, $this->_mapCategories);
+	}
+
+
+	public function regeneratesku($_id = null) {
+	    $this->_render['layout'] = false;
+	    $items = Item::collections('items');
+		//query items by eventid
+		$eventItems = $items->find( array('event' => $_id))->sort(array('created_date' => 1));
+		//return Item::generateskusbyevent($_id, true);
+		//query items by eventid
+		return Item::generateSku($eventItems);
 
 	}
-	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
 
-		$items_quantities[] = array();
-		$items_prices[] = array();
-		$items_skus[] = array();
-		$items_skus_used[] = array();
-		$items[] = array();
+	public function generatesku($_id = null) {
+	    $this->_render['layout'] = false;
+		$this->_render['template'] = 'regeneratesku';
+		return Item::generateskusbyevent($_id);
+	}
+
+
+	protected function parseItems_clearance($fullarray, $_id, $enabled = false) {
+	    $this->_render['layout'] = false;
+
+		$items_quantities = array();
+		$items_ages = array();
+		$items_categories = array();
+		$items_prices = array();
+		$items_skus = array();
+		$items_skus_used = array();
+		$items = array();
 
 		$itemsCollection = Item::Collection();
 
 		//convert textarea content into an array
-		//$fullarray = Event::convert_spreadsheet($_POST['items_submit']);
+		//$fullarray = Event::convert_spreadsheet($_POST['ItemsSubmit']);
 
 		//loop thru form-created array to create an skus array, and a quantity array with the skus as keys
 		foreach($fullarray as $item_sku_quantity){
-			$current_sku = trim($item_sku_quantity[0]);
-			$items_skus[] = $current_sku;
-			$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
-			$items_prices[$current_sku] = trim($item_sku_quantity[2]);
+			//$current_sku = trim($item_sku_quantity[0]);
+			//$items_skus[] = $current_sku;
+			//$items_quantities[$current_sku] = trim($item_sku_quantity[1]);
+			//$items_prices[$current_sku] = trim($item_sku_quantity[2]);
 		}
 
+
+		$highestRow = $fullarray[0];
+		$totalrows = count($fullarray);
+		$totalcols = count($highestRow);
+
+
+		$check_decimals = array("msrp", "sale_retail", "percentage_off", "percent_off", "orig_wholesale", "orig_whol", "sale_whol", "sale_wholesale", "imu");
+
+		for ($row = 0; $row <= $totalrows; ++ $row ) {
+			if($row>0&&$fullarray[$row][0]){
+				$current_sku = $fullarray[$row][0];
+				if($current_sku){
+					$items_skus[] = $current_sku;
+				}
+			}
+			for ($col = 0; $col < $totalcols; ++ $col) {
+				$val = $fullarray[$row][$col];
+
+				if ($row == 0) {
+					if(($val)||($val==0)){
+						$heading[] = $val;
+					}
+				} else {
+					if (isset($heading[$col])) {
+						if($heading[$col] === "quantity") {
+							if (!empty($val)) {
+								$items_quantities[$current_sku] = trim($val);
+							}
+						} else if($heading[$col] === "sale_retail") {
+							if (!empty($val)) {
+								$items_prices[$current_sku] = trim($val);
+							}
+						} else if(strstr($heading[$col], "age_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$items_ages[$current_sku][] = trim($val);
+							}
+						} else if(strstr($heading[$col], "category_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$items_categories[$current_sku][] = trim($val);
+							}
+						}
+					}
+				}
+			}
+		}
+
+
 		//mongo query, find all items with skus
-		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( "\$in" => $items_skus))));
+		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( '$in' => $items_skus))));
 
 		//loop through returned item results
 		foreach($items_with_skus as $olditem){
@@ -81,10 +203,14 @@ class EventsController extends BaseController {
 			$addnewitem = true;
 
 			//set new total quantity at 0
-			$total_quantity_new=0;
+			$total_quantity_new = 0;
 
 			//item data
-			$oitem = $olditem->data();
+			$oitem = $olditem;
+			# 01/03/2011 - it was done this way because lithium had a bug with the data() function
+			# So until that bug is fix, we will do it this way
+			$oitem = get_object_vars($olditem);
+			$oitem = $oitem['_config']['data'];
 
 			//existing sku and sku_details
 			$sku_details_arr = $oitem['sku_details'];
@@ -120,6 +246,11 @@ class EventsController extends BaseController {
 						//use index to update quantity
 						$oitem['details'][$sku_details_key] = (int)$items_quantities[$sku_details];
 
+						$oitem['ages'] = $items_ages[$sku_details];
+						$oitem['categories'] = $items_categories[$sku_details];
+
+
+
 						//set sales to 0 for all sizes
 						//$oitem['sale_details'][$sku_details_key]['sale_count'] = 0;
 
@@ -153,13 +284,13 @@ class EventsController extends BaseController {
 
 				//update enabled
 				$oitem['enabled'] = (bool)$enabled;
-				
+
 				//create a new item instance
 				$newItem = Item::create();
 
 				//set total quant
 				$oitem['total_quantity'] = (int)$total_quantity_new;
-				
+
 				//set new price
 				if($item_price_new){
 					unset($oitem['sale_retail']);
@@ -198,13 +329,13 @@ class EventsController extends BaseController {
 		$event = Event::find($_id);
 
 		$eventItems = array();
-		
+
 		$alleventids = array($_id);
 
 		foreach($alleventids as $thiseventid){
 			$eventItems = Item::find('all', array('conditions' => array('event' => $alleventids),
 					'order' => array('created_date' => 'ASC')
-				));	
+				));
 		}
 		return compact('eventItems','event');
 	}
@@ -243,7 +374,7 @@ class EventsController extends BaseController {
 		    $modification_datas["date"] = new MongoDate(strtotime('now'));
 		    $modification_datas["type"] = "modification";
 		    $modification_datas["changed"] = $changed;
-		
+
 		    //Pushing modification datas to db
 		    $modifications = $event->modifications;
 		    $modifications[] = $modification_datas;
@@ -270,10 +401,10 @@ class EventsController extends BaseController {
 			));
 
 		//process new items
-		if(!empty($this->request->data['items_submit'])) {
+		if(!empty($this->request->data['ItemsSubmit'])) {
 			$enableItems = $this->request->data['enable_items'];
 
-			$fullarray = Event::convert_spreadsheet($this->request->data['items_submit']);
+			$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
 			if($event->clearance){
 				$parseItems = $this->parseItems_clearance($fullarray, $event->_id, $enableItems);
 			}
@@ -356,8 +487,7 @@ class EventsController extends BaseController {
 			$url = $this->cleanUrl($this->request->data['name']);
 			$eventData = array_merge(
 				Event::castData($this->request->data),
-				compact('items'),
-				compact('images'),
+				compact('items', 'images', 'departments'),
 				array('url' => $url)
 			);
 
@@ -450,6 +580,27 @@ class EventsController extends BaseController {
 		return compact('event', 'eventItems', 'items', 'all_filters', 'shortDescLimit');
 	}
 
+	/**
+	 * Locate an existing event by some criteria. Currently supported
+	 * criteria (via querystring parameters) include:
+	 *  'name'
+	 *
+	 * @return void
+	 */
+	public function find() {
+		$collEvents = Event::collection();
+		$events     = $collEvents->find(array(
+			'name' => $this->request->query['name']
+		));
+
+		$results = array();
+		foreach($events as $evt) {
+			$results[] = $evt;
+		}
+
+		echo json_encode(array('total' => count($results), 'results' => $results));
+		$this->_render['head'] = true;
+	}
 
 	/**
 	 * This method parses the item file that is uploaded in the Events Edit View.
@@ -470,7 +621,9 @@ class EventsController extends BaseController {
 			'vendor',
 			'vendor_style',
 			'age',
+			'ages',
 			'departments',
+			'categories',
 			'category',
 			'sub_category',
 			'description',
@@ -513,6 +666,18 @@ class EventsController extends BaseController {
 								$eventItems[$row - 1]['departments'][] = ucfirst(strtolower(trim($val)));
 								$eventItems[$row - 1]['departments'] = array_unique($eventItems[$row - 1]['departments']);
 							}
+						} else if(strstr($heading[$col], "age_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$eventItems[$row - 1]['age'] = trim($val);
+								$eventItems[$row - 1]['ages'][] = trim($val);
+								$eventItems[$row - 1]['ages'] = array_unique($eventItems[$row - 1]['ages']);
+							}
+						} else if(strstr($heading[$col], "category_")) {
+							if (!empty($val)&&strlen($val)>1) {
+								$eventItems[$row - 1]['category'] = trim($val);
+								$eventItems[$row - 1]['categories'][] = trim($val);
+								$eventItems[$row - 1]['categories'] = array_unique($eventItems[$row - 1]['categories']);
+							}
 						} else if (($heading[$col] === "related_1") || ($heading[$col] === "related_2") || ($heading[$col] === "related_3") || ($heading[$col] === "related_4") || ($heading[$col] === "related_5")) {
 							if (!empty($val)) {
 								$eventItems[$row - 1]['related_items'][] = trim($val);
@@ -551,7 +716,7 @@ class EventsController extends BaseController {
 				unset($itemDetail[$key]);
 
 				if($key!=="color_description_style") {
-					$itemCleanAttributes[trim($key)] = $value;
+					$itemCleanAttributes[trim($key)] = (string)$value;
 				}
 			}
 			$item = Item::create();
@@ -680,7 +845,7 @@ class EventsController extends BaseController {
 	}
 
 	public function inventoryCheck($events) {
-		$events = $events->data();
+
 		foreach ($events as $eventItems) {
 			$count = 0;
 			$id = $eventItems['_id'] ;

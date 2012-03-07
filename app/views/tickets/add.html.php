@@ -1,5 +1,5 @@
 <?php $this->title("Contact Us"); ?>
-
+<?php use lithium\storage\Session; ?>
 <div class="grid_16">
 	<h2 class="page-title gray">Contact Us</h2>
 	<hr />
@@ -16,7 +16,9 @@
 		    <li><a href="/pages/testimonials" title="Video Testimonials">Video Testimonials</a></li>
 		    <li><a href="/pages/being_green" title="Being Green">Being Green</a></li>
 		    <li><a href="http://blog.totsy.com" target="_blank" title="Blog">Totsy Blog</a></li>
-		    <li><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
+			<?php if(Session::read('layout', array('name' => 'default'))!=='mamapedia') : ?>	    
+			<li><a href="/pages/affiliates" title="Affiliates"><span>Affiliates</span></a></li>
+			<?php endif ?>
 		</ul>
 	</div>
 	<div class="clear"></div>
@@ -85,7 +87,7 @@
 		</select>
 
 		<br /><br />
-		<select id="child" name="type" style="width:350px;">
+		<select id="child" name="type" style="width:350px; display:none;">
 		<!-- orders -->
 			<?php if ($orders): ?>
 				<option value="">Choose Your Order Number</option>
@@ -210,10 +212,10 @@ function makeSublist(parent,child,isSubselectOptional,childVal)
         });
         
         if (getSize) {
-          $("#hidden-div").show();
+          $("#uniform-child").hide();
           $("input[type=Submit]").attr("disabled","disabled");
         } else {
-          $("#hidden-div").hide();
+          $("#uniform-child").show().children('select').show();
           $("input[type=Submit]").removeAttr("disabled");
         };
       }

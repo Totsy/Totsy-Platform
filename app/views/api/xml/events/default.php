@@ -1,22 +1,48 @@
 <?php echo '<?xml version="1.0"?>'; ?>
-<root>
+<root xmlns:tns="http://totsy.com/totsy-xml-rss-name-space" >
 <?php if (isset($token)){ ?>
 	<token><?php echo $token?></token>
 <?php } ?>
 <?php if (is_array($events)){ ?>
 	<events>
 	<?php foreach($events as $event){ ?>
-		<event>
+		<event id="<?php echo $event['_id']; ?>">
 			<name><?php echo htmlspecialchars($event['name']) ?></name>
 			<description><?php echo htmlspecialchars( $event['blurb'] ) ?></description>
-			<short><?php echo (empty($event['short'])) ? default_events_xml_cut_string($event['blurb'],45) : $event['short']; ?></short>
+			<short><?php echo (empty($event['short'])) ? htmlspecialchars(default_events_xml_cut_string($event['blurb'],45)) : htmlspecialchars($event['short']); ?></short>
 			<availableItems><?php echo $event['available_items']==true?'YES':'NO';?></availableItems>
 			<brandName><?php echo htmlspecialchars($event['vendor'])?></brandName>
 			<image><?php echo $event['event_image']; ?></image>
+			<image_small><?php echo $event['event_image_small']; ?></image_small>
 			<discount><?php echo floor($event['maxDiscount']); ?></discount>
 			<url><?php echo $base_url.'sale/'.$event['url']; ?></url>
 			<startDate><?php echo date('m-d-y g:i:s A',$event['start_date']['sec']); ?></startDate>
 			<endDate><?php echo date('m-d-y g:i:s A',$event['end_date']['sec']); ?></endDate>
+			<categories><?php
+			if (count($event['groups']['categories'])>0){
+				foreach ($event['groups']['categories'] as $c){
+				?>
+				<category><?php echo $c; ?></category><?php		
+				}
+			} 
+			?>
+			</categories>
+			<ages><?php
+			if (count($event['groups']['categories'])>0){
+				foreach ($event['groups']['categories'] as $c){
+				?>
+				<age><?php echo $c; ?></age><?php		
+				}
+			} 
+			?>
+			</ages>
+			<tns:items>
+<?php   if (!empty($event['items'])){
+			foreach($event['items'] as $item) { ?>
+				<tns:item id="<?php echo $item; ?>" />
+<?php		}
+		} ?>
+			</tns:items>
 		</event>
 	<?php }?>
 	</events>

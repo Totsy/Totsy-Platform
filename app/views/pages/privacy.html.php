@@ -1,5 +1,5 @@
+<?php use lithium\storage\Session; ?>
 <?php $this->title("Privacy Policy"); ?>
-
 <div class="grid_16">
 	<h2 class="page-title gray">About Us</h2>
 	<hr />
@@ -10,11 +10,18 @@
 	<?php echo $this->view()->render(array('element' => 'helpNav')); ?>
 </div>
 
+
+
 <div class="grid_11 omega roundy grey_inside b_side">
 	<h2 class="page-title gray">Totsy's Privacy Policy:</h2>
-	<p>valid as of August 24, 2011</p> 
-	
+	<p>Valid as of August 24, 2011</p> 
   <hr />
+  
+  <?php if(Session::read("layout", array("name"=>"default"))=="mamapedia"): ?>
+	<p>Mamasource adheres to the same privacy policy as its partner and provider Totsy.</p>
+	<hr>
+	<?php endif ?>
+  
   <div style="float:right;"><a href="//privacy-policy.truste.com/click-with-confidence/ctv/en/www.totsy.com/seal_m" title="Validate TRUSTe privacy certification" target="_blank"><img style="border: none" src="//privacy-policy.truste.com/certified-seal/ctv/en/www.totsy.com/seal_m.png" alt="Validate TRUSTe privacy certification"/></a></div>
 
   <p>The privacy of our Members is important to us. Please read our Privacy Policy below so you understand how Totsy collects information about our Members, what type of information we collect about our Members, why we collect such information, how we protect personal information about our Members and in which limited circumstances TOTSY may have to share such information with other parties.</p><br />

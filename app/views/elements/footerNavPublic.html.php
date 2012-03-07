@@ -1,3 +1,4 @@
+<?php use lithium\storage\Session; ?>
 <style>
 #socialLinks {
     margin-top: 0;
@@ -27,16 +28,20 @@
 	<li><a href="/pages/aboutus" title="About Us">About Us</a></li>
 	<li><a href="http://blog.totsy.com" title="Blog" target="_blank">Blog</a></li>
 	<li><a href="/pages/faq" title="FAQ">FAQ</a></li>
+	
+	<?php if(Session::read('layout', array('name' => 'default'))!=='mamapedia'): ?>
 	<li><a href="/pages/affiliates" title="Affiliates">Affiliates</a></li>
 	<li><a href="/pages/careers" title="Careers">Careers</a></li>
+	<?php endif ?>
+	
 	<?php if (empty($userInfo)){ ?>
 	<li><a href="/pages/contact" title="Contact Us">Contact Us</a></li>
 	<li><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
 	<?php } else { ?>
-	<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li>
+	<li><a href="/tickets/add" title="Contact Us">Contact Us</a></li> 
 	<li><a href="http://nytm.org/made" title="Made in NYC" target="_blank">Made in NYC</a></li>
 	<?php } ?>
-	<span style="float:left;">&copy; 2011 Totsy.com. All Rights Reserved.</span>
+	<span style="float:left;">&copy; 2012 Totsy.com. All Rights Reserved.</span>
 </ul>
 
 

@@ -3,6 +3,7 @@
 namespace admin\extensions\command;
 use lithium\analysis\Logger;
 use lithium\core\Environment;
+use admin\controllers\OrdersController;
 use admin\models\Order;
 use admin\models\User;
 use admin\models\Event;
@@ -87,8 +88,11 @@ class ProcessPayment extends \lithium\console\Command  {
 		}
 		if ($orders) {
 			foreach ($orders as $order) {
+				Logger::info('Process Order : ' . $order['order_id']);
 				$conditions = array('_id' => $order['user_id']);
 				$user = User::find('first', compact('conditions'));
+				$oc = new OrdersController;
+				$order = $oc->cancelUnshippedItems($order);
 				$processedOrder = Order::process($order);
 				if (Order::failedCaptureCheck($order['order_id'])){
 				    $this->failedCaptures[] = $order['order_id'];

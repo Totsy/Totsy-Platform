@@ -1,9 +1,9 @@
 <h2 style="margin-bottom:20px;">Sign In with Facebook</h2>
 	<a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
 	<br />
-	<h2 style="margin-top:30px;margin-bottom:20px;padding-top:5px;">Sign in with email</h2>	
+	<h2 style="margin-top:30px;margin-bottom:20px;padding-top:5px;">Sign in with email</h2>
 <?php echo $this->form->create(null,array('id'=>'loginForm'));?>
-		
+
 
 	<div style="width:70px; float:left">
 	<?php echo $this->form->label('email', 'Email<span>*</span>', array(
@@ -19,7 +19,7 @@
 
 	<?php echo $this->form->error('email'); ?>
 <div class="clear"></div>
-	
+
 	<div style="width:70px; float:left">
 	<?php echo $this->form->label('password', 'Password<span>*</span>', array(
 		'escape' => false,
@@ -39,5 +39,5 @@
 </div>
 
 <div class="clear"></div>
-	<?php echo $this->form->submit('Sign In', array('class'=>"button fr"));?> 
+	<?php echo $this->form->submit('Sign In', array('class'=>"button fr"));?>
 <?php echo $this->form->end();?>

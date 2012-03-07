@@ -29,6 +29,10 @@ class AddressesController extends BaseController {
 				'conditions' => array('user_id' => (string) $user['_id'])
 			));
 		}
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_view';
+		}
 		return compact("addresses");
 	}
 
@@ -41,6 +45,10 @@ class AddressesController extends BaseController {
 			$isAjax = true;
 		} else {
 			$isAjax = false;
+		}
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_add';
 		}
 		$status = '';
 		$message = '';
@@ -103,7 +111,10 @@ class AddressesController extends BaseController {
 		if (($this->request->data) && $address->save($this->request->data)) {
 				$message = 'Your address has been updated';
 		}
-
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+			$this->_render['layout'] = 'mobile_main';
+			$this->_render['template'] = 'mobile_add';
+		}
 		return compact('message', 'address', 'action', 'isAjax');
 	}
 

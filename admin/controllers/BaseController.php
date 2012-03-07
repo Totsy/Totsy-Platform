@@ -5,10 +5,32 @@ use admin\models\Event;
 use lithium\util\Inflector;
 use \lithium\core\Environment;
 use li3_flash_message\extensions\storage\FlashMessage;
+use lithium\storage\Session as Session;
 use MongoDate;
 use MongoRegex;
 
 class BaseController extends \lithium\action\Controller {
+
+	public $_mapCategories = array (
+		'category' =>  array(
+			'girls-apparel' => "Girls Apparel",
+			'boys-apparel' => "Boys Apparel",
+			'shoes' => "Shoes",
+			'accessories' =>"Accessories",
+			'toys-books' => "Toys and Books",
+			'gear' => "Gear",
+			'home' => "Home",
+			'moms-dads' => "Moms and Dads"
+		),
+		'age' => array(
+			'newborn' => 'Newborn 0-6M',
+			'infant' => 'Infant 6-24M',
+			'toddler' => 'Toddler 1-3 Y',
+			'preschool' => 'Preschool 3-4Y',
+			'school' => 'School Age 5+',
+			'adult' => 'Adult'
+		)
+	);
 
 	public function __construct(array $config = array()) {
 		/* Merge $_classes of parent. */
@@ -56,7 +78,7 @@ class BaseController extends \lithium\action\Controller {
 			$conditions = array();
 			if (array_key_exists('todays', $this->request->data) && !empty($this->request->data['todays'])){
 				$conditions = array(
-					'start_date' => array('$gte'=> new MongoDate())
+					'$where' => "(this.start_date >= new Date()) && (this.start_date != new Date('1969'))"
 				);
 			} elseif (array_key_exists('search', $this->request->data) && !empty($this->request->data['search'])) {
 			    if ($this->request->data['search'] == '&' || $this->request->data['search'] == 'and') {
@@ -65,21 +87,23 @@ class BaseController extends \lithium\action\Controller {
 				$conditions = array('name' => new MongoRegex("/" .trim($this->request->data['search']) ."/i"));
 			} elseif(array_key_exists('start_date', $this->request->data) && !empty($this->request->data['start_date'])) {
 				$conditions = array(
-					'start_date' => array('$gte'=> new MongoDate(strtotime($this->request->data['start_date'])))
+					'$where' => "(this.start_date >= new Date('" . $this->request->data['start_date'] . "')) && (this.start_date != new Date('1969'))"
 				);
 			}else {
 				$conditions = array(
 					'end_date' => array('$gte' => new MongoDate(strtotime($this->request->data['end_date'])))
 				);
 			}
-			$events = Event::find('all',array('conditions' => $conditions,
-				'fields' => array('name' => 1,
-				'start_date' => 1,
-				'end_date' => 1,
-				'blurb' => 1,
-				'enabled' => 1,
-				'_id' => 1
-				) ));
+			$events = Event::find('all',array(
+				'conditions' => $conditions,
+				'fields' => array(
+					'name' => 1,
+					'start_date' => 1,
+					'end_date' => 1,
+					'blurb' => 1,
+					'enabled' => 1,
+					'_id' => 1),
+				'order' => 'start_date'));
 		}
 		return compact('events', 'type', 'environment');
 	}
@@ -104,4 +128,5 @@ class BaseController extends \lithium\action\Controller {
 
 		return array_pop($head);
 	}
+
 }

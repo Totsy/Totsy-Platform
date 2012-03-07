@@ -31,6 +31,11 @@ The above command is the same as running: (NOTE: this isn't implemented yet! -er
     git submodule init
     git submodule update
 
+Symbolic link the Libraries li3_ (name of library)
+
+    ln -s /usr/local/sailthru-php5-client/ /var/www/<username>.totsy.com/libraries/sailthru
+
+
 You can also shorten the last two commands to one: (NOTE: this isn't implemented yet! -eric)
 
     git submodule update --init

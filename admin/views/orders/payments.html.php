@@ -41,6 +41,10 @@
 		<?php echo $this->form->radio('type',array('value' => 'processed','id' => 'processed'))?> Payments Successes (<strong>Requires Date Range</strong>)
 
 		<?php echo $this->form->radio('type',array('value' => 'expired', 'id' => 'expired'))?> Expiring (<strong>in 3 days</strong>)
+		<br />
+		<?php echo $this->form->radio('type',array('value' => 'failed_initial_auth', 'id' => 'failed_initial_auth'))?> Failed Initial Authorization
+		
+		<?php echo $this->form->radio('type',array('value' => 'failed_reauth', 'id' => 'failed_reauth'))?> Failed Re-Authorization
 
 	   <?php echo $this->form->submit('Find', array('class' => 'float-right')); ?>
 	<?php echo $this->form->end(); ?>

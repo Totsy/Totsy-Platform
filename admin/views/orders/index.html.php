@@ -115,6 +115,9 @@
 								<?php echo $order['billing']['city']?>
 							<?php endif ?>
 							<?php echo $order['billing']['state']?> <?php echo $order['billing']['zip']?>
+							<?php if (!empty($order['billing']['telephone'])): ?>
+								<br><?php echo $order['billing']['telephone']?>
+							<?php endif ?>
 						<?php endif ?>
 						</div>
 					</td>
@@ -143,6 +146,15 @@
 							<td>Not Shipped/No Tracking #</td>
 					<?php endif ?>
 					<td><?php echo date('M d, Y', $shipDate["$order[_id]"])?></td>
+					<td>
+						<?php 
+							if(!empty($order['auth_error'])) {
+								echo $order['auth_error'];
+							} else {
+								echo "No Message";
+							}
+						?>
+					</td>
 					<td>
 						<?php echo $this->html->link('View', array(
 						'Users::view',

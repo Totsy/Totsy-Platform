@@ -11,6 +11,7 @@ use app\models\Event;
 use app\models\Affiliate;
 use app\models\Promotion;
 use app\models\CreditCard;
+use app\models\Order;
 use app\models\Promocode;
 use app\models\OrderShipped;
 use app\models\Service;
@@ -32,6 +33,7 @@ class OrdersController extends BaseController {
 	protected $_classes = array(
 		'tax'       => 'app\extensions\AvaTax',
 		'order'     => 'app\models\Order',
+		'creditCard' => 'app\models\CreditCard',
 		'affiliate' => 'app\models\Affiliate'
 	);
 
@@ -80,7 +82,11 @@ class OrdersController extends BaseController {
 					}
 				}
 			}
+		}if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_index';
 		}
+		
 		return (compact('orders', 'shipDate', 'trackingNumbers', 'lifeTimeSavings'));
 	}
 
@@ -174,23 +180,16 @@ class OrdersController extends BaseController {
 		}
 		//Calculatings Savings
 		$savings = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 		foreach ($order->items as $item) {
-			if($item['miss_christmas']){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-
-			}
-
-
 
 			$itemInfo = Item::find('first', array('conditions' => array("_id" => new MongoId($item["item_id"]))));
 			if (empty($item->cancel)) {
 				$savings += $item["quantity"] * ($itemInfo['msrp'] - $itemInfo['sale_retail']);
 			}
+		}
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_view';
 		}
 		return compact(
 			'order',
@@ -204,8 +203,6 @@ class OrdersController extends BaseController {
 			'spinback_fb',
 			'shipRecord',
 			'openEvent',
-			'missChristmasCount',
-			'notmissChristmasCount',
 			'savings'
 		);
 	}
@@ -231,7 +228,6 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
-			'miss_christmas',
 			'event'
 		);
 		#Check Expires
@@ -240,8 +236,6 @@ class OrdersController extends BaseController {
 		$address = null;
 		$selected = null;
 		$cartExpirationDate = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 		$addresses_ddwn = array();
 		$shipDate = null;
 		$error = null;
@@ -307,20 +301,17 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
-			if($item['miss_christmas']){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
-
 
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
 			}
 		}
+						
 		$cartEmpty = ($cart->data()) ? false : true;
-
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_shipping';
+		}
 		return compact(
 			'address',
 			'addresses_ddwn',
@@ -328,9 +319,7 @@ class OrdersController extends BaseController {
 			'cartEmpty',
 			'error',
 			'selected',
-			'cartExpirationDate',
-			'missChristmasCount',
-			'notmissChristmasCount'
+			'cartExpirationDate'
 		);
 	}
 
@@ -346,12 +335,19 @@ class OrdersController extends BaseController {
 	public function review() {
 		$taxClass   = $this->_classes['tax'];
 		$orderClass = $this->_classes['order'];
-
+		$creditCardClass = $this->_classes['creditCard'];
+		
+		if (Session::check('cc_infos') || Session::check('CyberSourceProfile')) {
+			$payment_info = true;
+		} else {
+			$payment_info = false;
+		}
+		
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
 			return $this->redirect(array('Orders::shipping'));
 		}
-		if (!Session::check('billing') || !Session::check('cc_infos')) {
+		if (!Session::check('billing') || !$payment_info) {				
 			return $this->redirect(array('Orders::payment'));
 		}
 		#Check Expires
@@ -371,7 +367,6 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event',
-			'miss_christmas',
 			'discount_exempt'
 		);
 		$promocode_disable = false;
@@ -384,18 +379,9 @@ class OrdersController extends BaseController {
 		#Get Value Of Each and Sum It
 		$subTotal = 0;
 		$cartExpirationDate = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
+
 		$i = 0;
 		foreach ($cart as $cartValue) {
-			if($cartValue->miss_christmas){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
-
-
 			#Get Last Expiration Date
 			if ($cartExpirationDate < $cartValue['expires']->sec) {
 				$cartExpirationDate = $cartValue['expires']->sec;
@@ -425,8 +411,14 @@ class OrdersController extends BaseController {
 			'cartByEvent', 'billingAddr', 'shippingAddr', 'shippingCost', 'overShippingCost',
 			'orderCredit', 'orderPromo', 'orderServiceCredit', 'taxCart'));
 		$tax = (float) $avatax['tax'];
+		if(Cart::isOnlyDigital($cart)) {
+			$avatax = null;
+			$tax = 0.00;
+		}
 		#Get current Discount
-		$vars = Cart::getDiscount($subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
+		$cartDiscount = Cart::active();
+		$vars = Cart::getDiscount($cartDiscount, $subTotal, $shippingCost, $overShippingCost, $this->request->data, $tax);
+				
 		#Calculate savings
 		$userSavings = Session::read('userSavings');
 		$savings = $userSavings['items'] + $userSavings['discount'] + $userSavings['services'];
@@ -436,19 +428,41 @@ class OrdersController extends BaseController {
 		}
 		#Get Services
 		$services = $vars['services'];
+		
 		#Get Discount Freeshipping Service / Get Discount Promocodes Free Shipping
 		if((!empty($services['freeshipping']['enable'])) || ($vars['cartPromo']['type'] === 'free_shipping')) {
-			$shipping_discount = $shippingCost + $overShippingCost;
+			if(!Cart::isOnlyDigital($cart)) {
+				$shipping_discount = 7.95;
+			} else {
+				$shipping_discount = 0.00;
+			}
 		}
+				
 		#Calculate Order Total
 		$total = round(floatval($vars['postDiscountTotal']), 2);
 		#Read Credit Card Informations
-		$creditCard = $orderClass::creditCardDecrypt((string)$user['_id']);
+		if (Session::check('cc_infos')) {
+			$creditCard = $creditCardClass::decrypt((string)$user['_id']);
+		} else if (Session::check('CyberSourceProfile')) {
+			$user = Session::read('userLogin');
+			$userInfos = User::lookup($user['_id']);
+		
+			$creditCard_profileId = Session::read('CyberSourceProfile');
+			
+			foreach($userInfos['cyberSourceProfiles'] as $cyberSourceProfile) {
+				if($cyberSourceProfile['profileID'] == $creditCard_profileId) {
+					$selectedCyberSourceProfile = $cyberSourceProfile->data();
+				}
+			}					
+			
+			$creditCard = $selectedCyberSourceProfile[creditCard];
+		}
 		#Organize Datas
 		$vars = $vars + compact(
 			'user', 'cart', 'total', 'subTotal',
 			'tax', 'shippingCost', 'overShippingCost' ,'billingAddr', 'shippingAddr', 'shipping_discount','creditCard'
 		);
+		
 		if ((!$cartEmpty) && (!empty($this->request->data['process']))) {
 
 			/* Process this order and run it through the payment processor. */
@@ -468,6 +482,11 @@ class OrdersController extends BaseController {
 		if(Session::check('service_available')) {
 			$serviceAvailable = Session::read('service_available');
 		}
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_review';
+		}
+		
 		return $vars + compact(
 			'cartEmpty',
 			'order',
@@ -477,8 +496,6 @@ class OrdersController extends BaseController {
 			'services',
 			'cartExpirationDate',
 			'promocode_disable',
-			'missChristmasCount',
-			'notmissChristmasCount',
 			'serviceAvailable',
 			'cartItemEventEndDates'
 		);
@@ -490,8 +507,9 @@ class OrdersController extends BaseController {
 	 * - There is a jquery check for the credit card number
 	 * @return compact
 	 */
-	public function payment() {
+	public function payment() {		
 		$orderClass = $this->_classes['order'];
+		$creditCardClass = $this->_classes['creditCard'];
 
 		#Check Users are in the correct step
 		if (!Session::check('shipping')) {
@@ -511,81 +529,126 @@ class OrdersController extends BaseController {
 			'primary_image',
 			'expires',
 			'event_name',
-			'miss_christmas',
 			'event'
 		);
+		
 		#Check Expires
 		Cart::cleanExpiredEventItems();
 		#Prepare datas
 		$cartExpirationDate = 0;
-		$missChristmasCount = 0;
-		$notmissChristmasCount = 0;
 
 		$address = null;
 		$payment = null;
 		$checked = false;
 		$card = array();
-		$selected = array();
 		$addresses_ddwn = array();
-
 
 		#Get billing address from shipping one in session
 		$shipping = json_encode(Session::read('shipping'));
+
 		#Get Billing Address from Session
 		if (Session::read('billing')) {
 			$payment = Address::create(Session::read('billing'));
 		}
+
+		#Get CyberSourceProfiles recorded for this user
+		$userInfos = User::lookup($user['_id']);
+		$cyberSourceProfiles = array();
+		if($userInfos['cyberSourceProfiles']) {
+			$cyberSourceProfiles = $userInfos['cyberSourceProfiles'];
+		}
+		
 		#Check Datas Form
 		if (!empty($this->request->data)) {
 			$datas = $this->request->data;
+												
 			#Check If the User want to save the current address
-			if(!empty($datas['opt_save'])) {
+			if($datas['paymentInfosSave']) {
 				$save = true;
-				unset($datas['opt_save']);
 			}
-			if (!empty($datas['address_id'])) {
-				$address = Address::first(array(
-					'conditions' => array('_id' => new MongoId($datas['address_id'])
-				)));
-			}
-			#Get Credit Card Infos
-			if(!empty($datas['card_number'])) {
-				#Get Only the card informations
-				foreach($datas as $key => $value) {
-					$card_array = explode("_", $key);
-					if ($card_array[0] == 'card') {
-						$card[$card_array[1]] = $value;
+			//if the user selected a saved credit card, than prepopulate the relevant fields to go to the order review page
+
+			if ($datas['savedCreditCard'] && !$save) {
+				$creditCard_profileId = $datas['savedCreditCard'];
+
+				foreach($userInfos['cyberSourceProfiles'] as $cyberSourceProfile) {
+					if($cyberSourceProfile['profileID'] == $creditCard_profileId) {
+						Session::write('CyberSourceProfile', $creditCard_profileId);
+						$selectedCyberSourceProfile = $cyberSourceProfile->data();
+						Session::write('billing', $selectedCyberSourceProfile['billing']);
 					}
-				}
-			}
-			$cc_infos = CreditCard::create($card);
-			#Check credits cards informations
-			if($cc_infos->validates()) {
-				#Encrypt CC Infos with mcrypt
-				Session::write('cc_infos', $orderClass::creditCardEncrypt($cc_infos, (string)$user['_id'], true));
-				
-				
+				}				
+												
 				$cc_passed = true;
+				$billing_passed = true;
 				#Remove Credit Card Errors
 				Session::delete('cc_error');
-			}
-			#In case of normal submit (no ajax one with the checkbox)
-			if(empty($datas['opt_shipping_select']) && empty($datas['address_id'])) {
-				#Get Only address informations
-				foreach($datas as $key => $data) {
-					if (strlen(strstr($key,'card')) == 0 && strlen(strstr($key,'opt')) == 0) {
-						$address_post[$key] = $data;
+			} else { 	
+				if($save) {
+					$creditCard[type] = $datas['card_type'];
+					$creditCard[number] = $datas['card_number'];
+					$creditCard[year] = $datas['card_year'];
+					$creditCard[month] = $datas['card_month'];
+					$creditCard[code] = $datas['card_code'];
+	
+					$vars['billingAddr']['firstname'] = $datas[firstname];
+					$vars['billingAddr']['lastname'] = $datas[lastname];
+					$vars['billingAddr']['address'] = $datas[address];
+					$vars['billingAddr']['address2'] = $datas[address2];
+					$vars['billingAddr']['city'] = $datas[city];
+					$vars['billingAddr']['state'] = $datas[state];
+					$vars['billingAddr']['zip'] = $datas[zip];
+					$vars['user'] = $user;
+					$vars['creditCard'] = $creditCard;
+					$vars['savedByUser'] = true;
+				
+				 	$creditCardClass::add($vars);
+				}
+	
+				if (!empty($datas['address_id'])) {
+					$address = Address::first(array(
+						'conditions' => array('_id' => new MongoId($datas['address_id'])
+					)));
+				}
+				#Get Credit Card Infos
+				if(!empty($datas['card_number'])) {
+					#Get Only the card informations
+					foreach($datas as $key => $value) {
+						$card_array = explode("_", $key);
+						if ($card_array[0] == 'card') {
+							$card[$card_array[1]] = $value;
+						}
 					}
 				}
-				$address = Address::create($address_post);
-				#Check addresses informations
-				if ($address->validates()) {
-					Session::write('billing', $address->data());
-					$billing_passed = true;
-					if (!empty($save)) {
-						$address->user_id = $user['_id'];
-						$address->type = 'Billing';
-						$address->save();
+				$cc_infos = $creditCardClass::create($card);
+				#Check credits cards informations
+				if($cc_infos->validates()) {
+					#Encrypt CC Infos with mcrypt
+					Session::write('cc_infos', $creditCardClass::encrypt($cc_infos, (string)$user['_id'], true));
+					$cc_passed = true;
+					#Remove Credit Card Errors
+					Session::delete('cc_error');
+				}
+				
+				#In case of normal submit (no ajax one with the checkbox)
+				if(empty($datas['opt_shipping_select']) && empty($datas['address_id'])) {
+					#Get Only address informations
+					foreach($datas as $key => $data) {
+						if (strlen(strstr($key,'card')) == 0 && strlen(strstr($key,'opt')) == 0) {
+							$address_post[$key] = $data;
+						}
+					}
+					$address = Address::create($address_post);
+					#Check addresses informations
+					if ($address->validates()) {
+						Session::write('billing', $address->data());
+						$billing_passed = true;
+						if (!empty($save)) {
+							$address->user_id = $user['_id'];
+							$address->type = 'Billing';
+							unset($address->paymentInfosSave); //remove the payment info saved flag on the billing address storage.
+							$address->save();
+						}
 					}
 				}
 			}
@@ -595,12 +658,18 @@ class OrdersController extends BaseController {
 			}
 			$data_add = array();
 			if (!empty($address)) {
-				$data_add = $address->data();
+				if(is_array($address)) {
+					$data_add = $addres;
+				} else {
+					$data_add = $address->data();
+				}
 			}
 			$payment = Address::create(array_merge($data_add,$card));
 			#Init datas
 			$payment->shipping_select = '0';
-		}
+		} //END OF POST / REQUEST DATA
+		
+		
 		#Get all addresses of the current user
 		$addresses = Address::all(array(
 			'conditions' => array('user_id' => (string) $user['_id'], 'type' => 'Billing')
@@ -612,10 +681,10 @@ class OrdersController extends BaseController {
 				if ((($idx == 0 || $value['default'] == '1') && empty($datas['address_id']))) {
 					$address = $value;
 				}
-				#Get selected ddwn address
-				if((string)$value['_id'] == $address['_id']) {
-					$selected = (string) $value['_id'];
+				foreach($value as $key => $addressInfo) {
+					$billingAddresses[(string)$value['_id']][$key] = $addressInfo;
 				}
+				
 				$addresses_ddwn[(string)$value['_id']] = $value['firstname'] . ' ' . $value['lastname'] . ' ' . $value['address'];
 				$idx++;
 			}
@@ -626,12 +695,6 @@ class OrdersController extends BaseController {
 		));
 		$shipDate = Cart::shipDate($cart);
 		foreach($cart as $item){
-			if($item['miss_christmas']){
-				$missChristmasCount++;
-			}
-			else{
-				$notmissChristmasCount++;
-			}
 
 			if($cartExpirationDate < $item['expires']->sec) {
 				$cartExpirationDate = $item['expires']->sec;
@@ -639,8 +702,9 @@ class OrdersController extends BaseController {
 		}
 		$cartEmpty = ($cart->data()) ? false : true;
 		if (Session::check('cc_error')){
+			$creditCardError = true;
 			if (!isset($payment) || (isset($payment) && !is_object($payment))){
-				$card = $orderClass::creditCardDecrypt((string)$user['_id']);
+				$card = $creditCardClass::decrypt((string)$user['_id']);
 				$data_add = Session::read('billing');
 				$payment = Address::create(array_merge($data_add,$card));
 			}
@@ -658,19 +722,36 @@ class OrdersController extends BaseController {
 			Session::delete('cc_error');
 			Session::delete('billing');
 		}
-		return compact('address',
+		if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia'){
+		 	$this->_render['layout'] = 'mobile_main';
+		 	$this->_render['template'] = 'mobile_payment';
+		}
+		
+		
+		$saved_by_user = 0;
+		foreach($cyberSourceProfiles as $cyberSourceProfile) {
+			if ($cyberSourceProfile[savedByUser]) {
+				$saved_by_user++;
+			}
+		}
+		if ($saved_by_user == 0) {
+			$cyberSourceProfiles = array();			
+		}
+		
+		return compact(
+			'billingAddresses',
+			'address',
 			'addresses_ddwn',
-			'selected',
 			'cartEmpty',
 			'payment',
 			'shipping',
 			'shipDate',
 			'cartExpirationDate',
-			'missChristmasCount',
-			'notmissChristmasCount'
+			'cyberSourceProfiles',
+			'creditCardError'
 		);
 	}
-
+	
 	/**
 	 * Group all the items in an order by their corresponding event.
 	 *

@@ -49,7 +49,8 @@ class UsersController extends \admin\controllers\BaseController {
 			'Date',
 			'Reason',
 			'Description',
-			'Amount'),
+			'Amount',
+			'Applied By'),
 		'promo' => array(
 			'Date',
 			'Order Id',
@@ -86,20 +87,26 @@ class UsersController extends \admin\controllers\BaseController {
 							array('user_id' => $id),
 							array('customer_id' => $id)
 					))));
+				foreach($credits as $credit) {
+					if ($credit->admin_id) {
+						$appliedby = User::lookup($credit->admin_id);
+						$credit->admin_user = $appliedby->email;
+					}
+				}
 				$orders = Order::find('all', array('conditions' => array('user_id' => $id)));
 				$userData = $user->data();
 				if (array_key_exists('created_orig', $userData)) {
-				    $userData['register date'] = date("M d, Y", $userData['created_orig']['sec']);
+				    $userData['register date'] = date("M d, Y", $userData['created_orig']);
 				}
 				if (array_key_exists('created_date', $userData)) {
 				    if(is_array($userData['created_date'])){
 				        $userData['register date'] = date("M d, Y",$userData["created_date"]['sec']);
 				    } else {
-				        $userData['register date'] = date("M d, Y",strtotime($userData["created_date"]));
+				        $userData['register date'] = date("M d, Y",$userData["created_date"]);
 				    }
 				}
 				if (array_key_exists('created_on', $userData)) {
-				    $userData['register date'] = date("M d, Y", $userData['created_on']['sec']);
+				    $userData['register date'] = date("M d, Y", $userData['created_on']);
 				}
 				if (array_key_exists('deactivated_date', $userData)) {
 				    if(is_array($userData['deactivated_date'])){
@@ -138,9 +145,11 @@ class UsersController extends \admin\controllers\BaseController {
 		$message = false;
 		if ($this->request->data) {
 		    $this->request->data['email'] = strtolower($this->request->data['email']);
+
 			if (Auth::check("userLogin", $this->request)) {
 				return $this->redirect('/');
 			}
+
 			$message = 'Login Failed - Please Try Again';
 		}
 		return compact('message');
@@ -216,7 +225,7 @@ class UsersController extends \admin\controllers\BaseController {
 	    if ($user) {
 	        if ($type == "deactivate") {
 	            $date = new MongoDate(strtotime("now"));
-	            if ($id > 10) {
+	            if (strlen($id) > 10) {
 	                $id = new MongoId($id);
 	            }
                 $collection->update(
@@ -275,14 +284,12 @@ class UsersController extends \admin\controllers\BaseController {
 
 	public function token() {
 		$session = Session::read('userLogin');
-
 		do { /* Ensure we don't have a dot in the token. */
 			$token = String::random(6, array('encode' => String::ENCODE_BASE_64));
 		} while (strpos($token, '.') !== false);
 
 		$user = User::first(array('conditions' => array('_id' => $session['_id'])));
 		$user->save(compact('token'));
-
 		$session['token'] = $token;
 		Session::write('userLogin', $session);
 

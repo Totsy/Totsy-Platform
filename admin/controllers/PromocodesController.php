@@ -161,51 +161,73 @@ class PromocodesController extends \admin\controllers\BaseController {
 	* POST
 	**/
 	public function generator(){
-		$promoCode = Promocode::create($this->request->data);
-		if ($this->request->data) {
-			Validator::add('greaterThan2', function($value){
-					return ($value > 2)? true:false;
-			});
-			$rules = array(
-				'generate_amount' => array(
-					array("notEmpty", "message" => "Please enter an amount"),
-					array("numeric", "message" => "Please enter a numeric value eg. 1234"),
-					array("greaterThan2", "message" =>"Please enter a value larger than 2")
-				));
-			$validate = Validator::check($this->request->data, $rules);
-			$promoCode->errors( $promoCode->errors() + $validate);
-			if (empty($validate)){
-				$admins = User::all( array(
-					'conditions' => array(
-					'admin' => true
-				)));
-				/**
-				* Creating Parent Code
-				**/
-				$parent = Promocode::create();
-				$parent_id = $parent->createParent($this->request->data);
-				$loop_number = (int)$this->request->data['generate_amount'];
-				for($i=0; $i < $loop_number ; ++$i){
-					$promoCode = Promocode::create();
-					$col = Promocode::collection();
-					do{
-						$code = $this->request->data['code'];
-						$rand = static::randomString(7, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-						$code .= $rand;
-						$conditions = array('code' => $code, 'special' => true);
-					}while($col->count($conditions) > 0);
-					$data = $this->request->data;
-					$data['code'] = $code;
-					$promoCode->createChild($data, $parent_id);
-					$codes[] = $promoCode->code;
-				}//end of forloop
-				if (!empty($codes)){
-					$this->render(array('layout' => false, 'data' => compact('codes')));
-				}
-			}
-		}
-		return compact('promoCode');
-	}
+                $promoCode = Promocode::create($this->request->data);
+                $codes = null;
+                $parent_id = null;
+                if ($this->request->data) {
+                        Validator::add('greaterThan2', function($value){
+                                        return ($value > 2)? true:false;
+                        });
+                        $rules = array(
+                                'generate_amount' => array(
+                                        array("notEmpty", "message" => "Please enter an amount"),
+                                        array("numeric", "message" => "Please enter a numeric value eg. 1234"),
+                                        array("greaterThan2", "message" =>"Please enter a value larger than 2")
+                                ));
+                        $validate = Validator::check($this->request->data, $rules);
+                        $promoCode->errors( $promoCode->errors() + $validate);
+                        if (empty($validate)){
+                                /**
+                                * Creating Parent Code
+                                **/
+                                $parent = Promocode::create();
+                                $parent_id = $parent->createParent($this->request->data);
+                                $codes = $parent->massGeneratePromo($this->request->data);
+
+                        }
+                        return $this->redirect("/promocodes/edit/$parent_id");
+                }
+                return compact('promoCode', 'codes','parent_id');
+        }
+
+        public function massPromocodes($parent_id = null) {
+            $codes = array();
+
+            if ($parent_id) {
+                $codes = Promocode::find('all', array(
+                    'conditions' => array('parent_id' => new MongoId($parent_id)),
+                    'fields' => array('code' => true, '_id' => false)
+                ));
+                $codes = $codes->data();
+            }
+            return $this->render(array('csv' => $codes ));
+        }
+
+        public function findPromo() {
+            $code = null;
+            if ($this->request->data) {
+                $data = $this->request->data;
+
+                Promocode::changePromocodeStatus($data);
+
+                $this->_render['layout'] = false;
+                $this->_render['head'] = false;
+
+                if ($data['code_search']) {
+                $code = Promocode::find('first', array('conditions' => array(
+                    'code' => new MongoRegex("/" . $data['code_search'] . "/i"),
+                    'parent_id' => new MongoId($data['parent_id'])),
+                'fields' => array(
+                    '_id' => true,
+                    'code' => true,
+                    'parent_id' => true,
+                    'enabled' => true
+                )));
+                }
+            }
+            return compact('code');
+        }
+
 }
 
 ?>

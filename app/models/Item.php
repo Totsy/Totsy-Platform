@@ -12,6 +12,51 @@ use app\models\Base;
 class Item extends Base {
 
 	protected $_meta = array('source' => 'items');
+	
+	public static function isTangible($id) {
+		$item = Item::find('first', array(
+			'conditions' => array(
+				'_id' => $id),
+			'fields' => array(
+				'event'					
+		)));
+		$event = Event::find('first', array(
+				'conditions' => array(
+					'_id' => $item['event'][0]),
+				'fields' => array(
+					'tangible'					
+			)));
+		return $event['tangible'];	
+	}
+
+	public static function filter($events_id, $departments = null, $categories = null, $ages = null, $limit = "") {
+		$itemsCollection = Item::collection();
+		if(!empty($departments)){
+			$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'departments' => array('$in' => array($departments))), array('event' => 1));
+		}
+		elseif(!empty($categories)){
+			if($limit){
+				$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'categories' => array('$in' => array($categories))), array('event' => 1))->limit($limit);
+			}
+			else{
+				$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'categories' => array('$in' => array($categories))), array('event' => 1));
+			}
+		}
+		elseif(!empty($ages)){
+			if($limit){
+				$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'ages' => array('$in' => array($ages))), array('event' => 1));
+			}
+			else{
+				$items = $itemsCollection->find(array('event' => array('$in' => $events_id), 'ages' => array('$in' => array($ages))), array('event' => 1));
+			}
+		}
+
+		return $items;
+	}
+
+
+
+
 
 	public static function related($item) {
 

@@ -11,6 +11,25 @@
 		td{font-family:Arial,sans-serif;color:#888888;font-size:14px;line-height:18px}
 		img{border:none}
 	</style>
+
+	<div id="order_notice" style="width:100%;background-color:#DBD7D9;">
+		<h4>Order Notices:</h4>
+		<ul>
+			<?php 
+				if ($processed_count > 0) {
+					echo "<li>Order has been processed and sent to DotCom</li>";
+				} else {
+					if ($order->auth_error) {
+						echo "<li><strong>$order->auth_error</strong></li>";
+						echo "<li><strong>Order has not been processed and sent to DotCom</strong></li>";
+					} else {
+						echo "No Notices";
+					}
+				}
+			?>
+		</ul>
+	</div>
+	<hr/>
 		<table cellspacing="0" cellpadding="0" border="0" width="695">
 			<tr>
 				<td colspan="4">
@@ -22,6 +41,13 @@
 									<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
 										The order has been canceled
 									</p><br />
+									<div style="text-align:center;"><button id="uncancel_button" style="font-weight:bold;font-size:14px;text-align: center;"> UnCancel Order</button></div>
+									<div id="uncancel_form" style="display:none">
+										<?php echo $this->form->create(null ,array('id'=>'uncancelForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
+										<?php echo $this->form->hidden('uncancel_action', array('class' => 'inputbox', 'id' => 'uncancel_action', 'value' => 1)); ?>
+										<?php echo $this->form->end();?>
+									</div>
 								<?php else: ?>
 
 									<div id='confirm_cancel_div' style="display:none">
@@ -37,19 +63,29 @@
 										</div><br />
 									</div>
 									<div id="normal" style="display:block">
-										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
-										The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
+										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:black;">
+											<b>Order ID</b> : <?php echo $order['order_id'] ?><br />
+											<b>AuthKey :</b> <?php echo $order['authKey'] ?><br />
+											<b>Order Status :</b> <?php echo $orderStatus ?><br />
 										</p>
-									<?php if($edit_mode): ?>
-									<p style="text-align:center;">
-<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>
-									<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>
-									<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
-									<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
-									<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
-									<button id="generate_order_file" style="font-weight:bold;font-size:14px;">Generate Order File</button>
-									</p></div>
-								<?php endif ?>
+										<p style="border:1px solid #ddd; background:#f7f7f7; padding:10px; font-size:14px; text-align:center; color:red;">
+											The order is expected to ship on <?php echo date('M d, Y', $shipDate)?>
+										</p>
+										<p style="text-align:center;">
+										<?php if(!$hasDigitalItems): ?>
+											<button id="cancel_button" style="font-weight:bold;font-size:14px;"> Cancel Order</button>
+										<?php endif ?>
+											<!--<button id="full_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Full Order TAX Return</button>-->
+											<!--<button id="part_order_tax_return_button" style="font-weight:bold;font-size:14px;"> Part Order TAX Return</button>-->
+										<?php if(empty($order['payment_date']) && empty($order['cancel']) && ($order['authTotal'] == $order['total'])) : ?>
+											<button id="capture_button" style="font-weight:bold;font-size:14px;">Capture Full Order Amount</button>
+										<?php endif; ?>
+											<button id="update_shipping" style="font-weight:bold;font-size:14px;">Update Shipping</button>
+											<button id="update_payment" style="font-weight:bold;font-size:14px;">Update Payment Information</button>
+											<button id="refresh_total" style="font-weight:bold;font-size:14px;">Refresh & Update Total</button>
+										</p>
+									</div>
+							
 									<?php /**/ ?>
 								  	<div id="full_order_tax_return_form" style="display:none">
 										<?php echo $this->form->create(null ,array( 'action'=>'taxreturn', 'id'=>'fullOrderTaxReturnForm','enctype' => "multipart/form-data")); ?>
@@ -69,6 +105,12 @@
 										<?php echo $this->form->hidden('id', array('class' => 'inputbox', 'id' => 'id', 'value' => $order["_id"])); ?>
 										<?php echo $this->form->hidden('cancel_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
 										<?php echo $this->form->hidden('comment', array('class' => 'textarea', 'id' => 'comment')); ?>
+										<?php echo $this->form->end();?>
+									</div>
+	
+									<div id="capture_form" style="display:none">
+										<?php echo $this->form->create(null ,array('id'=>'captureForm','enctype' => "multipart/form-data")); ?>
+										<?php echo $this->form->hidden('capture_action', array('class' => 'inputbox', 'id' => 'cancel_action', 'value' => 1)); ?>
 										<?php echo $this->form->end();?>
 									</div>
 									<div id="order_file" style="display:none">
@@ -330,7 +372,7 @@
 																	<?php echo $modification["author"]?>
 																</td>
 																<td style="padding:5px" title="date">
-																	<?php echo date('Y-M-d h:i:s', $modification["date"]["sec"])?>
+																	<?php echo date('Y-M-d h:i:s', $modification["date"])?>
 																</td>
 																<?php if(!empty($modification["comment"])) :?>
 																<td style="padding:5px" title="comment">
@@ -365,9 +407,7 @@
 												<td style="padding:5px; width:100px;"><strong>Price</strong></td>
 												<td style="padding:5px; width: 50px;"><strong>Qty</strong></td>
 												<td style="padding:5px; width:80px;"><strong>Subtotal</strong></td>
-												<?php if($edit_mode): ?>
 													<td style="padding:5px; width:30px;"><strong></strong></td>
-												<?php endif ?>
 											</tr>
 											<?php echo $this->form->create(null ,array('id'=>'itemsForm','enctype' => "multipart/form-data")); ?>
 											<?php $items = $order->items; ?>
@@ -422,7 +462,6 @@
 													$<?php echo number_format($item['sale_retail'],2); ?>
 												</td>
 												<td style="padding:5px;" title="quantity">
-												<?php if($edit_mode): ?>
 												<?php  
 													if(!empty($item['initial_quantity'])) {
 														$limit = $item['initial_quantity'];
@@ -437,11 +476,13 @@
 													} while ($i <= $limit)
 													?>
 													<?php echo $this->form->hidden("items[".$key."][initial_quantity]", array('class' => 'inputbox', 'id' => "initial_quantity", 'value' => $limit )); ?>
-													<?php echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
+													 <?php if(!empty($item["digital"])) { 
+															 echo $this->form->select('items_' .$key, $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'value' => $item['quantity'], 'disabled' => 'disabled'));
+											 				echo $this->form->hidden("items[".$key."][quantity]", array('class' => 'inputbox', 'id' => 'dd_qty', 'value' => $item['quantity'] )); 
+													} else {
+															 echo $this->form->select('items['.$key.'][quantity]', $quantities, array('style' => 'float:left; width:50px; margin: 0px 20px 0px 0px;', 'id' => 'dd_qty', 'value' => $item['quantity'], 'onchange' => "change_quantity()"));
+													}
 													?>
-													<?php else :?>
-														<?php echo $item['quantity'] ?>
-													<?php endif ?>
 													<?php if ($return_q>0){?>
 													<?php echo $return_q; ?> return(s)
 													<?php }?>
@@ -449,7 +490,7 @@
 												<td title="subtotal" style="padding:5px; color:#009900;">
 													$<?php echo number_format(($item['quantity'] * $item['sale_retail']),2)?>
 												</td>
-												<?php if($edit_mode): ?>
+												<?php if(empty($item["digital"])){ ?>
 												<td>
 													<div style="text-align:center;">
 														<?php if($item["cancel"] == true){ ?>
@@ -461,7 +502,7 @@
 														<?php }//endelse?>
 													</div>
 												</td>
-												<?php endif ?>
+												<?php }//endelse?>
 											<?php endforeach ?>
 											</tr>
 
@@ -493,6 +534,9 @@
 <?php echo $this->form->hidden("original_credit_used", array('class' => 'inputbox', 'id' => "original_credit_used", 'value' => $order->original_credit_used)); ?>
 <?php echo $this->form->hidden("user_total_credits", array('class' => 'inputbox', 'id' => "user_total_credits", 'value' => $order->user_total_credits )); ?>
 <?php echo $this->form->hidden("promocode_disable", array('class' => 'inputbox', 'id' => "promocode_disable", 'value' => $order->promocode_disable )); ?>
+<?php echo $this->form->hidden("isOnlyDigital", array('class' => 'inputbox', 'id' => "isOnlyDigital", 'value' => $order->isOnlyDigital )); ?>
+<?php echo $this->form->hidden("payment_date", array('class' => 'inputbox', 'id' => "payment_date", 'value' => $order->payment_date )); ?>
+<?php echo $this->form->hidden("auth_confirmation", array('class' => 'inputbox', 'id' => "auth_confirmation", 'value' => $order->auth_confirmation )); ?>
 									<!--- END HIDDEN DATAS - ITEMS -->
 									<?php if(empty($order->cancel)): ?>
 									<table style="width:250px; float: right;">
@@ -567,6 +611,9 @@
 	                                                                                                <?php echo $order->billing->address; ?> <?php echo $order->billing->address_2; ?><br />
 	                                                                                                <?php echo $order->billing->city; ?>, <?php echo $order->billing->state; ?>
 	                                                                                                <?php echo $order->billing->zip; ?>
+																									<?php if (!empty($order->billing->telephone)): ?>
+		                                                                                                <br><?php echo $order->billing->telephone; ?>
+																									<?php endif ?>
 													<hr /></div>
 												<div style=" width:320px; display:block;"><strong>Payment Info:</strong> <br /><?php echo strtoupper($order->card_type)?> ending with <?php echo $order->card_number?></div>
 											</td>
@@ -589,7 +636,6 @@
 			<td style="padding:0px 0px 5px 0px;"><hr></td>
 		</tr>
 	</table>
-	<?php if($edit_mode): ?>
 	<?php if($itemscanceled == false): ?>
 	<?php echo $this->form->hidden("save", array('class' => 'inputbox', 'id' => "save")); ?>
 	Commment :
@@ -600,7 +646,6 @@
 	</p>
 	<?php endif ?>
 	<?php echo $this->form->end();?>
-	<?php endif ?>
 <?php else: ?>
 	<strong>Sorry, we cannot locate the order that you are looking for.</strong>
 <?php endif ?>
@@ -618,12 +663,6 @@ $(document).ready(function(){
 			$("#new_shipping").show("slow");
 		} else {
 			$("#new_shipping").slideUp();
-		}
-	});
-	$("#generate_order_file").click(function () {
-		if (confirm('Are you sure to send this order as exception to Dotcom ?')) {
-			$('input[name="process-as-an-exception"]').val("true");
-			$('#newOrderFileForm').submit();
 		}
 	});
 	$("#update_payment").click(function () {
@@ -653,6 +692,15 @@ $(document).ready(function(){
 		if ($("#confirm_cancel_div").is(":hidden")) {
 			$("#confirm_cancel_div").show("slow");
 			$("#normal").slideUp();
+		}
+	});
+	$("#uncancel_button").click(function () {
+		$('#uncancelForm').submit();
+	});
+	$("#capture_button").click(function () {
+		if (confirm('Are you sure to capture this order ?')) {
+			$('#capture_action').val(true);
+			$('#captureForm').submit();
 		}
 	});
 	$('#full_order_tax_return_button').click(function(){
@@ -697,6 +745,16 @@ function update_order() {
 		}
 	}
 };
+$(document).ready(function(){
+	$("#refresh_total").click(function () {
+		if (confirm('Are you sure to refresh and update the order total ?')) {
+			$('#save').val("false");
+  			$('#itemsForm').submit();
+  			$('#save').val("true");
+  			$('#itemsForm').submit();
+		}
+	});
+});
 function open_comment(val) {
 	// Create a regular expression to search all +s in the string
 	var lsRegExp = /\+/g;

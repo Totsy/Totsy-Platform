@@ -3,13 +3,16 @@
 namespace admin\models;
 
 use MongoDate;
+use MongoId;
+use admin\controllers\BaseController;
+use lithium\analysis\Logger;
 
 class Promocode extends Base {
 
 	protected $_meta = array('source' => 'promocodes');
 
 	/**
-	 * @todo Document Me
+	 * Transform boolean form values to actual booleans
 	 */
 	public static function setToBool($var) {
 		if ( $var == '1' || $var == 'on' ){
@@ -28,7 +31,6 @@ class Promocode extends Base {
 	* @return boolean true if save was success, false if otherwise
 	**/
 	public function createCode($entity, $code_data = null, array $extra_data = array(), array $options = array()){
-		$self = static::_object();
 		$entity->description = $code_data['description'];
 		$entity->code = $code_data['code'];
 		$entity->type = $code_data['type'];
@@ -58,6 +60,7 @@ class Promocode extends Base {
 				$entity->{$key} = $value;
 			}
 		}
+
 		return $entity->save();
 	}
 
@@ -65,6 +68,7 @@ class Promocode extends Base {
 	* Create a parent promocode for unique generated promocodes
 	* @param object $entity The record or document object to be saved in the database
 	* @param array $code_data data to be saved into the DB
+	* @see admin\models\Promocode::createCode()
 	* @return object parent id
 	**/
 	public function createParent($entity,$code_data, array $options = array()){
@@ -81,7 +85,7 @@ class Promocode extends Base {
 	**/
 	public function createChild($entity, $code_data, $parent_id, array $options = array()) {
 		return $entity->createCode($code_data, array(
-			'parent_id' => $parent_id,
+			'parent_id' => new MongoId($parent_id),
 			'special' => true
 			),
 			$options
@@ -108,7 +112,12 @@ class Promocode extends Base {
 	}
 
 	/**
-	 * @todo Document Me
+	* Update parent promocode that was created using generate Promocode
+	* @param object $entity The record or document object to be saved in the database
+    * @param array $code_data - data to be saved into the DB
+    * @see admin\models\Promocode::updateCode()
+    * @see admin\models\Promocode::updateChildren()
+    * @return boolean true if save was success, false if otherwise
 	 */
 	public function updateParent($entity, $code_data){
 		$entity->updateCode($code_data);
@@ -138,6 +147,61 @@ class Promocode extends Base {
 			}
 			$child->createCode($code_data);
 		}
+	}
+	/**
+	 *
+	**/
+	public function massGeneratePromo($entity, $data = null){
+	    $codes = array();
+	    $parent_id = (string)$entity->_id;
+        Logger::debug("Going to generate promocodes", array('name' => 'default'));
+	    if ($data) {
+	         gc_enable();
+	        $loop_size = (int)$data['generate_amount'];
+	        $i = 0;
+            while( $i < $loop_size){
+                $promoCode = static::create();
+                $col = static::collection();
+                do{
+                    $code = $entity->code;
+                    $rand = BaseController::randomString(7, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                    $code .= $rand;
+                    $conditions = array('code' => $code, 'special' => true);
+                    $amount = $col->count($conditions);
+                }while($amount > 0);
+
+                $data = $data;
+                $data['code'] = $code;
+                $promoCode->createChild($data, $parent_id);
+                $codes[] = $promoCode->code;
+               ++$i;
+            }//end of loop
+            gc_disable();
+        }
+        return $codes;
+	}
+
+	public static function changePromocodeStatus($data) {
+	    $success = false;
+        if ($data && array_key_exists('change_status', $data)) {
+            $conditions = array();
+
+            switch($data["change_status"]) {
+                case 'disable':
+                    $conditions = array('_id' => new MongoId($data['code_id']));
+                    $data = array('$set' => array('enabled' => false));
+                    break;
+                case 'enable':
+                    $conditions = array('_id' => new MongoId($data['code_id']));
+                    $data = array('$set' => array('enabled' => true));
+                    break;
+            }
+            if(!empty($conditions)) {
+                $success = Promocode::update($data,$conditions);
+            }
+
+        }
+        return $success;
 	}
 }
 

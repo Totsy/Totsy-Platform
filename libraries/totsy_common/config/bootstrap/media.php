@@ -56,4 +56,15 @@ Dispatcher::applyFilter('_callable', function($self, $params, $chain) {
 	return $chain->next($self, $params, $chain);
 });
 
+Media::type('xml', 'text/xml', array(
+    'layout' => '{:library}/views/layouts/default.xml.php',
+    'view' => 'lithium\template\View',
+    'template' => array(
+            '{:library}/views/{:controller}/{:template}.xml.php'
+        ),
+    'conditions' => array('type' => true),
+    'encode' => function($data) {
+       return $data;
+    }
+));
 ?>

@@ -17,6 +17,7 @@ use li3_flash_message\extensions\storage\FlashMessage;
 
 class ItemsController extends BaseController {
 
+	
 	/**
 	 * Main display of item data
 	 */
@@ -45,7 +46,10 @@ class ItemsController extends BaseController {
 	public function edit($id = null) {
 		$item = Item::find('first', array('conditions' => array('_id' => $id)));
 		$event = Event::find('first', array('conditions' => array('_id' => $item->event[0])));
-
+		
+		$categories = $this->_mapCategories['category'];
+		$ages = $this->_mapCategories['age'];
+		
 		if ($item) {
 			$details = json_encode($item->details->data());
 		} else {
@@ -53,9 +57,11 @@ class ItemsController extends BaseController {
 		}
 		#T Get all possibles value for the multiple filters select
 		$sel_filters = array();
-		$all_filters = array();
+		$all_filters = array(''=>'None');
 		$result =  Item::getDepartments();
 		foreach ($result['values'] as $value) {
+			if(empty($value)){ continue; }
+			
 			$all_filters[$value] = $value;
 			if (array_key_exists('Momsdads',$all_filters) && !empty($all_filters['Momsdads'])) {
 				$all_filters['Momsdads'] = 'Moms & Dads';
@@ -69,7 +75,29 @@ class ItemsController extends BaseController {
 				$sel_filters[$value] = $value;
 			}
 		}
+		
+		if (empty($sel_filters)){
+			$sel_filters['None'] = '';
+		}
 		#END T
+		
+		//Filter ages
+		if(!empty($item->ages)) {
+			$values = $item->ages->data();
+			
+			foreach ($values as $value) {
+				$age_filters[$value] = $key = array_search($value, $this->_mapCategories['age']); 
+			}
+		}
+		
+		//Filter categories
+		if(!empty($item->categories)) {
+			$values = $item->categories->data();
+			foreach ($values as $value) {
+				$category_filters[$value] = $key = array_search($value, $this->_mapCategories['category']); 
+			}
+		}
+		
 		if ($this->request->data) {
 			$alternate_images = array();
 			foreach ($this->request->data as $key => $value) {
@@ -95,6 +123,28 @@ class ItemsController extends BaseController {
 				$data["departments"] = $departments;
 			}
 			
+			//parse ages
+			if(!empty($data["ages"])) {
+				$ages = array();
+				foreach($data["ages"] as $value) {
+					if(!empty($value)) {
+						$ages[] = $this->_mapCategories['age'][$value];
+					}
+				}
+				$data["ages"] = $ages;
+			}
+			
+			//parse categories
+			if(!empty($data["categories"])) {
+				$categories = array();
+				foreach($data["categories"] as $value) {
+					if(!empty($value)) {
+						$categories[] = $this->_mapCategories['category'][$value];
+					}
+				}
+				$data["categories"] = $categories;
+			}
+			
 			//check for new size
 			if ($this->request->data['item_new_size']) {
 
@@ -102,7 +152,7 @@ class ItemsController extends BaseController {
 				$newsize = $this->request->data['item_new_size'];
 				
 				//make a sku
-				$newsku = Item::sku($item->vendor, $item->vendor_style, $newsize, $item->color, $hash = 'md5');
+				$newsku = Item::getUniqueSku($item->vendor, $item->vendor_style, $newsize, $item->color);
 			
 				//update skus
 				$data['skus'] = $item->skus;
@@ -136,7 +186,8 @@ class ItemsController extends BaseController {
 					));
 			}
 		}
-		return compact('item', 'details', 'event', 'all_filters', 'sel_filters');
+		return compact('item', 'details', 'event', 'all_filters', 'sel_filters', 
+					'categories', 'ages', 'category_filters', 'age_filters');
 	}
 
 	public function preview() {
@@ -194,12 +245,12 @@ class ItemsController extends BaseController {
 			$event = Event::find('first', array('conditions' => array('_id' => $id)));
 			if ($event->views <= 0){
 				if ((!empty($event->items)) && Item::remove(array('event' => $id)) && Event::removeItems($id)) {
-					FlashMessage::write('Items Removed', array('class' => 'pass'));
+					//FlashMessage::write('Items Removed', array('class' => 'pass'));
 				} else {
-					FlashMessage::write('Remove Failed', array('class' => 'warning'));
+				//	FlashMessage::write('Remove Failed', array('class' => 'warning'));
 				}
 			} else {
-				FlashMessage::write('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
+			//	FlashMessage::write('Items Cannot Be Removed the Event is Live', array('class' => 'fail'));
 			}
 			$this->redirect(array('Events::edit','args' => array($id)));
 		}
@@ -296,14 +347,16 @@ class ItemsController extends BaseController {
 					$search_sku = $search;
 					$search_item_id = $item_id;
 				}
+				
+				foreach ($items as $item) {
+					$orders = Order::find('all',array('conditions'=> array('items.item_id' => (string) $item['_id'])));
+					$ordersForItem[(string)$item['_id']] = $orders;
+				}
 
-				return compact("items","search_item_id","search_sku");
+				return compact("items", "search_item_id", "search_sku", "ordersForItem");
 			}
 
 	}
-
-
-
 }
 
 ?>

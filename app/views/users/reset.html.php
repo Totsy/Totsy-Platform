@@ -1,3 +1,8 @@
+<?php 
+use lithium\storage\Session; 
+use app\controllers\UsersController;
+?>
+
 <style>
 h2 {
     color: #999999;
@@ -72,7 +77,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <div class="round gradient">
 <!-- left side -->
 <div class="grid_6">
-<?php echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false)); ?>
+
+<?php if (Session::read("layout", array("name"=>"default"))!=="mamapedia") { 
+	echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false));
+	} else {
+	echo $this->html->link($this->html->image('mamapedia/logo.png', array('width'=>'479')), '', array('escape'=> false));} 
+?>
+
+
 <div style="width:350px; margin-top:28px;">
 
 <?php 
@@ -113,7 +125,10 @@ else{
 
 </div>
 <div class="clear"></div>
+
+
 <?php echo $this->html->image('featured_on_long.png', array('style' => 'margin-top:20px; margin-left:10px; border-top:1px solid #f1f1f1; margin-bottom: -14px;')); ?>
+
 <div class="clear"></div>
 </div>
 </div>

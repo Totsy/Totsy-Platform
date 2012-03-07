@@ -1,8 +1,6 @@
-<?php $data = $this->_data;?>
-<?php if(!array_key_exists('codes', $data)): ?>
-    <?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
-    <?php echo $this->html->style('jquery_ui_blitzer.css')?>
-    <?php echo $this->html->style('timepicker'); ?>
+<?php echo $this->html->script('jquery-ui-timepicker.min.js');?>
+<?php echo $this->html->style('jquery_ui_blitzer.css')?>
+<?php echo $this->html->style('timepicker'); ?>
 
     <script type="text/javascript" charset="utf-8">
         $(function() {
@@ -50,9 +48,8 @@
             </table>
         </div>
     <div class="grid_7 box">
-
         <h2>Generate Promocodes</h2>
-        <?php echo $this->form->create($promoCode);?>
+        <?php echo $this->form->create($promoCode, array('id' => 'generateForm'));?>
                     <?php echo $this->form->label('Generate Amount:'); ?>
                     <?php echo $this->form->text('generate_amount');?> (must be more than 2)<br/>
                     <?php echo $this->form->error('generate_amount');?>
@@ -82,24 +79,16 @@
                   <?php echo $this->form->label('Enter end date:'); ?>
                   <?php echo $this->form->text( 'end_date', array('id' => 'end_date') ); ?><br>
                   <br>
-                  <?php echo $this->form->submit('Generate'); ?><br><br>
+                  <?php echo $this->form->button('Generate', array('id' => 'submit_generate')); ?><br><br>
         <?php echo $this->form->end();?>
     </div>
-    <script type="text/javascript" >
-$('#Type').change(function() {
-	if($('#Type').val() == 'free_shipping') {
-		$("#discount").hide("slow");
-	} else {
-		$("#discount").show("slow");
-	};
-});
+
+<script type="text/javascript" >
+    $('#Type').change(function() {
+        if($('#Type').val() == 'free_shipping') {
+            $("#discount").hide("slow");
+        } else {
+            $("#discount").show("slow");
+        };
+    });
 </script>
-<?php else:
-    foreach($data['codes'] as $code){
-			print_r($code);
-		    echo( "\n" );
-	}
-	header("Content-type: application/vnd.ms-excel");
-	header("Content-disposition: attachment; filename=\"generatedcodes.csv\"");
-endif;
-?>

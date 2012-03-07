@@ -9,7 +9,7 @@ use MongoDate;
 use MongoCode;
 use FusionCharts;
 
-class DashboardController extends \lithium\action\Controller {
+class DashboardController extends BaseController {
 
 	/**
 	 * Generates the dashboard report of Totsy's revenue and registration

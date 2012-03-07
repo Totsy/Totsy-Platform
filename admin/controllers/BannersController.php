@@ -28,7 +28,7 @@ class BannersController extends \lithium\action\Controller {
 		if(!empty($this->request->data)){
 			$check = $this->check();
 			$banner = Banner::Create($this->request->data);
-			$banner->validates();
+			//$banner->validates();
 			if ($check) {
 			    if(array_key_exists('enabled', $this->request->data)){
                     $enable = (bool)$this->request->data['enabled'];
@@ -65,14 +65,16 @@ class BannersController extends \lithium\action\Controller {
 					'author' => $author,
 					'created_date' =>  new MongoDate(strtotime('now')),
 					'enabled' => $enabled
-				);
+					);
 				//Create and save the new banner
-				$banner = Banner::Create();
-				if ($banner->save($bannerDatas)) {
+				$banner = Banner::collection();
+				var_dump($success = $banner->save($bannerDatas));
+				if ($success) {
 					//$this->redirect(array('Banner::edit', 'args' => array($event->_id)));
 					FlashMessage::write("Your banner has been saved.", array('class' => 'pass'));
 					$this->redirect('Banners::view');
 				}
+				$banner->end_date = $this->request->data['end_date'];
 			} else {
 				FlashMessage::write("You must fill all the requested informations", array('class' => 'warning'));
 			}
@@ -179,6 +181,7 @@ class BannersController extends \lithium\action\Controller {
                 $images[$key]["newPage"] = false;
             }
 		}
+		
 		return $images;
 	}
 

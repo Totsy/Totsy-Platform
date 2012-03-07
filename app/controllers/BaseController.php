@@ -22,40 +22,112 @@ class BaseController extends \lithium\action\Controller {
 		/* Merge $_classes of parent. */
 		$vars = get_class_vars('\lithium\action\Controller');
 		$this->_classes += $vars['_classes'];
-
+		$userInfo = Array();
+		$userInfo = Session::read('userLogin');
 		parent::__construct($config);
+						
+		if (get_class($this->request) == 'lithium\action\Request' && $this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
+		 	$this->_render['layout'] = 'mobile_main';
+		   	$this->tenOffFiftyEligible($userInfo);
+		 	$this->freeShippingEligible($userInfo);
+		} else {			
+			$userInfo = Session::read('userLogin');	
+
+       		$whiteLabelSubDomain = "mamasource.totsy.com";
+ 									
+			if ( $_SERVER['HTTP_HOST']==$whiteLabelSubDomain ) {				
+ 		        Session::write('layout', 'mamapedia', array('name' => 'default'));
+		        $img_path_prefix = "/img/mamapedia";
+		    } else { 
+		        Session::write('layout', 'main', array('name' => 'default'));
+		        $img_path_prefix = "/img";
+		        $this->tenOffFiftyEligible($userInfo);
+		        $this->freeShippingEligible($userInfo);
+		    } 	
+			$this->_render['layout'] = '/main';
+		}
+		$this->set(compact('img_path_prefix'));
+	}
+
+	/**
+	 * Get the sub-total for all items currently in the user's shopping cart.
+	 *
+	 * @return int The sub-total dollar amount.
+	 */
+	public function getCartSubTotal () {
+		$subTotal = 0;
+		
+		foreach(Cart::active() as $cartItem) {
+			$currentSec = is_object($cartItem->expires) ? $cartItem->expires->sec : $cartItem->expires;
+			if ($cartData['cartExpirationDate'] < $currentSec) {
+				$cartData['cartExpirationDate'] = $currentSec;
+			}
+	
+			$subTotal += ($cartItem->sale_retail * $cartItem->quantity);
+			$i++;
+		}
+		return $subTotal;
 	}
 
 	/**
 	 * Get the userinfo for the rest of the site from the session.
 	 */
-	protected function _init() {
 
+	protected function _init() {
+	
 		parent::_init();
+
 	     if(!Environment::is('production')){
-            $branch = "<h4 id='global_site_msg'>Current branch: " . $this->currentBranch() ."</h4>";
+            $branch = "Current branch: " . $this->currentBranch();
             $this->set(compact('branch'));
         }
-		$userInfo = Session::read('userLogin');
-		$this->set(compact('userInfo'));
+
+        if(Environment::is('production')) {
+            $version = "<!-- Current version: " . $this->currentVersion() . " -->";
+            $this->set(compact('version'));
+        }
+        
+		$userInfo = Session::read('userLogin');		
+		$this->set(compact('userInfo'));	
+			
 		$cartCount = Cart::itemCount();
+		
+		$cartSubTotal = $this->getCartSubTotal();
+		
         User::setupCookie();
+        
+        $redirected = false;
+        
+        //this changes depending on whether we're on prod or not
+        //if something's funny or not working on kkim, just update it with master	
+        
+		$whiteLabelSubDomain = "mamasource.totsy.com";
+		$mainDomain = "totsy.com";	
+		 		
+ 		if ( $userInfo ) {	   		
+        	if($_SERVER['HTTP_HOST']!==$whiteLabelSubDomain ) {
+        		//totsy to mama
+        		if($userInfo['invited_by']=="mamasource") {
+					$this->crossDomainAuth($whiteLabelSubDomain, $userInfo['email'], $userInfo['password']);
+				}
+        	} else {
+        		//mama to totsy
+				if ( is_null($userInfo['invited_by']) || $userInfo['invited_by']!=="mamasource" ) {
+					$this->crossDomainAuth($mainDomain, $userInfo['email'], $userInfo['password']);
+				}
+        	}
+        }
+                
 		$logoutUrl = (!empty($_SERVER["HTTPS"])) ? 'https://' : 'http://';
 	    $logoutUrl = $logoutUrl . "$_SERVER[SERVER_NAME]/logout";
-	    
-		/**
-		 * Setup all the necessary facebook stuff
-		 */
+
+		$this->fbsession = $fbsession = FacebookProxy::getUser();
+		$fbconfig = FacebookProxy::config();
 		
-		if(!$this->fbsession){
-			$this->fbsession = $fbsession = FacebookProxy::getUser();		
-			$fbconfig = FacebookProxy::config();
-			
-			if ($this->fbsession && strlen(FacebookProxy::getUser())>0) {
-				$fblogout = FacebookProxy::getlogoutUrl(array('next' => $logoutUrl));
-			} else {
-				$fblogout = "/logout";
-			}
+		if ($this->fbsession) {
+			$fblogout = FacebookProxy::getLogoutUrl(array('next' => $logoutUrl));			
+		} else {
+			$fblogout = "/logout";
 		}
 
 		if ($userInfo) {
@@ -63,23 +135,23 @@ class BaseController extends \lithium\action\Controller {
 				'conditions' => array('_id' => $userInfo['_id']),
 				'fields' => array('total_credit', 'deactivated','affiliate_share')
 			));
+						
 			if (isset($user) && $user) {
 			    /**
 			    * If the users account has been deactivated during login,
 			    * destroy the users session.
-			    **/			    
-			    if ($user->deactivated == true) {			    
+			    **/
+			    if ($user->deactivated == true) {
 			        Session::clear(array('name' => 'default'));
 			        Session::delete('appcookie', array('name' => 'cookie'));
-					//FacebookProxy::setSession(null);
 			    }
 				$decimal = ($user->total_credit < 1) ? 2 : 0;
 				$credit = ($user->total_credit > 0) ? number_format($user->total_credit, $decimal) : 0;
 			}
 		}
-		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout'));
-		$this->freeShippingEligible($userInfo);
-		$this->tenOffFiftyEligible($userInfo);
+		
+		$this->set(compact('cartCount', 'credit', 'fbsession', 'fbconfig', 'fblogout', 'cartSubTotal'));
+				
 		/**
 		* Get the pixels for a particular url.
 		**/
@@ -93,7 +165,7 @@ class BaseController extends \lithium\action\Controller {
             }
             if (array_key_exists('invited_by',$userInfo)){
                 $invited_by = $userInfo['invited_by'];
-            }else if(array_key_exists('affiliate_share',$userData)){
+            } else if(array_key_exists('affiliate_share',$userData)){
                 $invited_by = $userData['affiliate_share']['affiliate'];
             }
 		}
@@ -132,8 +204,6 @@ class BaseController extends \lithium\action\Controller {
 		**/
 		$this->set(compact('pixel'));
 
-		$this->_render['layout'] = 'main';
-
 	}
 
 	/**
@@ -142,9 +212,9 @@ class BaseController extends \lithium\action\Controller {
 	* @see app/controllers/AffiliatesController
 	* @see app/controllers/UsersController
 	**/
-	public function freeShippingEligible($userInfo){
+	public function freeShippingEligible($userInfo) {
 	    $sessionServices = Session::read('services', array('name' => 'default'));
-	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping') ));
+	    $service = Service::find('first', array('conditions' => array('name' => 'freeshipping')));
 	    if ($userInfo && $service) {
 	        $user = User::find('first', array('conditions' => array('_id' => $userInfo['_id'])));
 	        if ($user) {
@@ -159,12 +229,12 @@ class BaseController extends \lithium\action\Controller {
 	            *   starts and end; and the user uses the service with in thirty days
 	            *   of their registration
 	            */
-                if ( ($service->start_date->sec <= $created_date &&
+	            	            
+                if ( (($service->start_date->sec <= $created_date &&
                         $service->end_date->sec > $created_date) &&
-                    (strtotime("now") < $dayThirty)) {
-
+                    (strtotime("now") < $dayThirty)) ) {
                     //checks if the user ever made a purchase
-                    if ($user->purchase_count < 1) {
+                    if ($user->purchase_count < 1 ) {
                         $sessionServices = Session::read('services', array('name' => 'default'));
                         $sessionServices['freeshipping'] = 'eligible';
                         Session::write('services', $sessionServices, array('name' => 'default'));
@@ -179,6 +249,7 @@ class BaseController extends \lithium\action\Controller {
 	        }
 	    }
 	}
+	
 	public function tenOffFiftyEligible($userInfo) {
 	    $serviceSession = Session::read('services', array('name' => 'default'));
 	    $service = Service::find('first', array('conditions' => array('name' => '10off50') ));
@@ -237,6 +308,18 @@ class BaseController extends \lithium\action\Controller {
 
 		return array_pop($head);
 	}
+	/**
+	* Displays what git version is deployed
+	**/
+	public function currentVersion() {
+		if (!is_dir($git = dirname(LITHIUM_APP_PATH) . '/.git')) {
+			return;
+		}
+		$head = trim(file_get_contents("{$git}/refs/heads/master"));
+		$head = explode('/', $head);
+
+		return array_pop($head);
+	}
 
 	/**
 	* Clean Credits Card Infos if out of Cart/Orders/Search ??? Controller
@@ -252,6 +335,15 @@ class BaseController extends \lithium\action\Controller {
 		if ($clean) {
 			Session::delete('cc_infos');
 		}
+	}
+	
+	/**
+	* Redirect white label users coming from totsy to white label, and vice-vera
+	**/	
+	private function crossDomainAuth( $sendTo, $email, $pwd ) {
+		// delete session cookie of domain first authenticated
+		setcookie("PHPSESSID", "", time()-3600, "/"); 		
+		$this->redirect("http://" . $sendTo . "/login?email=".$email."&pwd=".$pwd, array("exit"=>true)); 	
 	}
 }
 

@@ -55,7 +55,7 @@ class User extends Base {
 				'notEmpty', 'required' => false, 'message' => 'Please add a zip code'
 		),*/
 		'email' => array(
-			array('email', 'message' => 'Email is not valid'),
+			array('simpleEmail', 'message' => 'Invalid e-mail address. It must contain only letters, numbers, underscores (_), hyphens (-), and periods (.)'),
 			array('notEmpty', 'required' => true, 'message' => 'Please add an email address'),
 			array('isUniqueEmail', 'message' => 'This email address is already registered'),
 			array('isEmailFacebookLegal', 'required' => true, 'message' => 'Your Facebook email is not set to be shared, please enter a real email address')
@@ -74,9 +74,28 @@ class User extends Base {
 		)
 	);
 
-
 	public static function __init(array $options = array()) {
 		parent::__init($options);
+
+		// a simplified e-mail validation rule, that requires a limited set of
+		// characters (alphanumeric, underscore, hyphens and periods) separated
+		// by a single @ symbol
+		Validator::add('simpleEmail', function($value) {
+			@list($user, $domain) = explode('@', $value);
+
+			$relaxedEmailDomains = array(
+				'totsy.com'
+			);
+
+			// use the standard e-mail validator for a specific set of domains
+			if (in_array($domain, $relaxedEmailDomains)) {
+				return Validator::isEmail($value);
+
+			// use the strict e-mail syntax
+			} else {
+				return (bool) preg_match_all('/^[\w\-\.]+@[\w\-\.]+$/', $value, $matches);
+			}
+		});
 
 		Validator::add('isEmailMatch', function ($value) {
 			return ($value ==  true) ? true : false;
@@ -153,6 +172,9 @@ class User extends Base {
 
 	public static function log($ipaddress) {
 		$user = static::getUser();
+		if (!$user) {
+			return;
+		}
 		++$user->logincounter;
 		$user->lastip = $ipaddress;
 		$user->lastlogin = new MongoDate();
@@ -357,16 +379,18 @@ class User extends Base {
 	* If yes, return the cyberSourceProfileId
 	* If no, return null
 	**/
-	public static function hasCyberSourceProfile($userInfos, $creditCardNumber) {
-		$cyberSourceProfileId = null;
-		if(!empty($userInfos['cyberSourceProfiles'])) {
-			foreach($userInfos['cyberSourceProfiles'] as $profile) {
-				if(substr($profile, -4) == substr($creditCardNumber, -4)) {
-					$cyberSourceProfileId = $profile;
+	public static function hasCyberSourceProfile($cyberSourceProfiles, $creditCard) {
+		$cyberSourceProfileDetected = null;
+		foreach($cyberSourceProfiles as $cyberSourceProfile) {
+			if(!is_string($cyberSourceProfile)) {
+				if ($cyberSourceProfile[creditCard][number] == substr($creditCard[number],-4)
+					&& $cyberSourceProfile[creditCard][month] == $creditCard[month]
+					&& $cyberSourceProfile[creditCard][year] == $creditCard[year]) {
+						$cyberSourceProfileDetected = $cyberSourceProfile;
 				}
 			}
 		}
-		return $cyberSourceProfileId;
+		return $cyberSourceProfileDetected;
 	}
 }
 

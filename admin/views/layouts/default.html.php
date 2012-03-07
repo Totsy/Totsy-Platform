@@ -18,10 +18,34 @@ ini_set('display_errors', 0);
 
 	<?php echo $this->scripts(); ?>
 	<?php echo $this->html->link('Icon', null, array('type' => 'icon')); ?>
+	<script src="https://www.google.com/jsapi"></script>
 
+	<script> google.load("jquery", "1.6.1", {uncompressed:false});</script>
+	<script> google.load("jqueryui", "1.8.13", {uncompressed:false});</script>
+	<!-- end jQuery / jQuery UI -->
+	
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/reset.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/reset.css') . '" />'; ?>
+	
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/text.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/text.css') . '" />'; ?>
+	
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/960.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/960.css') . '" />'; ?>
+	
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/ie6.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/ie6.css') . '" />'; ?>
+		
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/ie.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/ie.css') . '" />'; ?>
+	
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/layout.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/layout.css') . '" />'; ?>
+	
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/nav.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/nav.css') . '" />'; ?>
+	
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/flash.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/flash.css') . '" />'; ?>
+	
+	<?php echo '<link rel="stylesheet" type="text/css" href="/css/custom.css?' . filemtime(LITHIUM_APP_PATH . '/webroot/css/custom.css') . '" />'; ?>
+			
 	<?php
 		// add the name of the style sheets you want to include here.
-		$styles = array('reset', 'debug', 'text', '960', 'ie6', 'ie', 'layout', 'nav', 'flash', 'custom');
+		
+		$styles = array();
 		foreach ($styles as $css):
 			if (file_exists("css/".$css.".css")) { // files are in APP/webroot
 				switch ($css) {
@@ -38,12 +62,12 @@ ini_set('display_errors', 0);
 		// end checking for css files
 
 		// add the name of the scripts you want to include here.
-		$script = array('jquery-1.4.2.min', 'jquery-fluid16', 'jquery-ui-1.8.2.custom.min');
+		$script = array();
 		foreach ($script as $js):
 			if (file_exists("js/".$js.".js")) { // files are in APP/webroot
 				echo $this->html->script($js);
 			} else { // files are in li3_grid
-				echo $this->html->script('../../li3_grid/js/'.$js);
+				//echo $this->html->script('../../li3_grid/js/'.$js);
 			}
 		endforeach;
 		// end checking for script files
@@ -56,7 +80,7 @@ ini_set('display_errors', 0);
 		<div id="header">
 		    <?php echo $branch?>
 			<div class="grid_3">
-				<?=$this->html->link($this->html->image('logo.png', array(
+				<?php echo $this->html->link($this->html->image('logo.png', array(
 						'width'=>'155',
 						'height'=>'90'
 					)),

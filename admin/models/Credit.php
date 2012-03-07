@@ -59,9 +59,14 @@ class Credit extends Base {
 
 		if ($user) {
 			$credit->admin_id = $user['_id'];
-			$amount = $data['sign'].$data['amount'];
-			$credit->reason = $data['reason'];
+		} else {
+			// Set to 0 for li3 commands
+			$credit->admin_id = 0;
 		}
+		
+		$amount = $data['sign'].$data['amount'];
+		$credit->reason = $data['reason'];
+		
 		if (!empty($data['event_id']) ) {
 			$credit->event_id = $data['event_id'];
 		}

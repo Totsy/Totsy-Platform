@@ -1,8 +1,27 @@
+<?php if ($fbInfo): ?>
+	<div style="float:left; display:block;">
+		<img src="https://graph.facebook.com/<?php echo $fbInfo['id']; ?>/picture" style="margin-right:5px;" />
+	</div>
+	<div style="float:left; display:block;">
+		<h2 style="font-size:18px; display:block; padding-top:15px;">You're Almost Finished!</h2>
+	</div>
+<div class="clear"></div>
+<br />
+<?php $email = $fbInfo['email']; ?>
+<?php else: ?>
+<?php $email = ""; ?>
+<?php endif; ?>
+
+<?php if (!$fbInfo): ?>
 <h2 style="margin-bottom:20px;">Join with Facebook</h2>
 <a href="javascript:;" onclick="fblogin();return false;"><img src="/img/sign_in_fb.png" class="fr"></a>
-<br />
+<br/>
+<?php endif; ?>
+<?php if (!$fbInfo): ?>
 <h2 style="margin-top:30px;margin-bottom:20px;">Join with email</h2>
-
+<?php else: ?>
+<h2 style="margin-top:30px;margin-bottom:20px;">Link your Totsy account</h2>
+<?php endif; ?>
 <?php if (preg_match('/join/',$_SERVER['REQUEST_URI'])): ?>
 	<form id="registerForm" method="post" onsubmit="_gaq.push(['_trackPageview', '/vpv/join']);">
 <?php elseif (preg_match('/register/',$_SERVER['REQUEST_URI'])): ?>
@@ -24,26 +43,24 @@
 	</div>
 
 	<div style="float:right">
-	<?php echo $this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+
+	<?php echo $this->form->text('email', array('class' => 'inputbox', 'style' => 'width:190px','value'=>$email)); ?>
 	</div>
 	<?php echo $this->form->error('email'); ?>
-	
+
 	<div class="clear"></div>
 	<div style="width:70px; float:left">
 		<?php echo $this->form->label('confirmemail', 'Confirm Email <span>*</span>', array(
 			'escape' => false,
-			'class' => 'required'
-			));
+			'class' => 'required'));
 		?>
 	</div>
-
 	<div style="float:right">
-		<?php echo $this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px')); ?>
+		<?php echo $this->form->text('confirmemail', array('class' => 'inputbox', 'style' => 'width:190px', 'value' => $email )); ?>
 	</div>
-	
 	<?php echo $this->form->error('confirmemail'); ?>
 	<?php echo $this->form->error('emailcheck'); ?>
-	
+
 	<div class="clear"></div>
 
 	<div style="width:70px; float:left">
@@ -55,7 +72,6 @@
 	</div>
 
 	<div style="float:right">
-
 
 	<?php echo $this->form->password('password', array(
 		'class'=>"inputbox",
@@ -74,12 +90,10 @@
 	<div class="clear"></div>
 	<div style="font-size:11px;margin-top:10px; color:#999999;">
 		By joining you accept our
-		<?php echo $this->html->link('terms and conditions','pages/terms')?>.
+		<?php echo $this->html->link('terms and conditions','pages/terms');?>.
 	</div>
 
 	<input class="button fr" type="button" value="Join Now" onclick="return setIframe();" style="width:100px; height 28px; font-weight:important;">
-
-	<?php //=$this->form->submit('Join Now', array('class' => 'button fr','style' => 'width:100px; height 28px; font-weight:important;'));?>
 
 	<?php echo $this->form->error('terms'); ?>
 
@@ -108,19 +122,19 @@ function pauseFunction ( )
 </script>
 
 <?php if (preg_match('/facebookshoes/',$_SERVER['REQUEST_URI'])): ?>
-<!-- begin Marin Software Tracking Script -->
-<script type='text/javascript'>
-    var _mTrack = _mTrack || [];
-    _mTrack.push(['trackPage']);
+    <!-- begin Marin Software Tracking Script -->
+    <script type='text/javascript'>
+        var _mTrack = _mTrack || [];
+        _mTrack.push(['trackPage']);
 
-    (function() {
-        var mClientId = '1146r8p12266';
-        var mProto = ('https:' == document.location.protocol ? 'https://' : 'http://');
-        var mHost = 'pro.marinsm.com';
-        var mt = document.createElement('script'); mt.type = 'text/javascript'; mt.async = true;
-        mt.src = mProto + mHost + '/tracker/async/' + mClientId + '.js';
-        var fscr = document.getElementsByTagName('script')[0]; fscr.parentNode.insertBefore(mt, fscr);
-    })();
-</script>
-<!-- end Copyright Marin Software -->
+        (function() {
+            var mClientId = '1146r8p12266';
+            var mProto = ('https:' == document.location.protocol ? 'https://' : 'http://');
+            var mHost = 'pro.marinsm.com';
+            var mt = document.createElement('script'); mt.type = 'text/javascript'; mt.async = true;
+            mt.src = mProto + mHost + '/tracker/async/' + mClientId + '.js';
+            var fscr = document.getElementsByTagName('script')[0]; fscr.parentNode.insertBefore(mt, fscr);
+        })();
+    </script>
+    <!-- end Copyright Marin Software -->
 <?php endif; ?>
