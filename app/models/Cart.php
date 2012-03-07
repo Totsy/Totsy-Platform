@@ -325,7 +325,7 @@ class Cart extends Base {
 				$info= Item::find($item['item_id']);
 				if(array_key_exists('shipping_oversize', $info->data())){
 					$data= $info->data();
-					$cost+= $data['shipping_rate'];
+					$cost+= ($data['shipping_rate'] * $item['quantity']);
 				}
 			}
 			
@@ -641,8 +641,10 @@ class Cart extends Base {
 		#Apply Services
 		$services = array();
 		
+		$isOnlyDigital = static::isOnlyDigital($cart);
+		
 		if (Session::read('layout', array('name'=>'default'))!=="mamapedia") {
-			$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
+			$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost, $isOnlyDigital);
 				
 			$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
 		} else {
@@ -667,7 +669,7 @@ class Cart extends Base {
 			Session::delete('service_available');
 		}
 		if (!empty($promo_code)) {
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'), $isOnlyDigital);
 		}
 		#Disable Service if Promocode Used
 		if(!empty($cartPromo['saved_amount'])) {
