@@ -301,9 +301,17 @@ class Cart extends Base {
 		        $cost = 0;
 		    }
 		}
-
-		if (!Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
-			$cost = 0;
+		
+		foreach($cartCheck as $item) {
+			if (!Item::first($item['item_id'])->shipping_exempt && Item::first($item['item_id'])->shipping_oversize ) {
+				$cost = 0;
+			}
+		}
+		
+		foreach($cartCheck as $item) {
+			if (!Item::first($item['item_id'])->shipping_oversize ) {
+				$cost = 7.95;
+			}
 		}
 		
 		if(static::isOnlyDigital($carts)) {
