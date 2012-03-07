@@ -4974,7 +4974,7 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	background: url(../img/jojo-header-title.gif) 0 0 no-repeat;
 	text-indent: -999em;
 }
-#jojo section {
+#jojo > section {
 	padding:15px 15px 0;
 	background:#b8d1ee url(../img/jojo-bg-flags.png) 0 15px no-repeat;
 }
@@ -4982,15 +4982,16 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 	margin:0 0 45px;
 	border-bottom:1px solid transparent;
 }
-#jojo header p {
-	float: left;
-	margin-top:95px; padding:0 30px 0 10px;
-	width:430px;
+#jojo header section {
+	padding:95px 30px 0 10px;
 	color:#44749e;
 	font-size:14px;
 }
+#jojo header section p {margin-top:1em;}
+#jojo header section p:first-child {margin-top: 0;}
 #jojo header aside.video {
 	float: right;
+	margin:0 0 0.75em 1.5em;
 	width:400px;
 	border:10px solid #fff;
 	box-shadow: 3px 3px 8px rgba(0,0,0,0.2);

@@ -14,18 +14,16 @@
 		<h2>Totsy welcomes JoJo Maman B&eacute;b&eacute; for a special 10 day event</h2>
 		<section>
 			<header class="group">
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vitae nisl sit amet est ornare faucibus. Ut a tellus vitae dui posuere fermentum ut a nulla. Vivamus rhoncus imperdiet fringilla. Cras elit eros, ultrices sodales sodales non, interdum ut nisi. Nunc accumsan urna a mi sodales eu suscipit elit euismod. Donec scelerisque, tellus a luctus cursus, nulla risus auctor dui, in pulvinar ligula risus tempus augue. Pellentesque eu consectetur felis. In ut elit nisl. In tincidunt sollicitudin feugiat. Quisque nec nisi felis, id laoreet tortor.</p>
 				<aside class="video">
-					<?php // @TODO - replace placeholder youtube video below with actual JoJo video prior to launch
-							// - use iframe embed code rather than object method for better mobile support
-							/*
-							<!-- old embed:
-								<object width="400" height="233"><param name="movie" value="http://www.youtube.com/v/P_m7ZSo_l-s?version=3&amp;hl=en_US&amp;rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/P_m7ZSo_l-s?version=3&amp;hl=en_US&amp;rel=0" type="application/x-shockwave-flash" width="400" height="233" allowscriptaccess="always" allowfullscreen="true"></embed></object>							
-							 -->
-							*/
-					?>
-					<iframe width="400" height="233" src="http://www.youtube.com/embed/P_m7ZSo_l-s" frameborder="0" allowfullscreen></iframe>
+					<?php // use iframe embed code rather than object method for better mobile support ?>
+					<iframe width="400" height="233" src="http://www.youtube.com/embed/ChiuuSVFRNo?rel=0" frameborder="0" allowfullscreen></iframe>
 				</aside>
+				<section>
+					<p>Totsy is proud to be the exclusive flash site to host the U.S. debut of JoJo Maman B&eacute;B&eacute;’s Spring 2012 collection. JoJo Maman B&eacute;B&eacute; is a London-based brand of baby and children’s apparel and chic fashions for pregnant and nursing moms. JoJo’s dedication to exquisite quality, high-minded style and thoughtful innovation has earned them distinction as one of the most celebrated companies in the UK.</p>
+					<p>In 1993, years before becoming a Maman herself, fashion maven and JoJo founder Laura Tenison observed how few high-quality clothing options there were for growing families. Why should stylish pregnant and nursing women be forced to wear something frumpy? And why were children’s clothes so impractical and just plain boring?</p>
+					<p>Nineteen years and 45 stores later, JoJo Maman B&eacute;B&eacute; is the premiere destination for smart and savvy families. Pregnant and nursing women will find sophisticated pieces such as the bestselling wrap dress with discreet nursing functions, sporty sweaters with smoothing and supportive stretch, plus breezy linen trousers and slimming shorts, just in time for spring. For babies and children, JoJo offers adorable playwear, dress-up duds, beach gear and more, all constructed from only high-quality, breathable fabrics, designed with such practical elements as reversible sides, extra zippers for easy changing, laser-cut tags, flat seams and fun patterns. </p>
+				</section>
+
 			</header>
 			
 			<ul class="bp-events group">
