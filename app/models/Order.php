@@ -243,7 +243,7 @@ class Order extends Base {
 		#Save Services Used (10$Off / Free Shipping)
 		if ($service) {
 			$services = array();
-			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible' && !Cart::isOnlyDigital($cart)) {
 				$services = array_merge($services, array("freeshipping"));
 				$vars['shippingCostDiscount'] = $vars['shippingCost'];
 				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];

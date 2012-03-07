@@ -15,7 +15,7 @@ class Service extends Base {
     * @param float order sized handling
     * @return array of shipping and oversized handling
     **/
-    public static function freeShippingCheck($shippingCost = 7.95, $overSizeHandling = 0.00) {
+    public static function freeShippingCheck($shippingCost = 7.95, $overSizeHandling = 0.00, $isOnlyDigital = false) {
         $enable = false;
         $service = Session::read('services', array('name' => 'default'));
 		#Never Apply FreeShipping to Large Items
@@ -23,7 +23,7 @@ class Service extends Base {
 		$overSizeHandling = 0.00;
 		if(Session::read('layout', array('name'=>'default'))!=="mamapedia") {
 			if ( $service && array_key_exists('freeshipping', $service)) {
-			    if ($service['freeshipping'] === 'eligible') {
+			    if ($service['freeshipping'] === 'eligible' && !$isOnlyDigital) {
 			    	Cart::updateSavings(null, 'services', ($shippingCost + $overSizeHandling));
 					$enable = true;
 				} else {
