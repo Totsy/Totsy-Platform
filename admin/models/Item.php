@@ -211,7 +211,7 @@ class Item extends Base {
 
 		$sha_vendor_style = $vendor_style;
 		#do a search in the skus_record to see if you can find the sku
-		$search = $skus_record->findOne(array('size' => $size, 'vendor_style' => $vendor_style));
+		$search = $skus_record->findOne(array('size' => $size, 'vendor' => $vendor, 'vendor_style' => $vendor_style));
 		if ($search) {
 			Logger::debug("\tSku look up was successful for vendor style {$vendor_style} , size {$size}");
 			$sku = $search['sku'];
