@@ -198,7 +198,23 @@ class AffiliatesController extends BaseController {
 
 				// create a new Totsy account using Facebook user data
 				if (!empty($userfb) && !$fbCancelFlag) {
-					extract(UsersController::fbregister($affiliateData));
+					
+					//execute and assign return value to tmp
+					$tmp = extract(UsersController::fbregister($affiliateData));
+					
+					//check if any data was returned and show error msg on register form
+					if($tmp==0) { 
+						$message = "<div class='error_flash'>Facebook.com appears to be having issues. Please try our native registration form below in the meantime.</div>";
+						
+						if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
+							$this->_render['layout'] = 'mobile_main';
+							$this->_render['template'] = 'mobile_register';
+						} else {
+							$this->_render['layout'] = 'login';
+						}
+												
+						return compact('message');
+					}					
 
 				// create a new Totsy account using form data
 				} else if($pdata) {

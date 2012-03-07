@@ -1,5 +1,6 @@
 <?php
 
+
 namespace app\controllers;
 
 use app\models\User;
@@ -10,6 +11,8 @@ use lithium\security\Auth;
 use lithium\storage\Session;
 use app\extensions\Mailer;
 use app\extensions\Keyade;
+use FacebookApiException;
+use lithium\analysis\Logger;
 use MongoDate;
 use li3_facebook\extension\FacebookProxy;
 
@@ -51,9 +54,9 @@ class UsersController extends BaseController {
 
 		$parsedURI = parse_url($this->request->env("REQUEST_URI"));
 		$currentURI = $parsedURI['path'];
-
+		$message = "";
 		$eventName = "";
-
+		
 		if (preg_match("(/sale)", $currentURI)) {
 		    $URIArray = explode("/", $currentURI);
 		    $eventName = $URIArray[2];
@@ -62,25 +65,30 @@ class UsersController extends BaseController {
 		if ($eventName) {
            //write event name to the session
            Session::write( "eventFromEmailClick", $eventName, array("name"=>"default"));
-       }
+       	}
 
-       //redirect to login ONLY if the user is coming from an email
-       if ($this->request->query["gotologin"]=="true") {
-           $this->redirect("/login");
-       }
-
+       	//redirect to login ONLY if the user is coming from an email
+       	if ($this->request->query["gotologin"]=="true") {
+       	    $this->redirect("/login");
+       	}
+       	       	
 		$this->_render['layout'] = 'login';
-		$message = false;
 		$data = $this->request->data;
-		$this->autoLogin();
-
+		
+		$tmp = $this->autoLogin();
+		
+		if ($tmp=="fberror") {
+			$message = "<div class='error_flash'>Facebook.com appears to be having issues. Please try our native registration form below in the meantime.</div>";
+			return compact('message');
+		}
+									
 		/*
 		* redirects to the affiliate registration page if the left the page
 		* and then decided to register afterwards.
 		*/
 		
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
-		if($cookie && preg_match('(/a/)', $cookie['landing_url'])){
+		if($cookie && preg_match('(/a/)', $cookie['landing_url'])) {
 			return $this->redirect($cookie['landing_url']);
 		}
 		$referer = parse_url($this->request->env('HTTP_REFERER')) + array('host' => null);
@@ -192,11 +200,10 @@ class UsersController extends BaseController {
 				} else {
 					return $this->redirect('/sales?req=invite');
 				}
-
 			} else {
 				if ($this->request->data) {
 					$message = '<div class="error_flash">Error in registering your account</div>';
-				} 
+				}			
 			}
 		}
 
@@ -453,7 +460,7 @@ class UsersController extends BaseController {
 		return compact('message', 'fbsession', 'fbconfig');
 	}
 	
-	public function publicpassword(){
+	public function publicpassword() { 
 		
 		$this->password();
 		
@@ -470,6 +477,7 @@ class UsersController extends BaseController {
 		$redirect = '/sales';		
 		$ipaddress = $this->request->env('REMOTE_ADDR');
 		$cookie = Session::read('cookieCrumb', array('name' => 'cookie'));
+		$message = "";
 
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
 
@@ -479,18 +487,22 @@ class UsersController extends BaseController {
 		if (array_key_exists('fbcancel', $this->request->query)) {
 			$fbCancelFlag = $this->request->query['fbcancel'];
 		}
-		//autogenerate password here, just fbregister($data) instead, bypassing that form	
+		
+		//autogenerate password here, just fbregister($data) instead, bypassing that form		
 		if ($success) {
 			$this->redirect('Events::index');
 		} else {
 			if (!empty($userfb)) {
-				if (!$fbCancelFlag) {
-					$this->fbregister();
-					$this->redirect('/sales?req=invite');
+				if (!$fbCancelFlag) {					
+					if($this->fbregister()) { 
+						$this->redirect('/sales?req=invite');
+					} else {
+						return 'fberror';
+					}
 				}
-			}
+			} 
 		}
-		
+				
 		if(preg_match( '@^[(/|login|register)]@', $this->request->url ) && $cookie && array_key_exists('autoLoginHash', $cookie)) {
 			$user = User::find('first', array(
 				'conditions' => array('autologinHash' => $cookie['autoLoginHash'])));
@@ -509,7 +521,7 @@ class UsersController extends BaseController {
 						$redirect = substr(htmlspecialchars_decode($cookie['redirect']),strlen('http://'.$_SERVER['HTTP_HOST']));
 						unset($cookie['redirect']);
 					}
-					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));						
+					Session::write('cookieCrumb', $cookie, array('name' => 'cookie'));	
 						
 					if (preg_match( '@[^(/|login|register)]@', $this->request->url ) && $this->request->url) {	 
 						$this->redirect($this->request->url);
@@ -584,7 +596,6 @@ class UsersController extends BaseController {
 				$connected = false;
 			}
 		}
-
 
 		if(FacebookProxy::getUser()){
 			$fbsession = FacebookProxy::getUser();
@@ -884,15 +895,20 @@ class UsersController extends BaseController {
 	 */
 	public function fbregister(array $additionalData = array()) {
 		Session::delete('landing', array('name'=>'default'));
-
-		$fbuser = FacebookProxy::api("/me");
 		
+		try {
+			//throw new FacebookApiException();
+			$fbuser = FacebookProxy::api("/me");			
+		} catch (FacebookApiException $e) {
+			Logger::error($e->getMessage());
+			return false;	
+		}
+					
 		if (Session::read('layout', array('name' => 'default'))=='mamapedia') {
-        		$affiliate = new AffiliatesController(array('request' => $this->request));
-        		//this will call Users::registration
-        		$affiliate->register("mamasource");
-        } else {
-						    				
+        	$affiliate = new AffiliatesController(array('request' => $this->request));
+        	//this will call Users::registration
+        	$affiliate->register("mamasource");
+        } else {		    				
 			$data   = array(
 				'email'					=> $fbuser['email'],
 				'confirmemail'			=> $fbuser['email'],
