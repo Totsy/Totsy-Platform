@@ -897,8 +897,8 @@ class UsersController extends BaseController {
 		Session::delete('landing', array('name'=>'default'));
 		
 		try {
-			//throw new FacebookApiException();
-			$fbuser = FacebookProxy::api("/me");			
+			throw new FacebookApiException();
+			//$fbuser = FacebookProxy::api("/me");			
 		} catch (FacebookApiException $e) {
 			Logger::error($e->getMessage());
 			return false;	
