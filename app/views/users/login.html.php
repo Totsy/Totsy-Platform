@@ -1,5 +1,4 @@
 <?php use lithium\storage\Session; ?>
-
 <?php if ($message){ echo $message; } ?>
 <style>
 h2 {
