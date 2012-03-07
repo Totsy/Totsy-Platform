@@ -286,8 +286,7 @@ class Cart extends Base {
 		// $cost =  $result ?: 7.95;
 		$cost = 7.95;
 		$cartCheck = $carts->data();
-
-		if (count($cartCheck) == 1 && Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
+		if (Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
 			$cost = 0;
 		} else {
 		    $exempt = true;
@@ -303,7 +302,7 @@ class Cart extends Base {
 		    }
 		}
 
-		if (count($cartCheck) == 1 && !Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
+		if (!Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
 			$cost = 0;
 		}
 		
