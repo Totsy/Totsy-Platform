@@ -1,4 +1,4 @@
-<?php if (!empty($credit)) { ?>
+<?php if (!empty($credits)) { ?>
 	<h2>Total Credits: <span style="padding:10px 10px 10px 5px; color:#009900;">$<?=$credit?></span></h2>
 	<hr />	
 		<table border="0" cellspacing="5" cellpadding="5" width="100%" class="order-table" style="margin-top:10px;">
