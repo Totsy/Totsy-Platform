@@ -13,6 +13,7 @@ use admin\models\User;
 use admin\models\Item;
 use admin\models\Credit;
 use li3_payments\extensions\adapter\payment\CyberSource;
+use li3_payments\payments\Processor;
 use Exception;
 
 /**
@@ -238,16 +239,16 @@ class Order extends Base {
 		$orderId = new MongoId($order['_id']);
 		$error = null;
 		$data = array();
-
+		$successfullyCaptured = null;
 		Logger::info("Processing payment for order id `{$order['_id']}`.");
 		#If Digital Items, Calculate correct Amount
 		$amountToCapture = static::getAmountNotCaptured($order);
 		if ($order['total'] == 0) {
 			$data['auth_confirmation'] = $order['authKey'];
 			$data['payment_date'] = new MongoDate();
-			Logger::error("Can't capture because total is zero.");
+			Logger::info("Can't capture because total is zero.");
 		} else {
-			$auth = $payments::capture(
+			$capture = $payments::capture(
 				'default',
 				$order['authKey'],
 				floor($amountToCapture * 100) / 100,
@@ -256,16 +257,62 @@ class Order extends Base {
 					'orderID' => $order['order_id']
 				)
 			);
-			if ($auth->success()) {
+			if ($capture->errors) {
+				#If Errors due to absence of original Full-Auth, Re-Authorize and capture
+				# 235 => 'The requested capture amount exceeds the originally authorized amount.'
+				# 102 => 'One or more fields in the request contains invalid data: "{:invalidField}."'
+				# 239 => 'The requested transaction amount must match the previous transaction amount.'
+				if($capture->response->reasonCode == (102 || 235 || 239) && !empty($order['cyberSourceProfileId'])) {
+					Logger::info("Order being Re-Authorized...");
+					$cybersource = new CyberSource($payments::config('default'));
+					$profile = $cybersource->profile($order['cyberSourceProfileId']);
+					$authorization = $payments::authorize('default', $amountToCapture, $profile, array('orderID' => $order['order_id']));
+					if($authorization->success()) {
+						Logger::info("Order Re-Authorized!");
+						static::update(
+							array('$set' => array('authKey' => $authorization->key,
+												  'auth' => $authorization->export(),
+												  'authTotal' => $amountToCapture,
+												  'processor' => $authorization->adapter
+							)),
+							array('_id' => $order['_id'])
+						);
+						$capture = $payments::capture(
+							'default',
+							$authorization->key,
+							$amountToCapture,
+							array(
+								'processor' => isset($order['processor']) ? $order['processor'] : null,
+								'orderID' => $order['order_id']
+							)
+						);
+						if($capture->success()) {
+							$successfullyCaptured = true;
+						} else {
+							$successfullyCaptured = false;
+							$errors_message = $capture->errors;
+						}
+					} else {
+						$successfullyCaptured = false;
+						$errors_message = $authorization->errors;
+					}
+				} else {
+					$successfullyCaptured = false;
+					$errors_message = $capture->errors;
+				}
+			} else {
+				$successfullyCaptured = true;
+			}
+			if ($successfullyCaptured) {
 				Logger::info("Order Succesfully Captured");
-				$data['auth_confirmation'] = $auth->key;
+				$data['auth_confirmation'] = $capture->key;
 				$data['payment_date'] = new MongoDate();
 				#Save Capture in Transactions Logs
-				$transation['authKey'] = $auth->key;
+				$transation['authKey'] = $capture->key;
 				$transation['amount'] = $amountToCapture;
 				$transation['date_captured'] = new MongoDate();
 				#Update the Money Captured field
-				if($order['captured_amount']) {
+				if(!empty($order['captured_amount'])) {
 					$totalAmountCaptured = ($amountToCapture + $order['captured_amount']);
 				} else {
 					$totalAmountCaptured = $amountToCapture;
@@ -276,19 +323,15 @@ class Order extends Base {
 					),
 					array('_id' => $orderId)
 				);
-			} elseif ($auth->errors) {
-				$data['auth_confirmation'] = -1;
-				$data['error_date'] = new MongoDate();
-
-				$message  = "Processing of payment for order id `{$order['_id']}` failed:";
-				$message .= $error = implode('; ', $auth->errors);
-				Logger::info($message);
 			} else {
 				$data['auth_confirmation'] = -1;
 				$data['error_date'] = new MongoDate();
-				$error = 'Unknown error.';
-
-				$message = "Processing of payment for order id `{$order['_id']}` failed.";
+				$message  = "Processing of payment for order id `{$order['_id']}` failed:";
+				if($errors_message) {
+					$message .= $error = $errors_message;
+				} else {
+					$error = 'Unknown error.';
+				}
 				Logger::info($message);
 			}
 		}
@@ -545,6 +588,7 @@ class Order extends Base {
 		$orderCollection = static::collection();
 		$userCollection = User::collection();
 		$credits_recorded = false;
+		$payments = static::$_classes['payments'];
 		/************* PREPARING DATAS **************/
 		$selected_order += array(
 			'order_id' => null,
@@ -565,6 +609,26 @@ class Order extends Base {
 		);
 		if(static::isOnlyDigital(array('items' => $items))) {
 			$datas_order_prices['isOnlyDigital'] = true;
+			#Reverse Soft Auth or Full Auth that Failed
+			$dbQuery = static::find('first', array('conditions' => array('order_id' => $selected_order['order_id'])));
+			$orderToVoidAuth = $dbQuery->data();
+			if(!empty($orderToVoidAuth['authKey']) && empty($orderToVoidAuth['auth_confirmation'])) {
+				#Save Old AuthKey with Date
+				$newRecord = array('authKey' => $orderToVoidAuth['authKey'], 'date_saved' => new MongoDate());
+				$void = $payments::void('default', $orderToVoidAuth['auth'], array(
+					'processor' => isset($orderToVoidAuth['processor']) ? $orderToVoidAuth['processor'] : null,
+					'orderID' => $orderToVoidAuth['order_id']
+				));
+				if($void->success()) {
+					#Add to Auth Records Array
+					$update = $orderCollection->update(
+						array('_id' => $orderToVoidAuth['_id']),
+						array('$push' => array('auth_records' => $newRecord),
+							  '$unset' => array('authKey' => 1, 'auth' => 1, 'authTotal' => 1)
+						)
+					);
+				}
+			}
 		} else {
 			$datas_order_prices['isOnlyDigital'] = false;
 		}
@@ -607,7 +671,7 @@ class Order extends Base {
 		}
 		if(!empty($selected_order['auth_confirmation'])) {
 			$datas_order_prices["auth_confirmation"] = $selected_order["auth_confirmation"];
-		}		
+		}
 		/**************UPDATE TAX****************************/
 		// Is this even used?
 		extract(static::_recalculateTax($selected_order,$items,true));

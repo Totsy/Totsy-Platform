@@ -1,5 +1,4 @@
 <?php use lithium\storage\Session; ?>
-
 <?php if ($message){ echo $message; } ?>
 <style>
 h2 {
@@ -101,7 +100,6 @@ if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
 
 </div>
 <div class="clear"></div>
-
 <div class="round gradient" style="border:1px #eeeeee solid;height:300px;">
 
 	<div class="grid_6" style="float:left;">	

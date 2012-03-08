@@ -233,8 +233,7 @@ class Order extends Base {
 			$vars['cartPromo']->save();
 			#If FreeShipping put Handling/OverSizeHandling to Zero
 			if($vars['cartPromo']->type == 'free_shipping') {
-				$vars['shippingCostDiscount'] = $vars['shippingCost'];
-				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
+				$vars['shippingCostDiscount'] = 7.95;
 			}
 			#Update Order Information with PromoCode
 			$order->promo_code = $vars['cartPromo']->code;
@@ -244,11 +243,11 @@ class Order extends Base {
 		#Save Services Used (10$Off / Free Shipping)
 		if ($service) {
 			$services = array();
-			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible') {
+			if (array_key_exists('freeshipping', $service) && $service['freeshipping'] === 'eligible' && !Cart::isOnlyDigital($cart)) {
 				$services = array_merge($services, array("freeshipping"));
 				$vars['shippingCostDiscount'] = $vars['shippingCost'];
 				$vars['overShippingCostDiscount'] = $vars['overShippingCost'];
-				$order->discount = $vars['shippingCost'] + $vars['overShippingCost'];
+				$order->discount = 7.95;
 			}
 			if (array_key_exists('10off50', $service) && $service['10off50'] === 'eligible' && ($vars['subTotal'] >= 50.00)) {
 				$order->discount = 10.00;
