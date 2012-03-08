@@ -57,7 +57,6 @@
 		</div>
 		<?php } ?>
 	<br />
-
 </div>
 </div>
 <div class="clear"></div>
