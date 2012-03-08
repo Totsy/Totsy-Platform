@@ -286,8 +286,7 @@ class Cart extends Base {
 		// $cost =  $result ?: 7.95;
 		$cost = 7.95;
 		$cartCheck = $carts->data();
-
-		if (count($cartCheck) == 1 && Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
+		if (Item::first($cartCheck[0]['item_id'])->shipping_exempt) {
 			$cost = 0;
 		} else {
 		    $exempt = true;
@@ -302,9 +301,17 @@ class Cart extends Base {
 		        $cost = 0;
 		    }
 		}
-
-		if (count($cartCheck) == 1 && !Item::first($cartCheck[0]['item_id'])->shipping_exempt && Item::first($cartCheck[0]['item_id'])->shipping_oversize ) {
-			$cost = 0;
+		
+		foreach($cartCheck as $item) {
+			if (!Item::first($item['item_id'])->shipping_exempt && Item::first($item['item_id'])->shipping_oversize ) {
+				$cost = 0;
+			}
+		}
+		
+		foreach($cartCheck as $item) {
+			if (!Item::first($item['item_id'])->shipping_oversize && Item::isTangible($item['item_id'])) {
+				$cost = 7.95;
+			}
 		}
 		
 		if(static::isOnlyDigital($carts)) {
@@ -325,7 +332,7 @@ class Cart extends Base {
 				$info= Item::find($item['item_id']);
 				if(array_key_exists('shipping_oversize', $info->data())){
 					$data= $info->data();
-					$cost+= $data['shipping_rate'];
+					$cost+= ($data['shipping_rate'] * $item['quantity']);
 				}
 			}
 			
@@ -641,8 +648,10 @@ class Cart extends Base {
 		#Apply Services
 		$services = array();
 		
+		$isOnlyDigital = static::isOnlyDigital($cart);
+		
 		if (Session::read('layout', array('name'=>'default'))!=="mamapedia") {
-			$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost);
+			$services['freeshipping'] = Service::freeShippingCheck($shippingCost, $overShippingCost, $isOnlyDigital);
 				
 			$services['tenOffFitfy'] = Service::tenOffFiftyCheck($subTotal);
 		} else {
@@ -667,7 +676,7 @@ class Cart extends Base {
 			Session::delete('service_available');
 		}
 		if (!empty($promo_code)) {
-			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'));
+			$cartPromo->promoCheck($promo_code, $userDoc, compact('subTotal', 'shippingCost', 'overShippingCost', 'services'), $isOnlyDigital);
 		}
 		#Disable Service if Promocode Used
 		if(!empty($cartPromo['saved_amount'])) {
@@ -691,7 +700,6 @@ class Cart extends Base {
 		if (array_key_exists('credit_amount', $data)) {
 			$credit_amount = abs($data['credit_amount']);
 		}
-
 		#Calculation of the subtotal with shipping and services discount
 		$postSubtotal = ($subTotal + $tax + $shippingCost + $overShippingCost - $services['tenOffFitfy'] - $services['freeshipping']['shippingCost'] - $services['freeshipping']['overSizeHandling']);
 		#Calculation After Promo
