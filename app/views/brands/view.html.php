@@ -4,7 +4,7 @@
 			<p class="signin">Already a member? <a href="/login" title="Sign In">Sign in here</a></p>
 			<p class="signup group">
 				<strong><em>Up to 90% off retail</em> for mom, baby, and child.</strong>
-				<a title="Register a Totsy account" class="btn" href="/register"><strong>Join Now</strong></a>
+				<a title="Register a Totsy account" class="btn" href="<?php echo $registerlink ?>"><strong>Join Now</strong></a>
 			</p>
 		</div>
 		<article id="jojo" class="public">
