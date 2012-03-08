@@ -21,7 +21,7 @@ class BrandsController extends BaseController {
 		return;
 	}
 
-	public function view() {
+	public function view($id) {
 		$datas = $this->request->args;
 		
 		//hardcoded array of event ids for jojo
@@ -35,7 +35,13 @@ class BrandsController extends BaseController {
 		//query of these six events
 		$openEvents = Event::find('all', array('conditions' => array('_id' => array('$in' => $eventids))));
 		
-		return compact('openEvents');
+		$registerlink = "/register";
+		
+		if($id == "jojo1"){
+			$registerlink = "/a/facebookjojo";
+		}
+		
+		return compact('openEvents','registerlink');
 	}
 
 }
