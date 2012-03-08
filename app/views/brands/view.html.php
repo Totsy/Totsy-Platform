@@ -47,7 +47,7 @@
 							?>
 							<h3><?php echo $nojojoEventTitle; ?></h3>
 						</a>
-						<p><?php echo strip_tags($event['short']); ?></p>
+						<p><?php echo $event['short']; ?></p>
 					</li>
 					<?php } ?>
 				<?php $x++; ?>
