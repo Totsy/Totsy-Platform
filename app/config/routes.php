@@ -18,6 +18,7 @@ use lithium\action\Response;
  * This needs to be first so that we don't get a controller error.
  *
  */
+
 Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request) {
 	$request->type = ($request->type == 'jpg') ? 'jpeg' : $request->type;
 
@@ -40,6 +41,7 @@ Router::connect("/image/{:id:[0-9a-f]{24}}.{:type}", array(), function($request)
 	));
 });
 
+
 Router::connect('/api/help/{:args}', array('controller' => 'API', 'action' => 'help'));
 Router::connect('/api/{:args}', array('controller' => 'API', 'action' => 'index'));
 
@@ -61,6 +63,8 @@ Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/]+}', 'Affiliates::register');
 
 Router::connect('/category/{:args}', 'Events::category');
 Router::connect('/age/{:args}', 'Events::age');
+Router::connect('/brands', 'Brands::index');
+Router::connect('/brands/{:args}', 'Brands::view');
 
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
@@ -129,6 +133,7 @@ Router::connect('/{:category:[a-z_]+}', array(), function($request) {
 /**
  * Finally, connect the default routes.
  */
+
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}.{:type}', array('id' => null));
 Router::connect('/{:controller}/{:action}/{:id:[0-9a-f]{24}}');
 Router::connect('/{:controller}/{:action}/{:args}');
