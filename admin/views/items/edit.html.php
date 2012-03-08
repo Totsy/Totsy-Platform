@@ -164,6 +164,11 @@ tinyMCE.init({
 						'class' => 'general',
 						'value' => $item->sale_whol
 					));?>
+					<?php echo $this->form->field('percent_off', array(
+						'type' => 'text',
+						'class' => 'general',
+						'value' => $item->percent_off
+					));?>
 				</div>
 				<div id="item_properties">
 					<h2 id="">Weight and Dimensions</h2>
