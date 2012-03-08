@@ -22,36 +22,41 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	$logged_in = false;
 				
 	#dynamic affiliate pages
-	if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
-	    $allowed = true;
-	}
-	if(preg_match('#(^affiliate/)[a-zA-Z_]+#', $params['request']->url)) {
-	    $allowed = true;
-	}
-	if (array_key_exists('a',$params['request']->query )) {
-	    $allowed = true;
-	}
-	#join and invites
-	if(preg_match('#(^invitation/)[a-zA-Z0-9\+_]+#', $params['request']->url)) {
-	    $allowed = true;
-	}
-	if(preg_match('#(^join/)[a-zA-Z0-9\+_]+#', $params['request']->url)) {
-	    $allowed = true;
-	}
-	#static pages
-	if(preg_match('#(pages/)#', $params['request']->url)) {
-	    $allowed = true;
-	}
-	
-	#API
-	if(preg_match('#(api/)#', $params['request']->url)) {
-	   $allowed = true;
-	}
-	
-	#FEEDS!
-	if(preg_match('#(feeds/keyade)#', $params['request']->url)) {
-	   $allowed = true;
-	}
+	 if(preg_match('#(^a/)[a-zA-Z_]+#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 if(preg_match('#(^affiliate/)[a-zA-Z_]+#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 if (array_key_exists('a',$params['request']->query )) {
+		 $allowed = true;
+	 }
+	 #join and invites
+	 if(preg_match('#(^invitation/)[a-zA-Z0-9\+_]+#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 if(preg_match('#(^join/)[a-zA-Z0-9\+_]+#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 #static pages
+	 if(preg_match('#(pages/)#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 
+	 #brand pages
+	 if(preg_match('#(brands/)#', $params['request']->url)) {
+		 $allowed = true;
+	 }
+	 
+	 #API
+	 if(preg_match('#(api/)#', $params['request']->url)) {
+	 	$allowed = true;
+	 }
+
+	 #FEEDS!
+	 if(preg_match('#(feeds/keyade)#', $params['request']->url)) {
+	 	$allowed = true;
+	 }
 	 
 	if(strpos($_SERVER['HTTP_USER_AGENT'],"Sailthru Content Spider Totsy/320b7f9e5affcdb166265d6b8797445f")>-1) {
 	 	if (preg_match('#(sale/)#', $params['request']->url) || strpos('sales', $params['request']->url)>-1){
