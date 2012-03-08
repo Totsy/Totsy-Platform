@@ -517,46 +517,44 @@ class OrderExport extends Base {
 				$eventItems = $this->_getOrderItems($eventId);
 				$this->log("Event $eventId has " . count($eventItems) . " items");
 				foreach ($eventItems as $eventItem) {
+					/**
+					* Checking if sku exists, if not find it in the item master
+					* If not in item master create one
+					**/
+				    if (!array_key_exists('sku_details', $eventItem)){
+				    	$this->log("Item {$eventItem['_id']} doesn't have sku_details.  Generating.");
+				          $makeSku = new Item();
+				          $makeSku->generateSku(array($eventItem));
+                          $eventItem = Item::find('first', array(
+                                'conditions' => array('_id' => $eventItem['_id']),
+                                'fields' => array(
+                                    'sale_whol' => true,
+                                    'category' => true,
+                                    'orig_whol' => true,
+                                    '_id' => true,
+                                    'color' => true,
+                                    'product_weight' => true,
+                                    'vendor_style' => true,
+                                    'sku_details' => true,
+                                    'description' => true,
+                                    'details' => true
+                                )
+                            ));
+				    }
 					foreach ($eventItem['details'] as $key => $value) {
 					    $description = implode(' ', array(
 								$eventItem['color'],
 								$key,
 								$eventItem['description']
 							));
-						/**
-						* Checking if sku exists, if not find it in the item master
-						* If not in item master create one
-						**/
-					    if (array_key_exists('sku_details', $eventItem)){
-					        $sku = $eventItem['sku_details'][$key];
-					    } else {
-					        $sku = $this->findSku(String::asciiClean($description), $key);
-
-					        if (!$sku) {
-					            $makeSku = new Item();
-					            $makeSku->generateSku(array($eventItem));
-                              $eventItem = Item::find('first', array(
-                                    'conditions' => array('_id' => $eventItem['_id']),
-                                    'fields' => array(
-                                        'sale_whol' => true,
-                                        'category' => true,
-                                        'orig_whol' => true,
-                                        '_id' => true,
-                                        'color' => true,
-                                        'product_weight' => true,
-                                        'vendor_style' => true,
-                                        'sku_details' => true,
-                                        'description' => true,
-                                        'details' => true
-                                    )
-                                ));
-                                $sku = $eventItem['sku_details'][$key];
-					        }
-					    }
+					    $sku = $eventItem['sku_details'][$key];
 						$conditions = array('SKU' => $sku, 'style' => $eventItem['vendor_style']);
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
 							$fields[$inc]['SKU'] = $sku;
+							if(!empty($sku)) {
+								$fields[$inc]['SKU'] = Item::getUniqueSku($eventItem['vendor'], $eventItem['vendor_style'], $key, $eventItem['color']);
+							}
 							 
 							if ($this->verbose == 'true') {
 								$this->log("Adding SKU: $sku to $handle");
@@ -770,13 +768,12 @@ class OrderExport extends Base {
 	 * Return all the items of an event.
 	 */
 	protected function _getOrderItems($eventId = null) {
+		$itemCollection = Item::collection();
 		$items = null;
 		if ($eventId) {
-			$items = Item::find('all', array(
-				'conditions' => array(
+			$items = $itemCollection->find(array(
 					'event' => array('$in' => array($eventId)
-			    )
-			)));
+					)));
 		}
 		return $items;
 	}

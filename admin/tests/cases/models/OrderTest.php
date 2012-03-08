@@ -481,17 +481,11 @@ class OrderTest extends \lithium\test\Unit {
 		$result = Order::process($order);		
 
 		$orderModified = $ordersCollection->findOne(array('_id' => $order->_id));
-		if($authTotal == $total) {
-			$this->assertTrue($result);
-			$this->assertFalse(empty($orderModified['payment_date']));
-			$this->assertNull($orderModified['auth_error']);
-			$this->assertFalse($orderModified['auth_confirmation'] == -1);
-		} else {
-			$this->assertFalse($result);
-			$this->assertFalse(isset($orderModified['payment_date']));
-			$this->assertFalse(empty($orderModified['auth_error']));
-			$this->assertTrue($orderModified['auth_confirmation'] == -1);
-		}
+		$this->assertTrue($result);
+		$this->assertFalse(empty($orderModified['payment_date']));
+		$this->assertFalse(empty($orderModified['capture_records']));
+		$this->assertNull($orderModified['auth_error']);
+		$this->assertFalse($orderModified['auth_confirmation'] == -1);	
 		Order::remove(array("_id" => $order->_id));
 		Logger::debug('End Process Method Test');
 	}
