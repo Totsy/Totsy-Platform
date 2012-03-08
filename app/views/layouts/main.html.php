@@ -48,8 +48,9 @@ use app\models\Event;
 	<?php echo '<script src="/js/jquery.uniform.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.uniform.min.js') . '" /></script>'; ?>
 	<?php echo '<script src="/js/jquery.countdown.min.js?' . filemtime(LITHIUM_APP_PATH . '/webroot/js/jquery.countdown.min.js') . '" /></script>'; ?>
 	<script>$('html').addClass('js'); /* for js-enabled - avoid FOUC */</script>
-	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements support -->
+	<!-- Kick in the pants for <=IE8 to enable HTML5 semantic elements and CSS3 selectors support -->
 	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<!--[if lte IE 8]><script type="text/javascript" src="/js/selectivizr-min.js"></script><![endif]-->	
 	<?php echo $this->scripts(); ?>
 	<meta http-equiv="Expires" content="<?php echo date('D, d M Y h:i T', strtotime('tomorrow')); ?>"/>
 	<meta property="og:site_name" content="Totsy"/>
@@ -153,7 +154,22 @@ use app\models\Event;
 	</script>
 	<div class="clear"></div>
 	</div>
-	<?php } ?> 
+	<?php } ?>
+	 
+	<?php 
+		/*
+			Brand Promo banner - remove (comment out) when promo is over
+		*/
+		// don't show banner when in /brands directory
+		$query = $_SERVER['REQUEST_URI'];
+		if(!preg_match("/brands/", $query)) { ?>
+		
+			<div class="container_16 brandpromo">
+				<a href="/brands/jojo" title="JoJo Maman B&eacute;b&eacute; Special 10-day Event"><img src="/img/jojo-banner.png" alt="JoJo Maman B&eacute;b&eacute; Special 10-day Event" width="816" height="125" /></a>
+			</div>
+	<?php 
+		} ?>
+	
 	<div id="totsy" class="container_16 roundy glow">
 		
 		<?php echo $this->view()->render(array('element' => 'headerNav'), array('userInfo' => $userInfo, 'credit' => $credit, 'cartCount' => $cartCount, 'fblogout' => $fblogout, 'cartSubTotal' =>$cartSubTotal)); ?>
