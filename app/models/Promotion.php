@@ -43,7 +43,7 @@ class Promotion extends Base {
 				'user_id' => array('$ne' => $user)
 		)));
 	}
-	public function promoCheck($entity, $code, $user, array $variables){
+	public function promoCheck($entity, $code, $user, array $variables, $isOnlyDigital = false){
             extract($variables);
             $entity->code = $code;
             $success = false;
@@ -102,10 +102,10 @@ class Promotion extends Base {
                         	$entity->type = "dollar";
                             Cart::updateSavings(null, 'discount', -$entity->saved_amount);
                         }
-                        if ($code->type == 'free_shipping' && !($entity->errors()) && empty($services['freeshipping']['enable'])) {
+                        if ($code->type == 'free_shipping' && !($entity->errors()) && empty($services['freeshipping']['enable']) && !$isOnlyDigital) {
                             $entity->type = "free_shipping";
-                             $entity->saved_amount = -($shippingCost + $overShippingCost);
-                            Cart::updateSavings(null, 'discount', $shippingCost + $overShippingCost);
+                           	$entity->saved_amount = -(7.95);
+                            Cart::updateSavings(null, 'discount', 7.95);
                         }
                         Session::write('promocode', $code->data(), array('name' => 'default'));   
                     } else {
