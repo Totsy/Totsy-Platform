@@ -104,10 +104,10 @@ padding: 0;
 	function fbLogin() {
 		FB.login(function(response) {
 	    	if (response.authResponse) {
-	    		if(affiliateCode) {
-    				window.open("/a/" + affiliateCode);
+	    		if (affiliateCode) {
+    				window.parent.location = "/a/" + affiliateCode + "/sales";
     			} else {
-    				window.open("/sales");
+    				window.parent.location = "/sales";
     			}
 	    	}	
 		}, 		 
