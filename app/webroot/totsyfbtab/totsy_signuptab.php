@@ -42,7 +42,7 @@ xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 	outline: none;
 }
 
-h2{
+h2 {
 color: #999;
 font-size: 18px;
 font-weight: normal;
@@ -104,10 +104,10 @@ padding: 0;
 	function fbLogin() {
 		FB.login(function(response) {
 	    	if (response.authResponse) {
-	    		if(affiliateCode) {
-    				window.open("/a/" + affiliateCode);
+	    		if (affiliateCode) {
+    				window.parent.location = "/a/" + affiliateCode + "/sales";
     			} else {
-    				window.open("/sales");
+    				window.parent.location = "/sales";
     			}
 	    	}	
 		}, 		 
