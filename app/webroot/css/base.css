@@ -3625,7 +3625,7 @@ a.nivo-prevNav {
 	padding:5px;
 	background:#ed1c25;
 	color:#fff;
-	border-bottom:1px solid #ccc;
+	border-bottom:1px solid #666;
 	text-align:center;
 }
 
@@ -4689,7 +4689,11 @@ nav .haschild li a:hover {
 #userUtils .cart strong {color:#ED1C25;}
 #userUtils .cart *:hover {text-decoration:underline;}
 #userUtils .cart strong {font-size:14px; font-weight: bold;}
-#userUtils .btn, .modal .btn { /* @TODO - abstract out all .btn styles… need design consistency / standards */
+
+/* @TODO - abstract out all .btn styles… need design consistency / standards */
+#userUtils .btn,
+.modal .btn,
+#jojoLoggedOut .btn {
 	padding:1px 10px 0;
 	background: url(../img/btn-glass.png) 0 50.5% repeat-x;
 	border:1px solid rgba(0,0,0,0);
@@ -4700,18 +4704,21 @@ nav .haschild li a:hover {
 	box-shadow: 0px 1px 2px rgba(0,0,0,0.45);
 	font:bold 10px/0 Helvetica, Arial, sans-serif;
 	text-transform: uppercase; 
-
 }
 #userUtils .cart:hover,
-#userUtils .btn:hover {text-decoration: none;}
-#userUtils .checkout {
+#userUtils .btn:hover,
+#jojoLoggedOut .btn:hover {text-decoration: none;}
+#userUtils .checkout,
+#jojoLoggedOut .btn {
 	float: left;
 	background-color:rgb(218,80,77); /* fallback */
 	background-color:rgba(218,80,77,1);
 	color:#fff;
 }
 .modal .btn {background-color:#DA504D;}
-#userUtils .checkout strong, .modal .btn strong {
+#userUtils .checkout strong,
+.modal .btn strong,
+#jojoLoggedOut .btn strong {
 	padding-right:9px;
 	background: url(../img/btn-arrow-s.png) 100% 25% no-repeat;
 	line-height: 1.6;
@@ -4938,6 +4945,186 @@ h2.page-title em {color:#919294; font-size:12px; font-weight: bold;}
 #badges > div {display:inline-block; margin-left:5px;}
 #badges > div:first-child {margin-left:0;}
 #badges .truste {position: relative; top:-16px; margin-right:2px;}
+
+/* 
+	Brand Promos - global banners in header for brand promotions 
+*/
+/* brand promo banner */
+.brandpromo {text-align: center;}
+.brandpromo > a {
+	display: inline-block;
+	line-height: 0;
+}
+.brandpromo + #totsy {margin-top: -6px;}
+.brandpromo + #totsy > header {margin-top:-28px; padding-top:0;}
+.brandpromo + #totsy > header #invite {display: none;}
+
+/* brand promo landing page 
+	- currently this is sandboxed to just the #jojo promo
+	- possibly abstract out for repeated use… in an ideal DRY world, where things are done the right way with reuse in mind
+*/
+#jojo {
+	margin:-20px auto 15px;
+	width:920px;
+}
+#jojo.public {margin-top:-30px;}
+
+#jojo h2 {
+	height: 99px;
+	background: url(../img/jojo-header-title.gif) 0 0 no-repeat;
+	text-indent: -999em;
+}
+#jojo > section {
+	padding:15px 15px 0;
+	background:#b8d1ee url(../img/jojo-bg-flags.png) 0 15px no-repeat;
+}
+#jojo header {
+	margin:0 0 45px;
+	border-bottom:1px solid transparent;
+}
+#jojo header section {
+	padding:95px 30px 0 10px;
+	color:#44749e;
+	font-size:14px;
+}
+#jojo header section p {margin-top:1em;}
+#jojo header section p:first-child {margin-top: 0;}
+#jojo header aside.video {
+	float: right;
+	margin:0 0 0.75em 1.5em;
+	width:400px;
+	border:10px solid #fff;
+	box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+	line-height: 0;
+}
+ul.bp-events {
+	margin:0 auto; 
+	*margin-top:285px; /* IE7 hack… so ashamed */
+	width:885px;
+}
+ul.bp-events li {
+	float: left;
+	margin:0 0 35px 53px;
+}
+ul.bp-events li:first-child {margin-left:5px;} /* fallback for <IE8 while selectivizr loads */
+ul.bp-events li:nth-child(3n+1) {margin-left:5px;}
+ul.bp-events img {
+	display: block;
+	border:10px solid #fff;
+	box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+}
+ul.bp-events li h3 {
+	margin:6px 0 17px; padding:0 30px 9px 0;
+	width:226px; overflow: hidden;
+	background: url(../img/jojo-bg-etitle.png) 0 100% no-repeat;
+	color: #44749f;
+	font:300 20px/1.66 Univers, Frutiger, 'Frutiger Linotype', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	letter-spacing: 0.045em; text-indent: 2px; text-overflow: ellipsis; white-space: nowrap;
+}
+ul.bp-events li a:hover {text-decoration: none;}
+ul.bp-events li p {
+	width:256px; height: 35px; overflow: hidden; text-overflow: ellipsis; /* height and overflow is attempt to limit to 2 lines… should be controlled in admin/cms however */
+	color:#44749e;
+	font-size:14px; line-height: 1.21;
+}
+
+/* transforms */
+ul.bp-events li:nth-of-type(3n+1) img {	
+	-moz-transform: rotate(-2deg) translate(4px,0px);
+	-moz-transform-origin: 100% 100%;
+	-ms-transform: rotate(-2deg) translate(4px,0px);
+	-ms-transform-origin: 100% 100%;
+	-o-transform: rotate(-2deg) translate(4px,0px);
+	-o-transform-origin: 100% 100%;
+	-webkit-transform: rotate(-2deg) translate(4px,0px);
+	-webkit-transform-origin: 100% 100%;
+	transform: rotate(-2deg) translate(4px,0px);
+	transform-origin: 100% 100%;
+}
+ul.bp-events li:nth-of-type(3n+2) img {
+	-moz-transform: rotate(1deg) translate(-3px,1px);
+	-moz-transform-origin: 100% 100%;
+	-ms-transform: rotate(1deg) translate(-3px,1px);
+	-ms-transform-origin: 100% 100%;
+	-o-transform: rotate(1deg) translate(-3px,1px);
+	-o-transform-origin: 100% 100%;
+	-webkit-transform: rotate(1deg) translate(-3px,1px);
+	-webkit-transform-origin: 100% 100%;
+	transform: rotate(1deg) translate(-3px,1px);
+	transform-origin: 100% 100%;
+} 
+ul.bp-events li:nth-of-type(3n) img {
+	-moz-transform: rotate(-2deg) translate(3px,2px);
+	-moz-transform-origin: 0% 100%;
+	-ms-transform: rotate(-2deg) translate(3px,2px);
+	-ms-transform-origin: 0% 100%;
+	-o-transform: rotate(-2deg) translate(3px,2px);
+	-o-transform-origin: 0% 100%;
+	-webkit-transform: rotate(-2deg) translate(3px,2px);
+	-webkit-transform-origin: 0% 100%;
+	transform: rotate(-2deg) translate(3px,2px);
+	transform-origin: 0% 100%;
+}
+
+/* transitions and hover states
+	- just playing around, trying stuff. Biz put the kabosh on these, commenting out declarations */
+/*
+ul.bp-events li a img {
+	-moz-transition: all 0.4s linear;
+	-ms-transition: all 0.4s linear;
+	-o-transition: all 0.4s linear;
+	-webkit-transition: all 0.4s linear;
+	transition: all 0.4s linear;
+}
+ul.bp-events li a:hover img {
+	-moz-transform:rotate(0) translate(0,0);
+	-moz-transform-origin: 50% 50%;
+	-ms-transform:rotate(0) translate(0,0);
+	-ms-transform-origin: 50% 50%;
+	-o-transform:rotate(0) translate(0,0);
+	-o-transform-origin: 50% 50%;
+	-webkit-transform:rotate(0) translate(0,0);
+	-webkit-transform-origin: 50% 50%;
+	transform:rotate(0) translate(0,0);
+	transform-origin: 50% 50%;
+}
+*/
+
+/* logged out jojo public view */
+#jojoLoggedOut {
+    position: absolute; right: 0; top: 0;
+    z-index: 1000;
+    margin: -20px 20px 0 0;
+    width: 257px;
+}
+#jojoLoggedOut .signin {
+	text-align: right;
+}
+#jojoLoggedOut .signup {
+	margin-top:5px;
+}
+#jojoLoggedOut .signup > strong {
+	float: left;
+	margin-top:3px;
+	width:150px;
+	color:#ef4036;
+	font-size: 13.12px; font-weight: normal; line-height: 1.1;
+}
+#jojoLoggedOut .signup > strong em {
+	display: block;
+	font-size:15.9px ; font-weight: bold;
+}
+
+#jojoLoggedOut .btn {
+	float:right;
+	margin-top:5px;
+	font-size:1.1em;
+}
+#jojoLoggedOut .btn strong {
+	padding-right:12px;
+	background:url(../img/btn-arrow-lg.png) 100% 25% no-repeat;
+	font-weight: 500; letter-spacing: 0.025em;
+}
 
 /* credits on my account */
 table.credits {border-bottom:1px solid #ddd;}
