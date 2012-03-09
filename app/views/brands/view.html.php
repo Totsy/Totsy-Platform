@@ -33,8 +33,8 @@
 					<li>
 						<a href="<?php echo '/sale/' . $event['url'];?>" title="Go to <?php echo $event['name']; ?> sale">
 							<?php // image check and store
-								if($event['images']['splash_big_image'] !== null) { 
-									$eventImage = "/image/" . $event['images']['splash_big_image'] . ".jpg";
+								if($event['images']['splash_small_image'] !== null) { 
+									$eventImage = "/image/" . $event['images']['splash_small_image'] . ".jpg";
 								} else {
 									$eventImage = '/img/no-image-small.jpeg';
 								}
