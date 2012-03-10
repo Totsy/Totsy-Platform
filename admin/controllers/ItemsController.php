@@ -190,6 +190,83 @@ class ItemsController extends BaseController {
 					'categories', 'ages', 'category_filters', 'age_filters');
 	}
 
+	public function clearancedata() {
+		if ($this->request->data) {
+
+		$itemsCollection = Item::Collection();
+		$itemsCollection->ensureIndex(array('skus' => 1));
+		$idx = 0;
+		$stats[0] = array('sku', 'vendor', 'description', 'sale_whol', 'sale_retail', 'quantity');
+		$idx++;
+		$count = 0;
+		$sum = 0;
+		$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
+
+
+		$highestRow = $fullarray[0];
+		$totalrows = count($fullarray);
+		$totalcols = count($highestRow);
+
+		for ($row = 0; $row <= $totalrows; ++ $row ) {
+			if($row>0&&$fullarray[$row][0]){
+				$current_sku = $fullarray[$row][0];
+				if($current_sku){
+					$items_skus[] = $current_sku;
+					$datas[$current_sku] = array();
+				}
+			}
+			for ($col = 0; $col < $totalcols; ++ $col) {
+				$val = $fullarray[$row][$col];
+
+				if ($row == 0) {
+					if(($val)||($val==0)){
+						$heading[] = $val;
+					}
+				} else {
+					if (isset($heading[$col])) {
+						if($heading[$col] === "sku") {
+							if (!empty($val)) {
+								$datas[$current_sku]['sku'] = $val;
+							}
+						} else{
+							$thiskey = $heading[$col];
+							if (!empty($val)) {
+								$datas[$current_sku][$thiskey] = $val;
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+
+
+				$heading[] = "vendor";
+				$heading[] = "resultdescription";
+				$heading[] = "sale_whol";
+				$heading[] = "sale_retail";
+
+		foreach($items_skus as $sku) {
+			$result = $itemsCollection->findOne(array('skus' => trim($sku)));
+			if(!empty($result)) {
+				
+				$datas[$sku]['vendor'] = trim($result['vendor']);
+				$datas[$sku]['resultdescription'] = trim($result['description']);
+				$datas[$sku]['sale_whol'] = trim($result['sale_whol']);
+				$datas[$sku]['sale_retail'] = trim($result['sale_retail']);
+				$idx++;
+			}
+		}
+	
+	}
+	return compact('datas', 'items', 'fullarray','heading');
+	}
+	
+	
+	
+	
+	
 	public function preview() {
 		$itemUrl = $this->request->item;
 		$eventUrl = $this->request->event;
