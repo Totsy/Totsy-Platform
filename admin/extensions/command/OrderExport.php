@@ -552,7 +552,7 @@ class OrderExport extends Base {
 						$itemMasterCheck = ItemMaster::count(compact('conditions'));
 						if ($itemMasterCheck == 0){
 							$fields[$inc]['SKU'] = $sku;
-							if(!empty($sku)) {
+							if(empty($sku)) {
 								$fields[$inc]['SKU'] = Item::getUniqueSku($eventItem['vendor'], $eventItem['vendor_style'], $key, $eventItem['color']);
 							}
 							 
@@ -584,8 +584,9 @@ class OrderExport extends Base {
 					}
 					++$inc;
 				}
+				++$count;
 			    if ($event_count != 0) {
-                    $this->queue->percent = (float)number_format((($inc/$event_count) * 100), 2);
+                    $this->queue->percent = (float)number_format((($count/$event_count) * 100), 2);
                     $this->queue->save();
                 }
 			}
