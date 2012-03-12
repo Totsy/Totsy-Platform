@@ -1,4 +1,6 @@
 <?php 
+header("p3p: CP=\"ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV\"");
+
 use lithium\net\http\Router; 
 use lithium\storage\Session;
 ?>
