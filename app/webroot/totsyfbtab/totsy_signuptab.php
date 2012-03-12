@@ -1,6 +1,5 @@
-<?php 
-header("p3p: CP=\"ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV\"");
-//header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+<?php
+header('P3P: CP="NOI ADM DEV PSAi NAV OUR STP IND DEM"');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" 
@@ -109,14 +108,8 @@ padding: 0;
 		FB.login(function(response) {
 	    	if (response.authResponse) {
 	    		if (affiliateCode) {
-	    			<?php
-	    			header("P3P","CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");	
-	    			 ?>
     				window.parent.location = "/a/" + affiliateCode + "/sales";
     			} else {
-    				<?php 
-    				header("P3P","CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");
-    				?>
     				window.parent.location = "/sales";
     			}
 	    	}	
