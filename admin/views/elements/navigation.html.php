@@ -45,6 +45,9 @@
 			<li>
 				<?php echo $this->html->link('Bulk Cancelation of Items', 'Items::bulkCancel'); ?>
 			</li>
+			<li>
+				<?php echo $this->html->link('Clearance BO XLS', 'Items::clearancedata'); ?>
+			</li>
 		</ul>
 	</li>
 	<li>
