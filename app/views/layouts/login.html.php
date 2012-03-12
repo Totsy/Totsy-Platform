@@ -112,6 +112,8 @@ $titleTag = "Totsy, the private sale site for Moms";
 		var fbLogout = "<?php echo $logout; ?>";	
 	
       	window.fbAsyncInit = function() {
+      		FB._https = true;
+      	
         	FB.init({
         	  appId   : <?php echo $fbconfig['appId']; ?>,
         	  session : <?php echo json_encode($fbsession); ?>, // don't refetch the session when PHP already has it
