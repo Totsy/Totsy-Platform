@@ -243,6 +243,12 @@ class ItemsController extends BaseController {
 
 
 				$heading[] = "vendor";
+				$heading[] = "vendor_style";
+				$heading[] = "category";
+				$heading[] = "sub_category";
+				$heading[] = "age";
+				$heading[] = "color";
+				$heading[] = "size";
 				$heading[] = "resultdescription";
 				$heading[] = "sale_whol";
 				$heading[] = "sale_retail";
@@ -250,8 +256,15 @@ class ItemsController extends BaseController {
 		foreach($items_skus as $sku) {
 			$result = $itemsCollection->findOne(array('skus' => trim($sku)));
 			if(!empty($result)) {
+				$keyvalue = array_search($sku, $result['sku_details']);
 				
 				$datas[$sku]['vendor'] = trim($result['vendor']);
+				$datas[$sku]['vendor_style'] = trim($result['vendor_style']);
+				$datas[$sku]['category'] = trim($result['category']);
+				$datas[$sku]['sub_category'] = trim($result['sub_category']);
+				$datas[$sku]['age'] = trim($result['age']);
+				$datas[$sku]['color'] = trim($result['color']);
+				$datas[$sku]['size'] = $keyvalue;
 				$datas[$sku]['resultdescription'] = trim($result['description']);
 				$datas[$sku]['sale_whol'] = trim($result['sale_whol']);
 				$datas[$sku]['sale_retail'] = trim($result['sale_retail']);
