@@ -94,7 +94,26 @@ class EventsController extends BaseController {
 		return compact('event');
 	}
 
-	//public function uploadcheck_clearance() {
+	public function uploadcheck_clearance() {
+	    $this->_render['layout'] = false;
+	    unset($branch);
+		//$this->_render['head'] = true;
+		$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
+		//return Event::check_spreadsheet($fullarray, $this->_mapCategories);
+		$yoink = $this->parseItems_clearance($fullarray, $_id);
+		if($yoink['count']){
+			$output .= "there are " . $yoink['count'] . "skus with no data<br><br>";
+			foreach($yoink['skus'] as $val){
+				$output .= Event::makecell($val);
+			}
+			return $output;
+		}
+		else{
+			return "success";
+		}		
+	}
+
+
 	public function uploadcheck() {
 	    $this->_render['layout'] = false;
 	    unset($branch);
@@ -196,6 +215,9 @@ class EventsController extends BaseController {
 		//mongo query, find all items with skus
 		$items_with_skus = Item::find('all', array('conditions' => array( 'skus' => array( '$in' => $items_skus))));
 
+
+		$items_skus_leftover = $items_skus;
+
 		//loop through returned item results
 		foreach($items_with_skus as $olditem){
 
@@ -250,7 +272,6 @@ class EventsController extends BaseController {
 						$oitem['categories'] = $items_categories[$sku_details];
 
 
-
 						//set sales to 0 for all sizes
 						//$oitem['sale_details'][$sku_details_key]['sale_count'] = 0;
 
@@ -260,8 +281,8 @@ class EventsController extends BaseController {
 						$total_quantity_new += $items_quantities[$sku_details];
 
 						//remove this sku from items_skus
-						//$key = array_search($sku_details, $items_skus);
-						//unset($items_skus[$key]);
+						$key = array_search($sku_details, $items_skus_leftover);
+						unset($items_skus_leftover[$key]);
 					}
 				}
 			}
@@ -319,7 +340,18 @@ class EventsController extends BaseController {
 				$items[] = $new_id;
 			}
 		}
-		return $items;
+		
+		$leftoverskucount = count($items_skus_leftover);
+		if($leftoverskucount>0){
+			$falsereturn = array();
+			$falsereturn['count'] = $leftoverskucount;
+			$falsereturn['skus'] = $items_skus_leftover;
+			
+			return $falsereturn;
+		}
+		else{
+			return $items;
+		}
 	}
 
 

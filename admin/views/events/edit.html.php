@@ -75,6 +75,21 @@ function checkspreadsheet(){
 	});
 }
 
+
+function checkspreadsheetclearance(){
+	params = new object();
+	params.ItemsSubmit = $("#ItemsSubmit").val();
+
+	$.post('/events/uploadcheck_clearance', params, function(result) {
+		if(result.substring(0,7)=="success"){
+			$("#events_edit").submit();
+		}
+		else{
+			$("#items_errors").html(result);
+		}
+	});
+}
+
 </script>
 
 <style>
@@ -390,7 +405,8 @@ div.xls_cell:hover{
 				<?php echo $this->form->field('ItemsSubmit', array('type' => 'textarea', 'rows' => '7', 'cols' => '50', 'name' => 'ItemsSubmit'));?><br>
 
 			<?php if ($event->clearance == 1){ ?>
-			<?php echo $this->form->submit('Update Event')?>
+			<?php //echo $this->form->submit('Update Event')?>
+			<input type="button" value="Update Event" onclick="checkspreadsheetclearance();">
 			
 			<?php } else{ ?>
 
