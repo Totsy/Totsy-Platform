@@ -108,14 +108,8 @@ padding: 0;
 		FB.login(function(response) {
 	    	if (response.authResponse) {
 	    		if (affiliateCode) {
-	    			<?php
-	    			header("P3P","CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");	
-	    			 ?>
     				window.parent.location = "/a/" + affiliateCode + "/sales";
     			} else {
-    				<?php 
-    				header("P3P","CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");
-    				?>
     				window.parent.location = "/sales";
     			}
 	    	}	
