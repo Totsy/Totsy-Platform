@@ -1,5 +1,5 @@
 <?php
-header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"')
+header('P3P: CP="NOI ADM DEV PSAi NAV OUR STP IND DEM"');
 ?>
 <?php 
 use lithium\net\http\Router; 
