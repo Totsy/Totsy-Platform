@@ -190,6 +190,96 @@ class ItemsController extends BaseController {
 					'categories', 'ages', 'category_filters', 'age_filters');
 	}
 
+	public function clearancedata() {
+		if ($this->request->data) {
+
+		$itemsCollection = Item::Collection();
+		$itemsCollection->ensureIndex(array('skus' => 1));
+		$idx = 0;
+		$stats[0] = array('sku', 'vendor', 'description', 'sale_whol', 'sale_retail', 'quantity');
+		$idx++;
+		$count = 0;
+		$sum = 0;
+		$fullarray = Event::convert_spreadsheet($this->request->data['ItemsSubmit']);
+
+
+		$highestRow = $fullarray[0];
+		$totalrows = count($fullarray);
+		$totalcols = count($highestRow);
+
+		for ($row = 0; $row <= $totalrows; ++ $row ) {
+			if($row>0&&$fullarray[$row][0]){
+				$current_sku = $fullarray[$row][0];
+				if($current_sku){
+					$items_skus[] = $current_sku;
+					$datas[$current_sku] = array();
+				}
+			}
+			for ($col = 0; $col < $totalcols; ++ $col) {
+				$val = $fullarray[$row][$col];
+
+				if ($row == 0) {
+					if(($val)||($val==0)){
+						$heading[] = $val;
+					}
+				} else {
+					if (isset($heading[$col])) {
+						if($heading[$col] === "sku") {
+							if (!empty($val)) {
+								$datas[$current_sku]['sku'] = $val;
+							}
+						} else{
+							$thiskey = $heading[$col];
+							if (!empty($val)) {
+								$datas[$current_sku][$thiskey] = $val;
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+
+
+				$heading[] = "vendor";
+				$heading[] = "vendor_style";
+				$heading[] = "category";
+				$heading[] = "sub_category";
+				$heading[] = "age";
+				$heading[] = "color";
+				$heading[] = "size";
+				$heading[] = "resultdescription";
+				$heading[] = "sale_whol";
+				$heading[] = "sale_retail";
+
+		foreach($items_skus as $sku) {
+			$result = $itemsCollection->findOne(array('skus' => trim($sku)));
+			if(!empty($result)) {
+				$keyvalue = array_search($sku, $result['sku_details']);
+				
+				$datas[$sku]['vendor'] = trim($result['vendor']);
+				$datas[$sku]['vendor_style'] = trim($result['vendor_style']);
+				$datas[$sku]['category'] = trim($result['category']);
+				$datas[$sku]['sub_category'] = trim($result['sub_category']);
+				$datas[$sku]['age'] = trim($result['age']);
+				$datas[$sku]['color'] = trim($result['color']);
+				$datas[$sku]['size'] = $keyvalue;
+				$datas[$sku]['resultdescription'] = trim($result['description']);
+				$datas[$sku]['sale_whol'] = trim($result['sale_whol']);
+				$datas[$sku]['sale_retail'] = trim($result['sale_retail']);
+				$idx++;
+			}
+		}
+	
+	}
+	return compact('datas', 'items', 'fullarray','heading');
+	}
+	
+	
+	
+	
+	
 	public function preview() {
 		$itemUrl = $this->request->item;
 		$eventUrl = $this->request->event;
