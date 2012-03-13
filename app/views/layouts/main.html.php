@@ -162,7 +162,7 @@ use app\models\Event;
 		*/
 		// don't show banner when in /brands directory
 		$query = $_SERVER['REQUEST_URI'];
-		if(!preg_match("/brands/", $query)) { ?>
+		if(!preg_match("/brands/", $query) && $isWhiteLabel==false) { ?>
 		
 			<div class="container_16 brandpromo">
 				<a href="/brands/jojo" title="JoJo Maman B&eacute;b&eacute; Special 10-day Event"><img src="/img/jojo-banner.png" alt="JoJo Maman B&eacute;b&eacute; Special 10-day Event" width="816" height="125" /></a>
