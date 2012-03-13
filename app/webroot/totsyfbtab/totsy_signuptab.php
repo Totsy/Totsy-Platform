@@ -1,10 +1,7 @@
-<?php 
-header("p3p: CP=\"ALL DSP COR PSAa PSDa OUR NOR ONL UNI COM NAV\"");
-//header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
-?>
+<?php header('P3P: CP="ALL IND DSP COR ADM CONo CUR CUSo IVAo IVDo PSA PSD TAI TELo OUR SAMo CNT COM INT NAV ONL PHY PRE PUR UNI"'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" 
-xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
+xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
 <head>
 
 <?php 
@@ -36,7 +33,7 @@ xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 
 
 <title>Totsy Registration</title>
-    <script src="http://connect.facebook.net/en_US/all.js" language="Javascript" type="text/javascript"></script>
+    <script src="https://connect.facebook.net/en_US/all.js" language="Javascript" type="text/javascript"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta property="fb:app_id" content="<?php echo $appId; ?>"/>
 
@@ -83,6 +80,7 @@ padding: 0;
 	var submitted = false;
 	var appId = "<?php echo $appId; ?>";
 	var affiliateCode = "<?php echo $affiliateCode; ?>";
+	var domain = "<?php echo $_SERVER['HTTP_HOST']; ?>";
 	
     window.fbAsyncInit = function() {
         FB.init({
@@ -109,15 +107,9 @@ padding: 0;
 		FB.login(function(response) {
 	    	if (response.authResponse) {
 	    		if (affiliateCode) {
-	    			<?php
-	    			header("P3P","CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");	
-	    			 ?>
-    				window.parent.location = "/a/" + affiliateCode + "/sales";
+    				window.parent.location = "http://" + domain + "/a/" + affiliateCode + "/sales";
     			} else {
-    				<?php 
-    				header("P3P","CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");
-    				?>
-    				window.parent.location = "/sales";
+    				window.parent.location = "http://" + domain + "/sales";
     			}
 	    	}	
 		}, 		 
