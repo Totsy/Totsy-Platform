@@ -80,6 +80,7 @@ padding: 0;
 	var submitted = false;
 	var appId = "<?php echo $appId; ?>";
 	var affiliateCode = "<?php echo $affiliateCode; ?>";
+	var domain = "<?php echo $_SERVER['HTTP_HOST']; ?>";
 	
     window.fbAsyncInit = function() {
         FB.init({
@@ -106,9 +107,9 @@ padding: 0;
 		FB.login(function(response) {
 	    	if (response.authResponse) {
 	    		if (affiliateCode) {
-    				window.parent.location = "/a/" + affiliateCode + "/sales";
+    				window.parent.location = "http://" + domain + "/a/" + affiliateCode + "/sales";
     			} else {
-    				window.parent.location = "/sales";
+    				window.parent.location = "http://" + domain + "/sales";
     			}
 	    	}	
 		}, 		 
