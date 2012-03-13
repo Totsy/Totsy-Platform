@@ -235,110 +235,97 @@ class UsersController extends BaseController {
 	 * @param array $data
 	 * @return boolean
 	 */
-		public static function registration($data = null) {
-			$saved = false;
-			
-			$whiteLabel = false;
-			
-			if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
-				$whiteLabel = true;
-			} 
+	public static function registration($data = null) {
+		$saved = false;
+		
+		$whiteLabel = false;
+		
+		if(Session::read('layout', array('name' => 'default'))=='mamapedia') {
+			$whiteLabel = true;
+		} 
 
-			if ($data) {
-			
-				$data['email'] = strtolower($data['email']);
-				$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
-				$data['email_hash'] = md5($data['email']);
-				$user = User::create($data);
+		if ($data) {
+		
+			$data['email'] = strtolower($data['email']);
+			$data['emailcheck'] = ($data['email'] == $data['confirmemail']) ? true : false;
+			$data['email_hash'] = md5($data['email']);
+			$user = User::create($data);
 
-				if ($user->validates()) {
-					$email = $data['email'];
-					$plaintext_password = $data['password'];
-					$data['password'] = sha1($data['password']);
-					$data['created_date'] = User::dates('now');
-					$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
-					$inviteCheck = User::count( array(
-							'invitation_codes' => $data['invitation_codes']
-							));
-					if ($inviteCheck > 0) {
-						$data['invitation_codes'] = array(static::randomString());
+			if ($user->validates()) {
+				$email = $data['email'];
+				$plaintext_password = $data['password'];
+				$data['password'] = sha1($data['password']);
+				$data['created_date'] = User::dates('now');
+				$data['invitation_codes'] = array(substr($email, 0, strpos($email, '@')));
+				$inviteCheck = User::count( array(
+						'invitation_codes' => $data['invitation_codes']
+						));
+				if ($inviteCheck > 0) {
+					$data['invitation_codes'] = array(static::randomString());
+				}
+				
+				if ($saved = $user->save($data)) {
+					
+					$mailTemplate = "";
+					$invitedFlag = false;
+					
+					if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
+						$mailTemplate = 'Welcome_Free_Shipping';
+					} else {
+						$mailTemplate = 'Welcome_Mamasource_1-31';
+						$invitedFlag = true;	
+					}
+			
+					Session::write('userLogin', $user , array('name' => 'default'));
+					$params = array();
+
+					$data = array(
+						'user' => $user,
+						'email' => $user->email
+					);
+
+					if (isset($user['clear_token'])) {
+						$mailTemplate = (!$whiteLabel ? 'Welcome_auto_passgen' : 'Reset_Password_Mamasource');						
+						$params['token'] = $user['clear_token'];
 					}
 					
-					if ($saved = $user->save($data)) {
-						
-						$mailTemplate = "";
-						$invitedFlag = false;
-						
-						if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
-							$mailTemplate = 'Welcome_Free_Shipping';
-						} else {
-							$mailTemplate = 'Welcome_Mamasource_1-31';
-							$invitedFlag = true;	
-
-				
-						Session::write('userLogin', $user , array('name' => 'default'));
-						$mail_template = 'Welcome_Free_Shipping';
-						$params = array();
-
-						$data = array(
-							'user' => $user,
-							'email' => $user->email
-						);
-
-						if (isset($user['clear_token'])) {
-							$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');						
-							$params['token'] = $user['clear_token'];
-						}
-						
-						if (isset($user['requires_set_password'])) {
-							$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');
-							$params['token'] = $plaintext_password;
-						}
-						
-							$params = array();
-						
-							$data = array(
-								'user' => $user,
-								'email' => $user->email
-							);
-						
-							if (isset($user['clear_token'])) {
-								$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');
-								$params['token'] = $user['clear_token'];
-							}
-														
-							Mailer::send($mailTemplate, $user->email,$params);
-							
-							$args = array();
-							if (!empty($user->firstname)) $args['name'] = $user->firstname;
-							if (!empty($user->lastname)) $args['name'] = $args['name'] . $user->lastname;
-							if (!empty($user->invited_by)) {
-							    $affiliate_cusror = Affiliate::collection()->find(array('invitation_codes'=>$user->invited_by));
-							    if ($affiliate_cusror->hasNext()) {
-							    	$affiliate = $affiliate_cusror->getNext();
-							    	$args['source'] = $affiliate['name'];
-							    	unset($affiliate);
-							    }
-							    unset($affiliate_cusror);
-							}
-							
-							if($invitedFlag==true){
-								Mailer::addToMailingList($data['email'],$args, array("Mamasource"=>1));
-							} else {
-								Mailer::addToMailingList($data['email'],$args);
-							}
-							
-							Mailer::addToSuppressionList($data['email']);
-						
+					if (isset($user['requires_set_password'])) {
+						$mailTemplate = (!$whiteLabel ? 'Welcome_auto_passgen' : 'Reset_Password_Mamasource');
+						$params['token'] = $plaintext_password;
 					}
+
+					Mailer::send($mailTemplate, $user->email,$params);
+						
+					$args = array();
+					if (!empty($user->firstname)) $args['name'] = $user->firstname;
+					if (!empty($user->lastname)) $args['name'] = $args['name'] . $user->lastname;
+					if (!empty($user->invited_by)) {
+					    $affiliate_cusror = Affiliate::collection()->find(array('invitation_codes'=>$user->invited_by));
+					    if ($affiliate_cusror->hasNext()) {
+					    	$affiliate = $affiliate_cusror->getNext();
+					    	$args['source'] = $affiliate['name'];
+					    	unset($affiliate);
+					    }
+					    unset($affiliate_cusror);
+					}
+						
+					if($invitedFlag==true){
+						Mailer::addToMailingList($data['email'],$args, array("Mamasource"=>1));
+					} else {
+						Mailer::addToMailingList($data['email'],$args);
+					}
+					
+					Mailer::addToSuppressionList($data['email']);
+					
 				}
 			}
-			/**
-			* @see app/controllers/MomOfTheWeeksController.php
-			**/
-			return compact('saved','user');
 		}
-	}	
+		/**
+		* @see app/controllers/MomOfTheWeeksController.php
+		**/
+		return compact('saved','user');
+	}
+		
 	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
