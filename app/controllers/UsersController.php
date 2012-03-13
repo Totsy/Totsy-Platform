@@ -273,11 +273,11 @@ class UsersController extends BaseController {
 							$mailTemplate = 'Welcome_Free_Shipping';
 						} else {
 							$mailTemplate = 'Welcome_Mamasource_1-31';
-							$invitedFlag = true;	
-
+								$invitedFlag = true;	
+						}
 				
 						Session::write('userLogin', $user , array('name' => 'default'));
-						$mail_template = 'Welcome_Free_Shipping';
+						//$mailTemplate = 'Welcome_Free_Shipping';
 						$params = array();
 
 						$data = array(
@@ -286,26 +286,26 @@ class UsersController extends BaseController {
 						);
 
 						if (isset($user['clear_token'])) {
-							$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');						
+							$mailTemplate = (!$whiteLabel ? 'Welcome_auto_passgen' : 'Reset_Password_Mamasource');						
 							$params['token'] = $user['clear_token'];
 						}
 						
 						if (isset($user['requires_set_password'])) {
-							$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');
+							$mailTemplate = (!$whiteLabel ? 'Welcome_auto_passgen' : 'Reset_Password_Mamasource');
 							$params['token'] = $plaintext_password;
 						}
 						
-							$params = array();
-						
+							/*$params = array();
+							
 							$data = array(
 								'user' => $user,
 								'email' => $user->email
-							);
+							); 
 						
 							if (isset($user['clear_token'])) {
 								$mail_template = ($whiteLabel ? 'Welcome_auto_passgen' : 'reset_password_maintenance');
 								$params['token'] = $user['clear_token'];
-							}
+							}*/
 														
 							Mailer::send($mailTemplate, $user->email,$params);
 							
@@ -338,7 +338,7 @@ class UsersController extends BaseController {
 			**/
 			return compact('saved','user');
 		}
-	}	
+		
 	/**
 	 * Performs login authentication for a user going directly to the database.
 	 * If authenticated the user will be redirected to the home page.
@@ -356,7 +356,13 @@ class UsersController extends BaseController {
 		
 		$userInfo = Session::check('userLogin');
 		
-		$this->autoLogin();
+		$temp = $this->autoLogin();
+		
+		if($temp=="fberror"){
+			$this->_render['layout'] = 'login';
+			$message = "<div class='error_flash'>Facebook.com appears to be having issues. Please try our native registration form below in the meantime.</div>";			
+			return compact("message");
+		} 
 		
 		if ( $this->request->data || ($this->request->query['email'] && $this->request->query['pwd']) ) {
 						
@@ -480,8 +486,13 @@ class UsersController extends BaseController {
 		$message = "";
 
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
-
+	
 		extract($result);
+		
+		if (!$result) {
+			return "fberror";
+		}
+		
 		$fbCancelFlag = false;
 
 		if (array_key_exists('fbcancel', $this->request->query)) {
@@ -946,8 +957,15 @@ class UsersController extends BaseController {
 		$userfb = array();
 
 		if ($self->fbsession) {
-
-			$userfb = FacebookProxy::api($self->fbsession);
+			
+			try {
+				//throw new FacebookApiException();
+				$userfb = FacebookProxy::api($self->fbsession);
+			} catch (FacebookApiException $e) {
+				Logger::error($e->getMessage());
+				return false;	
+			}
+			
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
