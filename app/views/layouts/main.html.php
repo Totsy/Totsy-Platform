@@ -1,7 +1,3 @@
-<?php
-header('P3P: CP="NOI ADM DEV PSAi NAV OUR STP IND DEM"');
-
-?>
 <?php 
 use lithium\net\http\Router; 
 use lithium\storage\Session;
