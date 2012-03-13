@@ -320,11 +320,13 @@ class UsersController extends BaseController {
 				}
 			}
 		}
+
 		/**
 		* @see app/controllers/MomOfTheWeeksController.php
 		**/
 		return compact('saved','user');
 	}
+
 		
 	/**
 	 * Performs login authentication for a user going directly to the database.
@@ -343,7 +345,13 @@ class UsersController extends BaseController {
 		
 		$userInfo = Session::check('userLogin');
 		
-		$this->autoLogin();
+		$temp = $this->autoLogin();
+		
+		if($temp=="fberror"){
+			$this->_render['layout'] = 'login';
+			$message = "<div class='error_flash'>Facebook.com appears to be having issues. Please try our native registration form below in the meantime.</div>";			
+			return compact("message");
+		} 
 		
 		if ( $this->request->data || ($this->request->query['email'] && $this->request->query['pwd']) ) {
 						
@@ -467,8 +475,13 @@ class UsersController extends BaseController {
 		$message = "";
 
 		$result = static::facebookLogin(null, $cookie, $ipaddress);
-
+	
 		extract($result);
+		
+		if (!$result) {
+			return "fberror";
+		}
+		
 		$fbCancelFlag = false;
 
 		if (array_key_exists('fbcancel', $this->request->query)) {
@@ -933,8 +946,15 @@ class UsersController extends BaseController {
 		$userfb = array();
 
 		if ($self->fbsession) {
-
-			$userfb = FacebookProxy::api($self->fbsession);
+			
+			try {
+				//throw new FacebookApiException();
+				$userfb = FacebookProxy::api($self->fbsession);
+			} catch (FacebookApiException $e) {
+				Logger::error($e->getMessage());
+				return false;	
+			}
+			
 			$user = User::find('first', array(
 				'conditions' => array(
 					'$or' => array(
