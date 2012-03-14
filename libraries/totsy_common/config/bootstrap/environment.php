@@ -10,7 +10,7 @@ use lithium\core\Environment;
 
 Environment::is(function($request) {
 	
-	if($request->env('SERVER_ADDR')=='50.56.86.251' || $request->env('HTTP_HOST')=="stage.totsy.com" || $request->env('HTTP_HOST')=="adminstage.totsy.com"){
+	if($request->env('SERVER_NAME')=='web14-dc1.totsy.com' || $request->env('HTTP_HOST')=="stage.totsy.com" || $request->env('HTTP_HOST')=="adminstage.totsy.com") {
 		return 'staging';
 	}
 
