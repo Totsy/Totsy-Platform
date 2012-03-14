@@ -495,7 +495,11 @@ class UsersController extends BaseController {
 			if (!empty($userfb)) {
 				if (!$fbCancelFlag) {					
 					if($this->fbregister()) { 
-						$this->redirect('/sales?req=invite');
+						if(Session::read('layout', array('name' => 'default'))!=='mamapedia') {	
+							$this->redirect('/sales?req=invite');
+						} else {
+							$this->redirect('/sales');
+						}
 					} else {
 						return 'fberror';
 					}
