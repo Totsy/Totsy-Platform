@@ -49,6 +49,7 @@ font-size: 18px;
 font-weight: normal;
 margin: 0;
 padding: 0;
+font-family: "Arial";
 }
 </style>
 
