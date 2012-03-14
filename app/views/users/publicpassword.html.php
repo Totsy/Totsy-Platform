@@ -74,7 +74,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 <!-- left side -->
 <div class="grid_6">
 
-<?php if (Session::read("layout", array("name"=>"default"))!=="mamapedia") { 
+
+<?php if (Session::read("layout", array("name"=>"default"))!=="mamapedia") {
+	$isWhiteLabel = true; 
 	echo $this->html->link($this->html->image('logo_reg_new.png', array('width'=>'280')), '', array('escape'=> false));
 	} else {
 	echo $this->html->link($this->html->image('mamapedia/logo.png', array('width'=>'479')), '', array('escape'=> false));} 
@@ -105,7 +107,7 @@ if($this->_request->query['s']) {
 				<?php
 					switch ($status) {
 						case 'true' :
-							echo "<div class=\"standard-message\">Your information has been updated. <br /><span style='color:#999'>You can now log in with your updated password at </span> <a href='/login'>Totsy.com</a></div>";
+							echo "<div class=\"standard-message\">Your information has been updated. <br /><span style='color:#999'>You can now log in with your updated password at </span> <a href='/login'>".$_SERVER['HTTP_HOST']."</a></div>";
 							break;
 						case 'false' :
 							echo "<div class=\"standard-error-message\">Your current password is incorrect. Please try again.</div>";
