@@ -9,12 +9,12 @@ ini_set('max_execution_time', '20000');
 use lithium\core\Environment;
 
 Environment::is(function($request) {
-	
-	if($request->env('SERVER_NAME')=='web14-dc1.totsy.com' || $request->env('HTTP_HOST')=="stage.totsy.com" || $request->env('HTTP_HOST')=="adminstage.totsy.com") {
-		return 'staging';
-	}
 
 	switch ($request->env('HTTP_HOST')) {
+		case 'mamasource.totsy.com':
+		case 'stage.totsy.com':
+		case 'adminstage.totsy.com':
+			return 'staging';
 		case 'totsy.com':
 		case 'www.totsy.com':
 		case 'newprod.totsy.com':
