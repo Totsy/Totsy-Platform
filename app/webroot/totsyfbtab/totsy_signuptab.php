@@ -33,7 +33,6 @@ xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
 
 
 <title>Totsy Registration</title>
-    <script src="https://connect.facebook.net/en_US/all.js" language="Javascript" type="text/javascript"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta property="fb:app_id" content="<?php echo $appId; ?>"/>
 
