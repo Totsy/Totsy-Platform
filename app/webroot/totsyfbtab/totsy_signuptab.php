@@ -107,9 +107,9 @@ font-family: "Arial";
 		FB.login(function(response) {
 	    	if (response.authResponse) {
 	    		if (affiliateCode) {
-    				window.parent.location = "http://" + domain + "/a/" + affiliateCode + "/sales";
+    				window.parent.location = "http://" + domain + "/a/" + affiliateCode + "/?fboneclick=1";
     			} else {
-    				window.parent.location = "http://" + domain + "/sales";
+    				window.parent.location = "http://" + domain + "/?fboneclick=1";
     			}
 	    	}	
 		}, 		 

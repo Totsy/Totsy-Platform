@@ -896,6 +896,7 @@ class UsersController extends BaseController {
 	public function fbregister(array $additionalData = array()) {
 		Session::delete('landing', array('name'=>'default'));
 		
+				
 		try {
 			//throw new FacebookApiException();
 			$fbuser = FacebookProxy::api("/me");			
@@ -919,6 +920,11 @@ class UsersController extends BaseController {
 				'firstname'				=> $fbuser['first_name'],
 				'lastname'				=> $fbuser['last_name']
 			);
+			
+			if( isset($this->request->query['fboneclick']) && $this->request->query['fboneclick']==1 && $this->request->env('HTTP_REFERER')== "http://" . $this->request->env('HTTP_HOST'). "/totsyfbtab/totsy_signuptab.php") {
+				$data['fboneclick']=1;	
+			}
+				
 			extract(UsersController::registration($data + $additionalData));
 		}
 
