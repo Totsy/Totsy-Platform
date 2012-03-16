@@ -11,10 +11,6 @@ use lithium\core\Environment;
 Environment::is(function($request) {
 
 	switch ($request->env('HTTP_HOST')) {
-		case 'mamasource.totsy.com':
-		case 'stage.totsy.com':
-		case 'adminstage.totsy.com':
-			return 'staging';
 		case 'totsy.com':
 		case 'www.totsy.com':
 		case 'newprod.totsy.com':
@@ -23,7 +19,10 @@ Environment::is(function($request) {
 		case '50.56.49.10': // This is the production rackspace load balancer IP
 		case 'admin-prod.totsy.com':
 			return 'production';
-		case 'test.totsy.com':
+		case 'mamasource.totsy.com':
+		case 'stage.totsy.com':
+		case 'adminstage.totsy.com':
+			return 'staging';		case 'test.totsy.com':
 		case 'admin.totsy.com':
 		case '50.57.205.144': // This is the totsystaging load balancer IP
 			return 'test';
