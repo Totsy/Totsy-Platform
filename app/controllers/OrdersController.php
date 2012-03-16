@@ -774,6 +774,12 @@ class OrdersController extends BaseController {
 			}
 			if ($model == 'app\models\Cart') {
 				foreach ($object->data() as $item) {
+					#Define If the CartItem is tangible
+					if(Item::isTangible(new MongoId($item['item_id']))) {
+						$item['tangible'] = true;
+					} else {
+						$item['tangible'] = false;
+					}
 					$event = $item['event'][0];
 					unset($item['event']);
 					$eventItems[$event][] = $item;

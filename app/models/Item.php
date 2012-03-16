@@ -14,6 +14,7 @@ class Item extends Base {
 	protected $_meta = array('source' => 'items');
 	
 	public static function isTangible($id) {
+		$isTangible = true;
 		$item = Item::find('first', array(
 			'conditions' => array(
 				'_id' => $id),
@@ -26,7 +27,10 @@ class Item extends Base {
 				'fields' => array(
 					'tangible'					
 			)));
-		return $event['tangible'];	
+		if($event) {
+			$isTangible = $event['tangible'];
+		}
+		return $isTangible;	
 	}
 
 	public static function filter($events_id, $departments = null, $categories = null, $ages = null, $limit = "") {
