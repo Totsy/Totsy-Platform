@@ -332,10 +332,15 @@ class OrdersController extends BaseController {
 					$items[$key]["cancel"] = true;
 				} elseif (empty($cancelCheck)) {
 					$items[$key]["cancel"] = false;
-
 					if ($items[$key]["quantity"] == 0) {
 						$items[$key]["quantity"] = $item["initial_quantity"];
 					}
+				}				
+				#Define If the CartItem is tangible
+				if(Item::isTangible(new MongoId($items[$key]['item_id']))) {
+					$items[$key]['tangible'] = true;
+				} else {
+					$items[$key]['tangible'] = false;
 				}
 			}
 			if ($datas["save"] == 'true') {
