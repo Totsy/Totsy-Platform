@@ -216,7 +216,7 @@
     <p>
         The Member acknowledges and agrees that damages will not be an adequate remedy in the event of a breach of any of the Member's obligations under these Terms of Use. The Member therefore agrees that TOTSY shall be entitled (without limitation of any other rights or remedies otherwise available to TOTSY and without the necessity of posting a bond) to obtain an injunction from any court of competent jurisdiction prohibiting the continuance or recurrence of any breach of these Terms of Use. The Member further agrees that service upon the Member in any such action or proceeding may be made by first class mail, certified or registered, to the Member's address as last appearing on the records of TOTSY.
     </p>
-    <!-- reward program begin -->
+    <!-- reward program begin
     <br />
         <h2 class="page-title gray">ANNEX 1</h2>
     <hr />
@@ -347,7 +347,7 @@
         FROM PARTICIPATING OR DOWNLOADING MATERIALS RELATED TO TOTSY REWARDS.  TOTSY IS NOT RESPONSIBLE FOR THE INABILITY OF A MEMBER TO ACCEPT, REDEEM, AND/OR
         USE REWARDS FOR ANY REASON, INCLUDING ANY THIRD-PARTY’S TERMS AND CONDITIONS AND/OR THE TERMS OF BUSINESS AND OPERATIONS FOR A PARTICULAR ENTITY.
     </p> 
-    <!-- reward program end --> 
+    reward program end --> 
 </div>
 
 </div>
