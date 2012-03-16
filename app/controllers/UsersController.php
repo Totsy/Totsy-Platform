@@ -290,7 +290,7 @@ class UsersController extends BaseController {
 					}
 					
 					if (isset($user['requires_set_password'])) {
-						$mailTemplate = (!$whiteLabel ? 'Welcome_auto_passgen' : 'Reset_Password_Mamasource');
+						$mailTemplate = (!$whiteLabel ? 'Welcome_auto_passgen' : 'Mamasource_welcome_auto_passgen');
 						$params['token'] = $plaintext_password;
 					}
 
@@ -495,7 +495,11 @@ class UsersController extends BaseController {
 			if (!empty($userfb)) {
 				if (!$fbCancelFlag) {					
 					if($this->fbregister()) { 
-						$this->redirect('/sales?req=invite');
+						if(Session::read('layout', array('name' => 'default'))!=='mamapedia') {	
+							$this->redirect('/sales?req=invite');
+						} else {
+							$this->redirect('/sales');
+						}
 					} else {
 						return 'fberror';
 					}

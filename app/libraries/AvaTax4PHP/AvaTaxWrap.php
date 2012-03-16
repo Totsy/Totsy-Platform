@@ -343,8 +343,11 @@ abstract class AvaTaxWrap {
 			    	  //string
 			    	  ->setCustomerUsageType("");
 					  // boolean
-			    $lines[$iterator]->setTaxIncluded( isset($item['taxIncluded'])?$item['taxIncluded']:false); 
-			    	  
+			    $lines[$iterator]->setTaxIncluded( isset($item['taxIncluded'])?$item['taxIncluded']:false);
+			    #Don't Calculate Tax if Item is Digital
+			    if(!$item['tangible']) {
+			    	$lines[$iterator]->setTaxCode("NT");
+			    }
 			    	   
 			   $iterator++;
 		}
