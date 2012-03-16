@@ -337,7 +337,7 @@ class OrdersController extends BaseController {
 					}
 				}				
 				#Define If the CartItem is tangible
-				if(Item::isTangible(new MongoId($item['item_id']))) {
+				if(Item::isTangible(new MongoId($items[$key]['item_id']))) {
 					$items[$key]['tangible'] = true;
 				} else {
 					$items[$key]['tangible'] = false;
