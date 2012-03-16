@@ -79,7 +79,7 @@ font-family: "Arial";
 	
 	var submitted = false;
 	var appId = "<?php echo $appId; ?>";
-	var affiliateCode = "<?php echo $affiliateCode; ?>";
+	//var affiliateCode = "<?php echo $affiliateCode; ?>";
 	var domain = "<?php echo $_SERVER['HTTP_HOST']; ?>";
 	
     window.fbAsyncInit = function() {
@@ -106,11 +106,12 @@ font-family: "Arial";
 	function fbLogin() {
 		FB.login(function(response) {
 	    	if (response.authResponse) {
+	    		/*
 	    		if (affiliateCode) {
     				window.parent.location = "http://" + domain + "/a/" + affiliateCode + "/?fboneclick=1";
     			} else {
-    				window.parent.location = "http://" + domain + "/?fboneclick=1";
-    			}
+ */    				window.parent.location = "http://" + domain + "/?fboneclick=1";
+    			//}
 	    	}	
 		}, 		 
 			{ scope:'email' } 
