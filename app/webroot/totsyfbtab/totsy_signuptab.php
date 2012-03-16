@@ -79,7 +79,6 @@ font-family: "Arial";
 	
 	var submitted = false;
 	var appId = "<?php echo $appId; ?>";
-	//var affiliateCode = "<?php echo $affiliateCode; ?>";
 	var domain = "<?php echo $_SERVER['HTTP_HOST']; ?>";
 	
     window.fbAsyncInit = function() {
