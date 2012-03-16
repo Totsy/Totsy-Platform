@@ -4674,8 +4674,8 @@ nav .haschild li a:hover {
 	margin-left:8px; 
 	white-space: nowrap;
 }
-#userUtils #usercart {clear:right; float: right;}
-*:first-child+html #userUtils #usercart {width:220px;}
+#userUtils #usercart {clear:right; float: right; min-width: 203px;}
+*:first-child + html #userUtils #usercart {min-width:203px;} /* this IE7-only selector ceases to work with selectivizr… investigating, meanwhile applied globally to all browsers */
 #userUtils .icon { /* @TODO - abstract out all .icon styles… need design consistency / standards */
 	padding-left:23px;
 }

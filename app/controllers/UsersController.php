@@ -290,7 +290,7 @@ class UsersController extends BaseController {
 					}
 					
 					if (isset($user['requires_set_password'])) {
-						$mailTemplate = (!$whiteLabel ? 'Welcome_auto_passgen' : 'Reset_Password_Mamasource');
+						$mailTemplate = (!$whiteLabel ? 'Welcome_auto_passgen' : 'Mamasource_welcome_auto_passgen');
 						$params['token'] = $plaintext_password;
 					}
 
@@ -495,7 +495,11 @@ class UsersController extends BaseController {
 			if (!empty($userfb)) {
 				if (!$fbCancelFlag) {					
 					if($this->fbregister()) { 
-						$this->redirect('/sales?req=invite');
+						if(Session::read('layout', array('name' => 'default'))!=='mamapedia') {	
+							$this->redirect('/sales?req=invite');
+						} else {
+							$this->redirect('/sales');
+						}
 					} else {
 						return 'fberror';
 					}
@@ -896,6 +900,7 @@ class UsersController extends BaseController {
 	public function fbregister(array $additionalData = array()) {
 		Session::delete('landing', array('name'=>'default'));
 		
+				
 		try {
 			//throw new FacebookApiException();
 			$fbuser = FacebookProxy::api("/me");			
@@ -919,6 +924,11 @@ class UsersController extends BaseController {
 				'firstname'				=> $fbuser['first_name'],
 				'lastname'				=> $fbuser['last_name']
 			);
+			
+			if( isset($this->request->query['fboneclick']) && $this->request->query['fboneclick']==1 && $this->request->env('HTTP_REFERER')== "http://" . $this->request->env('HTTP_HOST'). "/totsyfbtab/totsy_signuptab.php") {
+				$data['invited_by']=1;	
+			}
+				
 			extract(UsersController::registration($data + $additionalData));
 		}
 

@@ -33,7 +33,6 @@ xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
 
 
 <title>Totsy Registration</title>
-    <script src="https://connect.facebook.net/en_US/all.js" language="Javascript" type="text/javascript"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta property="fb:app_id" content="<?php echo $appId; ?>"/>
 
@@ -49,6 +48,7 @@ font-size: 18px;
 font-weight: normal;
 margin: 0;
 padding: 0;
+font-family: "Arial";
 }
 </style>
 
@@ -79,7 +79,6 @@ padding: 0;
 	
 	var submitted = false;
 	var appId = "<?php echo $appId; ?>";
-	var affiliateCode = "<?php echo $affiliateCode; ?>";
 	var domain = "<?php echo $_SERVER['HTTP_HOST']; ?>";
 	
     window.fbAsyncInit = function() {
@@ -106,11 +105,12 @@ padding: 0;
 	function fbLogin() {
 		FB.login(function(response) {
 	    	if (response.authResponse) {
+	    		/*
 	    		if (affiliateCode) {
-    				window.parent.location = "http://" + domain + "/a/" + affiliateCode + "/sales";
+    				window.parent.location = "http://" + domain + "/a/" + affiliateCode + "/?fboneclick=1";
     			} else {
-    				window.parent.location = "http://" + domain + "/sales";
-    			}
+ */    				window.parent.location = "http://" + domain + "/?fboneclick=1";
+    			//}
 	    	}	
 		}, 		 
 			{ scope:'email' } 
