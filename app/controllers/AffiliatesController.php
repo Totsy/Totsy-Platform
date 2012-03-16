@@ -199,21 +199,35 @@ class AffiliatesController extends BaseController {
 				// create a new Totsy account using Facebook user data
 				if (!empty($userfb) && !$fbCancelFlag) {
 					
+					if(Session::read('layout', array('name' => 'default'))!=='mamapedia'){
 					//execute and assign return value to tmp
 					$tmp = extract(UsersController::fbregister($affiliateData));
-					
-					//check if any data was returned and show error msg on register form
-					if($tmp==0) { 
-						$message = "<div class='error_flash'>Facebook.com appears to be having issues. Please try our native registration form below in the meantime.</div>";
 						
-						if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
-							$this->_render['layout'] = 'mobile_main';
-							$this->_render['template'] = 'mobile_register';
-						} else {
-							$this->_render['layout'] = 'login';
+						//check if any data was returned and show error msg on register form
+						if($tmp==0) { 
+							$message = "<div class='error_flash'>Facebook.com appears to be having issues. Please try our native registration form below in the meantime.</div>";
+							
+							if($this->request->is('mobile') && Session::read('layout', array('name' => 'default'))!=='mamapedia') {
+								$this->_render['layout'] = 'mobile_main';
+								$this->_render['template'] = 'mobile_register';
+							} else {
+								$this->_render['layout'] = 'login';
+							}
+													
+							return compact('message');
 						}
-												
-						return compact('message');
+					} else {
+						$data = array(
+							'email'					=> $userfb['email'],
+							'confirmemail'			=> $userfb['email'],
+							'password'				=> UsersController::randomString(),
+							'requires_set_password' => true,
+							'terms'					=> true,
+							'facebook_info'			=> $userfb,
+							'firstname'				=> $userfb['first_name'],
+							'lastname'				=> $userfb['last_name']);
+											
+						extract(UsersController::registration($data + $affiliateData));						
 					}					
 
 				// create a new Totsy account using form data
@@ -225,8 +239,10 @@ class AffiliatesController extends BaseController {
 				
 					extract(UsersController::registration($pdata + $affiliateData));
 				}
+				
 
 				if ($saved) {
+				
 					$message = $saved;
 					Affiliate::linkshareCheck($user->_id, $affiliate, $cookie);
 					$this->writeSession($user->data());
@@ -237,7 +253,6 @@ class AffiliatesController extends BaseController {
 					User::log($ipaddress);
 
 				}
-
 				$this->redirect($urlredirect);
 			}
 		}
