@@ -156,11 +156,10 @@ use app\models\Event;
 	</div>
 	<?php } ?>
 	 
-	<?php 
-		/*
-			Brand Promo banner - remove (comment out) when promo is over
-		*/
+	<?php
+		// Brand Promo banner - remove (comment out) when promo is over
 		// don't show banner when in /brands directory
+		/*
 		$query = $_SERVER['REQUEST_URI'];
 		if(!preg_match("/brands/", $query) && $isWhiteLabel==false) { ?>
 		
@@ -168,7 +167,7 @@ use app\models\Event;
 				<a href="/brands/jojo" title="JoJo Maman B&eacute;b&eacute; Special 10-day Event"><img src="/img/jojo-banner.png" alt="JoJo Maman B&eacute;b&eacute; Special 10-day Event" width="816" height="125" /></a>
 			</div>
 	<?php 
-		} ?>
+		} */?>
 	
 	<div id="totsy" class="container_16 roundy glow">
 		
