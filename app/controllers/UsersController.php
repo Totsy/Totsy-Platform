@@ -926,7 +926,7 @@ class UsersController extends BaseController {
 			);
 			
 			if( isset($this->request->query['fboneclick']) && $this->request->query['fboneclick']==1 && $this->request->env('HTTP_REFERER')== "http://" . $this->request->env('HTTP_HOST'). "/totsyfbtab/totsy_signuptab.php") {
-				$data['fboneclick']=1;	
+				$data['invited_by']=1;	
 			}
 				
 			extract(UsersController::registration($data + $additionalData));
