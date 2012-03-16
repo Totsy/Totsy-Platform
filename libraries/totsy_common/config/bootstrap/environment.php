@@ -22,7 +22,8 @@ Environment::is(function($request) {
 		case 'mamasource.totsy.com':
 		case 'stage.totsy.com':
 		case 'adminstage.totsy.com':
-			return 'staging';		case 'test.totsy.com':
+			return 'staging';		
+		case 'test.totsy.com':
 		case 'admin.totsy.com':
 		case '50.57.205.144': // This is the totsystaging load balancer IP
 			return 'test';
