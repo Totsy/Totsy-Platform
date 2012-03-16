@@ -56,7 +56,7 @@
 		    			$controllerName = $URIArray[1];			
 		    																	 
 						if( $controllerName!=="checkout" && $controllerName!=="orders" && $controllerName!=="cart"){ ?>	
-							<div id="usercart">
+							<div id="usercart" class="group">
 							
 								<a href="/cart/view" class="icon cart cart_icon" title="Go to My Cart">
 								<em>
