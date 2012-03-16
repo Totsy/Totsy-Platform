@@ -231,7 +231,12 @@ class AffiliatesController extends BaseController {
 					}					
 
 				// create a new Totsy account using form data
-				} else if($pdata) {
+				} else if($pdata) {				
+				
+					if( isset($this->request->query['fboneclick']) && $this->request->query['fboneclick']==1 && $this->request->env('HTTP_REFERER')== "http://" . $this->request->env('HTTP_HOST'). "/totsyfbtab/totsy_signuptab.php") {
+						$pdata['fboneclick']=1;	
+					}
+				
 					extract(UsersController::registration($pdata + $affiliateData));
 				}
 				
