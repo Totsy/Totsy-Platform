@@ -63,8 +63,8 @@ Router::connect('/a/{:args:[a-zA-Z0-9&\?\.=:/]+}', 'Affiliates::register');
 
 Router::connect('/category/{:args}', 'Events::category');
 Router::connect('/age/{:args}', 'Events::age');
-Router::connect('/brands', 'Brands::index');
-Router::connect('/brands/{:args}', 'Brands::view');
+//Router::connect('/brands', 'Brands::index'); // commented this out as quicky fix to disable jojo
+//Router::connect('/brands/{:args}', 'Brands::view'); // commented this out as quicky fix to disable jojo
 
 Router::connect('/reset', 'Users::reset');
 Router::connect('/pages/{:args}', 'Pages::view');
