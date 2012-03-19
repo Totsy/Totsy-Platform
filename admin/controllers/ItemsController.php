@@ -242,9 +242,6 @@ class ItemsController extends BaseController {
 			}
 		}
 
-
-
-
 				$heading[] = "vendor";
 				$heading[] = "vendor_style";
 				$heading[] = "category";
