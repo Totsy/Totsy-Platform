@@ -925,7 +925,7 @@ class UsersController extends BaseController {
 				'lastname'				=> $fbuser['last_name']
 			);
 			
-			if( isset($this->request->query['fboneclick']) && $this->request->query['fboneclick']==1 && $this->request->env('HTTP_REFERER')== "http://" . $this->request->env('HTTP_HOST'). "/totsyfbtab/totsy_signuptab.php") {
+			if( isset($this->request->query['fboneclick']) && $this->request->query['fboneclick']==1 ) {
 				$data['invited_by']="facebookoneclick";	
 			}
 				
