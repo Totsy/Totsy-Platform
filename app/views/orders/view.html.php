@@ -203,7 +203,7 @@ $promoCode = $order->promo_code;
 	  <?php if(Session::read("layout", array("name"=>"default"))=="mamapedia"): ?>
 	 // mamasource google analytics tracking code
 	  _gaq.push(['_setAccount', 'UA-675412-22']);
-	  <?php else ?>
+	  <?php else: ?>
 	  // totsy.com google analytics tracking code
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
 	  <?php endif ?>
