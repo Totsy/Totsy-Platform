@@ -357,8 +357,10 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
-						if ($it['percent_off']>74) $it['percent_off'] = 0;	
+						$it['percent_off'] = (float) $it['percent_off']; 
+						if ($it['percent_off']<1){
+							$it['percent_off'] = $it['percent_off']*100;
+						}
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
 					if ( isset($it['vendor']) && (is_null($data['vendor']) || strlen(trim($data['vendor']))==0)){ 
@@ -504,14 +506,16 @@ class APIController extends  \lithium\action\Controller {
 					} else if (is_float($it['percent_off'])) {
 						$it['percent_off'] = round($it['percent_off']*100,2);
 					} else {
-						$it['percent_off'] = preg_replace('/[\D]+/','',$it['percent_off']);
-						if ($it['percent_off']>74) $it['percent_off'] = 0;	
+						$it['percent_off'] = (float) $it['percent_off']; 
+						if ($it['percent_off']<1){
+							$it['percent_off'] = $it['percent_off']*100;
+						}
 					}
 					if ($it['percent_off'] > $maxOff) { $maxOff = $it['percent_off']; }
 					if ( isset($it['vendor']) && (is_null($data['vendor']) || strlen(trim($data['vendor']))==0)){ 
 						$data['vendor'] = $it['vendor']; 
 					}
-					
+					$it['percent_off'] = (float) $it['percent_off'];
 					if ($it['percent_off'] > $data['maxDiscount']) { $data['maxDiscount'] = $it['percent_off']; }
 					if ($it['total_quantity']>0 && $data['available_items'] === false) { $data['available_items'] = true; }
 			
@@ -521,9 +525,7 @@ class APIController extends  \lithium\action\Controller {
 					if (!empty($it['categories'])){
 						$data['groups']['category'] = array_merge($data['groups']['category'],$it['categories']);
 					}
-
 				}
-				
 			}
 			
 			$data['groups']['age'] = array_unique( $data['groups']['age'] );
