@@ -336,7 +336,7 @@ $URIArray = explode("/", $currentURI);
 $controllerName = $URIArray[1];			
 
 //disable for checkout pages except order/view, and for Mamasource		    		
-if( $controllerName=="checkout" || ($controllerName=="orders" && $URIArray[2]=="view") || $controllerName=="cart" || $isWhiteLabel==true || $controllerName=="pages") { 
+if( ($controllerName=="checkout" && $URIArray[2]!=="view") || ($controllerName=="orders" && $URIArray[2]!=="view") || ($controllerName=="cart" && $URIArray[2]==!"view" ) || $isWhiteLabel==true || $controllerName=="pages") { 
 ?>
 <script type="text/javascript">
 //code for disabling echoSahre
