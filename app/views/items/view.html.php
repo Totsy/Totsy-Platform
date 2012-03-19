@@ -220,7 +220,16 @@
 	</div>
 	<div class="clear"></div>
 		
-	<ul class="echoShare" data-productname='<?php echo $item->description ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($item->blurb))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST'].'/image/' . $item->primary_image . 'jpg' ?>'></ul> 
+	<?php
+	
+		$item_blurb = htmlspecialchars_decode($item->blurb);
+		$item_blurb = html_entity_decode($item_blurb);
+		$item_blurb = strip_tags($item_blurb); 
+		$item_blurb = iconv("UTF-8", "ISO-8859-1//IGNORE", $item_blurb); 	
+	
+	?>
+		
+	<ul class="echoShare" data-productname='<?php echo $item->description ?>' data-productcap="" data-productdesc='<?php echo $item_blurb; ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST'].'/image/' . $item->primary_image . 'jpg' ?>'></ul> 
 	
 	<div class="grid_3" style="padding-left:11px;">
 		
