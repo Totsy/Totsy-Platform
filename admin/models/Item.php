@@ -351,6 +351,26 @@ class Item extends Base {
 		unset($items);
 		return $itemSkus;
 	}
+	
+	public static function isTangible($id) {
+		$isTangible = true;
+		$item = Item::find('first', array(
+			'conditions' => array(
+				'_id' => $id),
+			'fields' => array(
+				'event'					
+		)));
+		$event = Event::find('first', array(
+				'conditions' => array(
+					'_id' => $item['event'][0]),
+				'fields' => array(
+					'tangible'					
+			)));
+		if($event) {
+			$isTangible = $event['tangible'];
+		}
+		return $isTangible;	
+	}
 
 }
 
