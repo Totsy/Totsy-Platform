@@ -196,11 +196,17 @@ $promoCode = $order->promo_code;
 
 ?>
 
-<!--- ECOMMERCE TRACKING -->
+<!-- ECOMMERCE TRACKING -->
 <?php if ($brandNew): ?>
 	<script type="text/javascript">
 	  var _gaq = _gaq || [];
+	  <?php if(Session::read("layout", array("name"=>"default"))=="mamapedia"): ?>
+	 // mamasource google analytics tracking code
+	  _gaq.push(['_setAccount', 'UA-675412-22']);
+	  <?php else ?>
+	  // totsy.com google analytics tracking code
 	  _gaq.push(['_setAccount', 'UA-675412-15']);
+	  <?php endif ?>
 	  _gaq.push(['_trackPageview']);
 	  _gaq.push(['_addTrans',
 	    '<?php echo $order->order_id?>',           // order ID - required
