@@ -31,6 +31,10 @@
 
 <div id="clear"></div>
 
+<?php
+//print_r($items_skus);
+?>
+
 
 <div id="clear"></div>
 <div class="grid_16">
@@ -70,7 +74,9 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($datas as $data): ?>
+			<?php foreach ($items_skus as $eachrow): 
+			$data = $datas[$eachrow];
+			?>
 				<tr>
 				<?php foreach ($data as $key => $value): ?>
 					<td>
