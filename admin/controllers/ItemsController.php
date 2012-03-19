@@ -214,6 +214,7 @@ class ItemsController extends BaseController {
 					$items_skus[] = $current_sku;
 					$datas[$current_sku] = array();
 				}
+				$datas[$idx] = array();
 			}
 			for ($col = 0; $col < $totalcols; ++ $col) {
 				$val = $fullarray[$row][$col];
@@ -227,11 +228,13 @@ class ItemsController extends BaseController {
 						if($heading[$col] === "sku") {
 							if (!empty($val)) {
 								$datas[$current_sku]['sku'] = $val;
+								$datas[$idx]['sku'] = $val;
 							}
 						} else{
 							$thiskey = $heading[$col];
 							if (!empty($val)) {
 								$datas[$current_sku][$thiskey] = $val;
+								$datas[$idx][$thiskey] = $val;
 							}
 						}
 					}
@@ -273,7 +276,7 @@ class ItemsController extends BaseController {
 		}
 	
 	}
-	return compact('datas', 'items', 'fullarray','heading');
+	return compact('datas', 'items', 'fullarray','heading','items_skus');
 	}
 	
 	
