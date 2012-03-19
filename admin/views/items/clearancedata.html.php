@@ -61,8 +61,6 @@
 <div class="grid_16">
 <?php if (!empty($datas)): ?>
 
-
-
 	<table>
 		<thead>
 			<tr>
