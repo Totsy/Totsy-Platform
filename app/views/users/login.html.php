@@ -158,6 +158,6 @@ function fblogin() {
 			window.location.reload();    
   		}	
 	}, 		 
-	{ scope:'email'} );
+	{ scope:'email, user_birthday, user_location, user_likes'} );
 }
 </script>
