@@ -105,6 +105,7 @@ font-family: "Arial";
 	function fbLogin() {
 		FB.login(function(response) {
 	    	if (response.authResponse) {
+	    	_gaq.push(['_trackEvent', 'Registrations', 'Register', 'FaceBook One Click', 1]);
      				window.parent.location = "http://" + domain + "/?fboneclick=1";
 	    	}	
 		}, 		 
