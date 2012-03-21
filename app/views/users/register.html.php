@@ -159,6 +159,6 @@ function fblogin() {
 FB.login(function(response) {
 	if (response.authResponse) {
 		window.location.reload();    
-  }}, {scope:'email'});
+  }}, {scope:'email, user_birthday, user_location, user_likes'});
 }
 </script>
