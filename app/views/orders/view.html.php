@@ -1,3 +1,5 @@
+<?php use lithium\storage\Session; ?>
+
 <?php $this->title("Order Confirmation"); ?>
 <?php
 	$totalQty = 0;
