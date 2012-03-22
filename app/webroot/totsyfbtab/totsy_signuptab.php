@@ -56,11 +56,10 @@ font-family: "Arial";
 	<script> google.load("jquery", "1.6.1", { uncompressed:true });</script>
 	<script> google.load("jqueryui", "1.8.13", { uncompressed:true });</script>
 
-<!-- ETIQUETTE GA TRACKING CODE -->
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-27138066-1']);
+  _gaq.push(['_setAccount', 'UA-675412-15']);
   _gaq.push(['_trackPageview']);
 
   (function() {
@@ -70,6 +69,7 @@ font-family: "Arial";
   })();
 
 </script>
+
 </head>
 
 <body>
@@ -105,6 +105,7 @@ font-family: "Arial";
 	function fbLogin() {
 		FB.login(function(response) {
 	    	if (response.authResponse) {
+	    	_gaq.push(['_trackEvent', 'Registrations', 'Register', 'FaceBook One Click', 1]);
      				window.parent.location = "http://" + domain + "/?fboneclick=1";
 	    	}	
 		}, 		 
