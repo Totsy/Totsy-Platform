@@ -8,7 +8,7 @@ if (is_array($events)){
 	foreach($events as $event){ 
 		$evnt['id'] = $event['_id'];
 		$evnt['name'] = $event['name'];
-		$evnt['description'] = eventsReview_default_json_cut_string($event['blurb'],90);
+		$evnt['description'] = eventsReview_default_json_cut_string($event['blurb']);
 		$evnt['short'] = (empty($event['short'])) ? eventsReview_default_json_cut_string($event['blurb'],45) : $event['short'];
 		$evnt['availableItems'] = $event['available_items']==true?'YES':'NO';
 		$evnt['brandName'] = $event['vendor'];
