@@ -8,7 +8,7 @@
 	<?php foreach($events as $event){ ?>
 		<event id="<?php echo $event['_id']; ?>">
 			<name><?php echo htmlspecialchars($event['name']) ?></name>
-			<description><?php echo htmlspecialchars( sailthru_xml_cut_string($event['blurb'],90) ) ?></description>
+			<description><?php echo htmlspecialchars( sailthru_xml_cut_string($event['blurb']) ) ?></description>
 			<short><?php echo (empty($event['short'])) ? htmlspecialchars(sailthru_xml_cut_string($event['blurb'],45)) : htmlspecialchars($event['short']); ?></short>
 			<availableItems><?php echo $event['available_items']==true?'YES':'NO';?></availableItems>
 			<brandName><?php echo htmlspecialchars($event['vendor']);?></brandName>
