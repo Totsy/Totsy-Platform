@@ -57,16 +57,18 @@ Dispatcher::applyFilter('_call', function($self, $params, $chain) {
 	 if(preg_match('#(feeds/keyade)#', $params['request']->url)) {
 	 	$allowed = true;
 	 }
-	 
-	if(strpos($_SERVER['HTTP_USER_AGENT'],"Sailthru Content Spider Totsy/320b7f9e5affcdb166265d6b8797445f")>-1) {
-	 	if (preg_match('#(sale/)#', $params['request']->url) || strpos('sales', $params['request']->url)>-1){
-	 		$allowed = true;
-	 	}	 	 	
-	} 
-	 	 
+	 	 	 
 	$granted = in_array($params['request']->url, $skip);
 	$granted = $allowed || $granted;
 	$granted = $granted || Auth::check('userLogin', $params['request']);
+	
+	if(strpos($_SERVER['HTTP_USER_AGENT'],"Sailthru Content Spider Totsy/320b7f9e5affcdb166265d6b8797445f")>-1) {
+	 	//if (preg_match('#(sale/)#', $params['request']->url) || strpos('sales', $params['request']->url)>-1){
+		$logged_in = true;	
+	 	$allowed = true;
+	 	$granted = true;
+	 	//}	 	 	
+	}
 		
 	// check if user already logged-in
 	if(Session::check('userLogin')) {
