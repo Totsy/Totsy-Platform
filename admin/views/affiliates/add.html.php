@@ -44,17 +44,6 @@ var affiliateCodes = "";
 		<input type="hidden" name="affiliate_id" value="<?=(string)$prospective_id?>">
 	</form>
 </div>
-<<<<<<< HEAD
-<div class="grid_7 box">
-	<div class="block forms">
-		<?=$this->form->create(null,array("id"=>"affForm")); ?>
-		<input type="hidden" name="affiliate_id" value="<?=(string)$prospective_id?>">
-		Activate: <?=$this->form->checkbox('active', array('checked'=>'checked')); ?> <br>
-		Affiliate Level: <?=$this->form->select('level',$packages); ?> <br><br>
-		<!--
-		Affiliate Category:
-		<input type="text" id="affiliate_category" name="affiliate_category" autocomplete="off" class="textbox"><br><br> -->
-=======
 
 <?=$this->form->create(null,array("id"=>"affForm")); ?>
     <div id="submit button" class="grid_16">
@@ -67,7 +56,6 @@ var affiliateCodes = "";
 		<input type="hidden" name="affiliate_id" value="<?=(string)$prospective_id?>">
 		Activate: <?=$this->form->checkbox('active', array('checked'=>'checked')); ?> <br/>
 		Affiliate Level: <?=$this->form->select('level',$packages); ?> <br/><br/>
->>>>>>> 02e79d33972d8e11182859bed1d7c1bd804ffbd5
 		Affiliate Name:
 		<?=$this->form->text('affiliate_name'); ?> <br/><br/>
 		Enter Code:
