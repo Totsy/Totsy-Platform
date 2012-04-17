@@ -453,10 +453,12 @@
 														array('Items::preview', 'args' => $item['url']),
 														array('target' =>'_blank')
 													); ?><br />
+													
 													Color: <?php echo $item['color']?><br/>
 													Size: <?php echo $item['size']?><br/>
 													Vendor Style: <?php echo $sku["$item[item_id]"];?><br/>
 													Category: <?php echo $item['category'];?><br/>
+													Sku: <?php echo $sku_details["$item[item_id]"][$item['size']];?><br/>
 												</td>
 												<td style="padding:5px; color:#009900;" title="price">
 													$<?php echo number_format($item['sale_retail'],2); ?>

@@ -798,6 +798,7 @@ class OrdersController extends BaseController {
 						'conditions' => array('_id' => $orderItem['item_id']
 					)));
 					$sku["$orderItem[item_id]"] = $item->vendor_style;
+					$sku_details["$orderItem[item_id]"] = $item->sku_details;
 					if(!empty($orderItem["digital"])) {
 						$hasDigitalItems = true;
 					}
@@ -829,7 +830,7 @@ class OrdersController extends BaseController {
 		
 		$shipDate = $orderClass::shipDate($order);
 
-		return compact('order', 'shipDate', 'sku', 'itemscanceled', 'service','processed_count', 'orderStatus', 'hasDigitalItems');
+		return compact('order', 'shipDate', 'sku', 'sku_details', 'itemscanceled', 'service','processed_count', 'orderStatus', 'hasDigitalItems');
 	}
 
 	/**
