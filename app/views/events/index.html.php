@@ -188,7 +188,10 @@
 	
 				<?php if ($x == 1): ?>
 					<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;">
-						<div><a href="/users/invite"><img src="/img/invite-friends-envelope-2.gif"></a></div>
+						<div>
+						<a href="/sale/thomas-and-friends"><img src="/image/4f9168271d5ecb0164007150.jpeg"></a>
+						
+						<!-- <a href="/users/invite"><img src="/img/invite-friends-envelope-2.gif"></a></div> -->
 						<?php if(!empty($banner["img"])): ?>
 							<?php foreach($banner["img"] as $image): ?>
 								<div><?php if(!empty($image["url"])):?>
