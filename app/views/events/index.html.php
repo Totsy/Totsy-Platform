@@ -7,19 +7,19 @@
 <?php echo $this->view()->render( array('element' => 'popupCartItems') ); ?>
 
 <script>
-(function($) {
-	$.fn.rotate = function() {
-		var container = $(this);
-		var totale = container.find("div").size();
-		var current = 0;
-		var i = setInterval(function() {
-			if (current >= totale) current = 0;
-			container.find("div").filter(":eq("+current+")").fadeIn("slow").end().not(":eq("+current+")").fadeOut("slow");
-			current++;
-		}, 5000);
-		return container;
-	};
-})(jQuery);
+//(function($) {
+//	$.fn.rotate = function() {
+//		var container = $(this);
+//		var totale = container.find("div").size();
+//		var current = 0;
+//		var i = setInterval(function() {
+//			if (current >= totale) current = 0;
+//			container.find("div").filter(":eq("+current+")").fadeIn("slow").end().not(":eq("+current+")").fadeOut("slow");
+//			current++;
+//		}, 5000);
+//		return container;
+//	};
+//})(jQuery);
 </script>
 
 <?php
@@ -192,25 +192,6 @@
 						<a href="/sale/thomas-and-friends"><img src="/image/4f9168271d5ecb0164007150.jpeg"></a>
 						</div>
 						
-						<!-- <a href="/users/invite"><img src="/img/invite-friends-envelope-2.gif"></a></div> -->
-						<?php if(!empty($banner["img"])): ?>
-							<?php foreach($banner["img"] as $image): ?>
-								<div><?php if(!empty($image["url"])):?>
-									<a href="<?php echo $image["url"]?>"
-										<?php
-											if(array_key_exists('newPage', $image) && $image['newPage']) {
-												echo 'target="_blank"';
-											}
-										?>
-										>
-										<img src="/image/<?php echo $image["_id"]?>.jpeg" alt="" />
-									</a>
-									<?php else: ?>
-										<img src="/image/<?php echo $image["_id"]?>.jpeg" alt="" />
-									<?php endif ?>
-								</div>
-							<?php endforeach ?>
-						<?php endif ?>
 					</div>
 					
 <ul class="echoShare" data-productname='<?php echo $event->name ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($event->name))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST']. '/sale/'.$event->url ?>'></ul> 
