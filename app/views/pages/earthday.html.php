@@ -134,7 +134,7 @@ What little things do you do with your little ones, to help make their world a g
 
 
 <p style="margin:15px;"><b>Prize:</b> 
-Three lucky winners chosen at random will receive an eco-friendly prize pack from our generous friends. Plus, Totsy will donate $100 to our grand-prize winner's favorite environmental non-profit organization. At the end of the giveaway, please check back to our blog. We'll compile and share our favorite "Top Five Little Things We Can Do", to keep our planet green for the little ones we love most. No purchase necessary. Sweepstakes starts on 4/23/12 and ends on 4/30/12 at 11:59 pm ET. 
+Three lucky winners chosen at random will receive an eco-friendly prize pack from our generous friends. Plus, Totsy will donate $100 to our grand-prize winner's favorite environmental non-profit organization. At the end of the giveaway, please check back to our blog. We'll compile and share our favorite "Top Five Little Things We Can Do", to keep our planet green for the little ones we love most. No purchase necessary. Sweepstakes starts on 4/20/12 and ends on 4/30/12 at 11:59 pm ET. 
 </p>
 
 <p style="padding-left:35px;">
