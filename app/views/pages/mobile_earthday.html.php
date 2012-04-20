@@ -48,19 +48,24 @@
 .logos img { float:left; width:142px; padding:1px; }
 </style>
 
-<div class="earthday gradient">
-<?php if($_POST['earthdaybtn']) { ?>
+<div class="earthday">
+<?php if($_POST['email']) { ?>
 
-<h3>CELEBRATE EARTH DAY SUBMITTED</h3>
+<h3>SUBMITTED</h3>
 <hr />
-<p>Thank you for entering!</p>
+<p>Thank you for entering! <a href="/sales">Return to Totsy.com</a></p>
 
 <?php } else { ?>
 
 <script>
-	function earthdayform(){
-		alert('submitted');
-	}
+
+function earthdayform(){
+	alert('submitted');
+	document.getElementById("earthdayform").submit();
+
+}
+
+
 </script>
 
 <h3>CELEBRATE EARTH DAY</h3>
@@ -75,7 +80,7 @@
 
 <br /><br />
 
-<form method="post">
+<form method="post" id="earthhdayform">
 	<h3>GIVEAWAY QUESTION</h3>
 	<hr/>
 	<p>What little things do you do with your little ones to help make their world a greener place?</p>
@@ -93,17 +98,18 @@
 	<input type="submit" name="earthdaybtn" id="earthdaybtn" value="Enter Now">
  	-->
 </form>
-<?php } ?>
+
 </div>
 
-<p style="margin:15px;"><strong>Prize:</strong> Three lucky winners chosen at random will receive an eco-friendly prize pack from our generous friends. Plus, Totsy will donate $100 to our grand-prize winner's favorite environmental non-profit organization. At the end of the giveaway, please check back to our blog. We'll compile and share our favorite "Top Five Little Things We Can Do", to keep our planet green for the little ones we love most. </p>
+<p style="margin:15px;"><strong>Prize:</strong> Three lucky winners chosen at random will receive an eco-friendly prize pack from our generous friends. Plus, Totsy will donate $100 to our grand-prize winner's favorite environmental non-profit organization. At the end of the giveaway, please check back to our blog. We'll compile and share our favorite "Top Five Little Things We Can Do", to keep our planet green for the little ones we love most. No purchase necessary. Sweepstakes starts on 4/23/12 and ends on 4/30/12 at 11:59 pm ET.</p>
 
 <hr />
 
 <div class="logos">
-	<a href="#"><img src="/img/earthday_logo1.png" border="0"></a>
-	<a href="#"><img src="/img/earthday_logo2.png" border="0"></a>
-	<a href="#"><img src="/img/earthday_logo3.png" border="0"></a>
-	<a href="#"><img src="/img/earthday_logo4.png" border="0"></a>
+	<a href="http://wearyourintention.com/" target="_blank"><img src="/img/earthday_logo1.png" border="0"></a>
+	<a href="http://bumkins.com/" target="_blank"><img src="/img/earthday_logo2.png" border="0"></a>
+	<a href="http://fullcirclehome.com/" target="_blank"><img src="/img/earthday_logo3.png" border="0"></a>
+	<a href="http://iplaybabywear.com/" target="_blank"><img src="/img/earthday_logo4.png" border="0"></a>
 <div class="clear"></div>
 </div>
+<?php } ?>
