@@ -63,7 +63,7 @@
 
 
 <div class="earthday">
-<?php if($_POST['earthdaybtn']){ ?>
+<?php if($_POST['email']){ ?>
 
 <h1>CELEBRATE EARTH DAY SUBMITTED</h1>
 <p>Thank you for entering!</p>
@@ -76,7 +76,7 @@
 
 function earthdayform(){
 	alert('submitted');
-	form.submit();
+	document.getElementById("earthdayform").submit();
 
 }
 
@@ -99,7 +99,7 @@ Earth Day comes one day a year, but here at Totsy we try and do our part every d
 <br><br>
 
 
-<form method="post">
+<form method="post" id="earthhdayform">
 <h5>GIVEAWAY QUESTION</h5>
 <h2>
 What little things do you do with your little ones, to help make their world a greener place?
@@ -113,9 +113,8 @@ What little things do you do with your little ones, to help make their world a g
 <input type="text" name="email" id="email" class="inputdiv">
 
 <br><br>
-<img src="/img/earthday_enternow.png" onclick="javascript:earthdayform()">
 
-<input type="submit" name="earthdaybtn" id="earthdaybtn" value="Enter Now">
+<input type="image" src="/img/earthday_enternow.png" name="earthdaybtn" id="earthdaybtn" value="Enter Now">
 <!-- 
  -->
 </form>
