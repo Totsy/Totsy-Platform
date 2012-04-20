@@ -2,10 +2,15 @@
 
 namespace app\controllers;
 
-use app\models\User;
 use totsy_common\models\Menu;
 use lithium\storage\Session;
 use app\controllers\BaseController;
+use app\models\User;
+use Mongo;
+use MongoDate;
+use MongoId;
+use app\models\Base;
+
 
 class PagesController extends BaseController {
 
@@ -28,12 +33,29 @@ class PagesController extends BaseController {
 		} elseif ($path[0] == 'btrendie' || $path[0] == "living_social"){
 			$this->_render['layout'] = 'blank';
 		}
-		$allowed = array('terms', 'faq', 'contact', 'privacy', 'aboutus', 'btrendie', 'moms', 'testimonials', 'being_green', 'press','affiliates','living_social', 'careers');
+		$allowed = array('earthday', 'terms', 'faq', 'contact', 'privacy', 'aboutus', 'btrendie', 'moms', 'testimonials', 'being_green', 'press','affiliates','living_social', 'careers');
 				
 		$userCheck = Session::read('userLogin');
 						
 		if (empty($userCheck) && !in_array($path[0], $allowed)) {
 			$this->redirect('/');
+		}
+				
+		if($path[0] == "earthday"){
+			if($_POST['earthdaybtn']){ 
+				$postemail = $_POST['email'];
+				$postcomment = $_POST['comment'];
+				
+				$insertdata = array(array('email'=> $postemail), array('comment' => $postcomment));
+				
+				$m = new Mongo();
+				$totsy = $m->totsy;
+				$earthday = $totsy->earthday;
+				$earthday->save($insertdata);
+					
+			
+			}
+
 		}
 				
 		if (in_array($path[0], $allowed) && $path[0] == "living_social") {
