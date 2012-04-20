@@ -3,15 +3,15 @@
 
 
 .earthday{
-	width:736px; 
+	width:756px; 
 	margin-left:12px;
 	height:772px; 
 	background:url('/img/flowery-bg-image.jpg') no-repeat; 
 	text-align:center;
 	color:#767c70;
 	padding-top:80px;
-	padding-left:100px;
-	padding-right:100px;
+	padding-left:80px;
+	padding-right:80px;
 	font-size:15px;
 	line-height:20px;
 }
@@ -76,7 +76,7 @@
 
 function earthdayform(){
 	alert('submitted');
-
+	form.submit();
 
 }
 
@@ -88,7 +88,9 @@ function earthdayform(){
 <h1>CELEBRATE EARTH DAY</h1>
 <H3>(and win prizes)</H3>
 
-<p style="margin-top:20px;">At Totsy, we work hard to maintain eco-responsibility in our business practices. We recycle, reduce our packaging, take mass transit, plant trees and offset our carbon usage, just to name a few. We've learned that a million tiny things - really can add up to a whole lot. In fact they can change the world! And we know our customers care deeply about the world their children will inherit. So we'd like to hear from you too!</p>
+<p style="margin-top:20px;">
+Earth Day comes one day a year, but here at Totsy we try and do our part every day. Eco-responsibility is in our DNA; we recycle, reduce our packaging, take mass transit and plant trees, just to name a few. A million tiny things - really can change the world! We know our customers care deeply about the planet their children will inherit, and so we'd like to hear from you!
+</p>
 
 <br><br>
 
@@ -99,7 +101,9 @@ function earthdayform(){
 
 <form method="post">
 <h5>GIVEAWAY QUESTION</h5>
-<h2>What little things do you do with your little ones,<br> to help make their world a greener place?</h2>
+<h2>
+What little things do you do with your little ones, to help make their world a greener place?
+</h2>
 
 
 <h5>ANSWER HERE</h5>
@@ -111,8 +115,8 @@ function earthdayform(){
 <br><br>
 <img src="/img/earthday_enternow.png" onclick="javascript:earthdayform()">
 
-<!-- 
 <input type="submit" name="earthdaybtn" id="earthdaybtn" value="Enter Now">
+<!-- 
  -->
 </form>
 
@@ -127,7 +131,9 @@ function earthdayform(){
 </div>
 
 
-<p style="margin:15px;"><b>Prize:</b> Three lucky winners chosen at random will receive an eco-friendly prize pack from our generous friends. Plus, Totsy will donate $100 to our grand-prize winner's favorite environmental non-profit organization. At the end of the giveaway, please check back to our blog. We'll compile and share our favorite "Top Five Little Things We Can Do", to keep our planet green for the little ones we love most. </p>
+<p style="margin:15px;"><b>Prize:</b> 
+Three lucky winners chosen at random will receive an eco-friendly prize pack from our generous friends. Plus, Totsy will donate $100 to our grand-prize winner's favorite environmental non-profit organization. At the end of the giveaway, please check back to our blog. We'll compile and share our favorite "Top Five Little Things We Can Do", to keep our planet green for the little ones we love most. No purchase necessary. Sweepstakes starts on 4/23/12 and ends on 5/4/12 at 11:59 pm ET. 
+</p>
 
 <p style="padding-left:35px;">
 <a href="#"><img src="/img/earthday_logo1.png" border="0"></a>
