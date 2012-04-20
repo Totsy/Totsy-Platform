@@ -2,10 +2,15 @@
 
 namespace app\controllers;
 
-use app\models\User;
 use totsy_common\models\Menu;
 use lithium\storage\Session;
 use app\controllers\BaseController;
+use app\models\User;
+use Mongo;
+use MongoDate;
+use MongoId;
+use app\models\Base;
+
 
 class PagesController extends BaseController {
 
@@ -37,7 +42,20 @@ class PagesController extends BaseController {
 		}
 				
 		if($path[0] == "earthday"){
-//		 	$this->_render['layout'] = 'earthday';
+			if($_POST['earthdaybtn']){ 
+				$postemail = $_POST['email'];
+				$postcomment = $_POST['comment'];
+				
+				$insertdata = array(array('email'=> $postemail), array('comment' => $postcomment));
+				
+				$m = new Mongo();
+				$totsy = $m->totsy;
+				$earthday = $totsy->earthday;
+				$earthday->save($insertdata);
+					
+			
+			}
+
 		}
 				
 		if (in_array($path[0], $allowed) && $path[0] == "living_social") {
