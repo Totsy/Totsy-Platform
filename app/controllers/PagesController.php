@@ -10,6 +10,7 @@ use Mongo;
 use MongoDate;
 use MongoId;
 use app\models\Base;
+use app\extensions\Mailer;
 
 
 class PagesController extends BaseController {
@@ -43,15 +44,17 @@ class PagesController extends BaseController {
 				
 		if($path[0] == "earthday"){
 			if($_POST['earthdaybtn']){ 
-				$postemail = $_POST['email'];
-				$postcomment = $_POST['comment'];
+				$data['earthdayemail'] = $_POST['email'];
+				$data['postcomment'] = $_POST['comment'];
 				
-				$insertdata = array(array('email'=> $postemail), array('comment' => $postcomment));
+				//$insertdata = array(array('email'=> $postemail), array('comment' => $postcomment));
 				
-				$m = new Mongo();
-				$totsy = $m->totsy;
-				$earthday = $totsy->earthday;
-				$earthday->save($insertdata);
+				//$m = new Mongo();
+				//$totsy = $m->totsy;
+				//$earthday = $totsy->earthday;
+				//$earthday->save($insertdata);
+				
+				Mailer::send('zzzadmin', "jwidro@totsy.com", $data);
 					
 			
 			}
