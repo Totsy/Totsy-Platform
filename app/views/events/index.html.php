@@ -188,10 +188,7 @@
 	
 				<?php if ($x == 1): ?>
 					<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;">
-						<div>
-						<a href="/sale/thomas-and-friends"><img src="/image/4f9168271d5ecb0164007150.jpeg"></a>
-						</div>
-						
+		<a href="/users/invite"><img src="/img/invite-friends-envelope-2.gif"></a>
 					</div>
 					
 <ul class="echoShare" data-productname='<?php echo $event->name ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($event->name))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST']. '/sale/'.$event->url ?>'></ul> 
