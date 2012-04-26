@@ -16,7 +16,7 @@ Connections::add('default', array(
 	'production' => array(
 		'type' => 'MongoDb',
 		'database' => 'totsy',
-		'setSlaveOkay' => false,
+		'setSlaveOkay' => true,
 		'replicaSet' => 'totsy',
 		'host' => array(
 			'db1-dc1.totsy.com',
