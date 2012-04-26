@@ -197,7 +197,7 @@ foreach($ordersForItem[(string) $item['_id']] as $order):
 				<?php echo $line_item['color']?>
 			<?php endif; ?>
 			</td>
-			<td><?php echo date('Y-M-d h:i:s',$order_temp[date_created]['sec']);?></td>
+			<td><?php echo date('Y-M-d h:i:s',$order_temp[date_created]);?></td>
 			<td>
 			<a href="/orders/view/<?php echo $order[_id];?>">View Order</a>
 			<?php if ($order->auth_confirmation <= -1) : ?>
