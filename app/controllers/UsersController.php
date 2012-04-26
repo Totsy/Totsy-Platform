@@ -642,6 +642,7 @@ class UsersController extends BaseController {
 			$user->legacy = 0;
 			$user->reset_token = '0';
 			$user->email_hash = md5($user->email);
+			$user->last_updated = new MongoDate();
 			if ($user->save($this->request->data, $saveOptions)) {
 				$info = Session::read('userLogin');
 				$info['firstname'] = $this->request->data['firstname'];
@@ -692,6 +693,7 @@ class UsersController extends BaseController {
 				$user->reset_token = sha1($token);
 				$user->legacy = 0;
 				$user->email_hash = md5($user->email);
+				$user->last_updated = new MongoDate();
 												
 				$link = "http://" . $_SERVER['HTTP_HOST'] . "/publicpassword/?t=" . $token;
 				
@@ -857,7 +859,7 @@ class UsersController extends BaseController {
 						$user->legacy = 0;
 						$user->reset_token = '0';
 						$user->requires_set_password = null;
-						
+						$user->last_updated = new MongoDate();
 						if ($this->request->data['password']) {
 							unset($this->request->data['password']);
 						}

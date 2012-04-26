@@ -24,7 +24,7 @@ class CartCleaner extends Base {
     * Set this to the number of minutes your expiration needs
     *
     **/
-    public $minutes = 17;
+    public $minutes = 15;
 
     public function run() {
         Environment::set($this->env);
