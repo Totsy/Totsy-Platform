@@ -73,8 +73,14 @@ foreach($results as $item){
 	$primary_image = $item['primary_image'];
 	$zoom_image = $item['zoom_image'];
 	
-	system('wget http://www.totsy.com/image/'. $primary_image .'.jpg',$output);
-	system('wget http://www.totsy.com/image/'. $zoom_image .'.jpg',$output);
+	echo $primary_image . "<br>";
+	echo $zoom_image . "<br>";
+	echo "<hr>";
+
+	var_dump($item);
+
+	//system('wget http://www.totsy.com/image/'. $primary_image .'.jpg',$output);
+	//system('wget http://www.totsy.com/image/'. $zoom_image .'.jpg',$output);
 
 }
 
