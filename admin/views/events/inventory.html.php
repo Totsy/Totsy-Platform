@@ -75,6 +75,8 @@ for($i=0;$i<$itemscount;$i++){
 		$output .= "<td>$details_original[$thiskeyvalue]</td>";
 		$output .= "<td>/image/".$primary_image.".jpg</td>";
 		$output .= "<td>/image/".$zoom_image.".jpg</td>";
+		$output .= "<td>/image/".$primary_image.".jpg</td>";
+		$output .= "<td>/image/".$primary_image.".jpg</td>";
 		$output .= "</tr>";
 		$j++;
 	}
@@ -100,6 +102,8 @@ for($i=0;$i<$itemscount;$i++){
 <td>Original</td>
 <td>image</td>
 <td>media_gallery</td>
+<td>small_image</td>
+<td>thumbnail</td>
 </tr>
 <!-- 
 -->
