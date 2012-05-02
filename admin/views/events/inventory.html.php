@@ -5,7 +5,14 @@ $outout="";
 for($i=0;$i<$itemscount;$i++){
 	$vendorstyle = $eventItems[$i]['vendor_style'];
 	$vendor = $eventItems[$i]['vendor'];
+
+
 	$sale_whol = $eventItems[$i]['sale_whol'];
+	$orig_whol = $eventItems[$i]['orig_whol'];
+	$sale_retail = $eventItems[$i]['sale_retail'];
+	$msrp = $eventItems[$i]['msrp'];
+
+
 	$color = $eventItems[$i]['color'];
 
 	$primary_image = $eventItems[$i]['primary_image'];
@@ -53,11 +60,14 @@ for($i=0;$i<$itemscount;$i++){
 	
 		$output .= "<tr>";
 		$output .= "<td>$event->name</td>";
-		$output .= "<td>$vendorstyle</td>";
 		$output .= "<td>$vendor</td>";
+		$output .= "<td>$vendorstyle</td>";
 		$output .= "<td>$description</td>";
 		$output .= "<td>$color</td>";
 		$output .= "<td>$sale_whol</td>";
+		$output .= "<td>$orig_whol</td>";
+		$output .= "<td>$sale_retail</td>";
+		$output .= "<td>$msrp</td>";
 		$output .= "<td>$sku</td>";
 		$output .= "<td>$thiskeyvalue</td>";
 		$output .= "<td>$details[$thiskeyvalue]</td>";
@@ -74,19 +84,22 @@ for($i=0;$i<$itemscount;$i++){
 
 <table width=100% style="font-size:12px;">
 <tr>
-<td>event</td>
+<td>Event</td>
+<td>Vendor</td>
 <td>vendor_style</td>
-<td>vendor</td>
-<td>description</td>
+<td>name</td>
 <td>color</td>
-<td>sale_whol</td>
-<td>SKU</td>
-<td>Size</td>
-<td>Stock</td>
+<td>sale_wholesale</td>
+<td>original_wholesale</td>
+<td>special_price</td>
+<td>price</td>
+<td>sku</td>
+<td>size</td>
+<td>qty</td>
 <td>Sold</td>
 <td>Original</td>
-<td>Primary</td>
-<td>Zoom</td>
+<td>image</td>
+<td>media_gallery</td>
 </tr>
 <!-- 
 -->
