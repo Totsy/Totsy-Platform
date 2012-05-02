@@ -63,8 +63,8 @@ for($i=0;$i<$itemscount;$i++){
 		$output .= "<td>$details[$thiskeyvalue]</td>";
 		$output .= "<td>$sold_quantity</td>";
 		$output .= "<td>$details_original[$thiskeyvalue]</td>";
-		$output .= "<td>$primary_image</td>";
-		$output .= "<td>$zoom_image</td>";
+		$output .= "<td>/image/".$primary_image.".jpg</td>";
+		$output .= "<td>/image/".$zoom_image.".jpg</td>";
 		$output .= "</tr>";
 		$j++;
 	}
