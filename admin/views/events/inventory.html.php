@@ -7,6 +7,11 @@ for($i=0;$i<$itemscount;$i++){
 	$vendor = $eventItems[$i]['vendor'];
 	$sale_whol = $eventItems[$i]['sale_whol'];
 	$color = $eventItems[$i]['color'];
+
+	$primary_image = $eventItems[$i]['primary_image'];
+	$zoom_image = $eventItems[$i]['zoom_image'];
+
+
 	$description = $eventItems[$i]['description'];
 	$eventid = $eventItems[$i]['event'][0];
 
@@ -58,6 +63,8 @@ for($i=0;$i<$itemscount;$i++){
 		$output .= "<td>$details[$thiskeyvalue]</td>";
 		$output .= "<td>$sold_quantity</td>";
 		$output .= "<td>$details_original[$thiskeyvalue]</td>";
+		$output .= "<td>$primary_image</td>";
+		$output .= "<td>$zoom_image</td>";
 		$output .= "</tr>";
 		$j++;
 	}
@@ -78,6 +85,8 @@ for($i=0;$i<$itemscount;$i++){
 <td>Stock</td>
 <td>Sold</td>
 <td>Original</td>
+<td>Primary</td>
+<td>Zoom</td>
 </tr>
 <!-- 
 -->
