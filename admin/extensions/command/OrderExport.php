@@ -391,6 +391,10 @@ class OrderExport extends Base {
 							} else {
 							     $orderFile[$inc]['ShipMethod'] = $order['shippingMethod'];
 							}
+
+							//hardcoded for newgistics
+						    $orderFile[$inc]['ShipMethod'] = 'NG';
+	
 							$orderFile[$inc]['RushOrder (Y/N)'] = '';
 							if (array_key_exists('telephone',$order['shipping'] )) {
 							    $orderFile[$inc]['Tel'] = $order['shipping']['telephone'];
