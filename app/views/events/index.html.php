@@ -187,7 +187,7 @@
 			</div>
 	
 				<?php if ($x == 1): ?>
-					<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;"><img src="/img/fathers_day_homepage_.jpg">
+					<div id="banner_container" class="grid_5" style="height:405px; overflow:hidden;"><a href="/users/invite"><img src="/img/invite-friends-envelope-2.gif"></a>
 					</div>
 					
 <ul class="echoShare" data-productname='<?php echo $event->name ?>' data-productcap="" data-productdesc='<?php echo htmlspecialchars_decode(html_entity_decode(strip_tags($event->name))) ?>' data-imageclass="" data-producturl='<?php echo $_SERVER['HTTP_HOST']. '/sale/'.$event->url ?>'></ul> 
