@@ -132,16 +132,32 @@ class Item extends Base {
 		return preg_replace('/\s*/m', '', implode('-', $sku));
 	}
 
-
+	/**
+	* Calculate product gross (w/ canceled items)
+	**/
 	public static function calculateProductGross($items) {
 		if (empty($items)) return 0;
 
 		$gross = 0;
 		foreach($items as $item) {
+			$gross += (int)$item['quantity'] * (float)$item['sale_retail'];
+		}
+
+		return $gross;
+	}
+	/**
+	* Calculate product net (w/o canceled items)
+	**/
+	public static function calculateProductNet($items) {
+		if (empty($items)) return 0;
+
+		$gross = 0;
+		foreach($items as $item) {
 			$cancel = array_key_exists('cancel' , $item) && !$item['cancel'];
+			
 			$cancel = $cancel || !array_key_exists('cancel' , $item);
 			if ($cancel) {
-				$gross += $item['quantity'] * $item['sale_retail'];
+				$gross += (int)$item['quantity'] * (float)$item['sale_retail'];
 			}
 		}
 
@@ -220,7 +236,7 @@ class Item extends Base {
 			$sku = static::sku($vendor, $vendor_style, $size, $color);
 			Logger::debug("\tGenerating new sku for vendor style {$vendor_style} , size {$size}");
 			#while skuExists comes back as true, try to create a unique sku
-			while (static::skuExists($vendor_style, $sku)) {
+			while (static::skuExists($vendor_style, $sku, $size)) {
 				#if we already tried the sha256 and the sku still isn't unique
 				if($shacount >= 1) {
 					$sha_vendor_style .= hash('sha256', $vendor_style);
@@ -255,7 +271,7 @@ class Item extends Base {
 	* @param string $sku
 	* @return boolean true for already exists, otherwise false
 	**/
-	public static function skuExists($vendor_style, $sku) {
+	public static function skuExists($vendor_style, $sku, $size) {
 		$skus_record = static::collections('skus_record'); 
 		$items = static::collections('items');
 
@@ -264,13 +280,19 @@ class Item extends Base {
 			'vendor_style' => array('$ne' => $vendor_style),
 			'sku'=> $sku
 		));
+		#check if within that same vendor style, a size already has the sku
+		$record_size = $skus_record->findOne(array(
+			'vendor_style' => $vendor_style,
+			'sku'=> $sku,
+			'size' => array('$ne' => $size)
+		));
 		#check if this sku exists already for a different item
 		$item_record = $items->findOne(array(
 			'vendor_style' => array('$ne' => $vendor_style),
 			'skus'=> array('$in' => array($sku))
 		));
 
-		if($record || $item_record) {
+		if($record || $item_record || $record_size) {
 			return true;
 		}
 

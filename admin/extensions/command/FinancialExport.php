@@ -2,6 +2,7 @@
 
 namespace admin\extensions\command;
 
+use admin\models\Base as adminBase;
 use admin\models\User;
 use admin\models\Order;
 use admin\models\Event;
@@ -65,6 +66,14 @@ class FinancialExport extends Base  {
     * @var string
     **/
 	public $enddate = "";
+	/**
+    * Generate files by month of a certain year. ONLY available with when historical is set to true 
+    * Format: mm/yyyy
+    * Eg. 01/2011 - January 2011
+    * @var string
+    **/
+	public $bymonthyear = "";
+	
 	/**
     * Date to retrieve a daily file
     * @var string
@@ -144,7 +153,43 @@ class FinancialExport extends Base  {
 		'net_revenue',
 		'merchantReferenceCode',
 		'process_by',
+		'net_cash',
+		'overSizeHandlingDiscount',
 		'auth_records'
+	);
+	protected $saveHeader = array(
+		'order_id',
+		'order_date',
+		'promo_type',
+		'promo_discount',
+		'tenOff50',
+		'firstPurchase',
+		'freeshipping',
+		'overSizeHandlingDiscount',
+		'credit_used',
+		'tax',
+		'gross_shipping_amt',
+		'net_shipping_amt',
+		'gross_revenue',
+		'net_revenue',
+		'net_cash',
+		'cancel',
+		'subTotal'
+	);
+	protected $montlyHeader = array(
+		'month',
+		'total_no_orders',
+		'total_gross_shipping',
+		'total_net_shipping',
+		'total_sales_tax',
+		'total_gross_product',
+		'total_net_product',
+		'total_net_collected',
+		'total_promotion_discounts',
+		'total_10off50_discounts',
+		'total_freehipping_discounts',
+		'total_freeshipping_service',
+		'total_credits_used'
 	);
 
 	/**
@@ -237,7 +282,9 @@ class FinancialExport extends Base  {
 			'items',
 			'order_id',
 			'overSizeHandling',
+			'overSizeHandlingDiscount',
 			'subTotal',
+			'subtotal',
 			'total',
 			'date_created',
 			'promo_code',
@@ -279,9 +326,11 @@ class FinancialExport extends Base  {
 		$this->prepareData();
 		switch(strtolower(trim($this->process))) {
             case "summary":
+            	$this->log("Processing Summary Report");
                 $this->_orderSummaryReport();
                  break;
             case "detail":
+                $this->log("Processing Details Report");
 		        $this->_orderDetailReport();
                  break;
             case "credit":
@@ -291,8 +340,21 @@ class FinancialExport extends Base  {
                 $this->_updateOrderSummaryReport();
                 $this->_updateOrderDetailFile();
                  break;
-            case "all" :
+            case "both":
+            	$this->log("Processing Summary Report");
+            	var_dump("Processing Summary Report");
                 $this->_orderSummaryReport();
+                $this->log("Processing Details Report");
+                var_dump("Processing Details Report");
+               	$this->_orderDetailReport();
+                 break;
+	        case "calculate":
+	        	$this->_monthlyFinanceCalc();
+                 break;
+            case "all" :
+            	$this->log("Processing Summary Report");
+                $this->_orderSummaryReport();
+                $this->log("Processing Details Report");
                 $this->_orderDetailReport();
                 $this->_orderCreditReport();
                 $this->_updateOrderSummaryReport();
@@ -333,12 +395,26 @@ class FinancialExport extends Base  {
 		 $this->yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
 		 if ($this->historical == "true") {
            $this->yesterday_min = mktime(0,0,0,1,1,2009);
-		    if (!empty($this->startdate)) {
-		        $this->yesterday_min = $this->parseDate($this->startdate,'start');
-		    }
-		    if (!empty($this->enddate)) {
-                $this->yesterday_max = $this->parseDate($this->enddate,'end');
-		    }
+           if(!empty($this->bymonthyear)) {
+           		if(preg_match("#^[0-9]{2}/[0-9]{4}$#U", $this->bymonthyear)) {
+           			$month = substr($this->bymonthyear, 0, 2);
+	           		$year = substr($this->bymonthyear, 3, 7);
+	           		$tmp = mktime(0,0,0,(int)$month + 1,1,(int)$year);
+	           		$lastDate = mktime(23,59,59,(int)date('m', $tmp),date('d', $tmp) - 1,$year);
+	           		$this->yesterday_min = mktime(0,0,0,(int)$month,1,(int)$year);
+	           		$this->yesterday_max = $lastDate;
+           		} else {
+           			exit("The month or year you entered is invalid.  Please try again. \n");
+           		}
+           		
+           } else {
+			    if (!empty($this->startdate)) {
+			        $this->yesterday_min = $this->parseDate($this->startdate,'start');
+			    }
+			    if (!empty($this->enddate)) {
+	                $this->yesterday_max = $this->parseDate($this->enddate,'end');
+			    }
+			}
 		    echo "Generating history files for " . date('m/d/Y H:i:s', $this->yesterday_min) . " to " .
             date('m/d/Y H:i:s', $this->yesterday_max) . "\r\n";
 		 } else if (!empty($this->dailydate)) {
@@ -375,7 +451,10 @@ class FinancialExport extends Base  {
             ),
             'items' => array('$exists' => true)
             );
-		$this->orders = Order::collection()->find($orderConditions, $this->fields);
+        $this->conditions = $orderConditions;
+
+		$this->orders = Order::collection()->find($orderConditions, $this->fields)->limit(1000);
+	  	$this->order_count = $this->orders->count();
 	}
 
 	public function _orderSummaryReport(){
@@ -470,42 +549,41 @@ class FinancialExport extends Base  {
 	        'order_id' => array('$exists' => true),
 	        'order_id' => array('$in' => array_unique($orderids))
 	        ),$this->fields
-	    );
+	    )->limit(1000);
+	  	$this->order_count = $this->orders->count();
 	    $this->summaryInfo();
 
 	    #this section handles any modified or canceled orders
 
 	    if ($this->historical == 'true') {
-	        $this->yesterday_max = mktime(23,59,59,date('m') - 1,24,date('Y'));
 	         $conditions = array('$or' => array(
 	         array('modifications' => array('$elemMatch' => array(
                 'date' => array(
-                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$gte' => new MongoDate($this->yesterday_min),
                     '$lte' => new MongoDate($this->yesterday_max)
                 )))),
               array('payment_date' => array(
-                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$gte' => new MongoDate($this->yesterday_min),
                     '$lte' => new MongoDate($this->yesterday_max)
                 )),
               array('auth_records' => array('$elemMatch' => array(
                 'date_saved' => array(
-                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$gte' => new MongoDate($this->yesterday_min),
                     '$lte' => new MongoDate($this->yesterday_max)
                 )))),
               array('void_records' => array('$elemMatch' => array(
                 'date_saved' => array(
-                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$gte' => new MongoDate($this->yesterday_min),
                     '$lte' => new MongoDate($this->yesterday_max)
                 )))),
               array('capture_records' => array('$elemMatch' => array(
                 'date_captured' => array(
-                    '$gte' => new MongoDate(strtotime('Oct 1, 2011')),
+                    '$gte' => new MongoDate($this->yesterday_min),
                     '$lte' => new MongoDate($this->yesterday_max)
                 ))))
             ));
 	    } else {
-	        $this->yesterday_min = mktime(0,0,0,date('m'),date('d') - 1,date('Y'));
-            $this->yesterday_max = mktime(23,59,59,date('m'),date('d') - 1,date('Y'));
+         //   var_dump(date('m/d/Y h:i:s', $this->yesterday_min));
             $conditions = array('$or' =>array(
             	array('modifications' => array('$elemMatch' => array(
 	                'date' => array(
@@ -535,7 +613,8 @@ class FinancialExport extends Base  {
              'order_id' => array('$nin' => array_unique($orderids))
             );
 	    }
-	    $this->orders = Order::collection()->find($conditions, $this->fields);
+	  	$this->orders = Order::collection()->find($conditions, $this->fields)->limit(1000);
+	  	$this->order_count = $this->orders->count();
 	    $this->summaryInfo();
 	    $this->saveXmlFile($this->orderUpdateFile);
 	    $this->xml = null;
@@ -551,10 +630,14 @@ class FinancialExport extends Base  {
 	/**
 	* The function prepares the order detail file data
 	**/
-	private function detailInfo(){
+	private function detailInfo() {
 	        //Holds the which line items are already in the file
 	    $alreadyIn = array();
-	    while ($this->orders->hasNext()) {
+	    $maxPages = ceil($this->order_count / 1000);
+	    $page = 0;
+	    do{
+	    	var_dump("currently on page : " .$page ."/" . $maxPages);
+	    	while ($this->orders->hasNext()) {
             $order = $this->orders->getNext();
             $orderItems = $order['items'];
             foreach ($orderItems as $item) {
@@ -638,245 +721,438 @@ class FinancialExport extends Base  {
                 $this->createXMLDoc('order_detail', $item);
             }
 		}
+	    	$skip = ($page + 1) * 1000;
+	    	$orderCol = Order::collection();
+	    	$this->orders = $orderCol->find($this->conditions, $this->fields)->limit(1000)->skip($skip);
+	    	++$page;
+	    	$this->log("currently on page : " . $page);	    	
+	    }while($page <= $maxPages);
+	    
 	}
 
 	/**
 	* The function prepares the order summary file data
 	**/
 	private function summaryInfo() {
+		MongoCursor::$timeout = -1;
 	    $ordersShipped = OrderShipped::collection();
-	    while ($this->orders->hasNext()){
-	           $order = $this->orders->getNext();
-                $orderItems = $order['items'];
+	    $revenueCollection = adminBase::collections('revenues');
 
-                if (array_key_exists('tax', $order) ){
-					$order['tax'] = (float) $order['tax'];
-                }
+	    $count = 0;
 
-                if (array_key_exists('authKey', $order)) {
-                   $order['authKey'] = $order['authKey'];
-                } else {
-                   $order['authKey'] = "none";
-                }
 
-                if (array_key_exists('card_type', $order)) {
-                   $order['payment_type'] = $order['card_type'];
-                } else {
-                    $order['payment_type'] = "none";
-                }
-                if (array_key_exists('firstname', $order['billing'])) {
-                    $order['billing_name'] = $order['billing']['firstname'] . " " . $order['billing']['lastname'];
-                } else {
-                    $order['billing_name'] = '';
-                }
-                if (array_key_exists('address', $order['billing'])) {
-                    $order['billing_address'] = $order['billing']['address'];
-                } else {
-                    $order['billing_address'] = '';
-                }
-                if (array_key_exists('address_2', $order['billing'])) {
-                    $order['billing_address2'] = $order['billing']['address_2'];
-                } else {
-                    $order['billing_address2'] = '';
-                }
-                if (array_key_exists('city', $order['billing'])) {
-                    $order['billing_city'] = $order['billing']['city'];
-                } else {
-                    $order['billing_city'] = '';
-                }
-                if (array_key_exists('state', $order['billing'])) {
-                    $order['billing_state'] = $order['billing']['state'];
-                } else {
-                    $order['billing_state'] = '';
-                }
-                if (array_key_exists('zip', $order['billing'])) {
-                    $order['billing_zip'] = $order['billing']['zip'];
-                } else {
-                    $order['billing_zip'] = '';
-                }
-                if (!array_key_exists('overSizeHandling', $order)) {
-                    $order['overSizeHandling'] = 0;
-                }
-                $order['order_date'] = date('m/d/Y', $order['date_created']->sec);
-                
-                if (array_key_exists('ship_date', $order)) {
-                    $order['estimated_ship_date'] =
-                        (is_int($order['ship_date'])) ? date('m/d/Y', $order['ship_date']) : date('m/d/Y', $order['ship_date']->sec);
-                } else {
-                    $order['estimated_ship_date'] = 0;
-                }
+	    $maxPages = ceil($this->order_count / 1000);
+	    $page = 0;
 
-                $order['gross_shipping_amt'] = (float) $order['subTotal'] + (float) $order['handling'];
-                if (array_key_exists('overSizeHandling', $order)) {
-                    $order['gross_shipping_amt'] += (float) $order['overSizeHandling'];
-                }
-                $order['gross_shipping_amt'] = number_format($order['gross_shipping_amt'], 2);
-                $order['net_shipping_amt'] = $order['gross_shipping_amt'];
-                if (array_key_exists('service', $order)) {
-                    if (in_array('freeshipping', $order['service'])){
-                        $order['service'] = 'freeshipping';
-                        $order['net_shipping_amt'] -= 7.95;
-                    } else if(in_array('10off50', $order)) {
-                        $order['service'] = '10off50';
-                        $order['net_shipping_amt'] -= 10;
-                    }else {
-                        $order['service'] = "none";
-                    }
-                } else {
-                    $order['service'] = "none";
-                }
-                $order['subTotal'] = number_format($order['subTotal'], 2);
-                $order['total'] = number_format($order['total'], 2);
-                if (array_key_exists('promo_code', $order)) {
-                    $promocode = Promocode::find('first', array('conditions' => array('code' => new MongoRegex("/" . $order['promo_code'] . "/i"))));
-                    $order['promo_type'] = $promocode['type'];
-                    $order['promo-code_amt'] = $promocode['discount_amount'];
-                }else {
-                    $order['promo_type'] = "";
-                    $order['promo-code_amt'] = "";
-                }
-                /*
-                * Grab credit information
-                */
-                if (array_key_exists('credit_used', $order)){
-                    $order['net_shipping_amt'] += (array_key_exists('credit_used', $order)) ? $order['credit_used']:0;
-                    $order['net_shipping_amt'] += (array_key_exists('promo_discount', $order)) ? $order['promo_discount']:0;
-                }
-                $order['net_shipping_amt'] = number_format((float)$order['net_shipping_amt'], 2);
-                $order['gross_revenue'] = number_format((float)Item::calculateProductGross($order['items']), 2);
-                $order['net_revenue'] = $order['gross_revenue'] + $order['handling'] + $order['overSizeHandling'];
-                $order['net_revenue'] = number_format($order['net_revenue'] , 2);
-                $order['merchantReferenceCode'] = "";
-                $order['process_by'] = "AuthorizeNet";
-                if (array_key_exists('auth', $order)) {
-                	$order['merchantReferenceCode'] = $order['auth']['response']['merchantReferenceCode'];
-                	$order['process_by'] = $order['auth']['adapter'];
-                }
+	    do{
+	    	var_dump("currently on page : " .$page ."/" . $maxPages);
+		    while ($this->orders->hasNext()){
+		           $order = $this->orders->getNext();
+	                $orderItems = $order['items'];
+	                if (array_key_exists('tax', $order) ){
+						$order['tax'] = (float)number_format((float) $order['tax'],2);
+	                }
 
-                if (array_key_exists('auth_records', $order) && array_key_exists('auth', $order)) {
-                    $tmp = array();
-					foreach($order['auth_records'] as $auth_record) {
-					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
-					    $tmp[] = $auth_record;
+	                if (array_key_exists('authKey', $order)) {
+	                   $order['authKey'] = $order['authKey'];
+	                } else {
+	                   $order['authKey'] = "none";
+	                }
+
+	                if (array_key_exists('card_type', $order)) {
+	                   $order['payment_type'] = $order['card_type'];
+	                } else {
+	                    $order['payment_type'] = "none";
+	                }
+	                if (array_key_exists('firstname', $order['billing'])) {
+	                    $order['billing_name'] = $order['billing']['firstname'] . " " . $order['billing']['lastname'];
+	                } else {
+	                    $order['billing_name'] = '';
+	                }
+	                if (array_key_exists('address', $order['billing'])) {
+	                    $order['billing_address'] = $order['billing']['address'];
+	                } else {
+	                    $order['billing_address'] = '';
+	                }
+	                if (array_key_exists('address_2', $order['billing'])) {
+	                    $order['billing_address2'] = $order['billing']['address_2'];
+	                } else {
+	                    $order['billing_address2'] = '';
+	                }
+	                if (array_key_exists('city', $order['billing'])) {
+	                    $order['billing_city'] = $order['billing']['city'];
+	                } else {
+	                    $order['billing_city'] = '';
+	                }
+	                if (array_key_exists('state', $order['billing'])) {
+	                    $order['billing_state'] = $order['billing']['state'];
+	                } else {
+	                    $order['billing_state'] = '';
+	                }
+	                if (array_key_exists('zip', $order['billing'])) {
+	                    $order['billing_zip'] = $order['billing']['zip'];
+	                } else {
+	                    $order['billing_zip'] = '';
+	                }
+	                if (!array_key_exists('overSizeHandling', $order)) {
+	                    $order['overSizeHandling'] = 0;
+	                }
+
+	                $save_date = $order['date_created'];
+	                $order['order_date'] = date('m/d/Y', $order['date_created']->sec);
+	                if (array_key_exists('ship_date', $order)) {
+	                    $order['estimated_ship_date'] =
+	                        (is_int($order['ship_date'])) ? date('m/d/Y', $order['ship_date']) : date('m/d/Y', $order['ship_date']->sec);
+	                } else {
+	                    $order['estimated_ship_date'] = 0;
+	                }
+
+	                $order['gross_shipping_amt'] = (float) $order['handling'];
+	                if (array_key_exists('overSizeHandling', $order)) {
+	                    $order['gross_shipping_amt'] += (float) $order['overSizeHandling'];
+	                }
+	                $order['gross_shipping_amt'] = number_format($order['gross_shipping_amt'], 2);
+	                $order['net_shipping_amt'] = $order['gross_shipping_amt'];
+	                $service_discount = 0;
+	                if (array_key_exists('service', $order)) {
+	                    if (!empty($order['service']) && in_array('freeshipping', $order['service'])){
+	                        $order['service'] = 'freeshipping';
+	                        $order['net_shipping_amt'] = $service_discount -= 7.95;
+	                        $order['net_shipping_amt']= $service_discount -= $order['overSizeHandlingDiscount'];
+	                    } elseif(!empty($order['service']) && in_array('10off50', $order['service'])) {
+	                        $order['service'] = '10off50';
+	                        $service_discount = -10;
+	                    }else {
+	                        $order['service'] = "none";
+	                    }
+	                } else {
+	                    $order['service'] = "none";
+	                }
+	                $order['subTotal'] = number_format($order['subTotal'], 2);
+	                $order['total'] = number_format($order['total'], 2);
+	                if (array_key_exists('promo_code', $order)) {
+	                    $promocode = Promocode::find('first', array('conditions' => array('code' => new MongoRegex("/" . $order['promo_code'] . "/i"))));
+	                    $order['promo_type'] = $promocode['type'];
+	                    $order['promo-code_amt'] = $promocode['discount_amount'];
+	                    if($order['promo_type'] == 'free_shipping' && empty($service_discount)) {
+	                    	$order['net_shipping_amt'] -= 7.95;
+	                    }
+	                }else {
+	                    $order['promo_type'] = "";
+	                    $order['promo-code_amt'] = "";
+	                }
+	                /*
+	                * Grab credit information
+	                */
+	                
+	                $rev_result = $revenueCollection->findOne(array('orders_id' => (string)$order['_id']), array(
+	                	'gross_product' =>1,
+	                	'gross_shipping' => 1,
+	                	'net_product' => 1,
+	                	'net_shipping' => 1,
+	                	'net_total' => 1
+	                	));
+	                if($rev_result) {
+		                $order['gross_shipping_amt'] =  (float) number_format((float)$rev_result['gross_shipping'], 2);
+		                $order['net_shipping_amt'] = (float) number_format((float)$rev_result['net_shipping'], 2);
+		                $order['gross_revenue'] = (float) number_format((float)$rev_result['gross_product'], 2);
+		                $order['net_revenue'] = (float) number_format((float)$rev_result['net_product'], 2);
+		                $order['net_cash'] = (float)  number_format((float)$rev_result['net_total'], 2);
+		            } else {
+		            	$order['net_shipping_amt'] = (float) number_format((float)$order['net_shipping_amt'], 2);
+		                $order['gross_revenue'] = (float)number_format((float)Item::calculateProductGross($order['items']), 2);
+		               // $net_product = number_format((float)Item::calculateProductNet($order['items']), 2);
+		                $order['net_revenue'] =(float) number_format((float)$order['subTotal'],2);
+		                $order['net_revenue'] =  (float) $order['net_revenue'] + $service_discount - abs($order['promo_discount']); 
+		                $order['net_revenue'] = (float) number_format((float)$order['net_revenue'] , 2);
+		                $order['net_cash'] = $order['net_shipping_amt'] + (float)$order['tax'] + $order['net_revenue'];
+		            }
+
+	                $order['merchantReferenceCode'] = "";
+	                $order['process_by'] = "AuthorizeNet";
+	                if (array_key_exists('auth', $order)) {
+	                	$order['merchantReferenceCode'] = $order['auth']['response']['merchantReferenceCode'];
+	                	$order['process_by'] = $order['auth']['adapter'];
+	                }
+
+	                if (array_key_exists('auth_records', $order) && array_key_exists('auth', $order)) {
+	                    $tmp = array();
+						foreach($order['auth_records'] as $auth_record) {
+						    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
+						    $tmp[] = $auth_record;
+						}
+						$tmp[] = array(
+								'authKey' => $order['authKey'],
+								'date_saved' => date("m/d/Y h:i:s A", strtotime($order['auth']['response']['ccAuthReply']['authorizedDateTime']))
+							);
+						$order['auth_records'] = $tmp;
+					} else {
+						$order['auth_records'] = array(
+							array(
+								'authKey' => $order['authKey'],
+								'date_saved' => date("m/d/Y h:i:s A", $order['date_created']->sec)
+							)); 
 					}
-					$tmp[] = array(
-							'authKey' => $order['authKey'],
-							'date_saved' => date("m/d/Y h:i:s A", strtotime($order['auth']['response']['ccAuthReply']['authorizedDateTime']))
-						);
-					$order['auth_records'] = $tmp;
-				} else {
-					$order['auth_records'] = array(
-						array(
-							'authKey' => $order['authKey'],
-							'date_saved' => date("m/d/Y h:i:s A", $order['date_created']->sec)
-						)); 
-				}
-				if (array_key_exists('void_records', $order) && array_key_exists('auth', $order)) {
-                    $tmp = array();
-					foreach($order['auth_records'] as $auth_record) {
-					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
-					    $tmp[] = $auth_record;
+					if (array_key_exists('void_records', $order) && array_key_exists('auth', $order)) {
+	                    $tmp = array();
+						foreach($order['auth_records'] as $auth_record) {
+						    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_saved']->sec );
+						    $tmp[] = $auth_record;
+						}
+
+						$order['auth_records'] = $tmp;
+					}
+					if (array_key_exists('capture_records', $order) && array_key_exists('auth', $order)) {
+	                    $tmp = array();
+						foreach($order['auth_records'] as $auth_record) {
+						    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_captured']->sec );
+						    $tmp[] = $auth_record;
+						}
+
+						$order['auth_records'] = $tmp;
 					}
 
-					$order['auth_records'] = $tmp;
-				}
-				if (array_key_exists('capture_records', $order) && array_key_exists('auth', $order)) {
-                    $tmp = array();
-					foreach($order['auth_records'] as $auth_record) {
-					    $auth_record['date_saved'] = date("m/d/Y h:i:s A", $auth_record['date_captured']->sec );
-					    $tmp[] = $auth_record;
+					if(!empty($order['payment_date']) && ($order['payment_date'] !== 'none')){
+						$order['auth_records'][] = array(
+								'authKey' => $order['auth_confirmation'],
+								'date_saved' =>  date('m/d/Y h:i:s A',$order['payment_date']->sec)
+							);
 					}
+					if (!empty($order['payment_date'])) {
+	                    $order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
+	                } else {
+	                    $order['payment_date'] = 0;
+	                }
 
-					$order['auth_records'] = $tmp;
-				}
+	                /*
+	                * Get credit, promocodes,  and oversize handling information
+	                */
+	                foreach ($order as $key => $value) {
+	                    $checkList = array('credit_used', 'promo_code', 'promo_discount', 'overSizeHandling');
+	                    foreach ($checkList as $value) {
+	                        if (empty($order["$value"])) {
+	                            $order["$value"] = 0;
+	                        }
+	                        if($value == "credit_used" && $order["$value"] != 0) {
+	                        	$order["$value"] = -abs(number_format((float)$order["$value"],2));
+	                        }
+	                        if($value == "promo_discount" && $order["$value"] != 0) {
+	                        	$order["$value"] = (float) number_format((float)$order["$value"] , 2);
+	                        	$order["$value"] = -abs($order["$value"] );
+	                        }
+	                    }
+	                    if (is_array($value) || in_array($key, $this->orderUnsetKey)) {
+	                        unset($order[$key]);
+	                    }
+	                }
+	                // Check if this order has a 'shipped' record
+	                $shipRecord = $ordersShipped->findOne(array('$or' => array(
+	                    array('OrderNum' => $order['order_id'])
+	                )));
+	                if ($order && array_key_exists('ship_records', $order)) {
+	                    $order['ship_records'] = "Yes";
+	                } else {
+	                    $order['ship_records'] = "No";
+	                }
 
-				if(!empty($order['payment_date']) && ($order['payment_date'] !== 'none')){
-					$order['auth_records'][] = array(
-							'authKey' => $order['auth_confirmation'],
-							'date_saved' =>  date('m/d/Y h:i:s A',$order['payment_date']->sec)
-						);
-				}
-				if (!empty($order['payment_date'])) {
-                    $order['payment_date'] = date('m/d/Y',$order['payment_date']->sec);
-                } else {
-                    $order['payment_date'] = 0;
-                }
+	                if (array_key_exists('shipping', $order)) {
+	                    $order['shipping_name'] = $order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'];
+	                    $address2 = (array_key_exists('address_2',$order['shipping']))?$order['shipping']['address_2'] :'';
+	                    $order['shipping_address'] = $order['shipping']['address'];
+	                    if (!empty($address2)) {
+	                        $order['shipping_address2'] = $address2;
+	                    } else {
+	                         $order['shipping_address2'] = "";
+	                    }
+	                    $order['shipping_city'] = $order['shipping']['city'];
+	                    $order['shipping_state'] = $order['shipping']['state'];
+	                    $order['shipping_zip'] = $order['shipping']['zip'];
+	                    unset($order['shipping']);
+	                } else {
+	                    $order['shipping_name'] = "";
+	                    $order['shipping_address2'] = "";
+	                    $order['shipping_city'] = "";
+	                    $order['shipping_state'] = "";
+	                    $order['shipping_zip'] = "";
+	                }
 
-                /*
-                * Get credit, promocodes,  and oversize handling information
-                */
-                foreach ($order as $key => $value) {
-                    $checkList = array('credit_used', 'promo_code', 'promo_discount', 'overSizeHandling');
-                    foreach ($checkList as $value) {
-                        if (empty($order["$value"])) {
-                            $order["$value"] = 0;
-                        }
-                    }
-                    if (is_array($value) || in_array($key, $this->orderUnsetKey)) {
-                        unset($order[$key]);
-                    }
-                }
-                // Check if this order has a 'shipped' record
-                $shipRecord = $ordersShipped->findOne(array('$or' => array(
-                    array('OrderNum' => $order['order_id'])
-                )));
-                if ($order && array_key_exists('ship_records', $order)) {
-                    $order['ship_records'] = "Yes";
-                } else {
-                    $order['ship_records'] = "No";
-                }
+	                if ($shipRecord) {
+	                    $order['actual_ship_date'] = date("m/d/Y", $shipRecord['ShipDate']->sec);
+	                } else {
+	                    $order['actual_ship_date'] = 0;
+	                }
+	                if (array_key_exists('auth_confirmation', $order)) {
+	                    $order['auth_confirmation'] = $order['auth_confirmation'];
+	                } else {
+	                    $order['auth_confirmation'] = "none";
+	                }
+	                if (array_key_exists('auth_error', $order) ) {
+	                    if (is_array($order['auth_error'])){
+	                        $order['auth_error'] = implode("/", $order['auth_error']);
+	                    } else {
+	                        $order['auth_error'] = $order['auth_error'];
+	                    }
+	                } else {
+	                    $order['auth_error'] = "none";
+	                }
+	                if (!array_key_exists("cancel", $order)) {
+	                    $order["cancel"] = "false";
+	                } else {
+	                    $order["cancel"] = ($order["cancel"])? "true":"false";
+	                }
 
-                if (array_key_exists('shipping', $order)) {
-                    $order['shipping_name'] = $order['shipping']['firstname'] . ' ' . $order['shipping']['lastname'];
-                    $address2 = (array_key_exists('address_2',$order['shipping']))?$order['shipping']['address_2'] :'';
-                    $order['shipping_address'] = $order['shipping']['address'];
-                    if (!empty($address2)) {
-                        $order['shipping_address2'] = $address2;
-                    } else {
-                         $order['shipping_address2'] = "";
-                    }
-                    $order['shipping_city'] = $order['shipping']['city'];
-                    $order['shipping_state'] = $order['shipping']['state'];
-                    $order['shipping_zip'] = $order['shipping']['zip'];
-                    unset($order['shipping']);
-                } else {
-                    $order['shipping_name'] = "";
-                    $order['shipping_address2'] = "";
-                    $order['shipping_city'] = "";
-                    $order['shipping_state'] = "";
-                    $order['shipping_zip'] = "";
-                }
+	                $this->saveSummaryData(array_merge($order, array('order_date' => $save_date)));
+	                $order = $this->sortArrayByArray($order, $this->summaryHeader);
+	                $order = $this->removeStraykeys($order, $this->summaryHeader);
+	                $this->log("Adding $order[order_id] to order update summary");
+	                $this->createXMLDoc('order_summary', $order);
+	                $this->log("Finish adding $order[order_id] to order update summary");
+	                ++$count;
+	    	}
+	    	$skip = ($page + 1) * 1000;
+	    	$orderCol = Order::collection();
+	    	$this->orders = $orderCol->find($this->conditions, $this->fields)->limit(1000)->skip($skip);
+	    	$count = 0;
+	    	++$page;
+	    	$this->log("currently on page : " . $page);
+	    } while($page <= $maxPages);
+	}
 
-                if ($shipRecord) {
-                    $order['actual_ship_date'] = date("m/d/Y", $shipRecord['ShipDate']->sec);
-                } else {
-                    $order['actual_ship_date'] = 0;
-                }
-                if (array_key_exists('auth_confirmation', $order)) {
-                    $order['auth_confirmation'] = $order['auth_confirmation'];
-                } else {
-                    $order['auth_confirmation'] = "none";
-                }
-                if (array_key_exists('auth_error', $order) ) {
-                    if (is_array($order['auth_error'])){
-                        $order['auth_error'] = implode("/", $order['auth_error']);
-                    } else {
-                        $order['auth_error'] = $order['auth_error'];
-                    }
-                } else {
-                    $order['auth_error'] = "none";
-                }
-                if (!array_key_exists("cancel", $order)) {
-                    $order["cancel"] = "false";
-                } else {
-                    $order["cancel"] = ($order["cancel"])? "true":"false";
-                }
-                $order = $this->sortArrayByArray($order, $this->summaryHeader);
-                $order = $this->removeStraykeys($order, $this->summaryHeader);
-                $this->log("Adding $order[order_id] to order update summary");
-                $this->createXMLDoc('order_summary', $order);
-                $this->log("Finish adding $order[order_id] to order update summary");
+	public function saveSummaryData($data) {
+	    $financial_export = adminBase::collections('financial_export');
+	    $data['order_id'] = (string) $data['_id'];
+    	switch($data['service']) {
+    		case "freeshipping":
+    			$data['firstPurchase'] = -7.95;
+    			$data['firstPurchase'] += -abs($data['overSizeHandlingDiscount']);
+    			$data['tenOff50'] = 0;
+    			break;
+    		case "10off50":
+    			$data['tenOff50'] = -10;
+    			$data['firstPurchase'] = 0;
+    			break;
+    		default:
+    			$data['firstPurchase'] = 0;
+    			$data['tenOff50'] = 0;
+    			break;
+    	}
+
+	    if (($data['promo_type'] == 'free_shipping') && $data['service'] == "none" ) {
+        	$data['freeshipping'] = -7.95;
+        	$data['freeshipping'] += -abs($data['overSizeHandlingDiscount']);
+        } else {
+        	$data['freeshipping'] = 0;
+        }
+        //$data['order_date'] = new MongoDate(strtotime($data['order_date']));
+	    $fresh = $this->removeStrayKeys($data, $this->saveHeader);
+	    $fresh = $this->sortArrayByArray($fresh, $this->saveHeader);
+	    $result = $financial_export->findOne(array('order_id' => $fresh['order_id']));
+	    if(is_null($result)) { 
+	    	$financial_export->save($fresh);
+	    } else {
+	    	$success = $financial_export->update(array('_id' => $result['_id']), array('$set' => array_merge($fresh, array('updated' => new MongoDate()))));
 	    }
+		adminBase::collections('Base');
+	}
+
+	public function _monthlyFinanceCalc() {
+		$financial_export = adminBase::collections('financial_export');
+		$financial_export_rev = adminBase::collections('financial_export_rev');
+		
+		$keys = new MongoCode("
+			function(doc){
+				return {
+					'month': doc.order_date.getMonth() + 1,
+					'year' : doc.order_date.getFullYear()
+				}
+			}"
+		);
+		$initial = array(
+			'total_no_orders' => 0,
+			'total_gross_shipping' => 0,
+			'total_net_shipping' => 0,
+			'total_sales_tax' => 0,
+			'total_gross_product' => 0,
+			'total_net_product' => 0,
+			'total_net_collected' => 0,
+			'total_promotion_discounts' => 0,
+			'total_10off50_discounts' => 0,
+			'total_freehipping_discounts' => 0,
+			'total_freeshipping_service' => 0,
+			'total_credits_used' => 0
+		);
+		$reduce = new MongoCode('function(doc, prev) {
+				tmp_gross_shipping = 0;
+				tmp_net_shipping = 0;
+				tmp_sales_tax = 0;
+				tmp_gross_product = 0;
+				tmp_net_product = 0;
+				tmp_net_collected = 0;
+				tmp_promotion_discounts = 0;
+				tmp_10off50_discounts = 0;
+				tmp_freehipping_discounts = 0;
+				tmp_freeshipping_service = 0;
+				tmp_credits_used = 0;
+
+				prev.total_no_orders += 1;
+				tmp_gross_shipping = parseFloat( doc.gross_shipping_amt );
+				prev.total_gross_shipping += parseFloat( tmp_gross_shipping.toFixed(2));
+				tmp_net_shipping = parseFloat( doc.net_shipping_amt );
+				prev.total_net_shipping +=  parseFloat( tmp_net_shipping.toFixed(2) );
+
+				tmp_gross_product = parseFloat( doc.gross_revenue );
+				prev.total_gross_product += parseFloat( tmp_gross_product.toFixed(2) );
+
+				tmp_net_product = parseFloat( doc.net_revenue );
+				prev.total_net_product += parseFloat( tmp_net_product.toFixed(2) );
+
+				tmp_net_collected = parseFloat( doc.net_cash );
+				prev.total_net_collected += parseFloat( tmp_net_collected.toFixed(2) );
+
+				if( doc.cancel == "false" ) {
+
+					if (doc.subTotal >= 50) {
+						tmp_10off50_discounts = parseFloat( doc.tenOff50 );
+						prev.total_10off50_discounts += parseFloat( tmp_10off50_discounts.toFixed(2) );
+					}
+
+					tmp_freeshipping_service = parseFloat( doc.firstPurchase );
+					prev.total_freeshipping_service += parseFloat( tmp_freeshipping_service.toFixed(2) );
+
+					tmp_freehipping_discounts = parseFloat( doc.freeshipping );
+					prev.total_freehipping_discounts += parseFloat( tmp_freehipping_discounts.toFixed(2) );
+				}
+				tmp_promotion_discounts = -Math.abs( parseFloat( doc.promo_discount ) );
+				prev.total_promotion_discounts += parseFloat( tmp_promotion_discounts.toFixed(2) );
+
+				//tmp_credits_used = -Math.abs( parseFloat( doc.credit_used ) );
+				tmp_credits_used = parseFloat( doc.credit_used );
+				prev.total_credits_used += parseFloat( tmp_credits_used.toFixed(2) );
+
+				tmp_sales_tax = parseFloat( doc.tax );
+				prev.total_sales_tax += parseFloat( tmp_sales_tax.toFixed(2) );
+			}'
+		);
+		
+
+		$condition = array();
+		if( $this->historical == "true") {
+			$condition = array("order_date" =>array('$gte' => new MongoDate($this->yesterday_min), '$lte' => new MongoDate($this->yesterday_max)) );
+		}
+		$results = $financial_export->group($keys,$initial,$reduce, array('condition' => $condition));
+		if(array_key_exists('errmsg', $results)) {
+			print($results['errmsg'] . "\n");
+		}
+		foreach($results['retval'] as $result) {
+			$find = $financial_export_rev->findOne(array('month' => $result['month'] , 'year' => $result['year']));
+			if (is_null($find)) {
+				$financial_export_rev->save($result);
+			} else{
+				$financial_export_rev->update(array('_id' => $find['_id']), array('$set' => array_merge($result, array('updated' => new MongoDate()))),false);
+			}
+		}
+	
+		adminBase::collections('Base');
 	}
 
 	/**
